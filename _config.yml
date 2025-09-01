@@ -107,4 +107,4 @@ theme: hexo-theme-next
 deploy:
   type: git
   repository: git@github.com:GreatAndyC/greatandyc.github.io.git  #你的仓库地址
-  branch: master
+  branch: gh-pages

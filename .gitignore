@@ -1,8 +1,15 @@
-.DS_Store
-Thumbs.db
-db.json
-*.log
+
+
+# hexo
 node_modules/
 public/
 .deploy*/
 _multiconfig.yml
+.deploy_git/
+db.json
+
+# system file
+.DS_Store
+Thumbs.db
+db.json
+*.log
