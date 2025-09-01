@@ -219,7 +219,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2025-09-01 17:45:17 / 修改时间：19:01:01" itemprop="dateCreated datePublished" datetime="2025-09-01T17:45:17+08:00">2025-09-01</time>
+              <time title="创建时间：2025-09-01 17:45:17 / 修改时间：19:13:42" itemprop="dateCreated datePublished" datetime="2025-09-01T17:45:17+08:00">2025-09-01</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -260,7 +260,7 @@
 <li>拥有一个Github账号</li>
 <li>安装好Git、node.js、hexo</li>
 <li>通过Cloudflare购买域名</li>
-<li>参考教程部署基于hexo的静态网页博客<br><em>保持全程梯子连接</em><br><em>任何不懂的问题都可以问GPT老师</em></li>
+<li>参考教程部署基于hexo的静态网页博客<br><em>保持全程科学上网</em><br><em>任何不懂的问题都可以问GPT老师</em></li>
 </ol>
 <p>参考链接</p>
 <ol>
@@ -296,7 +296,7 @@
 <p>Github pages官方建议添加四条，以此增加服务稳定性</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">185.199.108.153</span><br><span class="line">185.199.109.153</span><br><span class="line">185.199.110.153</span><br><span class="line">185.199.111.153</span><br></pre></td></tr></table></figure>
 
-<p>同时再添加一条CAME记录，让www子域名也能访问(前缀增加www之后也会自动跳转到购买的域名)</p>
+<p>同时再添加一条CNAME记录，让www子域名也能访问(前缀增加www之后也会自动跳转到购买的域名)</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">类型: CNAME</span><br><span class="line">名称: www</span><br><span class="line">值: greatandyc.github.io</span><br><span class="line">TTL: Auto</span><br><span class="line">代理状态: DNS only (灰色小云)</span><br></pre></td></tr></table></figure>
 <p><strong>等到Github Pages页面完成DNS解析和HTTPS证书自动申请后即完成博客框架的搭建</strong></p>
 <h3 id="5-Hexo配置文件更改"><a href="#5-Hexo配置文件更改" class="headerlink" title="5.Hexo配置文件更改"></a>5.Hexo配置文件更改</h3><p>在一开始本地创建的博客根目录下的<code>_config.yml</code>文件中可以对网页进行配置</p>
