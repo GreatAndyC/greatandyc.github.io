@@ -88,3 +88,6 @@ TTL: Auto
 
 本地文章保存在`Blog/source/_posts`中
 通过在Git bash里面输入命令`hexo clean && hexo g && hexo d`即可完成网页的更新，具体流程可参考博客的[新博客工作流](https://caoyueyang.org/2025/09/01/%E6%96%B0%E5%8D%9A%E5%AE%A2%E5%B7%A5%E4%BD%9C%E6%B5%81/)，优化md格式可以参考本博客的[Markdown基本语法](https://caoyueyang.org/2025/09/01/%E5%9B%9E%E9%A1%BE%E5%8D%9A%E5%AE%A2%E5%BB%BA%E7%AB%8B%E6%95%99%E7%A8%8B/)
+
+# 遇到的问题
+1. Github文件夹大小写命名和本地不同，根本原因在于windows默认设置大小写不敏感，但是Linux系统对大小写敏感，这样的结果会导致有时候网站无法识别文件夹名字，导致网页出现404，解决方案是删掉远程仓库的文件，重新配置git，从头开始重新上传改好名字的文件夹。
