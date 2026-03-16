@@ -13,4 +13,7 @@ db.json
 Thumbs.db
 db.json
 *.log
-images_backup
+# backups
+_backup/
+images_backup/
+source/images_backup/
