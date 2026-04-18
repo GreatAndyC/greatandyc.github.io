@@ -11,9 +11,19 @@ categories:
 <img src="/images/recap_314/3.16_封面图.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 
+<div style="text-align: center; margin: 40px 0; font-size: 20px; color: #dcdcdc; font-weight: 300; letter-spacing: 20px;">
+  
+
+</div>
+
+<!-- 网易云音乐外链播放器 -->
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=461544997&auto=0&height=66"></iframe>
+
 
 ## 前情提要
 作为前港大研究生会汇声艺术社摄影部（总人数:1人）负责人兼部长兼副部长兼干事（大冰老师：嗯？），也在此次“3.14心跳Π对”演出中作为摄影贡献了自己的一份力量。以下是简单的回顾&技术总结，也作为一直想写的关于摄影的文章的开篇。
+
+<!-- more -->
 
 在3.11之前只知道具体安排是灯光组的辅助，以及“其余空闲时间你可以从右侧面拍点照片~”（原话），所以其实没有特别正式准备。
 
@@ -53,6 +63,7 @@ categories:
 个人经验来看，拍摄舞蹈需要注意的是：
 1. 开场和结束时，灯光通常较好、动作会保持若干秒的定格，是必须拍摄的“保底时刻”
 2. **不患寡而患不均**：如果要拍摄单人特写，尽量确保每个舞者都有至少一张照片，而不是都给C位或者镜头感好的舞者，否则很容易被其他舞者“家长”私信————“老师我们家子涵怎么没有照片？” or “老师你好下头，怎么一直盯着我们家子涵拍？”（~~当然，如果没有利益关系，那就是，爱咋咋拍，尽情表现自己的艺术审美~~）
+
 <img src="/images/recap_314/3.16_Kpop.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 <div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
