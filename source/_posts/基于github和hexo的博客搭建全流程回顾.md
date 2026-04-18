@@ -15,6 +15,8 @@ categories:
 *保持全程科学上网*
 *任何不懂的问题都可以问GPT老师*
 
+<!-- more -->
+
 参考链接
 1. [知乎用户：枫叶-从零开始搭建个人博客(1-8篇)](https://zhuanlan.zhihu.com/p/106060640)
 2. [攻城狮杰森的博客:快速搭建个人博客 —— 保姆级教程](https://pdpeng.github.io/2022/01/19/setup-personal-blog/#%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7)

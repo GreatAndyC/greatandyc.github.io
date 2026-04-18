@@ -104,7 +104,7 @@ feed:
   limit: 20
 
 ## Themes: https://hexo.io/themes/
-theme: hexo-theme-next
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
