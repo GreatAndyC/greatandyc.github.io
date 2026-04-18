@@ -21,6 +21,27 @@ hexo.extend.helper.register('next_vendors', function(url) {
   return this.url_for(`${internal}/${url}`);
 });
 
+hexo.extend.helper.register('localized_path', function(path) {
+  if (typeof path !== 'string') return path;
+  if (/^(?:[a-z]+:)?\/\//i.test(path) || /^(?:mailto:|javascript:|#)/i.test(path)) return path;
+
+  const defaultLanguage = Array.isArray(hexo.config.language) ? hexo.config.language[0] : hexo.config.language;
+  const currentLanguage = this.page.lang || defaultLanguage;
+
+  if (!currentLanguage || currentLanguage === defaultLanguage) {
+    return this.url_for(path);
+  }
+
+  const normalizedPath = path.replace(/^\/+/, '');
+  const localizedPath = normalizedPath ? `${currentLanguage}/${normalizedPath}` : `${currentLanguage}/`;
+
+  if (hexo.route.get(localizedPath)) {
+    return this.url_for(localizedPath);
+  }
+
+  return this.url_for(path);
+});
+
 hexo.extend.helper.register('post_edit', function(src) {
   const theme = hexo.theme.config;
   if (!theme.post_edit.enable) return '';
@@ -32,9 +53,21 @@ hexo.extend.helper.register('post_edit', function(src) {
 
 hexo.extend.helper.register('post_nav', function(post) {
   const theme = hexo.theme.config;
-  if (theme.post_navigation === false || (!post.prev && !post.next)) return '';
-  const prev = theme.post_navigation === 'right' ? post.prev : post.next;
-  const next = theme.post_navigation === 'right' ? post.next : post.prev;
+  const defaultLanguage = Array.isArray(hexo.config.language) ? hexo.config.language[0] : hexo.config.language;
+  const posts = this.site.posts.sort('-date').toArray();
+  const postLang = post.lang || this.page.lang || defaultLanguage;
+  const localizedPosts = posts.filter(item => (item.lang || defaultLanguage) === postLang);
+  const currentIndex = localizedPosts.findIndex(item => item.path === post.path);
+
+  if (theme.post_navigation === false || currentIndex === -1) return '';
+
+  const localizedPrev = currentIndex > 0 ? localizedPosts[currentIndex - 1] : null;
+  const localizedNext = currentIndex < localizedPosts.length - 1 ? localizedPosts[currentIndex + 1] : null;
+  const prev = theme.post_navigation === 'right' ? localizedPrev : localizedNext;
+  const next = theme.post_navigation === 'right' ? localizedNext : localizedPrev;
+
+  if (!prev && !next) return '';
+
   const left = prev ? `
     <a href="${this.url_for(prev.path)}" rel="prev" title="${prev.title}">
       <i class="fa fa-chevron-left"></i> ${prev.title}

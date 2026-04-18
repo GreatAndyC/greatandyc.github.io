@@ -1,4 +1,4 @@
-{{ open_graph() }}
+{{ open_graph({ description: description, language: page.lang }) }}
 
 {{ canonical() }}
 

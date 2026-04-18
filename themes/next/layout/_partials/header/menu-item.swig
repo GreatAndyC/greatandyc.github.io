@@ -3,6 +3,7 @@
   {%- set itemURL = value.split('||')[0] | trim %}
   {%- if not itemURL.startsWith('http') %}
     {%- set itemURL = itemURL | replace('//', '/') %}
+    {%- set itemURL = localized_path(itemURL) %}
   {%- endif %}
   <li class="menu-item menu-item-{{ itemName | replace(' ', '-') }}">
 

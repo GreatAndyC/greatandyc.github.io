@@ -14,7 +14,7 @@ reminder: false
 
 # Allow to cache content generation. Introduced in NexT v6.0.0.
 cache:
-  enable: true
+  enable: false
 
 # Remove unnecessary files after hexo generate.
 minify: false
@@ -199,12 +199,18 @@ social_icons:
 # Blog rolls
 links_settings:
   icon: fa fa-link
-  title: Links
+  title:
+    zh-CN: 友情链接
+    en: Links
   # Available values: block | inline
   layout: block
 
 links:
-  走向世界: http://www.google.com
+  world:
+    url: http://www.google.com
+    title:
+      zh-CN: 走向世界
+      en: Explore the World
 
 # Table of Contents in the Sidebar
 # Front-matter variable (unsupport wrap expand_all).

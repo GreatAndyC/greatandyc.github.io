@@ -1,6 +1,7 @@
 ---
 title: 基于github和hexo的博客搭建全流程回顾
 date: 2025-09-01 17:45:17
+lang: zh-CN
 tags:
   - Hexo
 categories:

@@ -16,7 +16,7 @@
       </div>
     {%- endif %}
 
-    <a href="{{ config.root }}" class="brand" rel="start">
+    <a href="{{ localized_path(config.root) }}" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">{{ title }}</h1>
       <span class="logo-line-after"><i></i></span>

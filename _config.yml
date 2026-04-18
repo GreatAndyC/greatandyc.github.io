@@ -6,6 +6,9 @@
 title: AndyCao's Blog
 subtitle: ''
 description: 我的写作
+description_i18n:
+  zh-CN: 我的写作
+  en: My writing
 keywords:
 author: AndyCao
 language:

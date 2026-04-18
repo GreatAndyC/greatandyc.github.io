@@ -105,12 +105,24 @@
 {# Blogroll #}
 {%- if theme.links %}
   <div class="links-of-blogroll motion-element">
+    {%- set blogrollTitle = theme.links_settings.title %}
+    {%- if theme.links_settings.title.zh-CN or theme.links_settings.title.en %}
+      {%- set blogrollTitle = theme.links_settings.title[page.lang] or theme.links_settings.title['default'] or theme.links_settings.title.en or theme.links_settings.title.zh-CN %}
+    {%- endif %}
     <div class="links-of-blogroll-title">
       {%- if theme.links_settings.icon %}<i class="{{ theme.links_settings.icon }} fa-fw"></i>{%- endif %}
-      {{ theme.links_settings.title }}
+      {{ blogrollTitle }}
     </div>
     <ul class="links-of-blogroll-list">
-      {%- for blogrollText, blogrollURL in theme.links %}
+      {%- for blogrollKey, blogrollConfig in theme.links %}
+        {%- set blogrollText = blogrollKey %}
+        {%- set blogrollURL = blogrollConfig %}
+        {%- if blogrollConfig.url %}
+          {%- set blogrollURL = blogrollConfig.url %}
+          {%- if blogrollConfig.title %}
+            {%- set blogrollText = blogrollConfig.title[page.lang] or blogrollConfig.title['default'] or blogrollConfig.title.en or blogrollConfig.title['zh-CN'] or blogrollKey %}
+          {%- endif %}
+        {%- endif %}
         <li class="links-of-blogroll-item">
           {{ next_url(blogrollURL, blogrollText, {title: blogrollURL}) }}
         </li>
