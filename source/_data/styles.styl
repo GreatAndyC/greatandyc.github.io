@@ -1,0 +1,101 @@
+.main .content.index.posts-expand
+  column-count: 3
+  column-gap: 24px
+  padding-top: 10px
+
+.main .content.index.posts-expand .post-block
+  break-inside: avoid-column
+  margin-top: 0
+  margin-bottom: 24px
+  padding: 0 /* 移除外层以便图片贴边 */
+  border-radius: 18px
+  background: var(--content-bg-color, #fff)
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06)
+  transition: transform .2s ease, box-shadow .2s ease
+  display: flex
+  flex-direction: column
+  overflow: hidden
+
+.main .content.index.posts-expand .post-block:hover
+  transform: translateY(-4px)
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.10)
+
+.main .content.index.posts-expand .post-header
+  padding: 20px 20px 0 20px
+  margin-bottom: 12px
+  text-align: left
+
+.main .content.index.posts-expand .post-title
+  font-size: 1.1rem
+  font-weight: 600
+  line-height: 1.45
+  margin: 0 0 10px 0
+  display: -webkit-box
+  -webkit-line-clamp: 2
+  -webkit-box-orient: vertical
+  overflow: hidden
+  text-align: left
+  justify-content: flex-start
+
+.main .content.index.posts-expand .post-meta
+  font-size: 0.82rem
+  opacity: .75
+  margin-bottom: 12px
+  display: flex
+  flex-direction: column
+  align-items: flex-start
+  gap: 2px
+
+.main .content.index.posts-expand .post-meta .post-meta-item
+  justify-content: flex-start
+
+.main .content.index.posts-expand .post-meta .post-meta-item + .post-meta-item::before
+  display: none
+
+.main .content.index.posts-expand .post-meta br
+  display: none
+
+.main .content.index.posts-expand .post-body
+  padding: 0 20px 20px 20px
+  flex: 1
+  display: flex
+  flex-direction: column
+  text-align: left
+
+.main .content.index.posts-expand .post-body p
+  margin-top: 0
+  margin-bottom: 8px
+  color: #666
+  font-size: 0.9em
+  line-height: 1.6
+  display: -webkit-box
+  -webkit-line-clamp: 3
+  -webkit-box-orient: vertical
+  overflow: hidden
+  text-overflow: ellipsis
+
+.main .content.index.posts-expand .post-body img
+  width: calc(100% + 40px) !important
+  max-width: calc(100% + 40px) !important
+  height: auto !important
+  object-fit: cover !important
+  margin: -10px -20px 12px -20px !important
+  display: block !important
+  border: none !important
+  box-shadow: none !important
+  border-radius: 0 !important
+
+.main .content.index.posts-expand .post-eof
+  display: none
+
+/* 首页分页和卡片拉开一点距离 */
+.main .content.index ~ .pagination
+  margin-top: 32px
+
+@media (max-width: 991px)
+  .main .content.index.posts-expand
+    column-count: 2
+
+@media (max-width: 767px)
+  .main .content.index.posts-expand
+    column-count: 1

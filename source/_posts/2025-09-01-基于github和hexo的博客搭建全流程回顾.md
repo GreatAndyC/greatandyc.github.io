@@ -6,6 +6,9 @@ tags:
 categories:
   - 教程
 ---
+摘要：本文详细介绍了如何通过Github和Hexo搭建个人博客
+
+<!-- more -->
 
 # 基本流程
 1. 拥有一个Github账号
@@ -15,7 +18,6 @@ categories:
 *保持全程科学上网*
 *任何不懂的问题都可以问GPT老师*
 
-<!-- more -->
 
 参考链接
 1. [知乎用户：枫叶-从零开始搭建个人博客(1-8篇)](https://zhuanlan.zhihu.com/p/106060640)

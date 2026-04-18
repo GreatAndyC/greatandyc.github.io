@@ -10,8 +10,7 @@ keywords:
 author: AndyCao
 language:
   - zh-CN
-  - en 
-  - zh-TW
+  - en
 timezone: Asia/Hong_Kong
 
 # URL
@@ -34,7 +33,7 @@ i18n_dir: :lang
 skip_render:
 
 # Writing
-new_post_name: :title.md # File name of new posts
+new_post_name: :year-:month-:day-:title.md # File name of new posts
 default_layout: post
 titlecase: false # Transform title into titlecase
 external_link:
@@ -113,3 +112,8 @@ deploy:
   type: git
   repository: git@github.com:GreatAndyC/greatandyc.github.io.git  #你的仓库地址
   branch: gh-pages
+
+# NexT Theme Configuration
+theme_config:
+  custom_file_path:
+    style: source/_data/styles.styl

@@ -29,6 +29,11 @@
         </a>
       </li>
     {%- endif %}
+
+    <li class="menu-item menu-item-language" style="display: flex; align-items: center; margin-left: 10px;">
+      {{ partial('_partials/languages.swig', {}, {cache: theme.cache.enable}) }}
+    </li>
+
   </ul>
 {%- endif %}
 </nav>

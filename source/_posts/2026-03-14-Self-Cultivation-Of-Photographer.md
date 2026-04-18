@@ -11,19 +11,24 @@ categories:
 <img src="/images/recap_314/3.16_封面图.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 
+摘要：本文回顾了笔者在周末参加HKU晚会摄影师的经历和个人工作感悟
+
+<!-- more -->
+
 <div style="text-align: center; margin: 40px 0; font-size: 20px; color: #dcdcdc; font-weight: 300; letter-spacing: 20px;">
-  
 
 </div>
+
 
 <!-- 网易云音乐外链播放器 -->
 <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=461544997&auto=0&height=66"></iframe>
 
 
+
 ## 前情提要
 作为前港大研究生会汇声艺术社摄影部（总人数:1人）负责人兼部长兼副部长兼干事（大冰老师：嗯？），也在此次“3.14心跳Π对”演出中作为摄影贡献了自己的一份力量。以下是简单的回顾&技术总结，也作为一直想写的关于摄影的文章的开篇。
 
-<!-- more -->
+
 
 在3.11之前只知道具体安排是灯光组的辅助，以及“其余空闲时间你可以从右侧面拍点照片~”（原话），所以其实没有特别正式准备。
 
