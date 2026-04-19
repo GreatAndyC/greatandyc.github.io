@@ -2,6 +2,8 @@
 title: 活动摄影师的自我修养&26.3.14心跳Π对回顾
 date: 2026-03-14 00:00:00
 lang: zh-CN
+slug: Self-Cultivation-Of-Photographer
+permalink: 2026/03/14/Self-Cultivation-Of-Photographer/
 tags:
   - 摄影
   - 回顾

@@ -2,6 +2,8 @@
 title: 新博客工作流
 date: 2025-09-01 17:34:26
 lang: zh-CN
+slug: 新博客工作流
+permalink: 2025/09/01/新博客工作流/
 tags:
   - Markdown
   - Hexo

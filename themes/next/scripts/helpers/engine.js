@@ -3,7 +3,7 @@
 'use strict';
 
 const crypto = require('crypto');
-const { Color } = require('hexo-util');
+const { Color, escapeHTML } = require('hexo-util');
 
 function getDefaultLanguage() {
   return Array.isArray(hexo.config.language) ? hexo.config.language[0] : hexo.config.language;
@@ -48,6 +48,16 @@ function getLocalizedCategories(ctx, language = getCurrentLanguage(ctx)) {
       length: posts.length
     };
   }).filter(Boolean);
+}
+
+function getLocalizedValue(value, language, fallbackLanguage = getDefaultLanguage()) {
+  if (value == null) return '';
+  if (typeof value === 'string' || typeof value === 'number') return value;
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'object') {
+    return value[language] || value[fallbackLanguage] || value.default || Object.values(value)[0] || '';
+  }
+  return value;
 }
 
 hexo.extend.helper.register('next_inject', function(point) {
@@ -184,6 +194,81 @@ hexo.extend.helper.register('localized_list_categories', function(options = {}) 
   return localizedCategories.map(category => {
     return `<a class="${className}-link" href="${this.localized_path(category.path)}${suffix}">${transform ? transform(category.name) : category.name}${showCount ? `<span class="${className}-count">${category.length}</span>` : ''}</a>`;
   }).join(separator);
+});
+
+hexo.extend.helper.register('render_gallery', function(language = getCurrentLanguage(this)) {
+  const galleryData = this.site.data.gallery || {};
+  const albums = (galleryData.albums || []).filter(album => {
+    return !album.languages || album.languages.includes(language);
+  });
+  const emptyText = escapeHTML(getLocalizedValue(galleryData.empty, language) || 'No gallery items yet.');
+
+  if (!albums.length) {
+    return `<div class="gallery-empty">${emptyText}</div>`;
+  }
+
+  const navItems = albums.map(album => {
+    const title = escapeHTML(getLocalizedValue(album.title, language));
+    const count = (album.photos || []).length;
+    return `<a class="gallery-nav-link" href="#gallery-${album.slug}">${title}<span>${count}</span></a>`;
+  }).join('');
+
+  const albumSections = albums.map(album => {
+    const title = escapeHTML(getLocalizedValue(album.title, language));
+    const description = escapeHTML(getLocalizedValue(album.description, language));
+    const location = escapeHTML(getLocalizedValue(album.location, language));
+    const period = escapeHTML(getLocalizedValue(album.period, language));
+    const camera = escapeHTML(getLocalizedValue(album.camera, language));
+    const tags = getLocalizedValue(album.tags, language) || [];
+    const photos = (album.photos || []).map((photo, index) => {
+      const photoTitle = escapeHTML(getLocalizedValue(photo.title, language));
+      const photoCaption = escapeHTML(getLocalizedValue(photo.caption, language));
+      const photoMeta = escapeHTML(photo.meta || '');
+      const src = this.url_for(photo.src);
+      const dataCaption = [photoTitle, photoCaption, photoMeta].filter(Boolean).join(' · ');
+
+      return `
+        <figure class="gallery-photo-card">
+          <a class="gallery-photo-frame" href="${src}" data-fancybox="gallery-${album.slug}" data-caption="${dataCaption}">
+            <img src="${src}" alt="${photoTitle || `${title}-${index + 1}`}" loading="lazy">
+          </a>
+          <figcaption class="gallery-photo-copy">
+            <div class="gallery-photo-title">${photoTitle}</div>
+            ${photoCaption ? `<p class="gallery-photo-caption">${photoCaption}</p>` : ''}
+            ${photoMeta ? `<div class="gallery-photo-meta">${photoMeta}</div>` : ''}
+          </figcaption>
+        </figure>`;
+    }).join('');
+
+    return `
+      <section class="gallery-album" id="gallery-${album.slug}">
+        <header class="gallery-album-header">
+          <div>
+            <p class="gallery-album-kicker">${period || ''}</p>
+            <h2 class="gallery-album-title">${title}</h2>
+            ${description ? `<p class="gallery-album-description">${description}</p>` : ''}
+          </div>
+          <div class="gallery-album-meta">
+            ${location ? `<span>${location}</span>` : ''}
+            ${camera ? `<span>${camera}</span>` : ''}
+          </div>
+        </header>
+        ${tags.length ? `<div class="gallery-album-tags">${tags.map(tag => `<span>${escapeHTML(tag)}</span>`).join('')}</div>` : ''}
+        <div class="gallery-photo-grid">
+          ${photos}
+        </div>
+      </section>`;
+  }).join('');
+
+  return `
+    <div class="gallery-page">
+      <nav class="gallery-nav" aria-label="Gallery albums">
+        ${navItems}
+      </nav>
+      <div class="gallery-albums">
+        ${albumSections}
+      </div>
+    </div>`;
 });
 
 hexo.extend.helper.register('post_edit', function(src) {

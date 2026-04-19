@@ -2,6 +2,8 @@
 title: 个人网站施工中
 date: 2026-03-15 21:53:43
 lang: zh-CN
+slug: Under-Construction
+permalink: 2026/03/15/Under-Construction/
 tags:
     - 公告
 ---

@@ -54,6 +54,11 @@
               {{ localized_list_categories() }}
             </div>
           </div>
+        {% elif page.type === 'gallery' %}
+          <div class="gallery-content">
+            {{ page.content }}
+            {{ render_gallery(page.lang) }}
+          </div>
         {% elif page.type === 'archives' %}
           {%- set archivePosts = site.posts.find({lang: page.lang}).sort('-date') %}
           <div class="posts-collapse">

@@ -2,6 +2,8 @@
 title: Hello World
 date: 2025-08-31 00:00:00
 lang: zh-CN
+slug: Hello-World-CHN
+permalink: 2025/08/31/Hello-World-CHN/
 ---
 Welcome to [Hexo](https://hexo.io/)! 
 <!-- more -->
