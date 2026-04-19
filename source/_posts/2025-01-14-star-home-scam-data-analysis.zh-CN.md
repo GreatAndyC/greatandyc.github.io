@@ -45,7 +45,8 @@ toc: true
 
 2025年1月14日由于演员“王星被骗泰国事件”的热议，网络上流传一份在线文档——“星星回家互助档案”，自发下载公开文档，开展独立探索性分析。
 
-![alt text](/images/feishu-migration/star-home-scam-data-analysis/star_home_excel_source.png)
+![](/images/feishu-migration/star-home-scam-data-analysis/star_home_excel_source.png)
+*星星回家互助档案 Excel 数据源*
 
 ### 分析方法
 1. **数据清洗（Python）**
@@ -111,7 +112,8 @@ excel_to_txt_with_commas(excel_file_path, txt_file_path)
 ```
 
 得到结构化的 txt 文档：
-![alt text](/images/feishu-migration/star-home-scam-data-analysis/scam_age_distribution_viz.png)
+![](/images/feishu-migration/star-home-scam-data-analysis/scam_age_distribution_viz.png)
+*结构化 TXT 文档示例*
 
 ### 第二步：数据导入 LLM 中处理
 由于数据量不大，无需调用 API，直接在 Web 端即可得到分析后的结果。将文本内容直接 Copy 到 Google Ai Studio 的 Gemini Pro 2.0 中进行反复提问。
@@ -135,24 +137,27 @@ excel_to_txt_with_commas(excel_file_path, txt_file_path)
 > 很好，现在试着从1开始逐条输出至全部。
 
 在 LLM 中得到相应的结果，Copy 到本地 txt 中：
-![alt text](/images/feishu-migration/star-home-scam-data-analysis/scam_gender_ratio_viz.png)
+![](/images/feishu-migration/star-home-scam-data-analysis/scam_gender_ratio_viz.png)
+*LLM 输出结果示例*
 
 同理，可以得到时间、国内地级市、年龄段、具体原因等数据。全部统计完成后转化为 Excel 文档：
-![alt text](/images/feishu-migration/star-home-scam-data-analysis/scam_reasons_category_viz.png)
+![](/images/feishu-migration/star-home-scam-data-analysis/scam_reasons_category_viz.png)
+*统计完成后的 Excel 文档*
 
 在 Excel 文档中对数据进行筛选统计，得到可视化的原始数据：
-![alt text](/images/feishu-migration/star-home-scam-data-analysis/tableau_analysis_dashboard.png)
+![](/images/feishu-migration/star-home-scam-data-analysis/tableau_analysis_dashboard.png)
+*Excel 数据筛选统计结果*
 
 ### 第三步：Tableau 数据可视化和结论
 使用 Tableau 对数据进行可视化，增加可读性，从图表中总结规律和画像。
 
 **典型画像：** 95% 男性，80% 为 18–35 岁，72.53% 在西双版纳，88.49% 因高薪诱惑受骗。
 
-![alt text](/images/feishu-migration/star-home-scam-data-analysis/star_home_data_filtering_process.png)
+![](/images/feishu-migration/star-home-scam-data-analysis/star_home_data_filtering_process.png)
 *受骗原因-人数-柱/饼图*
 
-![alt text](/images/feishu-migration/star-home-scam-data-analysis/star_home_source_doc_list.png)
+![](/images/feishu-migration/star-home-scam-data-analysis/star_home_source_doc_list.png)
 *国内失联省份 & 云南省内城市位置-人数地图/饼图*
 
-![alt text](/images/feishu-migration/star-home-scam-data-analysis/star_home_final_metric_viz.png)
+![](/images/feishu-migration/star-home-scam-data-analysis/star_home_final_metric_viz.png)
 *失踪时间/年龄段/性别-人数柱状图*
