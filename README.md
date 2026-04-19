@@ -19,6 +19,8 @@
 
 这份仓库不只是博客内容，也包含站点样式、自定义多语言适配逻辑和部分 NexT 模板改造。
 
+详细维护说明见：[docs/site-maintenance-guide.md](/Users/andycao/Documents/Project/greatandyc.github.io/docs/site-maintenance-guide.md:1)
+
 ## 本地开发
 
 ### 1. 安装依赖
