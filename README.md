@@ -4,65 +4,22 @@
 [![Theme](https://img.shields.io/badge/Theme-NexT-green.svg)](https://github.com/theme-next/hexo-theme-next)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> 此仓库为基于 Hexo 框架搭建的私人博客源码，由 [AndyCao](https://github.com/GreatAndyC) 维护。
+基于 Hexo + NexT 搭建的个人博客源码仓库，由 [AndyCao](https://github.com/GreatAndyC) 维护。
 
-## 🌐 在线访问
+在线地址：[caoyueyang.org](https://caoyueyang.org)
 
-博客地址位于：caoyueyang.org
+## 项目概览
 
----
+- 框架：Hexo 7
+- 主题：NexT
+- 部署：GitHub Pages
+- 文章格式：Markdown
+- 当前多语言：`zh-CN`、`en`
+- 根首页策略：`/` 跟随默认语言首页，当前默认为中文
 
-## 🛠️ 技术栈
+这份仓库不只是博客内容，也包含站点样式、自定义多语言适配逻辑和部分 NexT 模板改造。
 
-- **框架**: [Hexo](https://hexo.io/)
-- **主题**: [NexT](https://github.com/theme-next/hexo-theme-next)
-- **部署**: GitHub Pages
-- **渲染**: Nunjucks, Swig (NexT support)
-
-## 📋 文章管理 SOP
-
-为了确保博客内容的质量和发布流程的顺畅，请遵循以下步骤：
-
-### 1. 创建新文章
-在终端输入以下命令创建文章，Hexo 会根据 `scaffolds/post.md` 模板生成文件：
-```bash
-npx hexo new "文章标题"
-```
-文件将自动生成在：`source/_posts/文章标题.md`
-
-### 2. 编辑文章元数据 (Front-matter)
-打开生成的 `.md` 文件，编辑顶部的 YAML 配置（元数据）：
-- **title**: 文章标题
-- **date**: 发布日期（自动生成，通常不需手动修改）
-- **tags**: [标签1, 标签2] (使用方括号，英文逗号分隔)
-- **categories**: 分类名
-
-### 3. 本地预览与调试
-在发布前，务必开启本地服务器检查排版和图片显示：
-```bash
-npx hexo s
-```
-访问 `http://localhost:4000` 实时预览。
-
-### 4. 发布与推送
-确认无误后，执行一键部署。这将生成静态网页并推送至 GitHub 分支：
-```bash
-npx hexo clean && npx hexo g -d
-```
-
-### 5. (可选) 源码备份
-如果您修改了站点配置或重要文件，别忘了将**源码仓库**本身推送到远程：
-```bash
-git add .
-git commit -m "feat: 添加新文章 [文章标题]"
-# git push 由您手动操作
-```
-
----
-
-## 🚀 快速开始
-
-如果您想在本地运行或编辑此博客，请确保已安装 [Node.js](https://nodejs.org/)。
+## 本地开发
 
 ### 1. 安装依赖
 
@@ -70,46 +27,224 @@ git commit -m "feat: 添加新文章 [文章标题]"
 npm install
 ```
 
-### 2. 撰写文章
+### 2. 启动本地预览
 
 ```bash
-npx hexo new "我的新文章"
+npm run server
 ```
 
-### 3. 本地预览
+默认访问地址：
 
-启动本地服务器，访问 `http://localhost:4000`。
+- `http://localhost:4000/`
+- `http://localhost:4000/zh-CN/`
+- `http://localhost:4000/en/`
+
+### 3. 构建静态文件
 
 ```bash
-npx hexo server
+npm run build
 ```
 
-### 4. 生成与部署
-
-生成静态文件并推送到 GitHub 仓库相关分支（通常是 `gh-pages`）。
+### 4. 清理缓存
 
 ```bash
-npx hexo clean && npx hexo generate --deploy
+npm run clean
 ```
 
-## 📂 项目结构
+### 5. 部署
+
+```bash
+npm run deploy
+```
+
+一键本地生成并部署：
+
+```bash
+npm run pub
+```
+
+## 写作与发布流程
+
+### 新建文章
+
+```bash
+npx hexo new "文章标题"
+```
+
+当前 `new_post_name` 规则为：
+
+```text
+:year-:month-:day-:title.md
+```
+
+也就是新文章会生成到 `source/_posts/`，文件名带日期前缀。
+
+### Front-matter 约定
+
+推荐至少包含以下字段：
+
+```yaml
+---
+title: 文章标题
+date: 2026-04-19 10:00:00
+lang: zh-CN
+tags:
+  - 标签A
+categories:
+  - 分类A
+---
+```
+
+说明：
+
+- `lang` 必须明确写，尤其是多语言文章，否则会污染首页、归档、标签、分类和上一篇/下一篇导航。
+- 中文文章统一使用 `lang: zh-CN`
+- 英文文章统一使用 `lang: en`
+- 标签和分类本身不自动翻译，应直接使用该语言对应的内容
+
+示例：
+
+- 中文文章：`categories: [教程]`、`tags: [学习, Hexo]`
+- 英文文章：`categories: [Essay]`、`tags: [Learning, Hexo]`
+
+### 本地检查建议
+
+在提交或部署前，建议至少检查：
+
+1. `npm run build` 是否通过
+2. 中文页是否只显示中文内容
+3. 英文页是否只显示英文内容
+4. 菜单、侧边栏、上一篇/下一篇是否仍停留在当前语言路由下
+
+## 多语言规则
+
+当前站点采用“语言严格隔离”策略。
+
+### 首页规则
+
+- `/`：默认语言首页，当前等同于中文首页
+- `/zh-CN/`：中文首页，只显示 `lang: zh-CN` 的文章
+- `/en/`：英文首页，只显示 `lang: en` 的文章
+
+### 特殊页面规则
+
+当前已配置：
+
+- 中文：
+  - `/about/`
+  - `/tags/`
+  - `/categories/`
+  - `/archives/`
+- 英文：
+  - `/en/about/`
+  - `/en/tags/`
+  - `/en/categories/`
+  - `/en/archives/`
+
+### 标签、分类、归档规则
+
+- 中文标签页、分类页、归档页只显示中文文章数据
+- 英文标签页、分类页、归档页只显示英文文章数据
+- 英文标签详情页例如 `/en/tags/Hexo/` 只列英文文章
+- 中文标签详情页例如 `/tags/Hexo/` 只列中文文章
+
+### 文章页导航规则
+
+上一篇 / 下一篇只在同语言文章集合中导航，不跨语言跳转。
+
+### 菜单与侧边栏规则
+
+英文页面中的：
+
+- `Home`
+- `About`
+- `Tags`
+- `Categories`
+- `Archives`
+
+都应跳到英文路由，而不是回到中文页。
+
+## 如何新增更多语言
+
+当前方案支持继续扩展更多语言，例如 `ja`、`fr`。
+
+建议步骤：
+
+1. 在 [_config.yml](/Users/andycao/Documents/Project/greatandyc.github.io/_config.yml:1) 的 `language` 数组里加入新语言
+2. 新文章写明对应 `lang`
+3. 为该语言补齐特殊页面：
+   - `source/<lang>/about/index.md`
+   - `source/<lang>/tags/index.md`
+   - `source/<lang>/categories/index.md`
+   - `source/<lang>/archives/index.md`
+4. 如需站点描述、友情链接等本地化，继续补充对应语言文案
+5. 如主题语言包不存在，则补充 `themes/next/languages/<lang>.yml`
+
+注意：
+
+- 根首页 `/` 永远跟随 `language` 数组里的第一个语言
+- 如果以后想让 `/` 变成英文首页，把 `en` 放到第一位即可
+
+## 目录结构
 
 ```text
 .
-├── _config.yml         # 站点配置文件
-├── package.json        # 应用程序信息和依赖
-├── scaffolds/          # 模板文件夹
-├── source/             # 资源文件夹（文章 Markdown、图片等）
-│   └── _posts/         # 文章库
-├── themes/             # 主题文件夹 (NexT)
-└── tools/              # 自定义工具
+├── _config.yml
+├── languages/                  # 站点级语言文案
+├── package.json
+├── scaffolds/                  # 新文章模板
+├── scripts/                    # 自定义 Hexo 生成逻辑
+├── source/
+│   ├── _data/                  # 自定义样式等覆盖文件
+│   ├── _posts/                 # 所有文章正文
+│   ├── about/                  # 中文 About
+│   ├── categories/             # 中文分类页
+│   ├── tags/                   # 中文标签页
+│   ├── en/                     # 英文特殊页
+│   └── images/                 # 站点图片资源
+├── themes/
+│   └── next/                   # NexT 主题与局部模板改造
+└── public/                     # 构建产物
 ```
 
-## 📝 维护指南
+## 关键文件
 
-- **添加文章**: 在 `source/_posts` 下创建或使用 `hexo new` 命令。
-- **配置修改**: 修改根目录下的 `_config.yml` 进行站点配置，修改 `themes/next/_config.yml`（或其替代方案）进行主题配置。
+- [_config.yml](/Users/andycao/Documents/Project/greatandyc.github.io/_config.yml:1)
+  站点配置、默认语言顺序、首页生成策略
 
-## 📄 开源协议
+- [scaffolds/post.md](/Users/andycao/Documents/Project/greatandyc.github.io/scaffolds/post.md:1)
+  新文章模板
 
-本项目代码部分遵循 MIT 协议。文章内容版权归作者所有。
+- [source/_data/styles.styl](/Users/andycao/Documents/Project/greatandyc.github.io/source/_data/styles.styl:1)
+  首页瀑布流卡片样式等自定义样式
+
+- [scripts/localized-taxonomy.js](/Users/andycao/Documents/Project/greatandyc.github.io/scripts/localized-taxonomy.js:1)
+  多语言标签 / 分类详情页生成逻辑
+
+- [themes/next/scripts/helpers/engine.js](/Users/andycao/Documents/Project/greatandyc.github.io/themes/next/scripts/helpers/engine.js:1)
+  路由本地化、同语言上一篇/下一篇、局部多语言 helper
+
+## 维护注意事项
+
+- 不要把英文文章放到 `source/en/_posts/`，Hexo 默认不会把它识别成正式文章。
+- 所有文章正文统一放在 `source/_posts/`，通过 `lang` 区分语言。
+- 如果只新增了英文文章，但没补英文 `tags/categories/archives/about` 页面，菜单会回退到中文或公共页。
+- 修改主题模板后，优先执行一次：
+
+```bash
+npx hexo clean && npm run build
+```
+
+避免缓存或旧路由干扰判断。
+
+## Git 约定
+
+本仓库约定：
+
+- commit message 使用中文
+- commit message 需要详细说明改动内容
+
+## 版权说明
+
+- 代码部分：MIT
+- 文章内容与图片：默认归作者所有，转载请注明出处

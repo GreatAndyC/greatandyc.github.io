@@ -7,6 +7,8 @@
 {% block class %}tag{% endblock %}
 
 {% block content %}
+  {%- set current_lang = page.lang or config.language[0] %}
+  {%- set localized_posts = page.posts.find({lang: current_lang}) %}
 
   {#################}
   {### TAG BLOCK ###}
@@ -20,7 +22,7 @@
         </h2>
       </div>
 
-      {{ post_template.render(page.posts) }}
+      {{ post_template.render(localized_posts) }}
     </div>
   </div>
   {#####################}

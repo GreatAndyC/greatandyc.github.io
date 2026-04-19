@@ -1,4 +1,5 @@
 {% extends '_layout.swig' %}
+{% import '_macro/post-collapse.swig' as post_template with context %}
 {% import '_macro/sidebar.swig' as sidebar_template with context %}
 
 {% block title %}
@@ -31,10 +32,10 @@
         {%- if page.type === 'tags' %}
           <div class="tag-cloud">
             <div class="tag-cloud-title">
-              {{ _p('counter.tag_cloud', site.tags.length) }}
+              {{ _p('counter.tag_cloud', localized_tag_count()) }}
             </div>
             <div class="tag-cloud-tags">
-              {{ tagcloud({
+              {{ localized_tagcloud({
                 min_font   : theme.tagcloud.min,
                 max_font   : theme.tagcloud.max,
                 amount     : theme.tagcloud.amount,
@@ -47,11 +48,34 @@
         {% elif page.type === 'categories' %}
           <div class="category-all-page">
             <div class="category-all-title">
-              {{ _p('counter.categories', site.categories.length) }}
+              {{ _p('counter.categories', localized_category_count()) }}
             </div>
             <div class="category-all">
-              {{ list_categories() }}
+              {{ localized_list_categories() }}
             </div>
+          </div>
+        {% elif page.type === 'archives' %}
+          {%- set archivePosts = site.posts.find({lang: page.lang}).sort('-date') %}
+          <div class="posts-collapse">
+            <div class="collection-title">
+              {%- set posts_length = archivePosts.length %}
+              {%- if posts_length > 210 %}
+                {%- set cheers = 'excellent' %}
+              {% elif posts_length > 130 %}
+                {%- set cheers = 'great' %}
+              {% elif posts_length > 80 %}
+                {%- set cheers = 'good' %}
+              {% elif posts_length > 50 %}
+                {%- set cheers = 'nice' %}
+              {% elif posts_length > 30 %}
+                {%- set cheers = 'ok' %}
+              {% else %}
+                {%- set cheers = 'um' %}
+              {%- endif %}
+              <span class="collection-header">{{ __('cheers.' + cheers) }}! {{ _p('counter.archive_posts', archivePosts.length) }} {{ __('keep_on') }}</span>
+            </div>
+
+            {{ post_template.render(archivePosts) }}
           </div>
         {% elif page.type === 'schedule' %}
           <div class="event-list">
