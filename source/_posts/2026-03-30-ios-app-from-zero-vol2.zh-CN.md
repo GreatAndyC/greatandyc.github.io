@@ -15,7 +15,6 @@ categories:
   - 教程
 toc: true
 ---
-**摘要：从模型格局和成本结构出发，说明为什么不要只依赖单一 AI 模型。**
 
 <figure class="post-figure">
   <img src="/images/feishu-migration/ios-app-from-zero-vol2/ios_series_vol2_cover.png" alt="">
@@ -126,10 +125,12 @@ Google Gemini、Anthropic Claude、Openai Chatgpt支持的计费方式。
   <img src="/images/feishu-migration/ios-app-from-zero-vol2/chatgpt_plus_pricing_plans.png" alt="">
   <figcaption>ChatGPT 订阅计划价格</figcaption>
 </figure>
+
 参考链接：
-https://chatgpt.com/zh-Hans-CN/pricing/
-https://claude.com/pricing
-https://gemini.google/subscriptions/
+
+- https://chatgpt.com/zh-Hans-CN/pricing/
+- https://claude.com/pricing
+- https://gemini.google/subscriptions/
 
 ### Coding Plan
 在Openclaw爆火后，极高的燃烧Token速度让用户们出现了Token慌，因此国内厂商顺势出台了Coding Plan的订阅包模式，通过包月限额的资源配置方式，给到用户一个廉价可靠的Token解决方案。
@@ -145,9 +146,10 @@ https://platform.minimaxi.com/subscribe/token-plan?code=H5mFhfRxqH&source=link
 https://www.bigmodel.cn/glm-coding?ic=PH3OZYF5I9
 
 ### 中转站
-由于美国出口管制体系，中国大陆和港澳目前都不支持御三家的订阅，因此可以采用Openrouter（https://openrouter.ai/）或者Curosr这样有信誉的第三方中转站或者聚合商获取顶级的API服务。
+由于美国出口管制体系，中国大陆和港澳目前都不支持御三家的订阅，因此可以采用Openrouter（https://openrouter.ai/） 或者Curosr这样有信誉的第三方中转站或者聚合商获取顶级的API服务。
 
 ⚠️ 需要注意的是，通过中转服务获取模型能力虽然在短期内可行，但在监管逐步加强的背景下，其稳定性和长期可持续性存在不确定性。
+
 因此在架构设计上，应避免对单一地区或单一供应商形成依赖。
 <figure class="post-figure">
   <img src="/images/feishu-migration/ios-app-from-zero-vol2/cursor_subscription_view.png" alt="">
