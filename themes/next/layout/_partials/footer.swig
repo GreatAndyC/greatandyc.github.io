@@ -12,12 +12,16 @@
 
 <div class="copyright">
   {% set copyright_year = date(null, 'YYYY') %}
+  {%- set copyright_name = theme.footer.copyright %}
+  {%- if copyright_name and copyright_name.zh-CN or copyright_name.en or copyright_name.default %}
+    {%- set copyright_name = copyright_name[page.lang] or copyright_name.default or copyright_name.en or copyright_name['zh-CN'] %}
+  {%- endif %}
   &copy; {% if theme.footer.since and theme.footer.since != copyright_year %}{{ theme.footer.since }} – {% endif %}
   <span itemprop="copyrightYear">{{ copyright_year }}</span>
   <span class="with-love">
     <i class="{{ theme.footer.icon.name }}"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">{{ theme.footer.copyright or author }}</span>
+  <span class="author" itemprop="copyrightHolder">{{ copyright_name or author }}</span>
 
   {%- if config.symbols_count_time.total_symbols %}
     <span class="post-meta-divider">|</span>

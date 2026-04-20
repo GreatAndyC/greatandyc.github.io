@@ -3,14 +3,20 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: AndyCao's Blog
+title: 曹越洋的博客
 subtitle: ''
 description: 我的写作
 description_i18n:
   zh-CN: 我的写作
   en: My writing
+title_i18n:
+  zh-CN: 曹越洋的博客
+  en: AndyCao's Blog
 keywords:
-author: AndyCao
+author: 曹越洋
+author_i18n:
+  zh-CN: 曹越洋
+  en: AndyCao
 language:
   - zh-CN
   - en

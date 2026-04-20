@@ -32,9 +32,9 @@ hexo.extend.filter.register('template_locals', locals => {
   locals.hexo_version = env.version;
   locals.next_version = require(path.normalize('../../package.json')).version;
   // Language & Config
-  locals.title = __('title') !== 'title' ? __('title') : getLocalizedConfigValue(config, 'title', pageLang);
+  locals.title = getLocalizedConfigValue(config, 'title', pageLang);
   locals.subtitle = __('subtitle') !== 'subtitle' ? __('subtitle') : getLocalizedConfigValue(config, 'subtitle', pageLang);
-  locals.author = __('author') !== 'author' ? __('author') : getLocalizedConfigValue(config, 'author', pageLang);
+  locals.author = getLocalizedConfigValue(config, 'author', pageLang);
   locals.description = __('description') !== 'description' ? __('description') : getLocalizedConfigValue(config, 'description', pageLang);
   locals.languages = [...i18n.languages];
   locals.languages.splice(locals.languages.indexOf('default'), 1);

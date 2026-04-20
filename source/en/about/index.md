@@ -5,6 +5,12 @@ lang: en
 comments: false
 ---
 
+<div class="profile-hero">
+  <div class="profile-avatar-frame">
+    <img class="profile-avatar" src="/images/CaoYueyang.png" alt="AndyCao portrait">
+  </div>
+</div>
+
 # AndyCao · Product Engineer / Indie Developer
 
 A systems-minded builder working across AI, software, data, and hardware.

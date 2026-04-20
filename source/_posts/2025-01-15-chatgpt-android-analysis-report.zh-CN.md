@@ -13,21 +13,14 @@ categories:
   - 数据分析
 toc: true
 ---
-# ChatGPT 安卓端产品分析报告
-
 ChatGpt分析报告 -By 曹越洋
-
-ChatGPT安卓端产品分析报告
-
 
 作者姓名：曹越洋
 所属院校：香港大学数据与系统工程系
 联系方式：andy.caoyueyang@gmail.com  
 报告完成日期：2025年1月15日
 
-
-
-摘要
+## 摘要
 本报告深入分析了OpenAI公司开发的ChatGPT安卓端应用，旨在评估其在移动场景下的功能特性、用户需求和市场竞争力。
 研究发现，自ChatGPT 发布以来，生成式AI 技术在全球范围内引发了广泛关注，其安卓移动端应用则进一步满足了用户在碎片化时间内的即时需求。 
 本报告通过实际体验、数据收集和竞品对比等多种方法，系统地分析了ChatGPT 安卓版的核心功能、用户画像、使用场景、优缺点以及市场表现。研究结果表明，ChatGPT 安卓版凭借强大的内容生成能力、多平台协同和多模态输入等优势，吸引了大量用户。
@@ -39,51 +32,10 @@ ChatGPT安卓端产品分析报告
 
 
 
-目录
-
 <!-- more -->
 
-一、背景分析5
-1.1产品简介6
-1.2分析目标和报告范围6
-二、方法与环境说明7
-2.1 体验环境7
-2.2分析方法7
-三、产品简介9
-3.1产品概括与定位9
-3.1.1产品概括9
-3.1.2 产品定位9
-3.2用户需求分析10
-3.2.1GPT用途12
-3.2.2用户画像16
-3.2.3优缺点总结19
-3.2.4用户需求25
-3.3市场现状和分析32
-3.3.1月下载量34
-3.3.2实时排名34
-3.3.3内购和活跃用户情况35
-四、产品分析37
-4.1产品结构图37
-4.2用户使用流程图38
-4.3单个大模型功能分析SOP38
-4.4产品迭代路线43
-4.5总结43
-五、用户意见44
-5.1数据来源44
-5.2用户反馈的缺点归纳44
-5.2.1Google Play数据缺点统计46
-六、竞品分析47
-6.1 市场竞争格局47
-6.2 与竞品的差异化分析48
-6.3 ChatGPT的差异化优势50
-七、总结51
-7.1SWOT分析51
-7.2产品优化建议53
-7.3未来发展策略54
-参考资料55
 
-
-一、背景分析
+## 一、背景分析
 自从2022年11月30日OpenAI公司发布ChatGPT (Chat Generative Pre-trained Transformer )以来，人工智能成为了全球关注的焦点。
 根据UBS的报告，ChatGPT的用户数在发布仅两个月内便突破了一亿人，成为史上用户增长最快的消费级互联网应用（Bhaimiya, 2023）。
 随着两年来生成式AI（Generative AI）的迅速发展，ChatGPT的模型已经从最初的GPT-3.5发展到GPT-o3。其强大的对话能力和信息处理能力在多个领域引发了深远影响。
@@ -96,7 +48,7 @@ ChatGPT已经成为一个现象级别的人工智能应用，在人机交互领�
 然而，如何进一步优化ChatGPT在移动端的使用体验，使其更好地适应碎片化场景中的高效需求，仍是值得探讨的问题。
 本报告将围绕ChatGPT安卓端的功能特性、用户需求与市场竞争等方面展开分析，以期为产品的优化和推广提供参考。
 
-1.1产品简介
+### 1.1 产品简介
 ChatGPT安卓端是OpenAI开发的一款基于生成式AI技术的聊天机器人，旨在为用户提供便捷、高效的交互体验。作为ChatGPT模型的移动端应用，它将生成式AI的强大功能融入日常生活和工作场景，帮助用户随时随地解决问题、生成内容并提升效率。
 核心功能包括：
 1. 文本生成：ChatGPT可以根据用户的输入快速生成高质量的文本内容，包括撰写文案、编写邮件等。
@@ -105,21 +57,23 @@ ChatGPT安卓端是OpenAI开发的一款基于生成式AI技术的聊天机器�
 4. 多语言支持：支持多语言交流，用户可以用不同语言输入问题并获得准确的回答，适用于翻译和跨语言交流。
 5. 个性化功能：用户可以通过“对话历史记录”随时查看过去的聊天内容，便于延续讨论或记录信息，同时ChatGPT独有“记忆”功能，能够在交互中记住用户的关键信息，在后续的全局提问中提供个性化的反馈。
  
-1.2分析目标和报告范围
+### 1.2 分析目标和报告范围
 随着生成式AI技术的快速发展，ChatGPT已成为行业领先的人工智能产品，其安卓移动端进一步满足了用户在碎片化场景中的即时需求。本报告旨在通过对ChatGPT安卓端的功能特性、用户需求和市场竞争的全面分析，探讨其在移动端场景中的优势与不足，为产品优化和推广提供参考依据。
 本报告主要聚焦以下几个方面：
 1. 产品功能分析：评估ChatGPT安卓端的核心功能及用户体验。
 2. 用户需求分析：探讨其用户群体的主要使用场景及痛点。
 3. 竞争环境分析：对比市场上主要AI聊天机器人的移动端表现，找出ChatGPT的差异化优势。
 4. 优化建议：结合现有问题提出改进方案，为提升产品市场竞争力提供建议。
-二、方法与环境说明
-2.1 体验环境
+## 二、方法与环境说明
+
+### 2.1 体验环境
 体验版本：Android版ChatGPT 1.2024.352
 体验设备：一加Ace2
 安卓版本：14
 体验时间：2024.12
 编辑目的：了解ChatGPT的产品功能、产品特性、产品表现
-2.2分析方法
+
+### 2.2 分析方法
 本报告采用以下三种方法对ChatGPT安卓端进行系统分析，以确保结论的全面性与客观性：
 1. 实际体验
 通过亲自使用ChatGPT安卓端，深度体验其核心功能，包括文本生成、语音输入、对话上下文理解、历史记录访问等。同时，将其在不同场景下的使用效果（如学习、办公、创意写作）进行评估，以发现产品的优势与不足。体验过程中重点关注以下维度：
@@ -137,11 +91,13 @@ ChatGPT安卓端是OpenAI开发的一款基于生成式AI技术的聊天机器�
   - 用户体验：界面设计、操作便捷性、功能集成度。
   - 市场表现：下载量、活跃用户数、用户评价。
 通过上述方法，本报告旨在全面呈现ChatGPT安卓端的功能表现、用户需求契合度以及与竞品的差异化优势，最终为产品优化和推广策略提供数据支持和方向指引。
-三、产品简介
-3.1产品概括与定位
-3.1.1产品概括
+## 三、产品简介
+
+### 3.1 产品概括与定位
+
+#### 3.1.1 产品概括
 ChatGPT安卓端是由OpenAI开发的一款基于生成式AI技术的智能助手，依托先进的大语言模型（如GPT-4o），能够通过自然语言交互为用户提供高效、精准的服务。
-3.1.2 产品定位
+#### 3.1.2 产品定位
 1. 功能定位
 ChatGPT不仅是一个聊天机器人，更是一个“口袋助手”，结合了以下多种功能定位：
 - 知识引擎：帮助用户快速搜索信息和解决复杂问题。
@@ -153,17 +109,18 @@ ChatGPT不仅是一个聊天机器人，更是一个“口袋助手”，结合�
 - 普通用户：以个人为单位，使用场景包括学习（如问题解答、文档生成）、日常娱乐（如对话陪伴）和生活辅助（如行程规划、问题咨询）。
 - 企业用户：以公司或组织为单位，使用ChatGPT进行客户支持、内容营销、企业内部流程优化（如文档整理、自动化生成）等。
 通过覆盖多样化的功能和用户场景，ChatGPT安卓端将自己定位为一个全能型的智能助手，特别适合需要快速解决问题或利用碎片化时间提升效率的用户群体。
-3.2用户需求分析
+### 3.2 用户需求分析
 使用Python中的praw库，使用ChatGPT辅助编写爬虫程序，爬取了三个Reddit问题下面的来自全球用户的“你用ChatGPT来做什么”相关问题的讨论。（Reddit, 2023a; Reddit, 2023b; Reddit, 2024）。
 提取得到包含时间戳、用户、评论内容的1116条数据的CSV文件后，首先对提取的数据进行清洗，把内容分成了低于8个词的207条和高于8个词的909条评论。
 对于质量较低的207条评论，把它们整合到txt文档中，用Google Ai Lab的Gemini 2.0 Flash Experimental模型进行分析，分析用户可能的用途。
 对于909条评论，调用火山引擎的Doubao-pro-4k、Doubao-pro-32k、Doubao-pro-128k模型，对提取的评论进行逐条分析，得到包含“用途、画像、优点、缺点、需求”在内的五列数据的CSV文档。
 接着把五列内容每一列单独提取合并到每条对应的单独的txt文本文档中，上传到Google Ai Lab的Gemini 2.0 Flash Experimental模型逐个进行分析，得到每个数据对应的标签结果，最后对这些数据进行统计作图。
 具体的工作流程如下流程图所示:
-![数据分析工作流程图](/images/feishu-migration/chatgpt-android-analysis-report/gpt_report_analysis_workflow.png)
+![](/images/feishu-migration/chatgpt-android-analysis-report/gpt_report_analysis_workflow.png)
+*数据分析工作流程图*
 使用Google Gemini 2.0 Flash Experimental模型的原因：根据Chatbot Arena（一个盲测大模型功能进行评分的平台）数据显示，Gemini 2.0 Flash Experimental排行第四，而且实际使用来看具有不错的反应速度，因此选择此模型进行最后的分析。
 不直接把爬取后的原始的数据直接发给大模型进行处理的原因：实际也进行了尝试，但是发现即便是Google Gemini 2.0 Flash Experimental模型对于直接发过去给出的回复也非常有限，会忽略掉评论里面有价值的内容，因此选择逐条进行分析提取数据后再用大模型分析以此，最后用Excel进行数据统计，以此能够得到更加准确的数据。
-3.2.1GPT用途
+#### 3.2.1 GPT用途
 对爬取的评论数据进行分析，将评论里面提到的使用Chatgpt的场景进行分类，可以大致分为以下11个类型。
 1. 编程/开发辅助 (Coding/Development Assistance):
 定义：指的是使用 ChatGPT 来辅助软件开发、编程、脚本编写等相关的活动。
@@ -230,7 +187,10 @@ ChatGPT不仅是一个聊天机器人，更是一个“口袋助手”，结合�
 | 日常助手/生活管理 | 143 | 9.27% |
 | 翻译/语言处理 | 34 | 2.20% |
 | 总和 | 1542 | 100.00% |
-![GPT用途分布柱状图](/images/feishu-migration/chatgpt-android-analysis-report/gpt_usage_distribution_bar_chart.png)
+
+![](/images/feishu-migration/chatgpt-android-analysis-report/gpt_usage_distribution_bar_chart.png)
+*GPT用途分布柱状图*
+
 对这些数据进行分析
 主要结论：
 - 办公/效率提升是核心用途 (26.91%)： 在明确的使用场景中，办公和提高效率是用户使用 ChatGPT 的首要目的，占比远高于其他类别。这强调了 ChatGPT 作为职场和生产力工具的价值。
@@ -241,7 +201,7 @@ ChatGPT不仅是一个聊天机器人，更是一个“口袋助手”，结合�
 - 娱乐/休闲占比相对稳定 (8.04%)： 即使排除了不明确的用途，依然有一部分用户将 ChatGPT 用于娱乐目的。
 - 情感/心理支持和翻译/语言处理占比仍然较低 (2.14% 和 2.20%)： 这可能反映了用户更倾向于使用专业工具或真人服务来满足这些需求，或者 ChatGPT 在这些领域的应用还不够普及，或者智能化程度还不够。
 
-3.2.2用户画像
+#### 3.2.2 用户画像
 对909条高质量数据进行人物画像分析，可以把评论的用户大致分为以下8个类型。
 1.学生 (Student): 包括大学生、高中生、研究生、医学生等。
 2.技术开发者 (Programmer/Developer): 包括前端、后端、全栈、游戏开发者、软件工程师、IT 顾问、网络工程师、数据分析师、DevOps等。
@@ -275,7 +235,10 @@ ChatGPT不仅是一个聊天机器人，更是一个“口袋助手”，结合�
 | 职场人士 | 85 | 10.52% |
 | 普通用户 | 395 | 48.89% |
 | 总和 | 808 | 100.00% |
-![用户画像人口统计图](/images/feishu-migration/chatgpt-android-analysis-report/user_persona_demographics.png)
+
+![](/images/feishu-migration/chatgpt-android-analysis-report/user_persona_demographics.png)
+*用户画像人口统计图*
+
 对这些数据进行分析
 主要结论：
 - 普通用户是绝对主力 (48.89%)： 接近一半的用户属于“普通用户”类别，这表明 ChatGPT 的应用的易用性和通用性吸引了大量非专业用户，也说明的可能大部分用户目前仅仅用Chatgpt作为一个搜索引擎的替代品。
@@ -285,7 +248,7 @@ ChatGPT不仅是一个聊天机器人，更是一个“口袋助手”，结合�
 - 内容创作者和学生占比接近 (9.03% 和 8.91%)： 虽然占比低于前三类，但内容创作者和学生都是重要的用户群体，表明 ChatGPT 在内容生成和教育学习方面也具有相当的吸引力。
 - 教育/科研人员占比相对较低 (3.71%)： 相对于学生群体，教育/科研人员的占比显得较低，这可能值得进一步探讨，例如是否是该群体更倾向于使用其他专业工具，或者 ChatGPT 的某些功能尚未充分满足其需求，当然最主要的原因可能来自于数据本身是Reddit社区，存在系统性的样本偏差。
 
-3.2.3优缺点总结
+#### 3.2.3 优缺点总结
 优点
 对用户评论中明确提到的优点进行全量计次统计，一共得到740条有效数据(剔除385条空白数据)，可以分为8个大类。
 - 强大的创造力和灵感激发：ChatGPT 被广泛赞誉为创意工具，可以帮助用户拓展想象力，激发写作灵感，提供新的创意起点。
@@ -309,7 +272,10 @@ ChatGPT不仅是一个聊天机器人，更是一个“口袋助手”，结合�
 | 强大的文本生成能力 | 81 | 10.95% |
 | 用户体验良好 | 207 | 27.97% |
 | 总和 | 740 | 100.00% |
-![优缺点分析汇总图](/images/feishu-migration/chatgpt-android-analysis-report/gpt_pros_cons_analysis_summary.png)
+
+![](/images/feishu-migration/chatgpt-android-analysis-report/gpt_pros_cons_analysis_summary.png)
+*优缺点分析汇总图*
+
 主要结论（按数据占比排序）：
 - 用户体验良好是最大的亮点 (27.97%)： 超过四分之一的用户认为 ChatGPT 的用户体验非常好。这对于产品的普及和用户留存至关重要。
 - 多用途的应用场景受到高度认可 (15.95%)： 近 16% 的用户赞赏 ChatGPT 的多功能性，认为它在写作、编程、教育、商业、娱乐和生活等多个领域都有应用价值。这说明 ChatGPT 的通用性是其一个显著的优势。
@@ -374,7 +340,7 @@ ChatGPT不仅是一个聊天机器人，更是一个“口袋助手”，结合�
 - 更高效的信息检索和问题解答： 用户希望 ChatGPT 能够更快速、更精准地提供信息和答案，节省搜索时间。
 因此，总结的优化方向是：优化基础模型的准确性、增强用户在细节上的体验、在垂直领域提供更加专业帮助。
 
-3.2.4用户需求
+#### 3.2.4 用户需求
 基于用户在909条评论中直接提到的需求和表述过程中可能的潜在需求进行统计分析分析，具体可分类如下。
 1.代码生成:代码准确性
 - 描述: 此类别关注于 ChatGPT 生成代码的准确性和可靠性。用户希望生成的代码能够正确运行、逻辑无误。
@@ -481,13 +447,16 @@ ChatGPT不仅是一个聊天机器人，更是一个“口袋助手”，结合�
 | 信息获取:知识准确性与可靠性 | 115 | 12.65% |
 | 需求不明确 | 48 | 5.28% |
 | 总和 | 909 | 100.00% |
-![用户潜在需求分析图](/images/feishu-migration/chatgpt-android-analysis-report/user_needs_latent_analysis.png)
+
+![](/images/feishu-migration/chatgpt-android-analysis-report/user_needs_latent_analysis.png)
+*用户潜在需求分析图*
+
 与之前优缺点分析的关联：
 - 工具优化(35.20%)对应用户体验和通用性需求： 工具优化的需求直接呼应了之前分析中用户对更好用户体验和更强大通用性的需求，例如更稳定的服务、更个性化的交互、以及拓展更多功能。
 - 内容生成(25.74%)对应内容质量和创意需求： 内容生成的需求与用户对更高质量、更具创意和个性化的内容生成能力的期望一致。
 - 信息获取(23.32%)对应准确性和学习辅助需求： 信息获取的需求则对应了用户对信息准确性、可靠性以及学习辅助功能的期待。
 - 代码生成(10.45%)对应编程辅助需求： 代码生成的需求直接反映了用户希望 ChatGPT 能够提供更准确、更高效的编程辅助。
-3.3市场现状和分析
+### 3.3 市场现状和分析
 目前Openai的ChatGPT产品的盈利模式主要有以下几种：
 1.订阅服务：
 OpenAI推出了ChatGPT Plus和ChatGPT Pro等付费订阅服务，用户可通过支付月费获得更快的响应速度和优先访问等特权。然而，有报道称，尽管ChatGPT Pro每月收费200美元，但由于用户使用频率超出预期，该服务目前处于亏损状态。 （腾讯新闻, 2025）
@@ -498,24 +467,31 @@ OpenAI正在考虑在ChatGPT中引入广告模式，以增加收入。虽然目�
 4.定制化服务：
 针对特定行业或企业需求，OpenAI可能提供定制化的模型训练和解决方案，以满足不同客户的需求，从而获得收益。（The Wall Street Journal, n.d.）
 
-3.3.1月下载量
-![ChatGPT下载量趋势图](/images/feishu-migration/chatgpt-android-analysis-report/chatgpt_downloads_trend_statista.png)
+#### 3.3.1 月下载量
+![](/images/feishu-migration/chatgpt-android-analysis-report/chatgpt_downloads_trend_statista.png)
+*ChatGPT移动应用月下载量趋势（2023年5月—2024年9月，数据来源：Statista）*
+
 根据statista的数据显示从2023年5月至2024年9月，ChatGPT的移动应用下载量呈现出“快速增长-波动下降-恢复上升”的趋势。下载量在2023年11月达到峰值（约1870万次），随后有所回落，但到2024年9月重新攀升至约2357万次，显示出其强大的市场吸引力和用户基数。（Statista, n.d.）
-3.3.2实时排名
-![Google Play排名历史图](/images/feishu-migration/chatgpt-android-analysis-report/google_play_ranking_history.png)
+#### 3.3.2 实时排名
+![](/images/feishu-migration/chatgpt-android-analysis-report/google_play_ranking_history.png)
+*ChatGPT在Google Play北美免费榜排名历史（数据来源：Sensor Tower）*
 根据SensorTower的数据显示，2025年1月9日，ChatGPT应用在北美地区的GooglePlay总榜免费榜排名为第7，最近90天在5-25的范围内波动，保持较高的热度。（Sensor Tower, n.d.）
-3.3.3内购和活跃用户情况
+#### 3.3.3 内购和活跃用户情况
 随着GPT-4o的推出，明星级AI应用《ChatGPT》2024年5月收入环比增长43%。2024年8月收入超过4500万美元，创历史新高。2024年1-8月，《ChatGPT》吸金2.3亿美元，占AI+Chatbot赛道收入的39%。截至2024年8月，《ChatGPT》累计收入突破2.7亿美元。（Sensor Tower, 2024）
 ![ChatGPT收入增长图](/images/feishu-migration/chatgpt-android-analysis-report/chatgpt_revenue_growth_sensortower.png)
+*ChatGPT移动端收入增长情况（数据来源：Sensor Tower）*
 从活跃用户规模来看，《ChatGPT》月活跃用户数一路增长，2024年8月超过1.9亿人，是全球活跃用户规模最大的AI应用。（Sensor Tower, 2024）
-![月活跃用户增长图](/images/feishu-migration/chatgpt-android-analysis-report/monthly_active_users_growth.png)
-四、产品分析
-4.1产品结构图
-![ChatGPT应用结构思维导图](/images/feishu-migration/chatgpt-android-analysis-report/chatgpt_app_structure_mindmap.png)
+![](/images/feishu-migration/chatgpt-android-analysis-report/monthly_active_users_growth.png)
+*ChatGPT月活跃用户增长情况（数据来源：Sensor Tower）*
+## 四、产品分析
+
+### 4.1 产品结构图
+![](/images/feishu-migration/chatgpt-android-analysis-report/chatgpt_app_structure_mindmap.png)
+*ChatGPT安卓端产品结构图*
 从结构图可以看出：ChatGPT的结构相对简洁，核心功能在主界面就可全部设定完成，侧边栏主要为探索商店和历史记录，设计也符合手机用户使用习惯，可快速上手。
-4.2用户使用流程图
+### 4.2 用户使用流程图
 基本和主要功能类似搜索引擎，应为过于简单，此次略过
-4.3单个大模型功能分析SOP
+### 4.3 单个大模型功能分析SOP
 鉴于分析单个大模型功能流程较为复杂，此处只列出SOP。
 目标： 确保 LLM 在特定应用场景下，能高效、准确、可靠地满足用户需求，并持续优化。
 步骤：
@@ -612,17 +588,18 @@ OpenAI正在考虑在ChatGPT中引入广告模式，以增加收入。虽然目�
 - 6.3 报告撰写:
   - 撰写评估报告，总结评估过程和结果，并提出改进建议。
 （小红书, 2024），（知乎, 2024）
-4.4产品迭代路线
+### 4.4 产品迭代路线
 总结官网的更新日志发现，更新内容主要集中在：模型能力增强、多模态能力、功能和工具扩展、用户体验优化、商业化和团队合作、免费和付费用户的区分。
 安卓端的更新包括：应用发布(2023年7月25日)、语音功能发布(2023年9月25日)、支持图像输入(2023年9月25日)、使用体验的改善(2024年11月22日)、语音聊天的视频和屏幕共享功能支持(2024年12月12日)。
 未来从产品功能角度可以优化的内容可能有：Prompt管理、离线功能、分享功能优化。（OpenAI, 2024）
-4.5总结
+### 4.5 总结
 当前产品凭借其强大的创造力和灵感激发、高效的信息检索能力、多用途的应用场景和强大的文本生成能力等优势，为用户节省了大量时间，并且绝大部分用户觉得体验良好。
 然而，产品也面临着不少痛点：最突出的问题是连接和登录问题，以及回答质量和准确性的不足，包括信息不准确、幻觉、理解意图不足等；其次是功能缺陷和不稳定性，比如朗读功能失效，图片上传受限；此外，用户对付费限制、信息来源的偏向、代码质量参差不齐和数据安全隐私等问题也有反馈，同时，用户还期待产品能有更稳定的服务，更个性化的交互、以及在特定领域提供更专业的帮助。
-五、用户意见
-5.1数据来源
+## 五、用户意见
+
+### 5.1 数据来源
 使用Google Play的接口和Node.js的google-play-scraper库在2025年1月4日按照时间倒序爬取3000条数据，取其中大于15字的619条数据直接使用Google Ai Lab的Gemini 2.0 Flash Experimental逐条输出缺点并进行统计，作为安卓端实际优化的方向参考。
-5.2用户反馈的缺点归纳
+### 5.2 用户反馈的缺点归纳
 采用全量计次的方式，619条评论共计提到507个缺点。可以大致分为以下几类：
 1. 连接与登录问题
 - 描述： 用户在尝试登录、连接服务器时遇到的问题，包括白屏、转圈、无法加载、提示网络错误、SSL 证书错误、设备时间错误、VPN 检测等。
@@ -657,7 +634,7 @@ OpenAI正在考虑在ChatGPT中引入广告模式，以增加收入。虽然目�
  6.其他问题
 - 描述： 一些无法归类到以上类别的零散问题，例如： 审核机制、数据隐私、语音质量、用户体验、对国内AI的对比等。
 
-5.2.1Google Play数据缺点统计
+#### 5.2.1 Google Play数据缺点统计
 | 缺点(全量计次) | 数量 | 比例 |
 |---|---|---|
 | 功能缺陷与不稳定 | 110 | 21.70% |
@@ -667,21 +644,27 @@ OpenAI正在考虑在ChatGPT中引入广告模式，以增加收入。虽然目�
 | 限制与付费问题 | 63 | 12.43% |
 | 信息来源与偏向 | 10 | 1.97% |
 | 总和 | 507 | 100.00% |
-![安卓用户负面反馈统计图](/images/feishu-migration/chatgpt-android-analysis-report/android_review_negative_feedback.png)
+
+![](/images/feishu-migration/chatgpt-android-analysis-report/android_review_negative_feedback.png)
+*Google Play安卓用户负面反馈分类统计*
+
 从数据来看，最大的问题是网络连接问题(36.49%)，这作为一个几乎无法合法解决的问题，可以视为国内产品的优势；
 其次是回答问题的质量和准确性(22.88%)，这需要更多的是基础模型的优化以及相关提示词的优化，可以在提示词上给用户提供更多和低门槛的参考，同时在特定领域可以进行微调，给用户更多的选择；
 值得产品经理重点关注的是功能缺陷和不稳定性(21.7%)，这里面的内容值得逐条关注，并且进行相关的功能优化；
 限制与付费问题(12.43%)占据的比例不高，不过从具体内容也可以反映出中国用户的付费习惯与其他地区可能存在差异，针对付费和非付费用户及付费流程简化可以进行相关优化；
 最后是信息来源与偏向(1.97%)和其他问题(4.54%)也需要适当进行关注，提高产品的使用体验。
-六、竞品分析
+## 六、竞品分析
 针对国外和国内市场选取Google Gemini和豆包作为分析对象。
-6.1 市场竞争格局
-![SWOT分析矩阵图](/images/feishu-migration/chatgpt-android-analysis-report/swot_analysis_matrix.png)
+
+### 6.1 市场竞争格局
+![](/images/feishu-migration/chatgpt-android-analysis-report/swot_analysis_matrix.png)
+*全球AI APP下载量TOP5（2024年12月，数据来源：点点数据）*
 根据点点数据的数据显示，2024年12月，全球（含中国大陆）AI APP苹果端预估下载总量达6975.2万，其中，ChatGPT、Google Gemini、豆包、Kimi智能助手及ChatOn AI位列TOP 5，占据了全球苹果端AI下载量的56%。
-![产品优化路线图](/images/feishu-migration/chatgpt-android-analysis-report/product_optimization_roadmap.png)
+![](/images/feishu-migration/chatgpt-android-analysis-report/product_optimization_roadmap.png)
+*大陆市场AI APP苹果端下载量分布（2024年12月，数据来源：点点数据）*
 相应地，2024年12月，大陆市场AI APP苹果端预估下载量达1818.0万，豆包与Kimi继续领跑，二者分别以33%、25%的下载量占比占据第一梯队。（澎湃新闻, 2024）
 由上述数据可知在通用ChatBot产品的竞争中，国际市场主要是Gemini和ChatGPT引领市场，而在国内市场上豆包遥遥领先。
-6.2 与竞品的差异化分析
+### 6.2 与竞品的差异化分析
 核心功能对比表格如下：
 | 功能 | ChatGPT | Gemini | 豆包 |
 |---|---|---|---|
@@ -700,19 +683,22 @@ OpenAI正在考虑在ChatGPT中引入广告模式，以增加收入。虽然目�
 | 自定义聊天机器人 | 支持构建自定义 GPT，无限制数量，可上传知识文件，支持图像生成和代码运行 | 支持 Gemini Gems，自定义功能有限，不支持图像生成和语音模式互动 | 支持创建个性化定制的智能体，数量已超过 800 万 |
 | 对话共享 | 支持分享对话，但无法分享带有 AI 生成图像的对话 | 支持分享对话，包括 AI 生成图像 | 支持 |
 | 目标用户 | 面向广泛用户，提供更灵活的集成选项 | 更适合深度使用 Google 生态系统的用户 | 适合字节跳动生态系统用户，特别是在中国市场 |
+
 （Zapier, 2025）
+
 总的来说，这三者的差异点在于：
 1.ChatGPT：更加专业化和国际化，在逻辑推理、代码生成有优势。
 2.Gemini：深度服务于Google用户，依托其生态能够带来独特的便捷性。
 3.豆包：本地化优化，亲民价格和中文表现更加适合中国用户。
-6.3 ChatGPT的差异化优势
+### 6.3 ChatGPT的差异化优势
 ChatGPT的优势集中在以下几点：
 1.逻辑推理和代码支持：强大的链式推理和代码生成运行能力。
 2.自定义与工具化：支持高度自定义的聊天机器人和网页演示功能。
 3.平台与集成：跨平台兼容性和多样化第三方集成。
 4.图像生成与创意支持：更成熟的 DALL·E 3 图像生成工具。
-七、总结
-7.1SWOT分析
+## 七、总结
+
+### 7.1 SWOT分析
 - 优势 (Strengths)：
   - 强大的内容生成能力: 基于 GPT-4o 等先进大语言模型，ChatGPT 在文本生成、代码生成、内容创作等方面表现出色，能够生成高质量、多样化的内容。
   - 跨平台协同: ChatGPT 提供 Web、移动、桌面等多平台支持，用户可以在不同设备间无缝切换，保持一致的使用体验，这有利于形成用户粘性。
@@ -736,7 +722,7 @@ ChatGPT的优势集中在以下几点：
   - 用户忠诚度较低: AI 工具同质化现象较为严重，用户容易转向其他同类产品，用户忠诚度有待提高。
   - 数据安全与隐私风险: 用户对于 AI 工具的数据安全性和隐私保护问题日益关注，ChatGPT 如果在这方面做得不够好，可能会导致用户流失。
   - 技术壁垒可能被突破： 随着更多大模型出现，ChatGPT可能面临技术优势被追赶的风险。
-7.2产品优化建议
+### 7.2 产品优化建议
 - 性能优化：
   - 提升移动端响应速度和加载流畅度: 减少应用启动时间、页面加载时间，优化模型推理速度，提高整体用户体验。
 - 功能增强：
@@ -752,7 +738,7 @@ ChatGPT的优势集中在以下几点：
   - 提供更清晰的提示词： 引导用户通过提供高质量的 prompt 来获得更准确的输出。
 - 付费体系优化： 提供更灵活的付费方案，让用户在免费和付费功能之间更容易做出选择。
 
-7.3未来发展策略
+### 7.3 未来发展策略
 - 用户教育与推广：
   - 针对安卓用户的功能教育: 通过教程、视频等方式，引导用户了解和使用 ChatGPT 安卓版的各种功能，尤其是在移动场景下的应用。
   - 营销推广: 通过社交媒体、应用商店等渠道，扩大产品知名度和用户覆盖率。
@@ -766,20 +752,35 @@ ChatGPT的优势集中在以下几点：
 - 生态建设:
   - 深度集成: 与其他应用和服务进行深度集成，构建更完善的应用生态。
 
-参考资料
-Bhaimiya, S. (2023, February 2). ChatGPT may be the fastest-growing consumer app in internet history, reaching 100 million users in just over 2 months, UBS report says. Business Insider. Retrieved from https://www.businessinsider.com/chatgpt-may-be-fastest-growing-app-in-history-ubs-study-2023-2
-Reddit. (2023a, April 19). What do you actually use ChatGPT for? [Online forum discussion]. Reddit. Retrieved from https://www.reddit.com/r/ChatGPT/comments/12stfb9/what_do_you_actually_use_chatgpt_for/
-Reddit. (2023b, May 3). What do you all actually use ChatGPT for? [Online forum discussion]. Reddit. Retrieved from https://www.reddit.com/r/ChatGPT/comments/133mc2v/what_do_you_all_actually_use_chatgpt_for/
-Reddit. (2024, June 15). What do you use ChatGPT for in your daily life? [Online forum discussion]. Reddit. Retrieved from https://www.reddit.com/r/ChatGPTPromptGenius/comments/1fcklhp/what_do_you_use_chatgpt_for_in_your_daily_life/
-腾讯新闻. (2025, January 7). ChatGPT Pro subscription is currently running at a loss. Retrieved from https://news.qq.com/rain/a/20250107A0106N00?utm_source=chatgpt.com
-ESM China. (n.d.). OpenAI explores B2B monetization strategies for ChatGPT. Retrieved January 9, 2025, from https://www.esmchina.com/trends/43605.html?utm_source=chatgpt.com
-The Times. (n.d.). OpenAI considers advertising for ChatGPT. Retrieved January 9, 2025, from https://www.thetimes.com/business-money/technology/article/openai-considers-advertising-for-chatgpt-cqhdcj85f?utm_source=chatgpt.com&region=global
-The Wall Street Journal. (n.d.). OpenAI, Bain expand AI partnership to sell ChatGPT to businesses. Retrieved January 9, 2025, from https://www.wsj.com/articles/openai-bain-expand-ai-partnership-to-sell-chatgpt-to-businesses-d17775dc?utm_source=chatgpt.com
-Statista. (n.d.). Number of monthly ChatGPT and Gemini mobile app downloads worldwide from May 2023 to September 2024. Retrieved January 9, 2025, from https://www.statista.com/statistics/1497377/global-chatgpt-vs-gemini-app-downloads/#statisticContainer
-Sensor Tower. (n.d.). Category rankings and app analysis for ChatGPT (October 12, 2024 - January 9, 2025). Retrieved January 9, 2025, from https://app.sensortower.com/app-analysis/category-rankings?os=android&start_date=2024-10-12&end_date=2025-01-09&uai=64665f59b3ae2712001279ed&saa=com.openai.chatgpt
-Sensor Tower. (2024, January). 2024年AI应用市场洞察: 2024年1-8月收入同比激增51%，突破20亿美元，预计2024全年收入达到33亿美元. Sensor Tower. Retrieved from https://sensortower.com/zh-CN/blog/state-of-ai-apps-2024-report-CN
-小红书. (2024). 策略向｜如何评测大模型效果. 小红书. Retrieved from https://www.xiaohongshu.com/explore/66f67165000000001b020b6d?xsec_token=ABX5jB7KY821V26oUNvAaIFT6T4nXH57isPoDz1sMt1JI=&xsec_source=pc_search&source=web_explore_feed
-知乎. (2024). LLM Evaluation 如何评估一个大模型？. 知乎. Retrieved from https://zhuanlan.zhihu.com/p/644373658
-OpenAI. (2024). ChatGPT — Release Notes. OpenAI. Retrieved from https://help.openai.com/en/articles/6825453-chatgpt-release-notes
-澎湃新闻. (2024). 12月AI月报：iOS全球下载6975万，谷歌Gemini崛起，星野买量大涨300%超越豆包. 澎湃新闻. Retrieved from https://m.thepaper.cn/newsDetail_forward_29852815
-Zapier. (2025). Gemini vs. ChatGPT: What's the difference? Zapier. Retrieved from https://zapier.com/blog/gemini-vs-chatgpt/
+## 参考资料
+*Bhaimiya, S. (2023, February 2). ChatGPT may be the fastest-growing consumer app in internet history, reaching 100 million users in just over 2 months, UBS report says. Business Insider. Retrieved from https://www.businessinsider.com/chatgpt-may-be-fastest-growing-app-in-history-ubs-study-2023-2*
+
+*Reddit. (2023a, April 19). What do you actually use ChatGPT for? [Online forum discussion]. Reddit. Retrieved from https://www.reddit.com/r/ChatGPT/comments/12stfb9/what_do_you_actually_use_chatgpt_for/*
+
+*Reddit. (2023b, May 3). What do you all actually use ChatGPT for? [Online forum discussion]. Reddit. Retrieved from https://www.reddit.com/r/ChatGPT/comments/133mc2v/what_do_you_all_actually_use_chatgpt_for/*
+
+*Reddit. (2024, June 15). What do you use ChatGPT for in your daily life? [Online forum discussion]. Reddit. Retrieved from https://www.reddit.com/r/ChatGPTPromptGenius/comments/1fcklhp/what_do_you_use_chatgpt_for_in_your_daily_life/*
+
+*腾讯新闻. (2025, January 7). ChatGPT Pro subscription is currently running at a loss. Retrieved from https://news.qq.com/rain/a/20250107A0106N00?utm_source=chatgpt.com*
+
+*ESM China. (n.d.). OpenAI explores B2B monetization strategies for ChatGPT. Retrieved January 9, 2025, from https://www.esmchina.com/trends/43605.html?utm_source=chatgpt.com*
+
+*The Times. (n.d.). OpenAI considers advertising for ChatGPT. Retrieved January 9, 2025, from https://www.thetimes.com/business-money/technology/article/openai-considers-advertising-for-chatgpt-cqhdcj85f?utm_source=chatgpt.com&region=global*
+
+*The Wall Street Journal. (n.d.). OpenAI, Bain expand AI partnership to sell ChatGPT to businesses. Retrieved January 9, 2025, from https://www.wsj.com/articles/openai-bain-expand-ai-partnership-to-sell-chatgpt-to-businesses-d17775dc?utm_source=chatgpt.com*
+
+*Statista. (n.d.). Number of monthly ChatGPT and Gemini mobile app downloads worldwide from May 2023 to September 2024. Retrieved January 9, 2025, from https://www.statista.com/statistics/1497377/global-chatgpt-vs-gemini-app-downloads/#statisticContainer*
+
+*Sensor Tower. (n.d.). Category rankings and app analysis for ChatGPT (October 12, 2024 - January 9, 2025). Retrieved January 9, 2025, from https://app.sensortower.com/app-analysis/category-rankings?os=android&start_date=2024-10-12&end_date=2025-01-09&uai=64665f59b3ae2712001279ed&saa=com.openai.chatgpt*
+
+*Sensor Tower. (2024, January). 2024年AI应用市场洞察: 2024年1-8月收入同比激增51%，突破20亿美元，预计2024全年收入达到33亿美元. Sensor Tower. Retrieved from https://sensortower.com/zh-CN/blog/state-of-ai-apps-2024-report-CN*
+
+*小红书. (2024). 策略向｜如何评测大模型效果. 小红书. Retrieved from https://www.xiaohongshu.com/explore/66f67165000000001b020b6d?xsec_token=ABX5jB7KY821V26oUNvAaIFT6T4nXH57isPoDz1sMt1JI=&xsec_source=pc_search&source=web_explore_feed*
+
+*知乎. (2024). LLM Evaluation 如何评估一个大模型？. 知乎. Retrieved from https://zhuanlan.zhihu.com/p/644373658*
+
+*OpenAI. (2024). ChatGPT — Release Notes. OpenAI. Retrieved from https://help.openai.com/en/articles/6825453-chatgpt-release-notes*
+
+*澎湃新闻. (2024). 12月AI月报：iOS全球下载6975万，谷歌Gemini崛起，星野买量大涨300%超越豆包. 澎湃新闻. Retrieved from https://m.thepaper.cn/newsDetail_forward_29852815*
+
+*Zapier. (2025). Gemini vs. ChatGPT: What's the difference? Zapier. Retrieved from https://zapier.com/blog/gemini-vs-chatgpt/*

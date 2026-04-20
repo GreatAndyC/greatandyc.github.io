@@ -5,11 +5,13 @@ lang: en
 slug: Hello-World
 permalink: 2025/08/31/Hello-World/
 ---
-> Translation note: This English version was prepared by Codex (`GPT-5`) on 2026-04-19 18:15:09 CST. The source text is the Chinese-site source post in this repository.
+
 
 Welcome to [Hexo](https://hexo.io/)!
 
 <!-- more -->
+
+> Translation note: This English version was prepared by Codex (`GPT-5`) on 2026-04-19 18:15:09 CST. The source text is the Chinese-site source post in this repository.
 
 This is your very first post. Check the [documentation](https://hexo.io/docs/) for more information. If you run into any problems while using Hexo, you can look for answers in the [troubleshooting guide](https://hexo.io/docs/troubleshooting.html) or ask on [GitHub](https://github.com/hexojs/hexo/issues).
 
