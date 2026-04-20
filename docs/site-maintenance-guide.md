@@ -240,13 +240,32 @@ categories:
 - 相册标签
 - 每张图的路径、标题、说明、meta
 
-如果以后要加新相册，最推荐的方式是：
+如果以后要加新相册，最推荐的方式是“文档驱动”：
 
 1. 把图片放进 `source/images/...`
-2. 在 `source/_data/gallery.yml` 新增一个 album
-3. 在中英文 title / description / tags 中都补齐内容
+2. 在 `content/gallery/*.md` 里编辑相册文档
+3. 运行 `npm run gallery:sync` 自动更新 `source/_data/gallery.yml`
 
-这样不需要改模板，站点会自动渲染出来。
+这样你只需要维护 Markdown，不需要手改 YAML。
+
+当前示例文件：
+
+- `content/gallery/heartbeat-pi-2026.md`
+- `content/gallery/_template.md`
+
+推荐命令：
+
+```bash
+npm run gallery:sync
+```
+
+如果你想继续用命令行逐条添加，也保留了旧命令：
+
+```bash
+npm run gallery:list
+npm run gallery:add-album -- --slug my-album --title-zh "中文标题" --title-en "English Title"
+npm run gallery:add-photo -- --album my-album --src /images/my-album/cover.jpg --title-zh "封面" --title-en "Cover"
+```
 
 ## 4. 站点外观怎么改
 
@@ -573,8 +592,9 @@ links:
 ### 场景 5：加新相册
 
 1. 图片放到 `source/images/`
-2. 在 `source/_data/gallery.yml` 新增 album 和 photos
-3. 本地检查 `/gallery/` 和 `/en/gallery/`
+2. 在 `content/gallery/*.md` 新增或编辑相册文档
+3. 运行 `npm run gallery:sync`
+4. 本地检查 `/gallery/` 和 `/en/gallery/`
 
 ### 场景 6：改首页卡片或画廊样式
 

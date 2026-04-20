@@ -31,6 +31,12 @@
 
 更完整的操作步骤和发布前的安全检查，见：[docs/site-maintenance-guide.md](/Users/andycao/Documents/Project/greatandyc.github.io/docs/site-maintenance-guide.md:1)
 
+如果你不想依赖第三方登录，当前也支持本地“文档驱动”方式维护画廊：
+
+1. 编辑 `content/gallery/*.md`
+2. 运行 `npm run gallery:sync`
+3. 自动生成 `source/_data/gallery.yml`
+
 ## 本地开发
 
 ### 1. 安装依赖

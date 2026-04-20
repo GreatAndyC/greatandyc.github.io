@@ -1,7 +1,6 @@
 empty:
   zh-CN: 画廊还没有内容，后续会逐步补充更多作品。
   en: The gallery is empty for now. More work will be added over time.
-
 albums:
   - slug: heartbeat-pi-2026
     languages:
