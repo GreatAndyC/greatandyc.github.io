@@ -128,12 +128,29 @@
   max-width 70%
   margin 0 auto
 
-.post-body img + em
+.post-body figure.post-figure
   display block
+  margin 0 auto 1.2em
   text-align center
+
+.post-body figure.post-figure img
+  display block
+  width 70%
+  max-width 70%
+  margin 0 auto
+
+.post-body figure.post-figure figcaption
+  display block
+  margin-top 0.35em
   color #999
   font-size 0.85em
-  margin-top -1em
+  font-style normal
+  line-height 1.4
+
+@media (max-width: 767px)
+  .post-body figure.post-figure img
+    width 100%
+    max-width 100%
 
 .post-body
   word-break break-all

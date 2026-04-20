@@ -22,7 +22,7 @@ A systems-minded builder working across AI, software, data, and hardware.
 - Location: Shenzhen
 - Education: B.Eng. in Polymer Materials and Engineering, Sun Yat-sen University; M.Sc. in Data and Systems Engineering, The University of Hong Kong
 - Focus areas: AI products, technical solutions, intelligent hardware, indie app development
-- Email: `andy.caoyueyang@gmail.com`
+- Email: andy.caoyueyang[at]gmail[dot]com
 - GitHub: [GreatAndyC](https://github.com/GreatAndyC)
 - Website: [caoyueyang.org](https://caoyueyang.org)
 

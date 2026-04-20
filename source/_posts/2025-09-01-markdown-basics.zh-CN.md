@@ -6,7 +6,7 @@ slug: 回顾博客建立教程
 permalink: 2025/09/01/回顾博客建立教程/
 description: 整理博客写作中常用的 Markdown 基本语法。
 photos:
-  - /images/test.png
+
 tags:
   - Markdown
   - Hexo
@@ -143,7 +143,7 @@ hello("Andy")
 这是一个[Bing搜索](www.bing.com)的链接
 
 本地图片(放在`source/images/`下)：
-<img src="/images/test.png" alt="示例图片"
+<img src="/images/test.png"
      style="width:300px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 
 

@@ -15,12 +15,14 @@ categories:
   - 教程
 toc: true
 ---
-# 从 0 到 1 上架一款 iOS 应用（二）：为什么你不应该只用一个 AI 模型？
+**摘要：从模型格局和成本结构出发，说明为什么不要只依赖单一 AI 模型。**
+
+<figure class="post-figure">
+  <img src="/images/feishu-migration/ios-app-from-zero-vol2/ios_series_vol2_cover.png" alt="">
+  <figcaption>封面图由 Nano Banana 2 生成</figcaption>
+</figure>
 
 本文写于26.3.30 7:53pm-9:40pm
-Hi 你好我是Andy，这是我写的从0-1上架ios系列文章的第二篇，在caoyueyang.org可以看到有关我的更多信息。
-![alt text](/images/feishu-migration/ios-app-from-zero-vol2/ios_series_vol2_cover.png)
-封面图由Nano Banana2生成
 
 ## 前言
 书接上回，在第一篇中，我们阐述了软件开发的基础生态，而在AI时代，模型不再只是工具，而是开发者可以调度的“基础设施”。
@@ -29,8 +31,12 @@ Hi 你好我是Andy，这是我写的从0-1上架ios系列文章的第二篇，�
 <!-- more -->
 
 ## 模型能力的时局分析
-在独立测评AI模型的第三方平台https://artificialanalysis.ai/可以看到一个供参考的模型供应商的排行榜
-![alt text](/images/feishu-migration/ios-app-from-zero-vol2/artificial_analysis_leaderboard.png)
+在独立测评AI模型的第三方平台https://artificialanalysis.ai/ 可以看到一个供参考的模型供应商的排行榜
+
+<figure class="post-figure">
+  <img src="/images/feishu-migration/ios-app-from-zero-vol2/artificial_analysis_leaderboard.png" alt="">
+  <figcaption>模型供应商排行榜</figcaption>
+</figure>
 从当前模型排行榜可以看出，AI模型的竞争已经不再是单纯的性能比拼，而是逐渐演变为一种“基础设施控制权”的竞争：中美大模型正面硬刚 + 少量欧洲补位。
 Chatgpt的评价是：前沿模型主要由美国大厂主导，中国模型快速追赶
 以表格的形式整理如下：
@@ -92,7 +98,10 @@ Chatgpt的评价是：前沿模型主要由美国大厂主导，中国模型快�
 通过云、GPU或社交入口绑定用户
 
 ## 编程能力的对比
-![alt text](/images/feishu-migration/ios-app-from-zero-vol2/coding_index_benchmark.png)
+<figure class="post-figure">
+  <img src="/images/feishu-migration/ios-app-from-zero-vol2/coding_index_benchmark.png" alt="">
+  <figcaption>Coding Index 编程能力对比</figcaption>
+</figure>
 在第二个Coding Index中显示出了编程能力的横向测评，这也是我们应该重点关注的地方。
 可见和模型的整体能力类似，依然是美国模型领先，中国模型占据前沿的状态。
 而在实际编程体验中，Anthropic 的 Claude在众多用户中体验最佳，并且一直在定义各种行业标准。
@@ -103,15 +112,20 @@ Ai模型的算力是驱动各种Ai能力的基础，计费基础单位是Token�
 
 ### API调用
 按量付费———相当于厂商给你接一条电线，用多少给多少钱。是所有的厂商都支持的付费方式
-![alt text](/images/feishu-migration/ios-app-from-zero-vol2/openrouter_token_consumption.png)
+<figure class="post-figure">
+  <img src="/images/feishu-migration/ios-app-from-zero-vol2/openrouter_token_consumption.png" alt="">
+  <figcaption>OpenRouter Token 消耗示意</figcaption>
+</figure>
 中转站OpenRouter上的Weekly Token消耗排行榜，可以直观地查看Token在Input和Output的价格和消耗情况，作为目前大模型流行度的一个参考，更多信息需要到对应的公司开放平台网页上查询
 
 ### 会员订阅
 Google Gemini、Anthropic Claude、Openai Chatgpt支持的计费方式。
 标准版会员订阅的价格，御三家都是20美刀一个月，可以获得网页版会员权益，以及AI编程的额度。
 例如：Openai的Plus订阅会额外给予Codex（Chatgpt官方的编程Agent）的使用配额，以每5小时和每周限定额度的方式限制，同样的Anthropic也会提供Claude code的额度，Google会给予Antigravity的额度
-![alt text](/images/feishu-migration/ios-app-from-zero-vol2/chatgpt_plus_pricing_plans.png)
-Chatgpt的订阅Plan价格
+<figure class="post-figure">
+  <img src="/images/feishu-migration/ios-app-from-zero-vol2/chatgpt_plus_pricing_plans.png" alt="">
+  <figcaption>ChatGPT 订阅计划价格</figcaption>
+</figure>
 参考链接：
 https://chatgpt.com/zh-Hans-CN/pricing/
 https://claude.com/pricing
@@ -121,8 +135,11 @@ https://gemini.google/subscriptions/
 在Openclaw爆火后，极高的燃烧Token速度让用户们出现了Token慌，因此国内厂商顺势出台了Coding Plan的订阅包模式，通过包月限额的资源配置方式，给到用户一个廉价可靠的Token解决方案。
 Coding Plan的出现，本质上是AI从“按量计费”走向“基础设施化”的标志。类似于电力从按次收费变为包月供电，开发者可以在一个可控成本范围内持续调用AI能力。
 这意味着AI开始从“工具”变成“可持续供给的生产资源”
-![alt text](/images/feishu-migration/ios-app-from-zero-vol2/zhipu_glm_coding_plan.png)
-智谱的Coding Plan过于火爆，供不应求
+<figure class="post-figure">
+  <img src="/images/feishu-migration/ios-app-from-zero-vol2/zhipu_glm_coding_plan.png" alt="">
+  <figcaption>智谱 Coding Plan 页面</figcaption>
+</figure>
+
 Coding Plan也是控制开发成本的最佳选择，如果有需要购买Minimax或者GLM的Coding Plan的朋友，可以点击下方我的邀请链接，获取GLM5%或者Minimax 10%的价格折扣优惠
 https://platform.minimaxi.com/subscribe/token-plan?code=H5mFhfRxqH&source=link
 https://www.bigmodel.cn/glm-coding?ic=PH3OZYF5I9
@@ -132,8 +149,11 @@ https://www.bigmodel.cn/glm-coding?ic=PH3OZYF5I9
 
 ⚠️ 需要注意的是，通过中转服务获取模型能力虽然在短期内可行，但在监管逐步加强的背景下，其稳定性和长期可持续性存在不确定性。
 因此在架构设计上，应避免对单一地区或单一供应商形成依赖。
-![alt text](/images/feishu-migration/ios-app-from-zero-vol2/cursor_subscription_view.png)
-Cursor的价格页面
+<figure class="post-figure">
+  <img src="/images/feishu-migration/ios-app-from-zero-vol2/cursor_subscription_view.png" alt="">
+  <figcaption>Cursor 价格页面</figcaption>
+</figure>
+
 不过26年3月开始, 美国对API调用的限制也愈发严格, 因此读者请不要将所有的Ai供应服务都限定在一个地区, 增加灵活性。
 
 ### 其他供应商

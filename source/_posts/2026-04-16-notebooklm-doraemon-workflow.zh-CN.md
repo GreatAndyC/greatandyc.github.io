@@ -5,6 +5,8 @@ lang: zh-CN
 slug: notebooklm-doraemon-workflow
 permalink: 2026/04/16/notebooklm-doraemon-workflow/
 description: 整理一套用 NotebookLM、Gemini 和 Nanobanana Pro 生成漫画内容的 AI 工作流。
+photos:
+  - /images/feishu-migration/notebooklm-doraemon-workflow/doraemon_manga_generated_1.png
 tags:
   - NotebookLM
   - Gemini
@@ -13,8 +15,6 @@ categories:
   - 教程
 toc: true
 ---
-# NotebookLM + Nanobanana Pro 制作哆啦A梦漫画教程工作流
-
 ## 前置条件
 - [ ] 拥有稳定的 VPN 连接
 - [ ] 有一个谷歌账号
@@ -52,8 +52,16 @@ toc: true
 ---
 
 ## 输出结果展示
-![alt text](/images/feishu-migration/notebooklm-doraemon-workflow/doraemon_manga_generated_1.png)
-![alt text](/images/feishu-migration/notebooklm-doraemon-workflow/workflow_checklist_summary.png)
+
+<figure class="post-figure">
+  <img src="/images/feishu-migration/notebooklm-doraemon-workflow/doraemon_manga_generated_1.png" alt="">
+  <figcaption>哆啦 A 梦漫画生成结果</figcaption>
+</figure>
+
+<figure class="post-figure">
+  <img src="/images/feishu-migration/notebooklm-doraemon-workflow/workflow_checklist_summary.png" alt="">
+  <figcaption>工作流总结清单</figcaption>
+</figure>
 
 ## 参考链接
 1. [X.com 原始链接](https://x.com/Tz_2022/status/1993033135068790831)

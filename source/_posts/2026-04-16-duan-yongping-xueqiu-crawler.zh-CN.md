@@ -5,6 +5,8 @@ lang: zh-CN
 slug: duan-yongping-xueqiu-crawler
 permalink: 2026/04/16/duan-yongping-xueqiu-crawler/
 description: 记录一次围绕段永平雪球评论的爬取实践，包括技术路线选择、问题排查和结果导出。
+photos:
+  - /images/feishu-migration/duan-yongping-xueqiu-crawler/xueqiu_crawler_output_csv.png
 tags:
   - 爬虫
   - 雪球
@@ -13,8 +15,6 @@ categories:
   - 教程
 toc: true
 ---
-# 段永平雪球网评论爬取过程
-
 ## 1. 背景
 偶然在雪球网上看到段永平（雪球 ID：**大道无形我有型**）指点江山，因为刚好做了一个用 Python + AI 语义分析的关于 ChatGPT 的分析报告，所以打算用同样的方式来对段永平在雪球网上的发言进行分析，看看能否挖掘出有价值的内容，例如他的投资心得、投资风格等。
 
@@ -56,5 +56,12 @@ toc: true
 
 **统计数据：** 458 页（每页 20 条）共计 **9151 条** 评论内容。作为一个小的数据金库，有待后续分析。
 
-![alt text](/images/feishu-migration/duan-yongping-xueqiu-crawler/xueqiu_crawler_output_csv.png)
-![alt text](/images/feishu-migration/duan-yongping-xueqiu-crawler/duan_yongping_comment_sample.png)
+<figure class="post-figure">
+  <img src="/images/feishu-migration/duan-yongping-xueqiu-crawler/xueqiu_crawler_output_csv.png" alt="">
+  <figcaption>雪球评论导出结果表</figcaption>
+</figure>
+
+<figure class="post-figure">
+  <img src="/images/feishu-migration/duan-yongping-xueqiu-crawler/duan_yongping_comment_sample.png" alt="">
+  <figcaption>段永平评论样本</figcaption>
+</figure>

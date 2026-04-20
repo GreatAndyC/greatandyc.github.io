@@ -15,13 +15,12 @@ categories:
   - 教程
 toc: true
 ---
-# 从 0-1 上架一款 iOS 应用系列第一篇：软件开发生态，为什么是 iOS？
-
-**飞书博客主页**  
 **写于：** 26.3.23 6pm-7:30pm
 
-![alt text](/images/feishu-migration/ios-app-from-zero-vol1/ios_series_vol1_cover.png)
-*封面图由 Nano banana 2 生成*
+<figure class="post-figure">
+  <img src="/images/feishu-migration/ios-app-from-zero-vol1/ios_series_vol1_cover.png" alt="">
+  <figcaption>封面图由 Nano banana 2 生成</figcaption>
+</figure>
 
 ---
 
@@ -39,7 +38,7 @@ toc: true
 
 ## 什么是产品？
 
-在 **Vibe coding** 的时代（OpenAI 创始人之一 Andrej Karpathy 发明的词，译为结对编程或者氛围编程，指和 AI agent 用自然语言沟通需求，让 AI 帮你写代码）代码的生产成本几乎降到了 0，取而代之的稀缺品是创意、执行、落地、工程稳定性和商业化。
+在 **Vibe coding** 的时代（OpenAI 创始人之一[Andrej Karpathy](https://karpathy.ai) 发明的词，译为结对编程或者氛围编程，指和 AI agent 用自然语言沟通需求，让 AI 帮你写代码）代码的生产成本几乎降到了 0，取而代之的稀缺品是创意、执行、落地、工程稳定性和商业化。
 
 过去，很多人都喜欢说，我有一个可以改变世界的想法/创意，现在就差程序员帮我实现了。现在 AI Agent 把 Coding 的学习和执行成本降到了一个非常低层面，现在确实是进入了一个“人人都是产品经理”的时代。
 
