@@ -6,6 +6,34 @@
     <title>Content Manager</title>
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <script>
+      (function () {
+        if (!window.netlifyIdentity) return;
+
+        var hash = window.location.hash || "";
+        var hasIdentityToken =
+          hash.indexOf("recovery_token=") !== -1 ||
+          hash.indexOf("invite_token=") !== -1 ||
+          hash.indexOf("confirmation_token=") !== -1 ||
+          hash.indexOf("email_change_token=") !== -1;
+
+        // Ensure Identity callback tokens in URL hash are processed on /admin/.
+        window.netlifyIdentity.on("init", function (user) {
+          if (hasIdentityToken) {
+            window.netlifyIdentity.open("login");
+            return;
+          }
+
+          if (!user) {
+            window.netlifyIdentity.on("login", function () {
+              document.location.href = "/admin/";
+            });
+          }
+        });
+
+        window.netlifyIdentity.init();
+      })();
+    </script>
   </head>
   <body></body>
 </html>
