@@ -5,6 +5,7 @@ date: 2025-08-31 16:26:01
 lang: zh-CN
 slug: 我的第一篇文章
 permalink: 2025/08/31/我的第一篇文章/
+description: 一篇记录博客开篇心情的第一篇文章。
 categories:
   - 随笔
 tags: 

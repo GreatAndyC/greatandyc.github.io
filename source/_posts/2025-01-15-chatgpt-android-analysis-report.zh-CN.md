@@ -4,7 +4,9 @@ date: 2025-01-15 12:00:00
 lang: zh-CN
 slug: chatgpt-android-analysis-report
 permalink: 2025/01/15/chatgpt-android-analysis-report/
-description: 一份关于 ChatGPT 安卓端的完整产品分析报告，覆盖功能特性、用户需求、竞品格局和优化建议。
+description: ChatGPT 安卓端产品分析,市场竞争格局与产品改进方向的综合分析
+photos:
+  - /images/feishu-migration/chatgpt-android-analysis-report/chatgpt-cover.png
 tags:
   - ChatGPT
   - 产品分析
@@ -17,7 +19,7 @@ ChatGpt分析报告 -By 曹越洋
 
 作者姓名：曹越洋
 所属院校：香港大学数据与系统工程系
-联系方式：andy.caoyueyang@gmail.com  
+联系方式：andy.caoyueyang[at]gmail[dot]com
 报告完成日期：2025年1月15日
 
 ## 摘要

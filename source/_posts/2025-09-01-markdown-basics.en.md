@@ -4,6 +4,9 @@ date: 2025-09-01 17:07:28
 lang: en
 slug: Markdown-Basics
 permalink: 2025/09/01/Markdown-Basics/
+description: A short note on the Markdown syntax used in this blog.
+photos:
+  - /images/test.png
 tags:
   - Markdown
   - Hexo

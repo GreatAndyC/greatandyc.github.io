@@ -4,6 +4,7 @@ date: 2025-09-01 17:34:26
 lang: en
 slug: New-Blog-Workflow
 permalink: 2025/09/01/New-Blog-Workflow/
+description: A note on the workflow for creating new blog posts.
 tags:
   - Markdown
   - Hexo

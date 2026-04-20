@@ -40,6 +40,14 @@
 | 多语言分类/标签生成逻辑 | `scripts/localized-taxonomy.js` |
 | 语言感知链接、同语言文章导航、画廊渲染逻辑 | `themes/next/scripts/helpers/engine.js` |
 
+如果你主要是在写文章和排版，建议先看这份文档：
+
+- [`docs/writing-style-guide.md`](/Users/andycao/Documents/Project/greatandyc.github.io/docs/writing-style-guide.md)
+
+新文章默认模板在这里：
+
+- [`scaffolds/post.md`](/Users/andycao/Documents/Project/greatandyc.github.io/scaffolds/post.md)
+
 ## 3. 内容怎么改
 
 ### 3.1 文章

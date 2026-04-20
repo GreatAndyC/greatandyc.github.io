@@ -5,6 +5,8 @@ lang: zh-CN
 slug: esp32-xiaozhi-chatbot
 permalink: 2025/01/26/esp32-xiaozhi-chatbot/
 description: 记录一次基于 ESP32 搭建小智语音聊天终端的全过程，包括 BOM、接线、烧录和联网配置。
+photos:
+  - /images/feishu-migration/esp32-xiaozhi-chatbot/xiaozhi-cover.jpg
 tags:
   - ESP32
   - IoT

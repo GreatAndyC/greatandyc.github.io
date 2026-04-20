@@ -5,6 +5,8 @@ lang: zh-CN
 slug: ios-app-from-zero-vol2
 permalink: 2026/03/30/ios-app-from-zero-vol2/
 description: 从模型格局、编程能力、订阅方式和 API 成本出发，讨论独立开发者为什么要建立多模型能力体系。
+photos:
+  - /images/feishu-migration/ios-app-from-zero-vol2/ios_series_vol2_cover.png
 tags:
   - iOS
   - AI

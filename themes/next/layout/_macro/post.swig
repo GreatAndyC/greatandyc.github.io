@@ -167,8 +167,8 @@
     {#################}
     <div class="post-body{%- if post.direction and post.direction.toLowerCase() === 'rtl' %} rtl{%- endif %}" itemprop="articleBody">
 
-      {# Gallery support #}
-      {%- if post.photos and post.photos.length %}
+      {# Cover image for index cards only #}
+      {%- if is_index and post.photos and post.photos.length %}
         <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
           {%- for photo in post.photos %}
             <img src="{{ url_for(photo) }}" itemprop="contentUrl">

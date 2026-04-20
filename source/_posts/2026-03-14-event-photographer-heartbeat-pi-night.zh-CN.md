@@ -4,6 +4,9 @@ date: 2026-03-14 00:00:00
 lang: zh-CN
 slug: Self-Cultivation-Of-Photographer
 permalink: 2026/03/14/Self-Cultivation-Of-Photographer/
+description: 回顾一次活动摄影师的拍摄经历和现场感受。
+photos:
+  - /images/recap_314/3.16_封面图.jpg
 tags:
   - 摄影
   - 回顾

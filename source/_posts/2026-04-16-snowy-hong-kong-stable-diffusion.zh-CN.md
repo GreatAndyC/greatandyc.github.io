@@ -5,6 +5,8 @@ lang: zh-CN
 slug: snowy-hong-kong-stable-diffusion
 permalink: 2026/04/16/snowy-hong-kong-stable-diffusion/
 description: 记录一次用 Stable Diffusion 为香港街景制作雪景效果的完整实践，包括模型选择、图生图参数配置和结果对比。
+photos:
+  - /images/feishu-migration/snowy-hong-kong-stable-diffusion/hong_kong_snow_sd_cover.png
 tags:
   - Stable Diffusion
   - AI绘画

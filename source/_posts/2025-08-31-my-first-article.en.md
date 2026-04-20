@@ -4,6 +4,7 @@ date: 2025-08-31 16:26:01
 lang: en
 slug: My-First-Article
 permalink: 2025/08/31/My-First-Article/
+description: A short first post about starting this blog.
 categories:
   - Essay
 tags:

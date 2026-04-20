@@ -5,6 +5,8 @@ lang: zh-CN
 slug: gemini-guided-system-reinstall
 permalink: 2026/04/16/gemini-guided-system-reinstall/
 description: 记录一次在 Gemini 辅助下完成系统重装、设备清理和旧电脑再利用的完整实践。
+photos:
+  - /images/feishu-migration/gemini-guided-system-reinstall/system_clean_project_cover.png
 tags:
   - Gemini
   - 系统重装

@@ -4,6 +4,7 @@ date: 2025-08-31 00:00:00
 lang: en
 slug: Hello-World
 permalink: 2025/08/31/Hello-World/
+description: Hexo's default welcome post for a new blog.
 ---
 
 

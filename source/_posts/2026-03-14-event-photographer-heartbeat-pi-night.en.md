@@ -4,6 +4,9 @@ date: 2026-03-14 00:00:00
 lang: en
 slug: The-Craft-of-an-Event-Photographer-and-a-Recap-of-Heartbeat-Pi-Night
 permalink: 2026/03/14/The-Craft-of-an-Event-Photographer-and-a-Recap-of-Heartbeat-Pi-Night/
+description: A recap of an event-photography experience and what it felt like.
+photos:
+  - /images/recap_314/3.16_封面图.jpg
 tags:
   - Photography
   - Recap

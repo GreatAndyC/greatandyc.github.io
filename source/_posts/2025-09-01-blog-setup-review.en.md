@@ -4,6 +4,9 @@ date: 2025-09-01 17:45:17
 lang: en
 slug: Full-Review-of-Building-a-Blog-with-GitHub-and-Hexo
 permalink: 2025/09/01/Full-Review-of-Building-a-Blog-with-GitHub-and-Hexo/
+description: A walkthrough of building a personal blog with GitHub and Hexo.
+photos:
+  - /images/mainpage.png
 tags:
   - Hexo
 categories:

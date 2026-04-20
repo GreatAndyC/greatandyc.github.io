@@ -5,6 +5,8 @@ lang: zh-CN
 slug: star-home-scam-data-analysis
 permalink: 2025/01/14/star-home-scam-data-analysis/
 description: 基于公开互助档案与 LLM 辅助标注流程，对缅甸诈骗相关失踪人群进行结构化分析与可视化总结。
+photos:
+  - /images/feishu-migration/star-home-scam-data-analysis/star-comparison-cover.png
 tags:
   - LLM
   - 数据分析
@@ -13,12 +15,22 @@ categories:
   - 数据分析
 toc: true
 ---
+
+<img src="/images/feishu-migration/star-home-scam-data-analysis/star-comparison-cover.png"
+     style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
+
+摘要：本文基于近期网络流传的公开数据，对缅甸“诈骗”相关失踪人群进行结构化分析与可视化总结。
+
+<!-- more -->
+
 # 星星回家：缅甸诈骗相关失踪人群数据分析（LLM 辅助）
+
+**摘要：基于公开互助档案，梳理受骗画像与地域分布。**
 
 **作者姓名：** 曹越洋  
 **所属院校：** 香港大学数据与系统工程系  
 **角色：** 独立分析师（数据获取、标注、可视化、报告）  
-**联系方式：** andy.caoyueyang@gmail.com  
+**联系方式：** andy.caoyueyang[at]gmail[dot]com
 **时间：** 2025年1月
 
 ---
@@ -39,7 +51,6 @@ toc: true
 
 ---
 
-<!-- more -->
 
 ## 二、项目概况
 

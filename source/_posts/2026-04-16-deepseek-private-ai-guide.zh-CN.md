@@ -5,6 +5,8 @@ lang: zh-CN
 slug: deepseek-private-ai-guide
 permalink: 2026/04/16/deepseek-private-ai-guide/
 description: 从官方服务繁忙的背景切入，梳理共享 API、云端部署和本地部署的差异，并记录一条更适合普通用户的私有化使用路径。
+photos:
+  - /images/feishu-migration/deepseek-private-ai-guide/ai_era_wave_dalle.png
 tags:
   - DeepSeek
   - API

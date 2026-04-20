@@ -90,6 +90,9 @@ npx hexo new "文章标题"
 title: 文章标题
 date: 2026-04-19 10:00:00
 lang: zh-CN
+description: 摘要：30 字以内的一句话概括
+photos:
+  - /images/xxx/example.png
 tags:
   - 标签A
 categories:
@@ -103,6 +106,10 @@ categories:
 - 中文文章统一使用 `lang: zh-CN`
 - 英文文章统一使用 `lang: en`
 - 标签和分类本身不自动翻译，应直接使用该语言对应的内容
+- `description` 用于首页瀑布流的一句话摘要，建议严格控制在 30 字以内
+- `photos` 用于首页封面图，建议只放一张最有代表性的图
+- `<!-- more -->` 用于正文分界；如果是翻译稿，翻译提示放在 `<!-- more -->` 后面
+- 正文里的摘要建议固定写成 `**摘要：xxxxxx**`
 
 示例：
 

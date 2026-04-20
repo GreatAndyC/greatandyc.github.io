@@ -4,6 +4,7 @@ date: 2025-08-31 00:00:00
 lang: zh-CN
 slug: Hello-World-CHN
 permalink: 2025/08/31/Hello-World-CHN/
+description: Hexo 默认的新手欢迎文章。
 ---
 Welcome to [Hexo](https://hexo.io/)! 
 <!-- more -->
