@@ -29,6 +29,8 @@
 
 仓库里已经加入了 Decap CMS 的后台入口和配置文件，当前按“只给自己登录”的思路预留成 Git Gateway + Invite only。后续只需要在 Netlify 上启用 Identity，并把自己邀请进去，就可以直接在后台编辑 `source/_data/gallery.yml`。
 
+更完整的操作步骤和发布前的安全检查，见：[docs/site-maintenance-guide.md](/Users/andycao/Documents/Project/greatandyc.github.io/docs/site-maintenance-guide.md:1)
+
 ## 本地开发
 
 ### 1. 安装依赖
