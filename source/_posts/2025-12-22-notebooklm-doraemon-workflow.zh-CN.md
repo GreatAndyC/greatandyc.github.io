@@ -1,9 +1,9 @@
 ---
 title: NotebookLM + Gemini + Nanobanana 制作哆啦 A 梦漫画工作流
-date: 2026-04-16 13:00:00
+date: 2025-12-22 13:00:00
 lang: zh-CN
 slug: notebooklm-doraemon-workflow
-permalink: 2026/04/16/notebooklm-doraemon-workflow/
+permalink: 2025/12/22/notebooklm-doraemon-workflow/
 description: 整理一套用 NotebookLM、Gemini 和 Nanobanana Pro 生成漫画内容的 AI 工作流。
 photos:
   - /images/feishu-migration/notebooklm-doraemon-workflow/doraemon_manga_generated_1.png

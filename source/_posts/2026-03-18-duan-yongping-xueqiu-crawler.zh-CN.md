@@ -1,12 +1,12 @@
 ---
 title: 段永平雪球网评论爬取过程
-date: 2026-04-16 12:00:00
+date: 2026-03-18 12:00:00
 lang: zh-CN
 slug: duan-yongping-xueqiu-crawler
-permalink: 2026/04/16/duan-yongping-xueqiu-crawler/
+permalink: 2026/03/18/duan-yongping-xueqiu-crawler/
 description: 记录一次围绕段永平雪球评论的爬取实践，包括技术路线选择、问题排查和结果导出。
 photos:
-  - /images/feishu-migration/duan-yongping-xueqiu-crawler/xueqiu_crawler_output_csv.png
+  - /images/feishu-migration/duan-yongping-xueqiu-crawler/duan-buffett-cover.png
 tags:
   - 爬虫
   - 雪球

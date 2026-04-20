@@ -1,9 +1,9 @@
 ---
 title: 赛博空间大扫除：我如何用 Gemini 把旧笔记本变成 AI 智能体执行机
-date: 2026-04-16 15:00:00
+date: 2026-03-23 15:00:00
 lang: zh-CN
 slug: gemini-guided-system-reinstall
-permalink: 2026/04/16/gemini-guided-system-reinstall/
+permalink: 2026/03/23/gemini-guided-system-reinstall/
 description: 记录一次在 Gemini 辅助下完成系统重装、设备清理和旧电脑再利用的完整实践。
 photos:
   - /images/feishu-migration/gemini-guided-system-reinstall/system_clean_project_cover.png

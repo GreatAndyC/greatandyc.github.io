@@ -1,12 +1,12 @@
 ---
 title: STT 本地解决方案
-date: 2026-04-16 14:00:00
+date: 2026-02-07 14:00:00
 lang: zh-CN
 slug: local-stt-solutions
-permalink: 2026/04/16/local-stt-solutions/
+permalink: 2026/02/07/local-stt-solutions/
 description: 汇总一套本地语音转文字方案的基本思路、工具选型与输出效果。
 photos:
-  - /images/feishu-migration/local-stt-solutions/whisper_stt_local_speed_test.png
+  - /images/feishu-migration/local-stt-solutions/stt-solution-cover.png
 tags:
   - STT
   - Whisper
