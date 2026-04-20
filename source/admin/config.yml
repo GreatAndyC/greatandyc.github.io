@@ -11,92 +11,95 @@ public_folder: "/images/uploads"
 collections:
   - name: gallery
     label: 画廊数据
-    file: "source/_data/gallery.yml"
-    format: yml
     editor:
       preview: false
-    fields:
-      - label: 空状态文案
-        name: empty
-        widget: object
+    files:
+      - label: 画廊数据
+        name: gallery
+        file: "source/_data/gallery.yml"
+        format: yml
         fields:
-          - { label: 中文, name: "zh-CN", widget: string }
-          - { label: English, name: en, widget: string }
-      - label: 相册
-        name: albums
-        widget: list
-        fields:
-          - { label: Slug, name: slug, widget: string }
-          - label: 可见语言
-            name: languages
-            widget: list
-            field:
-              label: Language
-              name: language
-              widget: string
-          - label: 标题
-            name: title
+          - label: 空状态文案
+            name: empty
             widget: object
             fields:
               - { label: 中文, name: "zh-CN", widget: string }
               - { label: English, name: en, widget: string }
-          - label: 时间范围
-            name: period
-            widget: object
-            fields:
-              - { label: 中文, name: "zh-CN", widget: string, required: false }
-              - { label: English, name: en, widget: string, required: false }
-          - label: 地点
-            name: location
-            widget: object
-            fields:
-              - { label: 中文, name: "zh-CN", widget: string, required: false }
-              - { label: English, name: en, widget: string, required: false }
-          - label: 相机
-            name: camera
-            widget: object
-            fields:
-              - { label: 中文, name: "zh-CN", widget: string, required: false }
-              - { label: English, name: en, widget: string, required: false }
-          - label: 描述
-            name: description
-            widget: object
-            fields:
-              - { label: 中文, name: "zh-CN", widget: text, required: false }
-              - { label: English, name: en, widget: text, required: false }
-          - label: 标签
-            name: tags
-            widget: object
-            fields:
-              - label: 中文
-                name: "zh-CN"
-                widget: list
-                field:
-                  label: Tag
-                  name: tag
-                  widget: string
-              - label: English
-                name: en
-                widget: list
-                field:
-                  label: Tag
-                  name: tag
-                  widget: string
-          - label: 照片
-            name: photos
+          - label: 相册
+            name: albums
             widget: list
             fields:
-              - { label: 图片, name: src, widget: image }
+              - { label: Slug, name: slug, widget: string }
+              - label: 可见语言
+                name: languages
+                widget: list
+                field:
+                  label: Language
+                  name: language
+                  widget: string
               - label: 标题
                 name: title
                 widget: object
                 fields:
+                  - { label: 中文, name: "zh-CN", widget: string }
+                  - { label: English, name: en, widget: string }
+              - label: 时间范围
+                name: period
+                widget: object
+                fields:
                   - { label: 中文, name: "zh-CN", widget: string, required: false }
                   - { label: English, name: en, widget: string, required: false }
-              - label: 说明
-                name: caption
+              - label: 地点
+                name: location
+                widget: object
+                fields:
+                  - { label: 中文, name: "zh-CN", widget: string, required: false }
+                  - { label: English, name: en, widget: string, required: false }
+              - label: 相机
+                name: camera
+                widget: object
+                fields:
+                  - { label: 中文, name: "zh-CN", widget: string, required: false }
+                  - { label: English, name: en, widget: string, required: false }
+              - label: 描述
+                name: description
                 widget: object
                 fields:
                   - { label: 中文, name: "zh-CN", widget: text, required: false }
                   - { label: English, name: en, widget: text, required: false }
-              - { label: Meta, name: meta, widget: string, required: false }
+              - label: 标签
+                name: tags
+                widget: object
+                fields:
+                  - label: 中文
+                    name: "zh-CN"
+                    widget: list
+                    field:
+                      label: Tag
+                      name: tag
+                      widget: string
+                  - label: English
+                    name: en
+                    widget: list
+                    field:
+                      label: Tag
+                      name: tag
+                      widget: string
+              - label: 照片
+                name: photos
+                widget: list
+                fields:
+                  - { label: 图片, name: src, widget: image }
+                  - label: 标题
+                    name: title
+                    widget: object
+                    fields:
+                      - { label: 中文, name: "zh-CN", widget: string, required: false }
+                      - { label: English, name: en, widget: string, required: false }
+                  - label: 说明
+                    name: caption
+                    widget: object
+                    fields:
+                      - { label: 中文, name: "zh-CN", widget: text, required: false }
+                      - { label: English, name: en, widget: text, required: false }
+                  - { label: Meta, name: meta, widget: string, required: false }
