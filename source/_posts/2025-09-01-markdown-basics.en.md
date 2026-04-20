@@ -3,7 +3,7 @@ title: Markdown Basics
 date: 2025-09-01 17:07:28
 lang: en
 slug: Markdown-Basics
-permalink: 2025/09/01/Markdown-Basics/
+permalink: en/2025/09/01/Markdown-Basics/
 description: A short note on the Markdown syntax used in this blog.
 photos:
   - /images/test.png
@@ -13,7 +13,7 @@ tags:
 categories:
   - Tutorial
 ---
-> Translation note: This English version was translated by Codex (`GPT-5`) on 2026-04-19 18:15:09 CST. The source text is the original Chinese post in this repository.
+> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
 Summary: This is a note-style article about basic Markdown syntax.
 
@@ -73,7 +73,7 @@ hello("Andy")
 This is a link to [Bing Search](www.bing.com).
 
 Local image (put it under `source/images/`):
-<img src="/images/test.png" alt="Sample image"
+<img src="/images/test.png" 
      style="width:300px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 
 Reference links:
@@ -136,7 +136,7 @@ hello("Andy")
 This is a link to [Bing Search](www.bing.com).
 
 Local image (put it under `source/images/`):
-<img src="/images/test.png" alt="Sample image"
+<img src="/images/test.png"
      style="width:300px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 
 Reference links:

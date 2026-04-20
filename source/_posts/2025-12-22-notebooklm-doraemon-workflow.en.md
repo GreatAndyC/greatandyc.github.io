@@ -3,7 +3,7 @@ title: NotebookLM + Gemini + Nanobanana Manga Workflow
 date: 2025-12-22 13:00:00
 lang: en
 slug: notebooklm-doraemon-workflow
-permalink: 2025/12/22/notebooklm-doraemon-workflow/
+permalink: en/2025/12/22/notebooklm-doraemon-workflow/
 description: A compact workflow for turning a book into a manga-style learning project with NotebookLM, Gemini, and Nanobanana Pro.
 photos:
   - /images/feishu-migration/notebooklm-doraemon-workflow/doraemon_manga_generated_1.png
@@ -15,6 +15,7 @@ categories:
   - Tutorial
 toc: true
 ---
+> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
 ## Prerequisites
 
@@ -76,4 +77,3 @@ Generate the remaining pages one by one according to the plan.
 ## Reference
 
 - [Original X post](https://x.com/Tz_2022/status/1993033135068790831)
-

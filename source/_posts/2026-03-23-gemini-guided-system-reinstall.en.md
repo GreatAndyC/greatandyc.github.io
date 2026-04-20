@@ -3,7 +3,7 @@ title: "A Cyber Cleanup: Reinstalling an Old Laptop into an AI Agent Machine wit
 date: 2026-03-23 15:00:00
 lang: en
 slug: gemini-guided-system-reinstall
-permalink: 2026/03/23/gemini-guided-system-reinstall/
+permalink: en/2026/03/23/gemini-guided-system-reinstall/
 description: A full record of reinstalling and repurposing an old laptop with Gemini’s help.
 photos:
   - /images/feishu-migration/gemini-guided-system-reinstall/system_clean_project_cover.png
@@ -15,6 +15,7 @@ categories:
   - Tutorial
 toc: true
 ---
+> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
 ## Background
 

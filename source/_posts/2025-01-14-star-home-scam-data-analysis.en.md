@@ -3,7 +3,7 @@ title: "Star Home: Data Analysis of Myanmar Scam-Related Missing Persons"
 date: 2025-01-14 12:00:00
 lang: en
 slug: star-home-scam-data-analysis
-permalink: 2025/01/14/star-home-scam-data-analysis/
+permalink: en/2025/01/14/star-home-scam-data-analysis/
 description: A structured analysis and visualization of public missing-person records related to Myanmar scams, with LLM-assisted labeling.
 photos:
   - /images/feishu-migration/star-home-scam-data-analysis/star-comparison-cover.png
@@ -15,9 +15,12 @@ categories:
   - Data Analysis
 toc: true
 ---
+> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
-<img src="/images/feishu-migration/star-home-scam-data-analysis/star-comparison-cover.png"
-     style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
+<figure class="post-figure">
+  <img src="/images/feishu-migration/star-home-scam-data-analysis/star-comparison-cover.png" alt="">
+  <figcaption>Cover illustration for the Star Home analysis</figcaption>
+</figure>
 
 Summary: This article uses a recent public mutual-aid spreadsheet to structurally analyze and visualize missing-person cases related to Myanmar scams.
 
@@ -55,8 +58,10 @@ Using a public “Star Home” mutual-aid archive, I extracted structured inform
 
 On 2025-01-14, after the widely discussed “Wang Xing was tricked into Thailand” incident, a public online document called the “Star Home Mutual-Aid Archive” circulated online. I downloaded it and carried out an independent exploratory analysis.
 
-![](/images/feishu-migration/star-home-scam-data-analysis/star_home_excel_source.png)
-*Excel source for the Star Home archive*
+<figure class="post-figure">
+  <img src="/images/feishu-migration/star-home-scam-data-analysis/star_home_excel_source.png" alt="">
+  <figcaption>Excel source for the Star Home archive</figcaption>
+</figure>
 
 ### Analysis method
 
@@ -100,23 +105,31 @@ def excel_to_txt_with_commas(excel_file, txt_file):
 excel_to_txt_with_commas('initial-cleaned-data.xlsx', 'initial-cleaned-data.txt')
 ```
 
-![](/images/feishu-migration/star-home-scam-data-analysis/scam_age_distribution_viz.png)
-*Example of the structured TXT document*
+<figure class="post-figure">
+  <img src="/images/feishu-migration/star-home-scam-data-analysis/scam_age_distribution_viz.png" alt="">
+  <figcaption>Example of the structured TXT document</figcaption>
+</figure>
 
 ### Step 2: LLM labeling
 
 I pasted the text into Gemini Pro 2.0 and repeatedly refined the prompt until the results could be exported as CSV.
 
-![](/images/feishu-migration/star-home-scam-data-analysis/scam_gender_ratio_viz.png)
-*Example of the LLM output*
+<figure class="post-figure">
+  <img src="/images/feishu-migration/star-home-scam-data-analysis/scam_gender_ratio_viz.png" alt="">
+  <figcaption>Example of the LLM output</figcaption>
+</figure>
 
 The same approach was used to obtain time, city, age, and cause labels. After that, the results were consolidated into Excel:
 
-![](/images/feishu-migration/star-home-scam-data-analysis/scam_reasons_category_viz.png)
-*Structured statistics after labeling*
+<figure class="post-figure">
+  <img src="/images/feishu-migration/star-home-scam-data-analysis/scam_reasons_category_viz.png" alt="">
+  <figcaption>Structured statistics after labeling</figcaption>
+</figure>
 
-![](/images/feishu-migration/star-home-scam-data-analysis/tableau_analysis_dashboard.png)
-*Excel filtering and statistical output*
+<figure class="post-figure">
+  <img src="/images/feishu-migration/star-home-scam-data-analysis/tableau_analysis_dashboard.png" alt="">
+  <figcaption>Excel filtering and statistical output</figcaption>
+</figure>
 
 ### Step 3: Tableau visualization and conclusions
 
@@ -124,11 +137,17 @@ I used Tableau to make the data easier to read and to summarize the final patter
 
 **Typical profile:** 95% male, 80% aged 18–35, 72.53% in Xishuangbanna, and 88.49% lured away by high-salary offers.
 
-![](/images/feishu-migration/star-home-scam-data-analysis/star_home_data_filtering_process.png)
-*Cause count bar/pie chart*
+<figure class="post-figure">
+  <img src="/images/feishu-migration/star-home-scam-data-analysis/star_home_data_filtering_process.png" alt="">
+  <figcaption>Cause count bar/pie chart</figcaption>
+</figure>
 
-![](/images/feishu-migration/star-home-scam-data-analysis/star_home_source_doc_list.png)
-*Map and pie chart of missing provinces and cities in Yunnan*
+<figure class="post-figure">
+  <img src="/images/feishu-migration/star-home-scam-data-analysis/star_home_source_doc_list.png" alt="">
+  <figcaption>Map and pie chart of missing provinces and cities in Yunnan</figcaption>
+</figure>
 
-![](/images/feishu-migration/star-home-scam-data-analysis/star_home_final_metric_viz.png)
-*Time / age / gender bar chart*
+<figure class="post-figure">
+  <img src="/images/feishu-migration/star-home-scam-data-analysis/star_home_final_metric_viz.png" alt="">
+  <figcaption>Time / age / gender bar chart</figcaption>
+</figure>

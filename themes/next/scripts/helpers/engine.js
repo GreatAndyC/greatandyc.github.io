@@ -332,9 +332,18 @@ hexo.extend.helper.register('canonical', function() {
  * Get page path given a certain language tag
  */
 hexo.extend.helper.register('i18n_path', function(language) {
-  const { path, lang } = this.page;
-  const base = path.startsWith(lang) ? path.slice(lang.length + 1) : path;
-  return this.url_for(`${this.languages.indexOf(language) === 0 ? '' : '/' + language}/${base}`);
+  const { path } = this.page;
+  const languages = this.languages || [];
+  const normalizedPath = path.replace(/^\/+/, '');
+  const base = languages.reduce((currentPath, currentLanguage) => {
+    if (currentPath === currentLanguage) return '';
+    if (currentPath.startsWith(`${currentLanguage}/`)) {
+      return currentPath.slice(currentLanguage.length + 1);
+    }
+    return currentPath;
+  }, normalizedPath).replace(/^\/+/, '');
+  const prefix = languages.indexOf(language) === 0 ? '' : `/${language}`;
+  return this.url_for(prefix ? `${prefix}/${base}` : `/${base}`);
 });
 
 /**

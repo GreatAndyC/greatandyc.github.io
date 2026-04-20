@@ -3,7 +3,7 @@ title: A Full Review of Building a Personal Blog with GitHub and Hexo
 date: 2025-09-01 17:45:17
 lang: en
 slug: Full-Review-of-Building-a-Blog-with-GitHub-and-Hexo
-permalink: 2025/09/01/Full-Review-of-Building-a-Blog-with-GitHub-and-Hexo/
+permalink: en/2025/09/01/Full-Review-of-Building-a-Blog-with-GitHub-and-Hexo/
 description: A walkthrough of building a personal blog with GitHub and Hexo.
 photos:
   - /images/mainpage.png
@@ -12,7 +12,7 @@ tags:
 categories:
   - Tutorial
 ---
-> Translation note: This English version was translated by Codex (`GPT-5`) on 2026-04-19 18:15:09 CST. The source text is the original Chinese post in this repository.
+> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
 Summary: This article gives a full walkthrough of how I built my personal blog with GitHub and Hexo.
 
@@ -113,7 +113,7 @@ After that, you can happily start adding posts to your blog.
 
 Local posts are stored in `Blog/source/_posts`.
 
-By entering `hexo clean && hexo g && hexo d` in Git Bash, you can update the website. For the full publishing flow, see [New Blog Workflow](https://caoyueyang.org/2025/09/01/%E6%96%B0%E5%8D%9A%E5%AE%A2%E5%B7%A5%E4%BD%9C%E6%B5%81/). For Markdown formatting, see [Markdown Basics](https://caoyueyang.org/2025/09/01/%E5%9B%9E%E9%A1%BE%E5%8D%9A%E5%AE%A2%E5%BB%BA%E7%AB%8B%E6%95%99%E7%A8%8B/).
+By entering `hexo clean && hexo g && hexo d` in Git Bash, you can update the website. For the full publishing flow, see [New Blog Workflow](/en/2025/09/01/New-Blog-Workflow/). For Markdown formatting, see [Markdown Basics](/en/2025/09/01/Markdown-Basics/).
 
 # Problems I Ran Into
 1. Folder names on GitHub may differ in capitalization from local ones. The root cause is that Windows is case-insensitive by default, while Linux is case-sensitive. This can cause the website to fail to recognize folder names correctly and return 404 pages. My solution was to remove the remote files, reconfigure Git, and upload the folders again with corrected names from scratch.

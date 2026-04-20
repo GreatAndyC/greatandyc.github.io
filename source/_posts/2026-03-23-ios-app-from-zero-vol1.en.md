@@ -3,7 +3,7 @@ title: "Building an iOS App from Zero to One (Part 1): Why iOS?"
 date: 2026-03-23 18:00:00
 lang: en
 slug: ios-app-from-zero-vol1
-permalink: 2026/03/23/ios-app-from-zero-vol1/
+permalink: en/2026/03/23/ios-app-from-zero-vol1/
 description: An independent developer’s view on software products, product management, and why iOS is a strong first platform.
 photos:
   - /images/feishu-migration/ios-app-from-zero-vol1/ios_series_vol1_cover.png
@@ -15,6 +15,7 @@ categories:
   - Tutorial
 toc: true
 ---
+> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
 **Written:** 2026-03-23, 6:00 PM - 7:30 PM
 

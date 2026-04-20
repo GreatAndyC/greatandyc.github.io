@@ -3,7 +3,7 @@ title: How I Crawled Duan Yongping’s Xueqiu Comments
 date: 2026-03-18 12:00:00
 lang: en
 slug: duan-yongping-xueqiu-crawler
-permalink: 2026/03/18/duan-yongping-xueqiu-crawler/
+permalink: en/2026/03/18/duan-yongping-xueqiu-crawler/
 description: A crawl log of Duan Yongping’s Xueqiu comments, including tool choice, debugging, and export results.
 photos:
   - /images/feishu-migration/duan-yongping-xueqiu-crawler/duan-buffett-cover.png
@@ -15,6 +15,7 @@ categories:
   - Tutorial
 toc: true
 ---
+> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
 ## 1. Background
 
@@ -66,4 +67,3 @@ In the end, I used a semi-automatic workflow to collect all public comments post
   <img src="/images/feishu-migration/duan-yongping-xueqiu-crawler/duan_yongping_comment_sample.png" alt="">
   <figcaption>Sample Duan Yongping comment</figcaption>
 </figure>
-

@@ -213,6 +213,7 @@ photos:
 ## 7. 翻译稿规则
 
 如果文章是 AI 翻译成其他语言的版本，翻译提示必须放在 `<!-- more -->` 后面。
+翻译提示还必须写明翻译模型和时间，统一使用同一种句式，方便后续维护和批量检查。
 
 目的：
 
@@ -237,7 +238,7 @@ photos:
 
 <!-- more -->
 
-> Translation note: This English version was prepared by Codex on 2026-04-19. The source text is the Chinese post in this repository.
+> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
 正文内容
 ```
@@ -246,8 +247,9 @@ photos:
 
 - 翻译提示不要放在文章最开头。
 - 翻译提示建议用引用块，和正文视觉上分开。
-- 翻译提示只需说明语言、来源、时间，不要写太长。
+- 翻译提示必须说明模型、来源、时间，不要写太长。
 - 如果文章是人工原创英文稿，就不需要这个提示。
+- 如果是英文翻译稿，建议所有篇目统一使用同一种翻译备注句式。
 
 ## 8. 不推荐的写法
 
@@ -262,6 +264,7 @@ photos:
 - 摘要太长，直接替代了正文第一段。
 - 已经有 front matter `description` 和开头排版时，正文还重复写标题和摘要。
 - 翻译提示放在文章最顶部，打断首页阅读。
+- 翻译提示没有写明模型和时间，导致不同英文稿格式不统一。
 
 ## 9. 给 agent 的排版要求
 
@@ -274,7 +277,7 @@ photos:
 - 纯插图时再使用 Markdown 原生图片语法。
 - 图注必须居中、灰色、小字号、贴近图片。
 - 图注内容尽量简短，不要改写成正文。
-- 如果是翻译稿，翻译提示放在 `<!-- more -->` 后面。
+- 如果是翻译稿，翻译提示放在 `<!-- more -->` 后面，并写明模型和时间。
 - 遇到多张图时，保持同一篇文章的图注风格一致。
 
 ## 10. 适用范围

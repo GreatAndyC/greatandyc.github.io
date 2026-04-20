@@ -3,7 +3,7 @@ title: "Building an iOS App from Zero to One (Part 2): Why You Should Not Rely o
 date: 2026-03-30 19:53:00
 lang: en
 slug: ios-app-from-zero-vol2
-permalink: 2026/03/30/ios-app-from-zero-vol2/
+permalink: en/2026/03/30/ios-app-from-zero-vol2/
 description: Why indie developers need a multi-model strategy, looking at model competition, coding ability, subscription models, and API cost.
 photos:
   - /images/feishu-migration/ios-app-from-zero-vol2/ios_series_vol2_cover.png
@@ -15,6 +15,7 @@ categories:
   - Tutorial
 toc: true
 ---
+> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
 <figure class="post-figure">
   <img src="/images/feishu-migration/ios-app-from-zero-vol2/ios_series_vol2_cover.png" alt="">

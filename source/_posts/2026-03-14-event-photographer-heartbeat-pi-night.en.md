@@ -3,7 +3,7 @@ title: The Craft of an Event Photographer and a Recap of Heartbeat Pi Night on 2
 date: 2026-03-14 00:00:00
 lang: en
 slug: The-Craft-of-an-Event-Photographer-and-a-Recap-of-Heartbeat-Pi-Night
-permalink: 2026/03/14/The-Craft-of-an-Event-Photographer-and-a-Recap-of-Heartbeat-Pi-Night/
+permalink: en/2026/03/14/The-Craft-of-an-Event-Photographer-and-a-Recap-of-Heartbeat-Pi-Night/
 description: A recap of an event-photography experience and what it felt like.
 photos:
   - /images/recap_314/3.16_封面图.jpg
@@ -13,10 +13,11 @@ tags:
 categories:
   - Essay
 ---
-> Translation note: This English version was translated by Codex (`GPT-5`) on 2026-04-19 18:15:09 CST. The source text is the original Chinese post in this repository.
+> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
-<img src="/images/recap_314/3.16_封面图.jpg"
-     style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
+<figure class="post-figure">
+  <img src="/images/recap_314/3.16_封面图.jpg" alt="">
+</figure>
 
 Summary: This article looks back on my experience photographing an HKU evening event over the weekend, along with some reflections on the craft.
 
@@ -59,11 +60,10 @@ That leads to the first rule for this kind of assignment:
 
 Leaving yourself buffer time makes it much easier to handle surprises. During rehearsal I discovered, for example, that my own SD cards would not be enough for the whole event, so I borrowed a larger one from another student. I also had to assess whether the batteries would last and whether the lighting was usable. Once those things are under control, you can judge the whole session more calmly and form an overall plan.
 
-<img src="/images/recap_314/3.16_Prepare.jpg"
-     style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
-<div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
-    The SD card I borrowed from another student
-</div>
+<figure class="post-figure">
+  <img src="/images/recap_314/3.16_Prepare.jpg" alt="">
+  <figcaption>The SD card I borrowed from another student</figcaption>
+</figure>
 
 ## During the Shoot
 ### First Half
@@ -77,11 +77,10 @@ From my own experience, the key things to remember when photographing dance are:
 1. At the opening and the ending, the lighting is usually better and the dancers often hold their poses for a few seconds. Those are the must-capture "safety moments."
 2. **Fairness matters more than abundance**: if you are shooting individual close-ups, try to make sure each dancer gets at least one good photo, instead of giving everything to the center or the performer who happens to have the strongest camera presence. Otherwise, you are likely to get messages such as: "Teacher, why doesn't our Zihan have any photos?" or "Why are you always staring at our Zihan?" Of course, if there is no practical interest involved, then feel free to follow your own taste.
 
-<img src="/images/recap_314/3.16_Kpop.jpg"
-     style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
-<div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
-    A K-pop group dance performance
-</div>
+<figure class="post-figure">
+  <img src="/images/recap_314/3.16_Kpop.jpg" alt="">
+  <figcaption>A K-pop group dance performance</figcaption>
+</figure>
 
 As for settings, if your gear is strong enough, you can choose shutter priority, an ISO ceiling, the widest aperture, and high-speed burst mode.
 
@@ -92,17 +91,15 @@ That brings up the second and third rules:
 > 2. **Accept imperfection**: a bad photo is still better than no photo  
 > 3. **Solve what you can in the shooting stage instead of leaving it to post-production**: a properly exposed file in camera is far better than trying to raise the exposure later, especially when you need to deliver quickly
 
-<img src="/images/recap_314/3.16_对比img1.jpg"
-     style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
-<div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
-    Test Shot 1: an underexposed frame from the preparation stage
-</div>
+<figure class="post-figure">
+  <img src="/images/recap_314/3.16_对比img1.jpg" alt="">
+  <figcaption>Test Shot 1: an underexposed frame from the preparation stage</figcaption>
+</figure>
 
-<img src="/images/recap_314/3.16_对比img2.jpg"
-     style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
-<div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
-    Test Shot 2: the result after raising exposure in post
-</div>
+<figure class="post-figure">
+  <img src="/images/recap_314/3.16_对比img2.jpg" alt="">
+  <figcaption>Test Shot 2: the result after raising exposure in post</figcaption>
+</figure>
 
 The comparison is obvious, especially in the originally underexposed areas that were highlighted. Noise control in Test Shot 1 is clearly better than in Test Shot 2, which is why getting exposure right in camera matters so much.
 
@@ -111,19 +108,17 @@ As the second half began, some audience members had left, and my left hand had a
 
 *Perhaps the ability to make fast decisions and adapt on the fly is also one of the irreplaceable skills in the age of AI.*
 
-<img src="/images/recap_314/3.16_FirstView.jpg"
-     style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
-<div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
-    The lightweight D5600
-</div>
+<figure class="post-figure">
+  <img src="/images/recap_314/3.16_FirstView.jpg" alt="">
+  <figcaption>The lightweight D5600</figcaption>
+</figure>
 
 Once part of the audience left, I had more room to move. At that point I noticed that if I photographed singers straight from the front, the microphone often blocked their faces. So I decisively moved to the side.
 
-<img src="/images/recap_314/3.16_Singer1.jpg"
-     style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
-<div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
-    A side-angle singer shot. The microphone shadow still affects the image, but it is much better than having the whole face blocked.
-</div>
+<figure class="post-figure">
+  <img src="/images/recap_314/3.16_Singer1.jpg" alt="">
+  <figcaption>A side-angle singer shot. The microphone shadow still affects the image, but it is much better than having the whole face blocked.</figcaption>
+</figure>
 
 That leads to the fourth rule:
 
@@ -131,11 +126,10 @@ That leads to the fourth rule:
 
 When you hold a camera, you actually gain the privilege of becoming "invisible." The audience will instinctively ignore you or quickly get used to your presence. So move boldly and look for the best angle instead of shrinking back because you are afraid of disturbing others. Many beginners, including my earlier self, lack this awareness in event photography. Of course, do not make loud noises, initiate unnecessary physical contact, or fire the flash aggressively.
 
-<img src="/images/recap_314/3.16_梯子.jpg"
-     style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
-<div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
-    They say that if you wear work clothes, carry a ladder, and walk confidently, you can enter anywhere, even the Louvre.
-</div>
+<figure class="post-figure">
+  <img src="/images/recap_314/3.16_梯子.jpg" alt="">
+  <figcaption>They say that if you wear work clothes, carry a ladder, and walk confidently, you can enter anywhere, even the Louvre.</figcaption>
+</figure>
 
 ### Group Photos
 *The Crowd* says:
@@ -164,11 +158,10 @@ The answer is still the same old line: *Practice makes perfect.*
 
 If you get chances like this, take them actively. Over time, you will notice that your leadership improves too.
 
-<img src="/images/recap_314/3.16_GroupPhotos.jpg"
-     style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
-<div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
-    The standard group photo everyone receives. Where is the photographer? Behind the camera, of course.
-</div>
+<figure class="post-figure">
+  <img src="/images/recap_314/3.16_GroupPhotos.jpg" alt="">
+  <figcaption>The standard group photo everyone receives. Where is the photographer? Behind the camera, of course.</figcaption>
+</figure>
 
 ### The Social Session After the Show
 The social session after the event is the perfect time for performers, staff, and audience members to talk, exchange contacts, and get to know one another.
@@ -225,33 +218,29 @@ Among all the photos, two received extra processing.
 
 The first was a stitched panorama of the band at the start of the show. The light was stable at that moment, and the guitarist was about to graduate, so it felt worth preserving in a special way. Compared with simply cropping from a wide shot, a panorama preserves clarity and perspective better, so I quickly shot three frames and stitched them together.
 
-<img src="/images/recap_314/3.16_LongPic.jpg"
-     style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
-<div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
-    Band performance: "Anhe Bridge" and "Lilian"
-</div>
+<figure class="post-figure">
+  <img src="/images/recap_314/3.16_LongPic.jpg" alt="">
+  <figcaption>Band performance: "Anhe Bridge" and "Lilian"</figcaption>
+</figure>
 
 The second was a K-pop group dance composite. Because of timing and framing, the best pose and the best composition were not captured in the same frame. I happened to have two photos, each with a different strength, so I combined them.
 
-<img src="/images/recap_314/3.16_Kpop1.jpg"
-     style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
-<div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
-    "Expectation" cover by Girls' Day - Pic 1: the movement is great, the composition is not
-</div>
+<figure class="post-figure">
+  <img src="/images/recap_314/3.16_Kpop1.jpg" alt="">
+  <figcaption>"Expectation" cover by Girls' Day - Pic 1: the movement is great, the composition is not</figcaption>
+</figure>
 
-<img src="/images/recap_314/3.16_Kpop2.jpg"
-     style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
-<div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
-    "Expectation" cover by Girls' Day - Pic 2: the composition works, but the movement is not synchronized
-</div>
+<figure class="post-figure">
+  <img src="/images/recap_314/3.16_Kpop2.jpg" alt="">
+  <figcaption>"Expectation" cover by Girls' Day - Pic 2: the composition works, but the movement is not synchronized</figcaption>
+</figure>
 
 So I used Photoshop to composite them.
 
-<img src="/images/recap_314/3.16_Kpop.jpg"
-     style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
-<div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
-    If you look closely, the light and shadow on the dancers are a little uncanny.
-</div>
+<figure class="post-figure">
+  <img src="/images/recap_314/3.16_Kpop.jpg" alt="">
+  <figcaption>If you look closely, the light and shadow on the dancers are a little uncanny.</figcaption>
+</figure>
 
 ## Conclusion
 Looking back on this 3.14 shoot, what I call "the craft of an event photographer" is really a three-part discipline of **technique, psychology, and professional ethics**:

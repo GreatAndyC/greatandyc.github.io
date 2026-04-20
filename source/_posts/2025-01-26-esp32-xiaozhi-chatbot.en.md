@@ -3,7 +3,7 @@ title: "ESP32 Xiaozhi Chatbot: Full Build Log"
 date: 2025-01-26 12:00:00
 lang: en
 slug: esp32-xiaozhi-chatbot
-permalink: 2025/01/26/esp32-xiaozhi-chatbot/
+permalink: en/2025/01/26/esp32-xiaozhi-chatbot/
 description: A complete build log for an ESP32-based voice chatbot terminal, including parts, wiring, flashing, and setup.
 photos:
   - /images/feishu-migration/esp32-xiaozhi-chatbot/xiaozhi-cover.jpg
@@ -15,6 +15,7 @@ categories:
   - Tutorial
 toc: true
 ---
+> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
 # ESP32 Xiaozhi Chatbot: Full Build Log
 

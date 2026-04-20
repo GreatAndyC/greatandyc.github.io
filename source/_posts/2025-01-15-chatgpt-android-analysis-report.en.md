@@ -3,7 +3,7 @@ title: ChatGPT Android Product Analysis Report
 date: 2025-01-15 12:00:00
 lang: en
 slug: chatgpt-android-analysis-report
-permalink: 2025/01/15/chatgpt-android-analysis-report/
+permalink: en/2025/01/15/chatgpt-android-analysis-report/
 description: A comprehensive analysis of the ChatGPT Android app, covering product features, usage patterns, market context, and improvement suggestions.
 photos:
   - /images/feishu-migration/chatgpt-android-analysis-report/chatgpt-cover.png
@@ -15,6 +15,7 @@ categories:
   - Data Analysis
 toc: true
 ---
+> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
 ChatGPT Android Analysis Report
 
@@ -180,4 +181,3 @@ ChatGPT Android should keep moving toward a polished, reliable, and deeply integ
 ## References
 
 References are kept in the original Chinese article and can be translated later if needed.
-

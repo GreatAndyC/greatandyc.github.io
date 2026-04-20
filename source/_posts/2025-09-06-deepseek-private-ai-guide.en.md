@@ -3,7 +3,7 @@ title: "Escaping “Server Busy”: A Practical Guide to Building a Private Deep
 date: 2025-09-06 11:00:00
 lang: en
 slug: deepseek-private-ai-guide
-permalink: 2025/09/06/deepseek-private-ai-guide/
+permalink: en/2025/09/06/deepseek-private-ai-guide/
 description: A practical guide to using DeepSeek privately, covering shared APIs, cloud deployment, local deployment, and a simple Chatbox setup.
 photos:
   - /images/feishu-migration/deepseek-private-ai-guide/ai_era_wave_dalle.png
@@ -15,6 +15,7 @@ categories:
   - Tutorial
 toc: true
 ---
+> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
 <figure class="post-figure">
   <img src="/images/feishu-migration/deepseek-private-ai-guide/ai_era_wave_dalle.png" alt="">

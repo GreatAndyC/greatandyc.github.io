@@ -3,7 +3,7 @@ title: "Snowy Hong Kong: Stable Diffusion Image Generation Practice"
 date: 2026-02-09 10:00:00
 lang: en
 slug: snowy-hong-kong-stable-diffusion
-permalink: 2026/04/16/snowy-hong-kong-stable-diffusion/
+permalink: en/2026/04/16/snowy-hong-kong-stable-diffusion/
 description: A practical experiment in turning Hong Kong street scenes into snowy landscapes with Stable Diffusion.
 photos:
   - /images/feishu-migration/snowy-hong-kong-stable-diffusion/snow-hk-cover.png
@@ -15,6 +15,7 @@ categories:
   - Tutorial
 toc: true
 ---
+> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
 I first saw a snowy AI effect on the vivo X200 and wanted to recreate the same feeling on my own street photos, even though I did not have the phone itself.
 

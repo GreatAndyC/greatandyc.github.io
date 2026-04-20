@@ -3,7 +3,7 @@ title: New Blog Workflow
 date: 2025-09-01 17:34:26
 lang: en
 slug: New-Blog-Workflow
-permalink: 2025/09/01/New-Blog-Workflow/
+permalink: en/2025/09/01/New-Blog-Workflow/
 description: A note on the workflow for creating new blog posts.
 tags:
   - Markdown
@@ -12,7 +12,7 @@ categories:
   - Tutorial
 toc: true
 ---
-> Translation note: This English version was translated by Codex (`GPT-5`) on 2026-04-19 18:15:09 CST. The source text is the original Chinese post in this repository.
+> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
 Summary: This article records the full workflow for adding a new post to this blog.
 

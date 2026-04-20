@@ -92,24 +92,24 @@ If you want to jump from the profile into the matching posts, start here:
 
 ### iOS / Indie Development
 
-- [Building an iOS App from Zero to One (Part 1): Why iOS?](/2026/03/23/ios-app-from-zero-vol1/)
-- [Building an iOS App from Zero to One (Part 2): Why You Should Not Use Only One AI Model](/2026/03/30/ios-app-from-zero-vol2/)
+- [Building an iOS App from Zero to One (Part 1): Why iOS?](/en/2026/03/23/ios-app-from-zero-vol1/)
+- [Building an iOS App from Zero to One (Part 2): Why You Should Not Use Only One AI Model](/en/2026/03/30/ios-app-from-zero-vol2/)
 
 ### AI / Hardware / Tools
 
-- [Escaping the “Server Busy” Trap: Building a Private DeepSeek AI Setup](/2026/04/16/deepseek-private-ai-guide/)
-- [ESP32 Xiaozhi Chatbot End-to-End Build Log](/2025/01/26/esp32-xiaozhi-chatbot/)
-- [Local STT Solutions](/2026/04/16/local-stt-solutions/)
-- [NotebookLM + Gemini + Nanobanana Manga Workflow](/2026/04/16/notebooklm-doraemon-workflow/)
-- [Snowy Hong Kong: Custom Stable Diffusion Image Generation Practice](/2026/04/16/snowy-hong-kong-stable-diffusion/)
+- [Escaping the “Server Busy” Trap: Building a Private DeepSeek AI Setup](/en/2025/09/06/deepseek-private-ai-guide/)
+- [ESP32 Xiaozhi Chatbot End-to-End Build Log](/en/2025/01/26/esp32-xiaozhi-chatbot/)
+- [Local STT Solutions](/en/2026/02/07/local-stt-solutions/)
+- [NotebookLM + Gemini + Nanobanana Manga Workflow](/en/2025/12/22/notebooklm-doraemon-workflow/)
+- [Snowy Hong Kong: Custom Stable Diffusion Image Generation Practice](/en/2026/04/16/snowy-hong-kong-stable-diffusion/)
 
 ### Data / Research Notes
 
-- [ChatGPT Android Product Analysis Report](/2025/01/15/chatgpt-android-analysis-report/)
-- [Duan Yongping Xueqiu Comment Scraping Process](/2026/04/16/duan-yongping-xueqiu-crawler/)
-- [Star Home: Data Analysis of Missing People Related to Myanmar Scams](/2025/01/14/star-home-scam-data-analysis/)
-- [The Craft of an Event Photographer and a Recap of Heartbeat Pi Night](/2026/03/14/Self-Cultivation-Of-Photographer/)
-- [Swimming](/2025/09/25/swimming/)
+- [ChatGPT Android Product Analysis Report](/en/2025/01/15/chatgpt-android-analysis-report/)
+- [Duan Yongping Xueqiu Comment Scraping Process](/en/2026/03/18/duan-yongping-xueqiu-crawler/)
+- [Star Home: Data Analysis of Missing People Related to Myanmar Scams](/en/2025/01/14/star-home-scam-data-analysis/)
+- [The Craft of an Event Photographer and a Recap of Heartbeat Pi Night](/en/2026/03/14/The-Craft-of-an-Event-Photographer-and-a-Recap-of-Heartbeat-Pi-Night/)
+- [Swimming](/en/2025/09/25/swimming/)
 
 ## Outside Work
 
