@@ -2,8 +2,8 @@
 title: Markdown基本语法
 date: 2025-09-01 17:07:28
 lang: zh-CN
-slug: 回顾博客建立教程
-permalink: 2025/09/01/回顾博客建立教程/
+slug: Markdown-Basics
+permalink: 2025/09/01/Markdown-Basics/
 description: 整理博客写作中常用的 Markdown 基本语法。
 photos:
 

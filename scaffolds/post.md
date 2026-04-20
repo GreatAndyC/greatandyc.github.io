@@ -2,6 +2,7 @@
 title: {{ title }}
 date: {{ date }}
 lang: zh-CN
+# slug: English-Slug
 description: 摘要：30 字以内的一句话概括
 # 封面图建议放在 front matter 里，用于首页瀑布流展示
 # 封面图建议统一用 3:2 比例，推荐 1200x800，主体尽量居中

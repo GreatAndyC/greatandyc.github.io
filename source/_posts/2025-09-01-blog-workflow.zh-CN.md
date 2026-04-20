@@ -2,8 +2,8 @@
 title: 新博客工作流
 date: 2025-09-01 17:34:26
 lang: zh-CN
-slug: 新博客工作流
-permalink: 2025/09/01/新博客工作流/
+slug: New-Blog-Workflow
+permalink: 2025/09/01/New-Blog-Workflow/
 description: 记录新增一篇博客文章时的完整工作流。
 tags:
   - Markdown
