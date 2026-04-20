@@ -223,9 +223,12 @@ hexo.extend.helper.register('render_gallery', function(language = getCurrentLang
     const photos = (album.photos || []).map((photo, index) => {
       const photoTitle = escapeHTML(getLocalizedValue(photo.title, language));
       const photoCaption = escapeHTML(getLocalizedValue(photo.caption, language));
+      const photoLocation = escapeHTML(getLocalizedValue(photo.location, language));
+      const photoTime = escapeHTML(getLocalizedValue(photo.time, language));
       const photoMeta = escapeHTML(photo.meta || '');
       const src = this.url_for(photo.src);
-      const dataCaption = [photoTitle, photoCaption, photoMeta].filter(Boolean).join(' · ');
+      const dataCaption = [photoTitle, photoCaption, photoLocation, photoTime, photoMeta].filter(Boolean).join(' · ');
+      const hasFacts = photoLocation || photoTime;
 
       return `
         <figure class="gallery-photo-card">
@@ -235,6 +238,7 @@ hexo.extend.helper.register('render_gallery', function(language = getCurrentLang
           <figcaption class="gallery-photo-copy">
             <div class="gallery-photo-title">${photoTitle}</div>
             ${photoCaption ? `<p class="gallery-photo-caption">${photoCaption}</p>` : ''}
+            ${hasFacts ? `<div class="gallery-photo-facts">${photoLocation ? `<span class="gallery-photo-fact">${photoLocation}</span>` : ''}${photoTime ? `<span class="gallery-photo-fact">${photoTime}</span>` : ''}</div>` : ''}
             ${photoMeta ? `<div class="gallery-photo-meta">${photoMeta}</div>` : ''}
           </figcaption>
         </figure>`;

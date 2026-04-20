@@ -277,17 +277,23 @@
 .gallery-photo-frame
   display: block
   border: none
+  line-height: 0
+  overflow: hidden
+  background: #f3f6f9
 
 .gallery-photo-frame img
   display: block
-  width: 100%
-  height: auto
-  margin: 0
+  width: 100% !important
+  max-width: 100% !important
+  height: auto !important
+  margin: 0 !important
+  object-fit: contain
 
 .gallery-photo-copy
   display: flex
   flex-direction: column
-  gap: 8px
+  gap: 10px
+  padding: 14px 18px 18px
 
 /* =============================================
    Profile 页面头像
@@ -326,7 +332,9 @@
     transform: scale(1.1)
 
 .gallery-photo-title
+  margin: 0
   font-weight: 600
+  font-size: 1.08rem
   line-height: 1.35
   color: #1c2733
 
@@ -336,7 +344,22 @@
   line-height: 1.7
   font-size: 0.92rem
 
+.gallery-photo-facts
+  display: flex
+  flex-wrap: wrap
+  gap: 8px
+
+.gallery-photo-fact
+  display: inline-flex
+  align-items: center
+  padding: 4px 9px
+  border-radius: 999px
+  background: #f2f5f8
+  color: #657381
+  font-size: 0.78rem
+
 .gallery-photo-meta
+  margin-top: 2px
   font-size: 0.8rem
   color: #8b97a3
   letter-spacing: 0.02em
