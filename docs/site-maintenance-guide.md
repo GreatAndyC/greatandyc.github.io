@@ -36,6 +36,7 @@
 | 中文 Tags / Categories 页面入口 | `source/tags/index.md`、`source/categories/index.md` |
 | 英文 Tags / Categories / Archives / Gallery 页面入口 | `source/en/...` |
 | 画廊内容数据 | `source/_data/gallery.yml` |
+| 后台编辑入口 | `source/admin/` |
 | 图片资源 | `source/images/` |
 | 多语言分类/标签生成逻辑 | `scripts/localized-taxonomy.js` |
 | 语言感知链接、同语言文章导航、画廊渲染逻辑 | `themes/next/scripts/helpers/engine.js` |
@@ -47,6 +48,13 @@
 新文章默认模板在这里：
 
 - [`scaffolds/post.md`](/Users/andycao/Documents/Project/greatandyc.github.io/scaffolds/post.md)
+
+如果你想用浏览器里的后台编辑器维护画廊，入口在：
+
+- [`source/admin/index.html`](/Users/andycao/Documents/Project/greatandyc.github.io/source/admin/index.html)
+- [`source/admin/config.yml`](/Users/andycao/Documents/Project/greatandyc.github.io/source/admin/config.yml)
+
+当前后台按“只给自己登录”的思路配置，采用 Git Gateway + Invite only 的方式；你只需要把 Netlify Identity 打开并把自己邀请进去，就能在 `/admin/` 里维护画廊数据。
 
 ## 3. 内容怎么改
 

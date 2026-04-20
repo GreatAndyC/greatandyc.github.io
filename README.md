@@ -21,6 +21,14 @@
 
 详细维护说明见：[docs/site-maintenance-guide.md](/Users/andycao/Documents/Project/greatandyc.github.io/docs/site-maintenance-guide.md:1)
 
+## 内容后台
+
+如果你想在浏览器里维护画廊数据，可以直接访问：
+
+- `https://caoyueyang.org/admin/`
+
+仓库里已经加入了 Decap CMS 的后台入口和配置文件，当前按“只给自己登录”的思路预留成 Git Gateway + Invite only。后续只需要在 Netlify 上启用 Identity，并把自己邀请进去，就可以直接在后台编辑 `source/_data/gallery.yml`。
+
 ## 本地开发
 
 ### 1. 安装依赖
