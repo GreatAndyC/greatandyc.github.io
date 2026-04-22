@@ -12,6 +12,7 @@
 {%- if theme.bookmark.enable %}
   {{- next_js('bookmark.js') }}
 {%- endif %}
+{{- next_js('home-category-filter.js') }}
 {%- if theme.pjax %}
   {% include 'pjax.swig' %}
 {%- endif %}

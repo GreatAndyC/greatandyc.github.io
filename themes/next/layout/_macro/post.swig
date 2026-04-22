@@ -1,7 +1,7 @@
   {##################}
   {### POST BLOCK ###}
   {##################}
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="{{ post.lang or config.language }}">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="{{ post.lang or config.language }}"{%- if is_index and post.categories and post.categories.length %} data-home-categories="{%- for cat in post.categories.toArray() -%}{{ cat.name | lower }}{%- if loop.index !== post.categories.length %},{%- endif -%}{%- endfor -%}"{%- endif %}>
     <link itemprop="mainEntityOfPage" href="{{ post.permalink }}">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
