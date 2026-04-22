@@ -62,15 +62,15 @@ comments: false
 ### AI × IoT 软硬结合探索
 
 - [ESP32 小智语音终端：低成本接入大模型 API，验证嵌入式语音交互闭环](/2025/01/26/esp32-xiaozhi-chatbot/)
-- [STT 本地语音识别：探索离线语音转文字方案与私有化处理路径](/2026/04/16/local-stt-solutions/)
+- [STT 本地语音识别：探索离线语音转文字方案与私有化处理路径](/2026/02/07/local-stt-solutions/)
 - [雪中香港：Stable Diffusion 图像生成](/2026/04/16/snowy-hong-kong-stable-diffusion/)
-- [DeepSeek 私有化使用路径：梳理 API 调用、本地部署与私有客户端配置思路](/2026/04/16/deepseek-private-ai-guide/)
+- [DeepSeek 私有化使用路径：梳理 API 调用、本地部署与私有客户端配置思路](/2025/09/06/deepseek-private-ai-guide/)
 
 ### 数据分析与自动化项目
 
 - [ChatGPT 安卓端产品分析报告](/2025/01/15/chatgpt-android-analysis-report/)
-- [段永平雪球评论数据抓取：完成网页抓取、数据整理与分析输出](/2026/04/16/duan-yongping-xueqiu-crawler/)
-- [星星回家相关数据分析：用 LLM 辅助标注和 Tableau 可视化分析公共议题数据](/2026/04/16/star-home-scam-data-analysis/)
+- [段永平雪球评论数据抓取：完成网页抓取、数据整理与分析输出](/2026/03/18/duan-yongping-xueqiu-crawler/)
+- [星星回家相关数据分析：用 LLM 辅助标注和 Tableau 可视化分析公共议题数据](/2025/01/14/star-home-scam-data-analysis/)
 
 ### 机器人与系统控制研究
 
