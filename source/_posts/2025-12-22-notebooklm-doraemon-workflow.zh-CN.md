@@ -16,7 +16,7 @@ categories:
 toc: true
 ---
 ## 前置条件
-- [ ] 拥有稳定的 VPN 连接
+- [ ] 拥有稳定的互联网连接
 - [ ] 有一个谷歌账号
 - [ ] 有 **Nanobanana Pro** 的 Quota
 - [ ] 有 **Gemini** 或者其他 AI 工具的访问权限
@@ -32,7 +32,7 @@ toc: true
 - 《Python 编程实战：妙趣横生的项目之旅》 ([美] 李·沃恩 (Lee Vaughan))
 
 ### Step 2: 文件录入 NotebookLM
-将 PDF 文件上传至 [NotebookLM](https://notebooklm.google.com/)（请注意 VPN 选择支持访问的国家）。
+将 PDF 文件上传至 [NotebookLM](https://notebooklm.google.com/)（请自行解决网络连接问题，需要确认选择支持的国家和地区）。
 
 ### Step 3: 生成漫画脚本建议
 在 NotebookLM 里面输入 Prompt：
