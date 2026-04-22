@@ -1,13 +1,13 @@
 /* =============================================
-   首页瀑布流卡片布局
+   内容流页面布局
    ============================================= */
 
-.main .content.index.posts-expand
+.main .content.feed-page.posts-expand
   column-count: 3
   column-gap: 24px
   padding-top: 10px
 
-.main .content.index.posts-expand .post-block
+.main .content.feed-page.posts-expand .post-block
   break-inside: avoid-column
   margin-top: 0
   margin-bottom: 24px
@@ -20,16 +20,16 @@
   flex-direction: column
   overflow: hidden
 
-.main .content.index.posts-expand .post-block:hover
+.main .content.feed-page.posts-expand .post-block:hover
   transform: translateY(-4px)
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.10)
 
-.main .content.index.posts-expand .post-header
+.main .content.feed-page.posts-expand .post-header
   padding: 20px 20px 0 20px
   margin-bottom: 12px
   text-align: left
 
-.main .content.index.posts-expand .post-title
+.main .content.feed-page.posts-expand .post-title
   font-size: 1.1rem
   font-weight: 600
   line-height: 1.45
@@ -41,7 +41,7 @@
   text-align: left
   justify-content: flex-start
 
-.main .content.index.posts-expand .post-meta
+.main .content.feed-page.posts-expand .post-meta
   font-size: 0.82rem
   opacity: .75
   margin-bottom: 12px
@@ -50,23 +50,23 @@
   align-items: flex-start
   gap: 2px
 
-.main .content.index.posts-expand .post-meta .post-meta-item
+.main .content.feed-page.posts-expand .post-meta .post-meta-item
   justify-content: flex-start
 
-.main .content.index.posts-expand .post-meta .post-meta-item + .post-meta-item::before
+.main .content.feed-page.posts-expand .post-meta .post-meta-item + .post-meta-item::before
   display: none
 
-.main .content.index.posts-expand .post-meta br
+.main .content.feed-page.posts-expand .post-meta br
   display: none
 
-.main .content.index.posts-expand .post-body
+.main .content.feed-page.posts-expand .post-body
   padding: 0 20px 20px 20px
   flex: 1
   display: flex
   flex-direction: column
   text-align: left
 
-.main .content.index.posts-expand .post-body p
+.main .content.feed-page.posts-expand .post-body p
   margin-top: 0
   margin-bottom: 8px
   color: #666
@@ -78,7 +78,7 @@
   overflow: hidden
   text-overflow: ellipsis
 
-.main .content.index.posts-expand .post-body img
+.main .content.feed-page.posts-expand .post-body img
   width: calc(100% + 40px) !important
   max-width: calc(100% + 40px) !important
   height: auto !important
@@ -89,11 +89,11 @@
   box-shadow: none !important
   border-radius: 0 !important
 
-.main .content.index.posts-expand .post-gallery
+.main .content.feed-page.posts-expand .post-gallery
   display: block
   margin: -10px -20px 12px -20px
 
-.main .content.index.posts-expand .post-gallery img
+.main .content.feed-page.posts-expand .post-gallery img
   display: block
   width: 100%
   max-width: 100%
@@ -102,16 +102,156 @@
   object-fit: cover
   border-radius: 0
 
-.main .content.index.posts-expand .post-eof
+.main .content.feed-page.posts-expand .post-eof
   display: none
 
-/* 首页分页横跨所有列 */
-.main .content.index .pagination
-  margin-top: 32px
-  column-span: all
-  width: 100%
+.main .content.feed-page.feed-view-list
+  column-count: 1
+  column-gap: 0
+  padding-top: 4px
+  padding-bottom: 2px
+  background: rgba(255, 255, 255, 0.96)
+  border: 1px solid rgba(120, 120, 120, 0.10)
+  border-radius: 20px
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.06)
+  overflow: hidden
 
-.main .content.index .home-category-panel
+.main .content.feed-page.feed-view-list .post-block
+  break-inside: auto
+  margin-bottom: 0
+  padding: 0 24px
+  border-radius: 0
+  background: transparent
+  box-shadow: none
+  border: 0
+  border-bottom: 1px solid rgba(120, 120, 120, 0.14)
+
+.main .content.feed-page.feed-view-list .post-block:hover
+  transform: none
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 10px 24px rgba(0, 0, 0, 0.03)
+  background: rgba(250, 250, 250, 0.68)
+
+.main .content.feed-page.feed-view-list .post-block:last-of-type
+  border-bottom: 0
+
+.main .content.feed-page.feed-view-list .post-header
+  display: flex
+  align-items: flex-start
+  justify-content: space-between
+  gap: 20px
+  padding: 18px 0 4px
+  margin-bottom: 0
+
+.main .content.feed-page.feed-view-list .post-title
+  flex: 1 1 auto
+  margin: 0
+  font-size: 1.01rem
+  font-weight: 500
+  line-height: 1.45
+  display: block
+  text-align: left
+  letter-spacing: 0.01em
+
+.main .content.feed-page.feed-view-list .post-title-link
+  display: inline
+  border-bottom: 0
+
+.main .content.feed-page.feed-view-list .post-title-link::before
+  display: none
+
+.main .content.feed-page.feed-view-list .post-meta
+  flex: 0 0 auto
+  display: block
+  margin: 1px 0 0
+  text-align: right
+  font-size: 0.78rem
+  opacity: 0.72
+
+.main .content.feed-page.feed-view-list .post-meta .post-meta-item
+  display: none
+
+.main .content.feed-page.feed-view-list .post-meta .post-meta-item:first-child
+  display: block
+
+.main .content.feed-page.feed-view-list .post-meta .post-meta-item-icon,
+.main .content.feed-page.feed-view-list .post-meta .post-meta-item-text
+  display: none
+
+.main .content.feed-page.feed-view-list .post-meta time
+  border-bottom: 0
+  color: rgba(90, 90, 90, 0.78)
+  font-variant-numeric: tabular-nums
+  letter-spacing: 0.03em
+  white-space: nowrap
+
+.main .content.feed-page.feed-view-list .post-description
+  display: none
+
+.main .content.feed-page.feed-view-list .post-body
+  display: block
+  padding: 0 0 14px
+  min-width: 0
+
+.main .content.feed-page.feed-view-list .post-body > :not(p):not(.post-description)
+  display: none !important
+
+.main .content.feed-page.feed-view-list .post-body p
+  margin: 0
+  color: rgba(90, 90, 90, 0.82)
+  font-size: 0.87rem
+  line-height: 1.55
+  display: -webkit-box
+  -webkit-line-clamp: 1
+  -webkit-box-orient: vertical
+  overflow: hidden
+  text-overflow: ellipsis
+
+.main .content.feed-page.feed-view-list .post-body .post-button
+  display: none !important
+
+.main .content.feed-page.feed-view-list .post-footer
+  display: none
+
+/* 内容流分页 */
+.main .content.feed-page .pagination
+  column-span: all
+  display: flex
+  justify-content: center
+  width: 100%
+  margin-top: 18px
+  padding-top: 0
+
+.main .content.feed-page .pagination .page-number,
+.main .content.feed-page .pagination .extend
+  display: inline-flex
+  align-items: center
+  justify-content: center
+  min-width: 38px
+  height: 38px
+  margin: 0 5px
+  border: 1px solid rgba(110, 110, 110, 0.20)
+  border-radius: 999px
+  background: rgba(255, 255, 255, 0.78)
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04)
+  color: var(--text-color)
+  text-decoration: none
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease, color .2s ease
+
+.main .content.feed-page .pagination .page-number:hover,
+.main .content.feed-page .pagination .extend:hover
+  transform: translateY(-1px)
+  color: var(--link-hover-color)
+  border-color: rgba(80, 80, 80, 0.34)
+  background: rgba(255, 255, 255, 0.94)
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07)
+
+.main .content.feed-page .pagination .current
+  color: var(--link-hover-color)
+  border-color: rgba(80, 80, 80, 0.34)
+  background: rgba(120, 120, 120, 0.10)
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06)
+
+.main .content.feed-page .home-category-panel
   column-span: all
   box-sizing: border-box
   display: flex
@@ -128,23 +268,20 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.55)
   overflow: hidden
 
-.main .content.index .home-category-panel.is-loading
-  opacity: 0.88
-
-.main .content.index .home-category-panel-head
+.main .content.feed-page .home-category-panel-head
   display: flex
   align-items: center
   flex: 0 0 auto
   gap: 10px
   margin-bottom: 0
 
-.main .content.index .home-category-panel-title
+.main .content.feed-page .home-category-panel-title
   font-weight: 600
   font-size: 0.92rem
   color: var(--text-color)
   white-space: nowrap
 
-.main .content.index .home-category-nav
+.main .content.feed-page .home-category-nav
   display: flex
   flex: 1 1 auto
   min-width: 0
@@ -154,7 +291,15 @@
   overflow-y: hidden
   scrollbar-width: thin
 
-.main .content.index .home-category-link
+.main .content.feed-page .home-category-panel-tools
+  flex: 0 0 auto
+  display: flex
+  align-items: center
+  justify-content: flex-end
+  gap: 10px
+  margin-left: auto
+
+.main .content.feed-page .home-category-link
   display: inline-flex
   align-items: center
   gap: 6px
@@ -171,19 +316,19 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03)
   transition: border-color .2s ease, color .2s ease, background .2s ease, box-shadow .2s ease
 
-.main .content.index .home-category-link:hover
+.main .content.feed-page .home-category-link:hover
   color: var(--link-hover-color)
   border-color: rgba(80, 80, 80, 0.34)
   background: rgba(255, 255, 255, 0.9)
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.07)
 
-.main .content.index .home-category-link.is-active
+.main .content.feed-page .home-category-link.is-active
   color: var(--link-hover-color)
   border-color: rgba(70, 130, 180, 0.50)
   background: rgba(70, 130, 180, 0.14)
   box-shadow: 0 4px 12px rgba(70, 130, 180, 0.18)
 
-.main .content.index .home-category-count
+.main .content.feed-page .home-category-count
   display: inline-flex
   align-items: center
   justify-content: center
@@ -195,50 +340,185 @@
   color: var(--text-color)
   font-size: 0.72rem
 
-.main .content.index .home-category-empty
-  column-span: all
-  margin: 4px 0 10px
-  padding: 10px 12px
-  border-radius: 10px
-  background: rgba(120, 120, 120, 0.08)
+.main .content.feed-page .home-category-search
+  display: inline-flex
+  align-items: center
+  gap: 7px
+  min-width: 0
+  height: 34px
+  padding: 0 12px
+  border: 1px solid rgba(110, 110, 110, 0.22)
+  border-radius: 999px
+  background: rgba(255, 255, 255, 0.72)
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03)
   color: var(--text-color)
-  font-size: 0.85rem
+  cursor: pointer
+  appearance: none
+  -webkit-appearance: none
+  font: inherit
+  text-align: left
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease, color .2s ease
+
+.main .content.feed-page .home-category-search:hover
+  transform: translateY(-1px)
+  color: var(--link-hover-color)
+  border-color: rgba(80, 80, 80, 0.34)
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.07)
+  background: rgba(255, 255, 255, 0.90)
+
+.main .content.feed-page .home-category-search:focus
+  outline: none
+  color: var(--link-hover-color)
+  border-color: rgba(80, 80, 80, 0.34)
+  box-shadow: 0 0 0 3px rgba(120, 120, 120, 0.10), 0 3px 8px rgba(0, 0, 0, 0.07)
+
+.main .content.feed-page .home-category-search-icon
+  flex: 0 0 auto
+  font-size: 0.82rem
+  opacity: 0.8
+
+.main .content.feed-page .home-category-search-label
+  font-size: 0.84rem
+  line-height: 1
+  letter-spacing: 0.01em
+
+.main .content.feed-page .home-view-toggle
+  display: inline-flex
+  align-items: center
+  padding: 3px
+  border: 1px solid rgba(110, 110, 110, 0.18)
+  border-radius: 999px
+  background: rgba(255, 255, 255, 0.56)
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.48)
+
+.main .content.feed-page .home-view-button
+  min-width: 52px
+  height: 28px
+  padding: 0 12px
+  border: 0
+  border-radius: 999px
+  background: transparent
+  color: rgba(90, 90, 90, 0.82)
+  cursor: pointer
+  font: inherit
+  font-size: 0.8rem
+  transition: background .2s ease, color .2s ease, box-shadow .2s ease
+
+.main .content.feed-page .home-view-button.is-active
+  background: rgba(255, 255, 255, 0.96)
+  color: var(--text-color)
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06)
 
 @media (prefers-color-scheme: dark)
-  .main .content.index .home-category-panel
+  .main .content.feed-page .pagination .page-number,
+  .main .content.feed-page .pagination .extend
+    border-color: rgba(255, 255, 255, 0.16)
+    background: rgba(255, 255, 255, 0.06)
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18)
+
+  .main .content.feed-page .pagination .page-number:hover,
+  .main .content.feed-page .pagination .extend:hover
+    border-color: rgba(255, 255, 255, 0.26)
+    background: rgba(255, 255, 255, 0.12)
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.26)
+
+  .main .content.feed-page .pagination .current
+    border-color: rgba(255, 255, 255, 0.22)
+    background: rgba(255, 255, 255, 0.14)
+
+  .main .content.feed-page.feed-view-list .post-block
+    border-bottom-color: rgba(255, 255, 255, 0.10)
+
+  .main .content.feed-page.feed-view-list
+    background: rgba(22, 22, 22, 0.82)
+    border-color: rgba(255, 255, 255, 0.08)
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.26)
+
+  .main .content.feed-page.feed-view-list .post-block:hover
+    background: rgba(255, 255, 255, 0.03)
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 10px 24px rgba(0, 0, 0, 0.10)
+
+  .main .content.feed-page.feed-view-list .post-meta time
+    color: rgba(220, 224, 228, 0.72)
+
+  .main .content.feed-page.feed-view-list .post-body p
+    color: rgba(220, 224, 228, 0.76)
+
+  .main .content.feed-page .home-category-panel
     border-color: rgba(255, 255, 255, 0.14)
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.06)
 
-  .main .content.index .home-category-link
+  .main .content.feed-page .home-category-link
     background: rgba(255, 255, 255, 0.05)
     border-color: rgba(255, 255, 255, 0.17)
 
-  .main .content.index .home-category-link:hover
+  .main .content.feed-page .home-category-link:hover
     background: rgba(255, 255, 255, 0.10)
     border-color: rgba(255, 255, 255, 0.27)
 
-  .main .content.index .home-category-link.is-active
+  .main .content.feed-page .home-category-link.is-active
     border-color: rgba(123, 176, 220, 0.60)
     background: rgba(70, 130, 180, 0.24)
 
+  .main .content.feed-page .home-category-search
+    border-color: rgba(255, 255, 255, 0.17)
+    background: rgba(255, 255, 255, 0.05)
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12)
+
+  .main .content.feed-page .home-category-search:hover
+    border-color: rgba(255, 255, 255, 0.27)
+    background: rgba(255, 255, 255, 0.10)
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.22)
+
+  .main .content.feed-page .home-category-search:focus
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08), 0 3px 8px rgba(0, 0, 0, 0.22)
+
+  .main .content.feed-page .home-view-toggle
+    border-color: rgba(255, 255, 255, 0.14)
+    background: rgba(255, 255, 255, 0.04)
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05)
+
+  .main .content.feed-page .home-view-button
+    color: rgba(220, 224, 228, 0.78)
+
+  .main .content.feed-page .home-view-button.is-active
+    background: rgba(255, 255, 255, 0.12)
+    color: rgba(255, 255, 255, 0.96)
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24)
+
 @media (max-width: 991px)
-  .main .content.index.posts-expand
+  .main .content.feed-page.posts-expand
     column-count: 2
 
 @media (max-width: 767px)
-  .main .content.index .home-category-panel
+  .main .content.feed-page.feed-view-list .post-block
+    padding: 0 14px
+
+  .main .content.feed-page.feed-view-list .post-header
+    gap: 12px
+    padding: 16px 0 4px
+
+  .main .content.feed-page .home-category-panel
     display: block
     height: auto
     padding: 10px 12px
 
-  .main .content.index .home-category-panel-head
+  .main .content.feed-page .home-category-panel-head
     margin-bottom: 8px
 
-  .main .content.index .home-category-nav
+  .main .content.feed-page .home-category-nav
     flex-wrap: wrap
     overflow-x: visible
 
-  .main .content.index.posts-expand
+  .main .content.feed-page .home-category-panel-tools
+    margin-top: 10px
+    justify-content: flex-start
+    flex-wrap: wrap
+
+  .main .content.feed-page .home-category-search
+    width: auto
+
+  .main .content.feed-page.posts-expand
     column-count: 1
 
 /* =============================================
