@@ -8,7 +8,7 @@
 
 {% block content %}
   {%- set current_lang = page.lang or config.language[0] %}
-  {%- set localized_posts = page.posts.find({lang: current_lang}) %}
+  {%- set localized_posts = site.posts.find({lang: current_lang}).sort('-date') %}
 
   {#####################}
   {### ARCHIVE BLOCK ###}
@@ -40,8 +40,6 @@
   {#########################}
   {### END ARCHIVE BLOCK ###}
   {#########################}
-
-  {% include '_partials/pagination.swig' %}
 
 {% endblock %}
 
