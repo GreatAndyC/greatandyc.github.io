@@ -490,8 +490,6 @@ hexo.extend.helper.register('render_gallery', function (language = getCurrentLan
   const nextText = String(language).toLowerCase().startsWith('zh') ? '下一张' : 'Next';
   const loadingText = String(language).toLowerCase().startsWith('zh') ? '正在加载相册...' : 'Loading album...';
   const errorText = String(language).toLowerCase().startsWith('zh') ? '相册加载失败，请稍后重试。' : 'Could not load this album. Please try again later.';
-  const zoomText = String(language).toLowerCase().startsWith('zh') ? '放大查看' : 'Zoom view';
-
   return `
     <div class="gallery-page">
       <div class="gallery-card-deck">
@@ -507,10 +505,7 @@ hexo.extend.helper.register('render_gallery', function (language = getCurrentLan
             <h2 class="gallery-viewer-title" data-gallery-viewer-title></h2>
             <p class="gallery-viewer-meta" data-gallery-viewer-meta></p>
           </div>
-          <div class="gallery-viewer-actions">
-            <button class="gallery-viewer-zoom-link" data-gallery-viewer-zoom type="button">${zoomText}</button>
-            <button class="gallery-viewer-close" type="button" data-gallery-close aria-label="${closeText}">${closeText}</button>
-          </div>
+          <button class="gallery-viewer-close" type="button" data-gallery-close aria-label="${closeText}">${closeText}</button>
         </header>
         <div class="gallery-viewer-stage">
           <button class="gallery-viewer-nav gallery-viewer-prev" type="button" data-gallery-prev aria-label="${previousText}">‹</button>

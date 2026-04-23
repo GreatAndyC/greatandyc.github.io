@@ -97,19 +97,22 @@
   function openZoomViewer() {
     if (!state.album || !state.album.photos.length || !window.jQuery || !jQuery.fancybox) return;
 
-    var photo = state.album.photos[state.index];
-    jQuery.fancybox.open([{
-      src: photo.src,
-      type: 'image',
-      opts: {
-        caption: photoCaption(photo)
-      }
-    }], {
-      loop: false,
-      hash: false,
-      buttons: ['zoom', 'close'],
-      protect: true
+    var items = state.album.photos.map(function(photo) {
+      return {
+        src: photo.src,
+        type: 'image',
+        opts: {
+          caption: photoCaption(photo)
+        }
+      };
     });
+
+    jQuery.fancybox.open(items, {
+      loop: true,
+      hash: false,
+      buttons: ['zoom', 'thumbs', 'close'],
+      protect: true
+    }, state.index);
   }
 
   function renderThumbs(viewer) {
@@ -237,10 +240,6 @@
 
     $('[data-gallery-viewer-image-link]', viewer).addEventListener('click', function(event) {
       event.preventDefault();
-      openZoomViewer();
-    });
-
-    $('[data-gallery-viewer-zoom]', viewer).addEventListener('click', function() {
       openZoomViewer();
     });
 
