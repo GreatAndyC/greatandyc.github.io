@@ -124,6 +124,81 @@ function encodePathSegments(pathname = '') {
   return pathname.split('/').map(segment => encodeURIComponent(segment)).join('/');
 }
 
+function escapeRegExp(value = '') {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function lookupCaseInsensitive(map, key) {
+  if (Object.prototype.hasOwnProperty.call(map, key)) return map[key];
+
+  const normalizedKey = String(key || '').toLowerCase();
+  const matchedKey = Object.keys(map).find(item => item.toLowerCase() === normalizedKey);
+  return matchedKey ? map[matchedKey] : '';
+}
+
+function getPostTranslationKey(post, languages = getLanguages()) {
+  const source = post.source || post.path || post.slug || '';
+  const basename = source.split('/').pop().replace(/\.(md|markdown|html)$/i, '');
+
+  if (!basename) return String(post.slug || post.title || '').toLowerCase();
+
+  const languagePattern = languages
+    .filter(Boolean)
+    .sort((a, b) => b.length - a.length)
+    .map(escapeRegExp)
+    .join('|');
+
+  if (!languagePattern) return basename.toLowerCase();
+
+  return basename.replace(new RegExp(`\\.(${languagePattern})$`, 'i'), '').toLowerCase();
+}
+
+function buildInferredCategoryMaps(ctx) {
+  const languages = getLanguages();
+  const categoriesByPostKey = ctx.site.categories.toArray().reduce((result, category) => {
+    category.posts.toArray().forEach(post => {
+      const language = post.lang || getDefaultLanguage();
+      const key = getPostTranslationKey(post, languages);
+
+      if (!key) return;
+      if (!result[key]) result[key] = {};
+      if (!result[key][language]) result[key][language] = [];
+      result[key][language].push(category);
+    });
+
+    return result;
+  }, {});
+
+  return Object.values(categoriesByPostKey).reduce((maps, localizedCategories) => {
+    const entries = Object.entries(localizedCategories);
+
+    entries.forEach(([sourceLanguage, sourceCategories]) => {
+      if (!sourceCategories.length) return;
+
+      entries.forEach(([targetLanguage, targetCategories]) => {
+        if (sourceLanguage === targetLanguage) return;
+
+        const pairCount = Math.min(sourceCategories.length, targetCategories.length);
+        if (!pairCount) return;
+
+        if (!maps[sourceLanguage]) maps[sourceLanguage] = {};
+        if (!maps[sourceLanguage][targetLanguage]) maps[sourceLanguage][targetLanguage] = {};
+
+        for (let index = 0; index < pairCount; index++) {
+          const sourceName = sourceCategories[index].name;
+          const targetName = targetCategories[index].name;
+
+          if (sourceName && targetName) {
+            maps[sourceLanguage][targetLanguage][sourceName] = targetName;
+          }
+        }
+      });
+    });
+
+    return maps;
+  }, {});
+}
+
 function mapCategorySlugByLanguage(ctx, slug, language) {
   const defaultLanguage = getDefaultLanguage();
   const categoryMap = ctx.config.category_map || {};
@@ -132,9 +207,14 @@ function mapCategorySlugByLanguage(ctx, slug, language) {
     result[target] = source;
     return result;
   }, {});
+  const sourceLanguage = getCurrentLanguage(ctx);
+  const inferredCategoryMap = buildInferredCategoryMaps(ctx);
+  const inferredMap = inferredCategoryMap[sourceLanguage] && inferredCategoryMap[sourceLanguage][language]
+    ? inferredCategoryMap[sourceLanguage][language]
+    : {};
   const mapped = language === defaultLanguage
-    ? (reverseMap[decodedSlug] || decodedSlug)
-    : (categoryMap[decodedSlug] || decodedSlug);
+    ? (lookupCaseInsensitive(reverseMap, decodedSlug) || lookupCaseInsensitive(inferredMap, decodedSlug) || decodedSlug)
+    : (lookupCaseInsensitive(categoryMap, decodedSlug) || lookupCaseInsensitive(inferredMap, decodedSlug) || decodedSlug);
   return encodePathSegments(mapped);
 }
 
@@ -462,8 +542,6 @@ hexo.extend.helper.register('i18n_path', function (language) {
     }
   }
 
-  addCandidate(strippedPath);
-
   if (this.page && (this.page.layout === 'category' || this.page.category)) {
     const categoryDir = normalizeInputPath(this.config.category_dir || 'categories').replace(/\/+$/, '');
     const categoryPrefix = `${categoryDir}/`;
@@ -496,6 +574,8 @@ hexo.extend.helper.register('i18n_path', function (language) {
       }
     }
   }
+
+  addCandidate(strippedPath);
 
   for (const candidate of candidates) {
     const localizedCandidate = localizedRoutePath(candidate, language, defaultLanguage);
