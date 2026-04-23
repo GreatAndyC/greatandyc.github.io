@@ -62,6 +62,9 @@ counter:
     one: 1 post.
     other: "%d posts in total."
 
+home:
+  all: All
+
 state:
   posts: posts
   tags: tags
