@@ -21,15 +21,6 @@
         {{- menu_item.render(name, itemName, respath) | trim }}
       {%- endif %}
     {%- endfor %}
-
-    {%- if theme.algolia_search.enable or theme.local_search.enable %}
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger">
-          {%- if theme.menu_settings.icons %}<i class="fa fa-search fa-fw"></i>{%- endif %}{{ __('menu.search') }}
-        </a>
-      </li>
-    {%- endif %}
-
     <li class="menu-item menu-item-language" style="display: flex; align-items: center; margin-left: 10px;">
       {{ partial('_partials/languages.swig', {}, {cache: theme.cache.enable}) }}
     </li>

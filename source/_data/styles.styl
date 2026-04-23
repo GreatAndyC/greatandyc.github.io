@@ -108,31 +108,31 @@
 .main .content.feed-page.feed-view-list
   column-count: 1
   column-gap: 0
-  padding-top: 4px
-  padding-bottom: 2px
-  background: rgba(255, 255, 255, 0.96)
-  border: 1px solid rgba(120, 120, 120, 0.10)
-  border-radius: 20px
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.06)
-  overflow: hidden
+  padding-top: 0
+  display: flex
+  flex-direction: column
+  gap: 16px /* 列表项之间的间距，与分类栏下方一致 */
 
 .main .content.feed-page.feed-view-list .post-block
-  break-inside: auto
+  break-inside: avoid
   margin-bottom: 0
   padding: 0 24px
-  border-radius: 0
-  background: transparent
-  box-shadow: none
-  border: 0
-  border-bottom: 1px solid rgba(120, 120, 120, 0.14)
+  border-radius: 18px /* 统一卡片圆角 */
+  background: var(--content-bg-color, #fff)
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06) /* 统一卡片阴影 */
+  border: 1px solid rgba(120, 120, 120, 0.10)
+  transition: transform .2s ease, box-shadow .2s ease
 
 .main .content.feed-page.feed-view-list .post-block:hover
-  transform: none
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 10px 24px rgba(0, 0, 0, 0.03)
-  background: rgba(250, 250, 250, 0.68)
+  transform: translateY(-2px)
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08)
+  background: var(--content-bg-color, #fff)
+
+.main .content.feed-page.feed-view-list .post-block .post-header
+  border-bottom: none /* 移除之前的底边线，保持卡片纯净 */
 
 .main .content.feed-page.feed-view-list .post-block:last-of-type
-  border-bottom: 0
+  margin-bottom: 0
 
 .main .content.feed-page.feed-view-list .post-header
   display: flex
@@ -145,8 +145,8 @@
 .main .content.feed-page.feed-view-list .post-title
   flex: 1 1 auto
   margin: 0
-  font-size: 1.01rem
-  font-weight: 500
+  font-size: 1.1rem /* 对齐卡片模式字号 */
+  font-weight: 600 /* 对齐卡片模式字重 */
   line-height: 1.45
   display: block
   text-align: left
@@ -197,11 +197,11 @@
 
 .main .content.feed-page.feed-view-list .post-body p
   margin: 0
-  color: rgba(90, 90, 90, 0.82)
-  font-size: 0.87rem
-  line-height: 1.55
+  color: rgba(90, 90, 90, 0.85)
+  font-size: 0.9rem
+  line-height: 1.6
   display: -webkit-box
-  -webkit-line-clamp: 1
+  -webkit-line-clamp: 2 /* 增加到 2 行，看起来更饱满 */
   -webkit-box-orient: vertical
   overflow: hidden
   text-overflow: ellipsis
@@ -260,12 +260,12 @@
   width: auto
   max-width: 100%
   height: 58px
-  margin: 0 0 16px
-  padding: 0 14px
-  border-radius: 12px
+  margin: 0 0 20px /* 增加下方间距 */
+  padding: 0 18px
+  border-radius: 18px /* 统一圆角为 18px */
   background: var(--content-bg-color)
-  border: 1px solid rgba(120, 120, 120, 0.20)
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.55)
+  border: 1px solid rgba(120, 120, 120, 0.15)
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.55)
   overflow: hidden
 
 .main .content.feed-page .home-category-panel-head
@@ -427,16 +427,17 @@
     background: rgba(255, 255, 255, 0.14)
 
   .main .content.feed-page.feed-view-list .post-block
-    border-bottom-color: rgba(255, 255, 255, 0.10)
-
-  .main .content.feed-page.feed-view-list
-    background: rgba(22, 22, 22, 0.82)
-    border-color: rgba(255, 255, 255, 0.08)
-    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.26)
+    background: rgba(30, 30, 30, 0.90)
+    border-color: rgba(255, 255, 255, 0.10)
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3)
 
   .main .content.feed-page.feed-view-list .post-block:hover
-    background: rgba(255, 255, 255, 0.03)
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 10px 24px rgba(0, 0, 0, 0.10)
+    background: rgba(255, 255, 255, 0.08)
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4)
+
+  .main .content.feed-page .home-category-panel
+    border-color: rgba(255, 255, 255, 0.14)
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06)
 
   .main .content.feed-page.feed-view-list .post-meta time
     color: rgba(220, 224, 228, 0.72)
