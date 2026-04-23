@@ -80,6 +80,17 @@ index_generator:
 # Category & Tag
 default_category: uncategorized
 category_map:
+  教程: Tutorial
+  数据分析: Data-Analysis
+  随笔: Essay
+  AI: AI
+  独立开发: Indie-Development
+  语音识别: Speech-Recognition
+  产品: Product
+  公共议题: Public-Issues
+  摄影: Photography
+  Hexo: Hexo
+  回顾: Recap
 tag_map:
 
 # Metadata elements

@@ -5,6 +5,8 @@ lang: zh-CN
 slug: Hello-World
 permalink: 2025/08/31/Hello-World/
 description: Hexo 默认的新手欢迎文章。
+categories:
+  - 其他
 ---
 Welcome to [Hexo](https://hexo.io/)! 
 <!-- more -->
