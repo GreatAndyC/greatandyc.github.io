@@ -21,7 +21,7 @@
         {{- menu_item.render(name, itemName, respath) | trim }}
       {%- endif %}
     {%- endfor %}
-    <li class="menu-item menu-item-language" style="display: flex; align-items: center; margin-left: 20px;">
+    <li class="menu-item menu-item-language">
       {{ partial('_partials/languages.swig', {}, {cache: theme.cache.enable}) }}
     </li>
 
