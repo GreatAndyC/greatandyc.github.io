@@ -155,27 +155,31 @@ html
   transform: none
   box-shadow: none
 
-/* 列表视图 - 文章头部 */
+/* 列表视图 - 文章头部（标题左上 + 日期右上，同一行） */
 .main .content.feed-page.feed-view-list .post-header
-  display: flex
+  display: flex !important
+  flex-direction: row !important
+  flex-wrap: nowrap !important
   align-items: center
   justify-content: space-between
   gap: 16px
-  padding: 0
-  margin: 0 0 2px 0
+  padding: 0 !important
+  margin: 0 0 2px 0 !important
   border-bottom: none
   text-align: left
 
-/* 列表视图 - 标题 */
+/* 列表视图 - 标题（收缩以留出日期空间） */
 .main .content.feed-page.feed-view-list .post-title
-  flex: 1 1 0
-  min-width: 0
-  margin: 0
-  padding: 0
+  flex: 1 1 0 !important
+  min-width: 0 !important
+  max-width: none
+  width: auto
+  margin: 0 !important
+  padding: 0 !important
   font-size: 1.02rem
   font-weight: 600
   line-height: 1.4
-  display: block
+  display: block !important
   text-align: left
   letter-spacing: 0.01em
   white-space: nowrap
@@ -191,18 +195,20 @@ html
 .main .content.feed-page.feed-view-list .post-title-link::before
   display: none
 
-/* 列表视图 - 元信息（只显示日期） */
+/* 列表视图 - 日期（右侧，不收缩） */
 .main .content.feed-page.feed-view-list .post-meta
-  flex: 0 0 auto
-  display: flex
+  flex: 0 0 auto !important
+  display: flex !important
+  flex-direction: row !important
   align-items: center
-  margin: 0
-  padding: 0
+  margin: 0 !important
+  padding: 0 !important
   text-align: right
   font-size: 0.78rem
   opacity: 0.65
-  flex-direction: row
   gap: 0
+  width: auto !important
+  min-width: fit-content
 
 .main .content.feed-page.feed-view-list .post-meta .post-meta-item
   display: none
@@ -277,30 +283,29 @@ html
   display: inline-flex
   align-items: center
   justify-content: center
-  min-width: 38px
-  height: 38px
-  margin: 0 5px
-  border: 1px solid rgba(110, 110, 110, 0.20)
-  border-radius: 999px
-  background: rgba(255, 255, 255, 0.78)
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04)
+  min-width: 36px
+  height: 36px
+  padding: 0 10px
+  margin: 0 3px
+  border: 1px solid rgba(110, 110, 110, 0.18)
+  border-radius: 0
+  background: transparent
+  box-shadow: none
   color: var(--text-color)
   text-decoration: none
-  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease, color .2s ease
+  font-size: 0.88rem
+  transition: border-color .2s ease, background .2s ease, color .2s ease
 
 .main .content.feed-page .pagination .page-number:hover,
 .main .content.feed-page .pagination .extend:hover
-  transform: translateY(-1px)
   color: var(--link-hover-color)
-  border-color: rgba(80, 80, 80, 0.34)
-  background: rgba(255, 255, 255, 0.94)
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07)
+  border-color: rgba(80, 80, 80, 0.40)
+  background: rgba(120, 120, 120, 0.06)
 
 .main .content.feed-page .pagination .current
-  color: var(--link-hover-color)
-  border-color: rgba(80, 80, 80, 0.34)
-  background: rgba(120, 120, 120, 0.10)
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06)
+  color: #fff
+  background: var(--text-color)
+  border-color: var(--text-color)
 
 .main .content.feed-page .home-category-panel
   column-span: all
@@ -310,13 +315,13 @@ html
   gap: 14px
   width: auto
   max-width: 100%
-  height: 58px
-  margin: 0 0 20px /* 增加下方间距 */
-  padding: 0 18px
-  border-radius: 18px /* 统一圆角为 18px */
+  height: 52px
+  margin: 0 0 20px
+  padding: 0 16px
+  border-radius: 0
   background: var(--content-bg-color)
   border: 1px solid rgba(120, 120, 120, 0.15)
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.55)
+  box-shadow: none
   overflow: hidden
 
 .main .content.feed-page .home-category-panel-head
@@ -356,28 +361,26 @@ html
   gap: 6px
   flex: 0 0 auto
   white-space: nowrap
-  padding: 5px 10px
-  border-radius: 999px
-  background: rgba(255, 255, 255, 0.72)
-  border: 1px solid rgba(110, 110, 110, 0.24)
+  padding: 4px 12px
+  border-radius: 0
+  background: transparent
+  border: 1px solid rgba(110, 110, 110, 0.18)
   color: var(--text-color)
   font-size: 0.86rem
   line-height: 1.1
   text-decoration: none
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03)
-  transition: border-color .2s ease, color .2s ease, background .2s ease, box-shadow .2s ease
+  transition: all .2s ease
 
 .main .content.feed-page .home-category-link:hover
   color: var(--link-hover-color)
-  border-color: rgba(80, 80, 80, 0.34)
-  background: rgba(255, 255, 255, 0.9)
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.07)
+  border-color: rgba(80, 80, 80, 0.4)
+  background: rgba(120, 120, 120, 0.05)
 
 .main .content.feed-page .home-category-link.is-active
-  color: var(--link-hover-color)
-  border-color: rgba(70, 130, 180, 0.50)
-  background: rgba(70, 130, 180, 0.14)
-  box-shadow: 0 4px 12px rgba(70, 130, 180, 0.18)
+  color: #fff
+  border-color: var(--text-color)
+  background: var(--text-color)
+  box-shadow: none
 
 .main .content.feed-page .home-category-count
   display: inline-flex
@@ -396,26 +399,23 @@ html
   align-items: center
   gap: 7px
   min-width: 0
-  height: 34px
+  height: 32px
   padding: 0 12px
-  border: 1px solid rgba(110, 110, 110, 0.22)
-  border-radius: 999px
-  background: rgba(255, 255, 255, 0.72)
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03)
+  border: 1px solid rgba(110, 110, 110, 0.18)
+  border-radius: 0
+  background: transparent
   color: var(--text-color)
   cursor: pointer
   appearance: none
   -webkit-appearance: none
   font: inherit
   text-align: left
-  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease, color .2s ease
+  transition: all .2s ease
 
 .main .content.feed-page .home-category-search:hover
-  transform: translateY(-1px)
   color: var(--link-hover-color)
-  border-color: rgba(80, 80, 80, 0.34)
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.07)
-  background: rgba(255, 255, 255, 0.90)
+  border-color: rgba(80, 80, 80, 0.4)
+  background: rgba(120, 120, 120, 0.05)
 
 .main .content.feed-page .home-category-search:focus
   outline: none
@@ -436,18 +436,17 @@ html
 .main .content.feed-page .home-view-toggle
   display: inline-flex
   align-items: center
-  padding: 3px
+  padding: 0
   border: 1px solid rgba(110, 110, 110, 0.18)
-  border-radius: 999px
-  background: rgba(255, 255, 255, 0.56)
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.48)
+  border-radius: 0
+  background: transparent
 
 .main .content.feed-page .home-view-button
-  width: 30px
-  height: 28px
+  width: 32px
+  height: 30px
   padding: 0
   border: 0
-  border-radius: 999px
+  border-radius: 0
   background: transparent
   color: rgba(90, 90, 90, 0.82)
   cursor: pointer
@@ -456,12 +455,12 @@ html
   display: inline-flex
   align-items: center
   justify-content: center
-  transition: background .2s ease, color .2s ease, box-shadow .2s ease
+  transition: all .2s ease
 
 .main .content.feed-page .home-view-button.is-active
-  background: rgba(255, 255, 255, 0.96)
-  color: var(--text-color)
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06)
+  background: var(--text-color)
+  color: #fff
+  box-shadow: none
 
 @media (prefers-color-scheme: dark)
   .main .content.feed-page .pagination .page-number,
