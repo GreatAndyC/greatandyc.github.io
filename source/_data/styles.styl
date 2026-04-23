@@ -9,7 +9,7 @@ html
 .main .content.feed-page.posts-expand
   column-count: 3
   column-gap: 24px
-  padding-top: 10px
+  padding-top: 0
 
 .main .content.feed-page.posts-expand .post-block
   break-inside: avoid-column
@@ -18,16 +18,16 @@ html
   padding: 0
   border-radius: 0
   background: var(--content-bg-color, #fff)
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.05)
-  transition: all .2s ease
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.12), 0 3px 1px -2px rgba(0,0,0,.06), 0 1px 5px 0 rgba(0,0,0,.12)
+  transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease
   display: flex
   flex-direction: column
   overflow: hidden
   border: 1px solid rgba(0, 0, 0, 0.05)
 
 .main .content.feed-page.posts-expand .post-block:hover
-  transform: translateY(-3px)
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 4px 16px 0 rgba(0, 0, 0, 0.08)
+  transform: translateY(-2px)
+  box-shadow: 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12), 0 2px 4px -1px rgba(0,0,0,.2)
   border-color: rgba(0, 0, 0, 0.1)
 
 .main .content.feed-page.posts-expand .post-header
@@ -120,7 +120,7 @@ html
 .main .content.feed-page.feed-view-list
   column-count: 1
   column-gap: 0
-  padding-top: 10px
+  padding-top: 0
   display: flex
   flex-direction: column
   gap: 0
@@ -130,8 +130,8 @@ html
   display: flex
   flex-direction: column
   background: var(--content-bg-color, #fff)
-  border-radius: 18px
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06)
+  border-radius: 0
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.12), 0 3px 1px -2px rgba(0,0,0,.06), 0 1px 5px 0 rgba(0,0,0,.12)
   border: 1px solid rgba(120, 120, 120, 0.08)
   overflow: hidden
 
@@ -143,7 +143,7 @@ html
   border-radius: 0
   background: transparent
   box-shadow: none
-  border: none
+  border: 1px solid transparent
   border-bottom: 1px solid rgba(120, 120, 120, 0.08)
   transition: background .2s ease
   display: block
@@ -276,26 +276,36 @@ html
   column-span: all
   display: flex
   justify-content: center
+  align-items: center
   width: 100%
-  margin-top: 18px
-  padding-top: 0
+  margin-top: 24px
+  padding: 12px 0
+  background: none
+  box-shadow: none
+  border: none
+  border-top: none
+  border-radius: 0
 
 .main .content.feed-page .pagination .page-number,
 .main .content.feed-page .pagination .extend
   display: inline-flex
   align-items: center
   justify-content: center
+  position: static
+  top: auto
   min-width: 36px
   height: 36px
   padding: 0 10px
   margin: 0 3px
   border: 1px solid rgba(110, 110, 110, 0.18)
+  border-top: 1px solid rgba(110, 110, 110, 0.18)
   border-radius: 0
   background: transparent
   box-shadow: none
   color: var(--text-color)
   text-decoration: none
   font-size: 0.88rem
+  line-height: 36px
   transition: border-color .2s ease, background .2s ease, color .2s ease
 
 .main .content.feed-page .pagination .page-number:hover,
@@ -391,7 +401,7 @@ html
   min-width: 20px
   height: 18px
   padding: 0 6px
-  border-radius: 10px
+  border-radius: 0
   background: var(--body-bg-color)
   color: var(--text-color)
   font-size: 0.72rem
@@ -484,7 +494,7 @@ html
   .main .content.feed-page.feed-view-list .feed-posts-container
     background: rgba(30, 30, 30, 0.90)
     border-color: rgba(255, 255, 255, 0.10)
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3)
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.24), 0 3px 1px -2px rgba(0,0,0,.16), 0 1px 5px 0 rgba(0,0,0,.24)
 
   .main .content.feed-page.feed-view-list .post-block
     border-bottom-color: rgba(255, 255, 255, 0.06)
@@ -636,7 +646,7 @@ html
   align-items: center
   gap: 8px
   padding: 10px 14px
-  border-radius: 999px
+  border-radius: 0
   background: rgba(70, 130, 180, 0.08)
   color: #2e5372
   font-size: 0.92rem
@@ -655,7 +665,7 @@ html
   min-width: 22px
   height: 22px
   padding: 0 6px
-  border-radius: 999px
+  border-radius: 0
   background: rgba(255, 255, 255, 0.85)
   font-size: 0.76rem
 
@@ -709,7 +719,7 @@ html
 
 .gallery-album-tags span
   padding: 5px 10px
-  border-radius: 999px
+  border-radius: 0
   background: #f2f5f8
   color: #51606d
   font-size: 0.82rem
@@ -723,10 +733,10 @@ html
   width: 100%
   margin: 0 0 20px
   overflow: hidden
-  border-radius: 18px
-  background: #fff
-  box-shadow: 0 10px 28px rgba(17, 28, 45, 0.08)
-  border: 1px solid rgba(17, 28, 45, 0.05)
+  border-radius: 0
+  background: var(--content-bg-color, #fff)
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.12), 0 3px 1px -2px rgba(0,0,0,.06), 0 1px 5px 0 rgba(0,0,0,.12)
+  border: 1px solid rgba(0, 0, 0, 0.05)
   break-inside: avoid
   -webkit-column-break-inside: avoid
 
@@ -809,7 +819,7 @@ html
   display: inline-flex
   align-items: center
   padding: 4px 9px
-  border-radius: 999px
+  border-radius: 0
   background: #f2f5f8
   color: #657381
   font-size: 0.78rem
@@ -822,7 +832,7 @@ html
 
 .gallery-empty
   padding: 24px
-  border-radius: 16px
+  border-radius: 0
   background: #f7f9fb
   color: #61707f
 
