@@ -2,6 +2,10 @@
    内容流页面布局
    ============================================= */
 
+/* 防止滚动条引起页面偏移 */
+html
+  scrollbar-gutter: stable
+
 .main .content.feed-page.posts-expand
   column-count: 3
   column-gap: 24px
@@ -105,48 +109,66 @@
 .main .content.feed-page.posts-expand .post-eof
   display: none
 
+/* 文章容器 - 卡片模式下透明，不影响卡片布局 */
+.main .content.feed-page .feed-posts-container
+  column-span: all
+  display: contents
+
+/* ---- 列表视图 ---- */
 .main .content.feed-page.feed-view-list
   column-count: 1
   column-gap: 0
-  padding-top: 0
+  padding-top: 10px
   display: flex
   flex-direction: column
-  gap: 16px /* 列表项之间的间距，与分类栏下方一致 */
+  gap: 0
 
+/* 列表视图下的文章容器 - 大白底 */
+.main .content.feed-page.feed-view-list .feed-posts-container
+  display: flex
+  flex-direction: column
+  background: var(--content-bg-color, #fff)
+  border-radius: 18px
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06)
+  border: 1px solid rgba(120, 120, 120, 0.08)
+  overflow: hidden
+
+/* 列表视图下的文章条目 */
 .main .content.feed-page.feed-view-list .post-block
   break-inside: avoid
-  margin-bottom: 0
-  padding: 0 24px
-  border-radius: 18px /* 统一卡片圆角 */
-  background: var(--content-bg-color, #fff)
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06) /* 统一卡片阴影 */
-  border: 1px solid rgba(120, 120, 120, 0.10)
-  transition: transform .2s ease, box-shadow .2s ease
+  margin: 0
+  padding: 18px 28px
+  border-radius: 0
+  background: transparent
+  box-shadow: none
+  border: none
+  border-bottom: 1px solid rgba(120, 120, 120, 0.08)
+  transition: background .2s ease
+
+.main .content.feed-page.feed-view-list .post-block:last-child
+  border-bottom: none
 
 .main .content.feed-page.feed-view-list .post-block:hover
-  transform: translateY(-2px)
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08)
-  background: var(--content-bg-color, #fff)
+  background: rgba(120, 120, 120, 0.025)
+  transform: none
+  box-shadow: none
 
-.main .content.feed-page.feed-view-list .post-block .post-header
-  border-bottom: none /* 移除之前的底边线，保持卡片纯净 */
-
-.main .content.feed-page.feed-view-list .post-block:last-of-type
-  margin-bottom: 0
-
+/* 列表视图 - 文章头部 */
 .main .content.feed-page.feed-view-list .post-header
   display: flex
-  align-items: flex-start
+  align-items: baseline
   justify-content: space-between
   gap: 20px
-  padding: 18px 0 4px
-  margin-bottom: 0
+  padding: 0
+  margin-bottom: 4px
+  border-bottom: none
 
+/* 列表视图 - 标题 */
 .main .content.feed-page.feed-view-list .post-title
   flex: 1 1 auto
   margin: 0
-  font-size: 1.1rem /* 对齐卡片模式字号 */
-  font-weight: 600 /* 对齐卡片模式字重 */
+  font-size: 1.05rem
+  font-weight: 600
   line-height: 1.45
   display: block
   text-align: left
@@ -159,10 +181,11 @@
 .main .content.feed-page.feed-view-list .post-title-link::before
   display: none
 
+/* 列表视图 - 元信息（只显示日期） */
 .main .content.feed-page.feed-view-list .post-meta
   flex: 0 0 auto
   display: block
-  margin: 1px 0 0
+  margin: 0
   text-align: right
   font-size: 0.78rem
   opacity: 0.72
@@ -177,6 +200,12 @@
 .main .content.feed-page.feed-view-list .post-meta .post-meta-item-text
   display: none
 
+.main .content.feed-page.feed-view-list .post-meta .post-meta-item + .post-meta-item::before
+  display: none
+
+.main .content.feed-page.feed-view-list .post-meta br
+  display: none
+
 .main .content.feed-page.feed-view-list .post-meta time
   border-bottom: 0
   color: rgba(90, 90, 90, 0.78)
@@ -184,12 +213,13 @@
   letter-spacing: 0.03em
   white-space: nowrap
 
+/* 列表视图 - 摘要 */
 .main .content.feed-page.feed-view-list .post-description
   display: none
 
 .main .content.feed-page.feed-view-list .post-body
   display: block
-  padding: 0 0 14px
+  padding: 0
   min-width: 0
 
 .main .content.feed-page.feed-view-list .post-body > :not(p):not(.post-description)
@@ -197,11 +227,11 @@
 
 .main .content.feed-page.feed-view-list .post-body p
   margin: 0
-  color: rgba(90, 90, 90, 0.85)
-  font-size: 0.9rem
+  color: rgba(90, 90, 90, 0.82)
+  font-size: 0.88rem
   line-height: 1.6
   display: -webkit-box
-  -webkit-line-clamp: 2 /* 增加到 2 行，看起来更饱满 */
+  -webkit-line-clamp: 2
   -webkit-box-orient: vertical
   overflow: hidden
   text-overflow: ellipsis
@@ -210,6 +240,9 @@
   display: none !important
 
 .main .content.feed-page.feed-view-list .post-footer
+  display: none
+
+.main .content.feed-page.feed-view-list .post-eof
   display: none
 
 /* 内容流分页 */
@@ -426,14 +459,16 @@
     border-color: rgba(255, 255, 255, 0.22)
     background: rgba(255, 255, 255, 0.14)
 
-  .main .content.feed-page.feed-view-list .post-block
+  .main .content.feed-page.feed-view-list .feed-posts-container
     background: rgba(30, 30, 30, 0.90)
     border-color: rgba(255, 255, 255, 0.10)
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3)
 
+  .main .content.feed-page.feed-view-list .post-block
+    border-bottom-color: rgba(255, 255, 255, 0.06)
+
   .main .content.feed-page.feed-view-list .post-block:hover
-    background: rgba(255, 255, 255, 0.08)
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4)
+    background: rgba(255, 255, 255, 0.04)
 
   .main .content.feed-page .home-category-panel
     border-color: rgba(255, 255, 255, 0.14)
@@ -493,11 +528,7 @@
 
 @media (max-width: 767px)
   .main .content.feed-page.feed-view-list .post-block
-    padding: 0 14px
-
-  .main .content.feed-page.feed-view-list .post-header
-    gap: 12px
-    padding: 16px 0 4px
+    padding: 14px 16px
 
   .main .content.feed-page .home-category-panel
     display: block

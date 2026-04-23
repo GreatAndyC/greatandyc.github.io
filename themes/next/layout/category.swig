@@ -11,9 +11,11 @@
   {%- set current_category = page.category %}
   {% include '_partials/home/category-panel.swig' %}
 
+  <div class="feed-posts-container">
   {%- for post in localized_posts.toArray() %}
     {{ partial('_macro/post.swig', {post: post, is_index: true}) }}
   {%- endfor %}
+  </div>
 
   {% include '_partials/pagination.swig' %}
 
