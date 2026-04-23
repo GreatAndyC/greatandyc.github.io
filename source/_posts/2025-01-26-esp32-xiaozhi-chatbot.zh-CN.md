@@ -13,8 +13,9 @@ tags:
   - AI
 categories:
   - 教程
-toc: true
-toc_number: false
+toc:
+  enable: true
+  number: false
 ---
 # ESP32 小智 Chatbot 制作全流程记录
 

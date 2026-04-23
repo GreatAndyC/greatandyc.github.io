@@ -5,7 +5,9 @@
   var state = {
     album: null,
     trigger: null,
-    index: 0
+    index: 0,
+    scrollY: 0,
+    bodyStyles: null
   };
 
   function $(selector, root) {
@@ -44,6 +46,41 @@
     document.documentElement.classList.toggle('gallery-viewer-open', !hidden);
   }
 
+  function lockPageScroll() {
+    if (state.bodyStyles) return;
+
+    var scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    state.scrollY = window.scrollY || window.pageYOffset || 0;
+    state.bodyStyles = {
+      position: document.body.style.position,
+      top: document.body.style.top,
+      left: document.body.style.left,
+      right: document.body.style.right,
+      width: document.body.style.width,
+      paddingRight: document.body.style.paddingRight
+    };
+
+    document.body.style.position = 'fixed';
+    document.body.style.top = '-' + state.scrollY + 'px';
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    if (scrollbarWidth > 0) document.body.style.paddingRight = scrollbarWidth + 'px';
+  }
+
+  function unlockPageScroll() {
+    if (!state.bodyStyles) return;
+
+    document.body.style.position = state.bodyStyles.position;
+    document.body.style.top = state.bodyStyles.top;
+    document.body.style.left = state.bodyStyles.left;
+    document.body.style.right = state.bodyStyles.right;
+    document.body.style.width = state.bodyStyles.width;
+    document.body.style.paddingRight = state.bodyStyles.paddingRight;
+    window.scrollTo(0, state.scrollY);
+    state.bodyStyles = null;
+  }
+
   function albumMetaFromTrigger(trigger) {
     return [trigger.dataset.galleryLocation, trigger.dataset.galleryCamera].filter(Boolean).join(' · ');
   }
@@ -51,6 +88,28 @@
   function showStatus(viewer, message) {
     var status = $('[data-gallery-viewer-status]', viewer);
     if (status) status.textContent = message || '';
+  }
+
+  function photoCaption(photo) {
+    return [photo.title, photo.caption, photo.location, photo.time, photo.meta].filter(Boolean).join(' · ');
+  }
+
+  function openZoomViewer() {
+    if (!state.album || !state.album.photos.length || !window.jQuery || !jQuery.fancybox) return;
+
+    var photo = state.album.photos[state.index];
+    jQuery.fancybox.open([{
+      src: photo.src,
+      type: 'image',
+      opts: {
+        caption: photoCaption(photo)
+      }
+    }], {
+      loop: false,
+      hash: false,
+      buttons: ['zoom', 'close'],
+      protect: true
+    });
   }
 
   function renderThumbs(viewer) {
@@ -72,6 +131,7 @@
     var photos = state.album.photos;
     var photo = photos[state.index];
     var image = $('[data-gallery-viewer-image]', viewer);
+    var imageLink = $('[data-gallery-viewer-image-link]', viewer);
     var title = $('[data-gallery-viewer-photo-title]', viewer);
     var caption = $('[data-gallery-viewer-photo-caption]', viewer);
     var meta = $('[data-gallery-viewer-photo-meta]', viewer);
@@ -81,6 +141,7 @@
 
     image.src = photo.src;
     image.alt = photo.title || state.album.title || '';
+    if (imageLink) imageLink.href = photo.src;
     title.textContent = photo.title || '';
     caption.textContent = photo.caption || '';
     meta.textContent = [photo.location, photo.time, photo.meta].filter(Boolean).join(' · ');
@@ -106,6 +167,7 @@
 
   function closeViewer(viewer) {
     setHidden(viewer, true);
+    unlockPageScroll();
     state.album = null;
     state.index = 0;
     if (state.trigger) state.trigger.focus();
@@ -121,10 +183,12 @@
     $('[data-gallery-viewer-meta]', viewer).textContent = albumMetaFromTrigger(trigger);
     $('[data-gallery-viewer-thumbs]', viewer).innerHTML = '';
     $('[data-gallery-viewer-image]', viewer).removeAttribute('src');
+    $('[data-gallery-viewer-image-link]', viewer).setAttribute('href', '#');
     $('[data-gallery-viewer-photo-title]', viewer).textContent = '';
     $('[data-gallery-viewer-photo-caption]', viewer).textContent = '';
     $('[data-gallery-viewer-photo-meta]', viewer).textContent = '';
     showStatus(viewer, $('[data-gallery-viewer-status]', viewer).dataset.loadingText || 'Loading album...');
+    lockPageScroll();
     setHidden(viewer, false);
 
     getAlbum(trigger.dataset.galleryUrl).then(function(album) {
@@ -132,8 +196,8 @@
       state.index = 0;
       renderThumbs(viewer);
       renderCurrentPhoto(viewer);
-      var image = $('[data-gallery-viewer-image]', viewer);
-      if (image) image.focus({ preventScroll: true });
+      var closeButton = $('[data-gallery-close]', viewer);
+      if (closeButton) closeButton.focus({ preventScroll: true });
     }).catch(function() {
       showStatus(viewer, $('[data-gallery-viewer-status]', viewer).dataset.errorText || 'Could not load this album.');
     });
@@ -142,6 +206,7 @@
   function initGalleryViewer() {
     var viewer = $('[data-gallery-viewer]');
     if (!viewer) return;
+    if (viewer.parentNode !== document.body) document.body.appendChild(viewer);
 
     $all('[data-gallery-open]').forEach(function(trigger) {
       trigger.addEventListener('click', function() {
@@ -168,6 +233,15 @@
       if (!button) return;
       state.index = Number(button.dataset.galleryJump || 0);
       renderCurrentPhoto(viewer);
+    });
+
+    $('[data-gallery-viewer-image-link]', viewer).addEventListener('click', function(event) {
+      event.preventDefault();
+      openZoomViewer();
+    });
+
+    $('[data-gallery-viewer-zoom]', viewer).addEventListener('click', function() {
+      openZoomViewer();
     });
 
     document.addEventListener('keydown', function(event) {
