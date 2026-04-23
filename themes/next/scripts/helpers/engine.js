@@ -5,6 +5,8 @@
 const crypto = require('crypto');
 const { Color, escapeHTML } = require('hexo-util');
 
+const GALLERY_DATA_DIR = 'gallery-data';
+
 function getDefaultLanguage() {
   return Array.isArray(hexo.config.language) ? hexo.config.language[0] : hexo.config.language;
 }
@@ -135,6 +137,47 @@ function lookupCaseInsensitive(map, key) {
   const matchedKey = Object.keys(map).find(item => item.toLowerCase() === normalizedKey);
   return matchedKey ? map[matchedKey] : '';
 }
+
+function galleryRouteSegment(value = '') {
+  return encodeURIComponent(String(value).replace(/^\/+|\/+$/g, ''));
+}
+
+function galleryAlbumDataPath(album, language) {
+  return `${GALLERY_DATA_DIR}/${galleryRouteSegment(language)}/${galleryRouteSegment(album.slug)}.json`;
+}
+
+function normalizeGalleryPhoto(photo = {}, language = getDefaultLanguage()) {
+  return {
+    src: photo.src || '',
+    title: getLocalizedValue(photo.title, language),
+    caption: getLocalizedValue(photo.caption, language),
+    location: getLocalizedValue(photo.location, language),
+    time: getLocalizedValue(photo.time, language),
+    meta: photo.meta || ''
+  };
+}
+
+hexo.extend.generator.register('gallery_data', function (locals) {
+  const galleryData = (locals.data && locals.data.gallery) || {};
+  const albums = galleryData.albums || [];
+  const languages = getLanguages();
+
+  return languages.flatMap(language => {
+    return albums
+      .filter(album => !album.languages || album.languages.includes(language))
+      .map(album => {
+        const photos = (album.photos || []).map(photo => normalizeGalleryPhoto(photo, language));
+        return {
+          path: galleryAlbumDataPath(album, language),
+          data: JSON.stringify({
+            slug: album.slug,
+            title: getLocalizedValue(album.title, language),
+            photos
+          })
+        };
+      });
+  });
+});
 
 function getPostTranslationKey(post, languages = getLanguages()) {
   const source = post.source || post.path || post.slug || '';
@@ -396,72 +439,94 @@ hexo.extend.helper.register('render_gallery', function (language = getCurrentLan
     return `<div class="gallery-empty">${emptyText}</div>`;
   }
 
-  const navItems = albums.map(album => {
-    const title = escapeHTML(getLocalizedValue(album.title, language));
-    const count = (album.photos || []).length;
-    return `<a class="gallery-nav-link" href="#gallery-${album.slug}">${title}<span>${count}</span></a>`;
-  }).join('');
-
-  const albumSections = albums.map(album => {
+  const albumCards = albums.map(album => {
     const title = escapeHTML(getLocalizedValue(album.title, language));
     const description = escapeHTML(getLocalizedValue(album.description, language));
     const location = escapeHTML(getLocalizedValue(album.location, language));
     const period = escapeHTML(getLocalizedValue(album.period, language));
     const camera = escapeHTML(getLocalizedValue(album.camera, language));
     const tags = getLocalizedValue(album.tags, language) || [];
-    const photos = (album.photos || []).map((photo, index) => {
-      const photoTitle = escapeHTML(getLocalizedValue(photo.title, language));
-      const photoCaption = escapeHTML(getLocalizedValue(photo.caption, language));
-      const photoLocation = escapeHTML(getLocalizedValue(photo.location, language));
-      const photoTime = escapeHTML(getLocalizedValue(photo.time, language));
-      const photoMeta = escapeHTML(photo.meta || '');
-      const src = this.url_for(photo.src);
-      const dataCaption = [photoTitle, photoCaption, photoLocation, photoTime, photoMeta].filter(Boolean).join(' · ');
-      const hasFacts = photoLocation || photoTime;
-
-      return `
-        <figure class="gallery-photo-card">
-          <a class="gallery-photo-frame" href="${src}" data-fancybox="gallery-${album.slug}" data-caption="${dataCaption}">
-            <img src="${src}" alt="${photoTitle || `${title}-${index + 1}`}" loading="lazy">
-          </a>
-          <figcaption class="gallery-photo-copy">
-            <div class="gallery-photo-title">${photoTitle}</div>
-            ${photoCaption ? `<p class="gallery-photo-caption">${photoCaption}</p>` : ''}
-            ${hasFacts ? `<div class="gallery-photo-facts">${photoLocation ? `<span class="gallery-photo-fact">${photoLocation}</span>` : ''}${photoTime ? `<span class="gallery-photo-fact">${photoTime}</span>` : ''}</div>` : ''}
-            ${photoMeta ? `<div class="gallery-photo-meta">${photoMeta}</div>` : ''}
-          </figcaption>
-        </figure>`;
-    }).join('');
+    const photoList = album.photos || [];
+    const coverPhoto = photoList[0] || {};
+    const coverSrc = coverPhoto.src ? this.url_for(coverPhoto.src) : '';
+    const dataUrl = this.url_for(`/${galleryAlbumDataPath(album, language)}`);
+    const countText = String(language).toLowerCase().startsWith('zh') ? `${photoList.length} 张照片` : `${photoList.length} photos`;
+    const openText = String(language).toLowerCase().startsWith('zh') ? '打开相册' : 'Open album';
 
     return `
-      <section class="gallery-album" id="gallery-${album.slug}">
-        <header class="gallery-album-header">
-          <div>
-            <p class="gallery-album-kicker">${period || ''}</p>
-            <h2 class="gallery-album-title">${title}</h2>
-            ${description ? `<p class="gallery-album-description">${description}</p>` : ''}
-          </div>
-          <div class="gallery-album-meta">
-            ${location ? `<span>${location}</span>` : ''}
-            ${camera ? `<span>${camera}</span>` : ''}
-          </div>
-        </header>
-        ${tags.length ? `<div class="gallery-album-tags">${tags.map(tag => `<span>${escapeHTML(tag)}</span>`).join('')}</div>` : ''}
-        <div class="gallery-photo-grid">
-          ${photos}
-        </div>
-      </section>`;
+      <article class="gallery-album-card" id="gallery-${album.slug}">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="${escapeHTML(album.slug)}"
+          data-gallery-title="${title}"
+          data-gallery-period="${period}"
+          data-gallery-location="${location}"
+          data-gallery-camera="${camera}"
+          data-gallery-url="${escapeHTML(dataUrl)}"
+        >
+          <span class="gallery-album-cover">
+            ${coverSrc ? `<img src="${coverSrc}" alt="${title}" loading="lazy" decoding="async">` : ''}
+            <span class="gallery-album-count">${countText}</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">${period || ''}</span>
+            <span class="gallery-album-card-title">${title}</span>
+            ${description ? `<span class="gallery-album-card-description">${description}</span>` : ''}
+            <span class="gallery-album-card-meta">
+              ${location ? `<span>${location}</span>` : ''}
+              ${camera ? `<span>${camera}</span>` : ''}
+            </span>
+            ${tags.length ? `<span class="gallery-album-card-tags">${tags.map(tag => `<span>${escapeHTML(tag)}</span>`).join('')}</span>` : ''}
+            <span class="gallery-album-card-action">${openText}</span>
+          </span>
+        </button>
+      </article>`;
   }).join('');
+
+  const closeText = String(language).toLowerCase().startsWith('zh') ? '关闭' : 'Close';
+  const previousText = String(language).toLowerCase().startsWith('zh') ? '上一张' : 'Previous';
+  const nextText = String(language).toLowerCase().startsWith('zh') ? '下一张' : 'Next';
+  const loadingText = String(language).toLowerCase().startsWith('zh') ? '正在加载相册...' : 'Loading album...';
+  const errorText = String(language).toLowerCase().startsWith('zh') ? '相册加载失败，请稍后重试。' : 'Could not load this album. Please try again later.';
 
   return `
     <div class="gallery-page">
-      <nav class="gallery-nav" aria-label="Gallery albums">
-        ${navItems}
-      </nav>
-      <div class="gallery-albums">
-        ${albumSections}
+      <div class="gallery-card-deck">
+        ${albumCards}
       </div>
-    </div>`;
+    </div>
+    <div class="gallery-viewer" data-gallery-viewer hidden aria-hidden="true">
+      <div class="gallery-viewer-backdrop" data-gallery-close></div>
+      <section class="gallery-viewer-panel" role="dialog" aria-modal="true" aria-label="Gallery viewer">
+        <header class="gallery-viewer-header">
+          <div>
+            <p class="gallery-viewer-kicker" data-gallery-viewer-period></p>
+            <h2 class="gallery-viewer-title" data-gallery-viewer-title></h2>
+            <p class="gallery-viewer-meta" data-gallery-viewer-meta></p>
+          </div>
+          <button class="gallery-viewer-close" type="button" data-gallery-close aria-label="${closeText}">${closeText}</button>
+        </header>
+        <div class="gallery-viewer-stage">
+          <button class="gallery-viewer-nav gallery-viewer-prev" type="button" data-gallery-prev aria-label="${previousText}">‹</button>
+          <figure class="gallery-viewer-figure">
+            <img data-gallery-viewer-image alt="">
+            <figcaption class="gallery-viewer-caption">
+              <span class="gallery-viewer-photo-title" data-gallery-viewer-photo-title></span>
+              <span class="gallery-viewer-photo-caption" data-gallery-viewer-photo-caption></span>
+              <span class="gallery-viewer-photo-meta" data-gallery-viewer-photo-meta></span>
+            </figcaption>
+          </figure>
+          <button class="gallery-viewer-nav gallery-viewer-next" type="button" data-gallery-next aria-label="${nextText}">›</button>
+        </div>
+        <div class="gallery-viewer-footer">
+          <div class="gallery-viewer-status" data-gallery-viewer-status data-loading-text="${loadingText}" data-error-text="${errorText}"></div>
+          <div class="gallery-viewer-thumbs" data-gallery-viewer-thumbs></div>
+        </div>
+      </section>
+    </div>
+    <script src="${this.url_for('/js/gallery-loader.js')}" defer></script>`;
 });
 
 hexo.extend.helper.register('post_edit', function (src) {
