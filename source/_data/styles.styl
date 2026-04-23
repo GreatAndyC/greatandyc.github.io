@@ -156,16 +156,17 @@ html
 /* 列表视图 - 文章头部 */
 .main .content.feed-page.feed-view-list .post-header
   display: flex
-  align-items: baseline
+  align-items: center
   justify-content: space-between
-  gap: 20px
+  gap: 16px
   padding: 0
-  margin-bottom: 4px
+  margin-bottom: 2px
   border-bottom: none
 
 /* 列表视图 - 标题 */
 .main .content.feed-page.feed-view-list .post-title
-  flex: 1 1 auto
+  flex: 1 1 0
+  min-width: 0
   margin: 0
   font-size: 1.05rem
   font-weight: 600
@@ -173,10 +174,16 @@ html
   display: block
   text-align: left
   letter-spacing: 0.01em
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
 
 .main .content.feed-page.feed-view-list .post-title-link
   display: inline
   border-bottom: 0
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
 
 .main .content.feed-page.feed-view-list .post-title-link::before
   display: none
