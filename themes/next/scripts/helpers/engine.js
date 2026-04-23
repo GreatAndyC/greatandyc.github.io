@@ -9,6 +9,10 @@ function getDefaultLanguage() {
   return Array.isArray(hexo.config.language) ? hexo.config.language[0] : hexo.config.language;
 }
 
+function getLanguages() {
+  return [].concat(hexo.config.language || []).filter(Boolean);
+}
+
 function getCurrentLanguage(ctx) {
   return ctx.page.lang || ctx.page.language || getDefaultLanguage();
 }
@@ -27,8 +31,8 @@ function getLocalizedTags(ctx, language = getCurrentLanguage(ctx)) {
     if (!posts.length) return null;
 
     return {
-      name : tag.name,
-      path : tag.path,
+      name: tag.name,
+      path: tag.path,
       length: posts.length
     };
   }).filter(Boolean);
@@ -43,8 +47,8 @@ function getLocalizedCategories(ctx, language = getCurrentLanguage(ctx)) {
     if (!posts.length) return null;
 
     return {
-      name : category.name,
-      path : category.path,
+      name: category.name,
+      path: category.path,
       length: posts.length
     };
   }).filter(Boolean);
@@ -60,24 +64,124 @@ function getLocalizedValue(value, language, fallbackLanguage = getDefaultLanguag
   return value;
 }
 
-hexo.extend.helper.register('next_inject', function(point) {
+function normalizeInputPath(pathname = '') {
+  return pathname.replace(/[#?].*$/, '').replace(/^\/+/, '');
+}
+
+function normalizeRoutePath(pathname = '') {
+  const normalized = normalizeInputPath(pathname);
+  if (!normalized) return 'index.html';
+  if (normalized.endsWith('/')) return `${normalized}index.html`;
+  if (!/\/[^/]+\.[^/]+$/.test(normalized)) return `${normalized}/index.html`;
+  return normalized;
+}
+
+function routeExists(pathname = '') {
+  return Boolean(hexo.route.get(normalizeRoutePath(pathname)));
+}
+
+function stripLanguagePrefix(pathname = '', languages = getLanguages()) {
+  const normalized = normalizeInputPath(pathname);
+  const matchedLanguage = languages.find(language => {
+    return normalized === language || normalized.startsWith(`${language}/`);
+  });
+  if (!matchedLanguage) return normalized;
+  return normalized.slice(matchedLanguage.length).replace(/^\/+/, '');
+}
+
+function localizedRoutePath(pathname, language, defaultLanguage) {
+  const normalized = normalizeInputPath(pathname);
+  if (!normalized) return language === defaultLanguage ? '' : `${language}/`;
+  return language === defaultLanguage ? normalized : `${language}/${normalized}`;
+}
+
+function extractPaginationInfo(pathname = '', paginationDir = 'page') {
+  const normalized = normalizeInputPath(pathname).replace(/\/+$/, '');
+  const prefix = `${paginationDir}/`;
+  const match = normalized.match(new RegExp(`(?:^|/)${paginationDir}/(\\d+)$`));
+  if (!match) return { basePath: normalized, paginationSuffix: '' };
+  if (normalized.startsWith(prefix)) {
+    return { basePath: '', paginationSuffix: `${normalized}/` };
+  }
+  const marker = `/${paginationDir}/`;
+  const markerIndex = normalized.lastIndexOf(marker);
+  if (markerIndex === -1) return { basePath: normalized, paginationSuffix: '' };
+  return {
+    basePath: normalized.slice(0, markerIndex),
+    paginationSuffix: `${normalized.slice(markerIndex + 1)}/`
+  };
+}
+
+function safeDecodeURIComponent(value = '') {
+  try {
+    return decodeURIComponent(value);
+  } catch (_) {
+    return value;
+  }
+}
+
+function encodePathSegments(pathname = '') {
+  return pathname.split('/').map(segment => encodeURIComponent(segment)).join('/');
+}
+
+function mapCategorySlugByLanguage(ctx, slug, language) {
+  const defaultLanguage = getDefaultLanguage();
+  const categoryMap = ctx.config.category_map || {};
+  const decodedSlug = safeDecodeURIComponent(slug);
+  const reverseMap = Object.entries(categoryMap).reduce((result, [source, target]) => {
+    result[target] = source;
+    return result;
+  }, {});
+  const mapped = language === defaultLanguage
+    ? (reverseMap[decodedSlug] || decodedSlug)
+    : (categoryMap[decodedSlug] || decodedSlug);
+  return encodePathSegments(mapped);
+}
+
+function findLocalizedTaxonomyPath(ctx, taxonomy, slug, language) {
+  const normalizedSlug = safeDecodeURIComponent(slug || '').toLowerCase();
+  if (!normalizedSlug) return '';
+
+  const defaultLanguage = getDefaultLanguage();
+  const isCategory = taxonomy === 'category';
+  const collection = isCategory ? ctx.site.categories : ctx.site.tags;
+  const dirKey = isCategory ? 'category_dir' : 'tag_dir';
+  const fallbackDir = isCategory ? 'categories' : 'tags';
+  const taxonomyDir = normalizeInputPath(ctx.config[dirKey] || fallbackDir).replace(/\/+$/, '');
+  const taxonomyPrefix = `${taxonomyDir}/`;
+
+  const matched = collection.toArray().find(item => {
+    const posts = item.posts.toArray().filter(post => (post.lang || defaultLanguage) === language);
+    if (!posts.length) return false;
+
+    const itemPath = normalizeInputPath(item.path).replace(/\/+$/, '');
+    if (!itemPath.startsWith(taxonomyPrefix)) return false;
+
+    const itemSlug = safeDecodeURIComponent(itemPath.slice(taxonomyPrefix.length)).toLowerCase();
+    return itemSlug === normalizedSlug;
+  });
+
+  return matched ? normalizeInputPath(matched.path).replace(/\/+$/, '') : '';
+}
+
+hexo.extend.helper.register('next_inject', function (point) {
   return hexo.theme.config.injects[point]
     .map(item => this.partial(item.layout, item.locals, item.options))
     .join('');
 });
 
-hexo.extend.helper.register('next_js', function(...urls) {
+hexo.extend.helper.register('next_js', function (...urls) {
   const { js } = hexo.theme.config;
   return urls.map(url => this.js(`${js}/${url}`)).join('');
 });
 
-hexo.extend.helper.register('next_vendors', function(url) {
+hexo.extend.helper.register('next_vendors', function (url) {
   if (url.startsWith('//')) return url;
   const internal = hexo.theme.config.vendors._internal;
   return this.url_for(`${internal}/${url}`);
 });
 
-hexo.extend.helper.register('localized_path', function(path) {
+hexo.extend.helper.register('localized_path', function (path) {
   if (typeof path !== 'string') return path;
   if (/^(?:[a-z]+:)?\/\//i.test(path) || /^(?:mailto:|javascript:|#)/i.test(path)) return path;
 
@@ -88,29 +192,34 @@ hexo.extend.helper.register('localized_path', function(path) {
     return this.url_for(path);
   }
 
-  const normalizedPath = path.replace(/^\/+/, '');
-  const localizedPath = normalizedPath ? `${currentLanguage}/${normalizedPath}` : `${currentLanguage}/`;
+  const normalizedPath = normalizeInputPath(path);
+  const localizedPath = localizedRoutePath(normalizedPath, currentLanguage, defaultLanguage);
 
-  if (hexo.route.get(localizedPath)) {
+  if (routeExists(localizedPath)) {
     return this.url_for(localizedPath);
   }
 
-  return this.url_for(path);
+  if (routeExists(normalizedPath)) {
+    return this.url_for(normalizedPath);
+  }
+
+  // 如果本地化和基础路径都不存在，返回站点首页
+  return this.url_for('/');
 });
 
-hexo.extend.helper.register('localized_posts_count', function(language) {
+hexo.extend.helper.register('localized_posts_count', function (language) {
   return getLocalizedPosts(this, language).length;
 });
 
-hexo.extend.helper.register('localized_tag_count', function(language) {
+hexo.extend.helper.register('localized_tag_count', function (language) {
   return getLocalizedTags(this, language).length;
 });
 
-hexo.extend.helper.register('localized_category_count', function(language) {
+hexo.extend.helper.register('localized_category_count', function (language) {
   return getLocalizedCategories(this, language).length;
 });
 
-hexo.extend.helper.register('localized_tagcloud', function(options = {}) {
+hexo.extend.helper.register('localized_tagcloud', function (options = {}) {
   const tags = getLocalizedTags(this);
 
   if (!tags.length) return '';
@@ -168,7 +277,7 @@ hexo.extend.helper.register('localized_tagcloud', function(options = {}) {
   }).join(separator);
 });
 
-hexo.extend.helper.register('localized_list_categories', function(options = {}) {
+hexo.extend.helper.register('localized_list_categories', function (options = {}) {
   const categories = getLocalizedCategories(this);
 
   if (!categories.length) return '';
@@ -196,7 +305,7 @@ hexo.extend.helper.register('localized_list_categories', function(options = {}) 
   }).join(separator);
 });
 
-hexo.extend.helper.register('render_gallery', function(language = getCurrentLanguage(this)) {
+hexo.extend.helper.register('render_gallery', function (language = getCurrentLanguage(this)) {
   const galleryData = this.site.data.gallery || {};
   const albums = (galleryData.albums || []).filter(album => {
     return !album.languages || album.languages.includes(language);
@@ -275,7 +384,7 @@ hexo.extend.helper.register('render_gallery', function(language = getCurrentLang
     </div>`;
 });
 
-hexo.extend.helper.register('post_edit', function(src) {
+hexo.extend.helper.register('post_edit', function (src) {
   const theme = hexo.theme.config;
   if (!theme.post_edit.enable) return '';
   return this.next_url(theme.post_edit.url + src, '<i class="fa fa-pencil-alt"></i>', {
@@ -284,7 +393,7 @@ hexo.extend.helper.register('post_edit', function(src) {
   });
 });
 
-hexo.extend.helper.register('post_nav', function(post) {
+hexo.extend.helper.register('post_nav', function (post) {
   const theme = hexo.theme.config;
   const posts = this.site.posts.sort('-date').toArray();
   const defaultLanguage = getDefaultLanguage();
@@ -316,13 +425,13 @@ hexo.extend.helper.register('post_nav', function(post) {
     </div>`;
 });
 
-hexo.extend.helper.register('gitalk_md5', function(path) {
+hexo.extend.helper.register('gitalk_md5', function (path) {
   let str = this.url_for(path);
   str.replace('index.html', '');
   return crypto.createHash('md5').update(str).digest('hex');
 });
 
-hexo.extend.helper.register('canonical', function() {
+hexo.extend.helper.register('canonical', function () {
   // https://support.google.com/webmasters/answer/139066
   const { permalink } = hexo.config;
   let url = this.url.replace(/index\.html$/, '');
@@ -335,25 +444,106 @@ hexo.extend.helper.register('canonical', function() {
 /**
  * Get page path given a certain language tag
  */
-hexo.extend.helper.register('i18n_path', function(language) {
-  const { path } = this.page;
-  const languages = this.languages || [];
-  const normalizedPath = path.replace(/^\/+/, '');
-  const base = languages.reduce((currentPath, currentLanguage) => {
-    if (currentPath === currentLanguage) return '';
-    if (currentPath.startsWith(`${currentLanguage}/`)) {
-      return currentPath.slice(currentLanguage.length + 1);
+hexo.extend.helper.register('i18n_path', function (language) {
+  const languages = this.languages || getLanguages();
+  const defaultLanguage = languages[0] || getDefaultLanguage();
+  const currentPageLanguage = this.page && (this.page.lang || this.page.language);
+  const pagePath = this.page && this.page.path ? this.page.path : '';
+  const strippedPath = stripLanguagePrefix(pagePath, languages);
+  const paginationDir = this.config.pagination_dir || 'page';
+  const { basePath, paginationSuffix } = extractPaginationInfo(strippedPath, paginationDir);
+  const candidates = [];
+
+  function addCandidate(pathname) {
+    const normalized = normalizeInputPath(pathname);
+    if (!normalized) return;
+    if (!candidates.includes(normalized)) {
+      candidates.push(normalized);
     }
-    return currentPath;
-  }, normalizedPath).replace(/^\/+/, '');
-  const prefix = languages.indexOf(language) === 0 ? '' : `/${language}`;
-  return this.url_for(prefix ? `${prefix}/${base}` : `/${base}`);
+  }
+
+  addCandidate(strippedPath);
+
+  if (this.page && (this.page.layout === 'category' || this.page.category)) {
+    const categoryDir = normalizeInputPath(this.config.category_dir || 'categories').replace(/\/+$/, '');
+    const categoryPrefix = `${categoryDir}/`;
+    if (basePath.startsWith(categoryPrefix)) {
+      const rawSlug = basePath.slice(categoryPrefix.length);
+      const mappedSlug = mapCategorySlugByLanguage(this, rawSlug, language);
+      const mappedBasePath = `${categoryPrefix}${mappedSlug}`;
+      addCandidate(paginationSuffix ? `${mappedBasePath}/${paginationSuffix}` : mappedBasePath);
+
+      const matchedRawPath = findLocalizedTaxonomyPath(this, 'category', rawSlug, language);
+      if (matchedRawPath) {
+        addCandidate(paginationSuffix ? `${matchedRawPath}/${paginationSuffix}` : matchedRawPath);
+      }
+
+      const matchedMappedPath = findLocalizedTaxonomyPath(this, 'category', mappedSlug, language);
+      if (matchedMappedPath) {
+        addCandidate(paginationSuffix ? `${matchedMappedPath}/${paginationSuffix}` : matchedMappedPath);
+      }
+    }
+  }
+
+  if (this.page && (this.page.layout === 'tag' || this.page.tag)) {
+    const tagDir = normalizeInputPath(this.config.tag_dir || 'tags').replace(/\/+$/, '');
+    const tagPrefix = `${tagDir}/`;
+    if (basePath.startsWith(tagPrefix)) {
+      const rawSlug = basePath.slice(tagPrefix.length);
+      const matchedTagPath = findLocalizedTaxonomyPath(this, 'tag', rawSlug, language);
+      if (matchedTagPath) {
+        addCandidate(paginationSuffix ? `${matchedTagPath}/${paginationSuffix}` : matchedTagPath);
+      }
+    }
+  }
+
+  for (const candidate of candidates) {
+    const localizedCandidate = localizedRoutePath(candidate, language, defaultLanguage);
+    if (routeExists(localizedCandidate)) {
+      return this.url_for(`/${localizedCandidate}`);
+    }
+  }
+
+  if (this.page) {
+    const categoryIndex = normalizeInputPath(this.config.category_dir || 'categories');
+    const tagIndex = normalizeInputPath(this.config.tag_dir || 'tags');
+    const archiveIndex = normalizeInputPath(this.config.archive_dir || 'archives');
+    const isCategoryPage = this.page.layout === 'category' || this.page.category
+      || strippedPath === categoryIndex || strippedPath.startsWith(`${categoryIndex}/`);
+    const isTagPage = this.page.layout === 'tag' || this.page.tag
+      || strippedPath === tagIndex || strippedPath.startsWith(`${tagIndex}/`);
+    const isArchivePage = this.page.layout === 'archive'
+      || strippedPath === archiveIndex || strippedPath.startsWith(`${archiveIndex}/`);
+
+    if (isCategoryPage) {
+      const localizedCategoryIndex = localizedRoutePath(categoryIndex, language, defaultLanguage);
+      return this.url_for(`/${localizedCategoryIndex}`);
+    }
+
+    if (isTagPage) {
+      const localizedTagIndex = localizedRoutePath(tagIndex, language, defaultLanguage);
+      return this.url_for(`/${localizedTagIndex}`);
+    }
+
+    if (isArchivePage) {
+      const localizedArchiveIndex = localizedRoutePath(archiveIndex, language, defaultLanguage);
+      return this.url_for(`/${localizedArchiveIndex}`);
+    }
+  }
+
+  // Non-i18n pages (e.g. admin) should keep their original route if it exists.
+  if (!currentPageLanguage && routeExists(strippedPath)) {
+    return this.url_for(`/${strippedPath}`);
+  }
+
+  const localizedRoot = localizedRoutePath('', language, defaultLanguage);
+  return this.url_for(localizedRoot ? `/${localizedRoot}` : '/');
 });
 
 /**
  * Get the language name
  */
-hexo.extend.helper.register('language_name', function(language) {
+hexo.extend.helper.register('language_name', function (language) {
   const name = hexo.theme.i18n.__(language)('name');
   return name === 'name' ? language : name;
 });
