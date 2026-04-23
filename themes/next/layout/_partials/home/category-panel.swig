@@ -1,7 +1,5 @@
 {%- set panel_current_category = current_category or 'all' %}
 {%- set panel_all_url = localized_path(config.root) %}
-{%- set panel_view_card_label = '卡片' %}
-{%- set panel_view_list_label = '列表' %}
 {%- set localized_categories_total = localized_category_count() %}
 {%- if localized_categories_total > 0 %}
   <section class="home-category-panel" aria-label="{{ __('state.categories') }}" data-current-category="{{ panel_current_category }}">
@@ -27,8 +25,8 @@
         </button>
       {%- endif %}
       <div class="home-view-toggle" role="group" aria-label="文章视图切换">
-        <button class="home-view-button is-active" type="button" data-view-mode="card">{{ panel_view_card_label }}</button>
-        <button class="home-view-button" type="button" data-view-mode="list">{{ panel_view_list_label }}</button>
+        <button class="home-view-button is-active" type="button" data-view-mode="card" aria-label="卡片视图"><i class="fa fa-th-large" aria-hidden="true"></i></button>
+        <button class="home-view-button" type="button" data-view-mode="list" aria-label="列表视图"><i class="fa fa-list" aria-hidden="true"></i></button>
       </div>
     </div>
   </section>
