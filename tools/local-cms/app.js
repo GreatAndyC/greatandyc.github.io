@@ -62,6 +62,8 @@ const elements = {
   commandPreviewLink: document.querySelector('#command-preview-link'),
   commandPanelBody: document.querySelector('#command-panel-body'),
   llmPanelBody: document.querySelector('#llm-panel-body'),
+  postCommandPanel: document.querySelector('#post-command-panel'),
+  postLlmPanel: document.querySelector('#post-llm-panel'),
   llm: {
     endpoint: document.querySelector('#llm-endpoint'),
     apiKey: document.querySelector('#llm-api-key'),
@@ -177,6 +179,11 @@ function renderPanelVisibility() {
   elements.toggleLlmPanelButton.textContent = state.panels.llmExpanded ? '隐藏' : '显示';
   elements.toggleCommandPanelButton.setAttribute('aria-expanded', String(state.panels.commandsExpanded));
   elements.toggleLlmPanelButton.setAttribute('aria-expanded', String(state.panels.llmExpanded));
+}
+
+function renderWorkspaceSections() {
+  elements.postCommandPanel.hidden = false;
+  elements.postLlmPanel.hidden = false;
 }
 
 function renderCategoryOptions() {
@@ -341,10 +348,12 @@ function applyMode(mode) {
   elements.pageEditor.hidden = true;
   elements.workspaceKicker.textContent = mode === 'posts' ? '文章编辑器' : '页面编辑器';
   elements.workspaceTitle.textContent = mode === 'posts' ? '请选择文章' : '请选择页面';
+  renderWorkspaceSections();
   renderList();
 }
 
 function fillPostEditor(record) {
+  renderWorkspaceSections();
   elements.postEditor.hidden = false;
   elements.pageEditor.hidden = true;
   elements.workspaceTitle.textContent = record.zh.title || record.en.title || record.key || '新文章';
@@ -374,6 +383,7 @@ function fillPostEditor(record) {
 }
 
 function fillPageEditor(record) {
+  renderWorkspaceSections();
   elements.pageEditor.hidden = false;
   elements.postEditor.hidden = true;
   elements.workspaceTitle.textContent = record.label;
