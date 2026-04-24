@@ -5,7 +5,7 @@
     <span class="toggle-line toggle-line-last"></span>
   </div>
 
-  <aside class="sidebar">
+  <aside class="sidebar{%- if page.path === 'about/index.html' or page.path === 'en/about/index.html' %} sidebar-about{%- endif %}">
     <div class="sidebar-inner">
 
       {%- set display_toc = page.toc.enable and display_toc %}
