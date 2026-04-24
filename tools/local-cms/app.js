@@ -64,6 +64,8 @@ const elements = {
   sidebar: document.querySelector('#sidebar'),
   sidebarBody: document.querySelector('#sidebar-body'),
   sidebarToggleButton: document.querySelector('#sidebar-toggle-button'),
+  searchBox: document.querySelector('#search-box'),
+  sidebarActions: document.querySelector('#sidebar-actions'),
   listPanel: document.querySelector('#list-panel'),
   listPagination: document.querySelector('#list-pagination'),
   searchInput: document.querySelector('#search-input'),
@@ -269,6 +271,7 @@ function getModeLabel(mode) {
   if (mode === 'pages') return '页面';
   if (mode === 'gallery') return '画廊';
   if (mode === 'images') return '图片库';
+  if (mode === 'settings') return '设置';
   return '内容';
 }
 
@@ -288,6 +291,7 @@ function getCurrentModeItems() {
       subtitle: folder ? folder : '根目录'
     }));
   }
+  if (state.mode === 'settings') return [];
   return [];
 }
 
@@ -338,13 +342,23 @@ function renderPanelVisibility() {
 
 function renderSidebarState() {
   elements.sidebar.classList.toggle('is-collapsed', state.sidebarCollapsed);
-  elements.sidebarToggleButton.textContent = state.sidebarCollapsed ? '展开' : '收起';
+  elements.sidebarToggleButton.textContent = state.sidebarCollapsed ? '>' : '<';
   elements.sidebarToggleButton.setAttribute('aria-expanded', String(!state.sidebarCollapsed));
+  elements.sidebarToggleButton.setAttribute('aria-label', state.sidebarCollapsed ? '展开侧边栏' : '收起侧边栏');
+  elements.sidebarToggleButton.title = state.sidebarCollapsed ? '展开侧边栏' : '收起侧边栏';
 }
 
 function renderWorkspaceSections() {
-  elements.postCommandPanel.hidden = false;
-  elements.postLlmPanel.hidden = false;
+  elements.postCommandPanel.hidden = state.mode === 'settings';
+  elements.postLlmPanel.hidden = state.mode !== 'settings';
+}
+
+function renderSidebarContentVisibility() {
+  const hideList = state.mode === 'settings';
+  elements.searchBox.hidden = hideList;
+  elements.listPanel.hidden = hideList;
+  elements.listPagination.hidden = hideList;
+  elements.sidebarActions.hidden = hideList;
 }
 
 function isGalleryPageRecord(record) {
@@ -362,7 +376,7 @@ function updatePrimarySaveButtonLabel() {
     return;
   }
 
-  if (state.mode === 'images') {
+  if (state.mode === 'images' || state.mode === 'settings') {
     elements.saveButton.textContent = '保存';
     return;
   }
@@ -376,7 +390,7 @@ function updatePrimarySaveButtonLabel() {
 }
 
 function renderPrimarySaveButton() {
-  elements.saveButton.hidden = state.mode === 'images';
+  elements.saveButton.hidden = state.mode === 'images' || state.mode === 'settings';
 }
 
 function normalizeCommaList(value) {
@@ -728,6 +742,7 @@ function applyMode(mode) {
   renderPrimarySaveButton();
   renderDeleteButton();
   renderWorkspaceSections();
+  renderSidebarContentVisibility();
   renderList();
 }
 
@@ -768,6 +783,18 @@ function fillPostEditor(record) {
 
   renderPostPhotoPreview();
   scheduleZhPreviewRender(0);
+}
+
+function fillSettingsWorkspace() {
+  renderWorkspaceSections();
+  elements.postEditor.hidden = true;
+  elements.pageEditor.hidden = true;
+  elements.galleryManager.hidden = true;
+  elements.imageLibrary.hidden = true;
+  elements.workspaceTitle.textContent = '设置';
+  updatePrimarySaveButtonLabel();
+  renderPrimarySaveButton();
+  renderDeleteButton();
 }
 
 function fillPageEditor(record) {
@@ -1126,6 +1153,11 @@ async function selectItem(id) {
 
   if (state.mode === 'gallery') {
     await selectGalleryAlbum(id);
+    return;
+  }
+
+  if (state.mode === 'settings') {
+    fillSettingsWorkspace();
     return;
   }
 
@@ -1815,6 +1847,8 @@ document.querySelectorAll('.mode-button').forEach(button => {
         await loadGallery(true);
       } else if (button.dataset.mode === 'images') {
         await loadImageLibrary('', { skipWorkspaceRender: false });
+      } else if (button.dataset.mode === 'settings') {
+        fillSettingsWorkspace();
       } else {
         renderList();
       }
@@ -2070,6 +2104,8 @@ elements.refreshButton.addEventListener('click', async () => {
       await loadGallery(true);
     } else if (state.mode === 'images') {
       await loadImageLibrary(state.images.selectedFolder || '');
+    } else if (state.mode === 'settings') {
+      fillSettingsWorkspace();
     }
     renderList();
     setStatus('列表已刷新。', 'success');

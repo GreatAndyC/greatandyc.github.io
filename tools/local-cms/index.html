@@ -11,11 +11,11 @@
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-top">
           <div class="sidebar-heading">
-            <div>
+            <div class="sidebar-brand">
               <p class="eyebrow">Local CMS</p>
               <h1>内容后台</h1>
             </div>
-            <button id="sidebar-toggle-button" class="ghost-button sidebar-toggle" type="button" aria-expanded="true" aria-controls="sidebar-body">收起</button>
+            <button id="sidebar-toggle-button" class="ghost-button sidebar-toggle" type="button" aria-expanded="true" aria-controls="sidebar-body" aria-label="收起侧边栏" title="收起侧边栏">&lt;</button>
           </div>
           <p class="sidebar-copy">本地管理文章、页面、画廊和图片资源，直接回写到仓库文件。</p>
         </div>
@@ -26,14 +26,15 @@
             <button class="mode-button" type="button" data-mode="pages" data-short="页" title="页面">页面</button>
             <button class="mode-button" type="button" data-mode="gallery" data-short="廊" title="画廊">画廊</button>
             <button class="mode-button" type="button" data-mode="images" data-short="图" title="图片库">图片库</button>
+            <button class="mode-button" type="button" data-mode="settings" data-short="设" title="设置">设置</button>
           </div>
 
-          <label class="search-box">
+          <label id="search-box" class="search-box">
             <span>搜索</span>
             <input id="search-input" type="search" placeholder="标题 / slug / 页面名 / 相册 / 目录">
           </label>
 
-          <div class="sidebar-actions">
+          <div id="sidebar-actions" class="sidebar-actions">
             <button id="new-post-button" class="ghost-button" type="button">新建文章</button>
             <button id="new-gallery-button" class="ghost-button" type="button" hidden>新建相册</button>
             <button id="refresh-button" class="ghost-button" type="button">刷新列表</button>

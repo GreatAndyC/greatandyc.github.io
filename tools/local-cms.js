@@ -3,6 +3,7 @@
 'use strict';
 
 const http = require('http');
+const net = require('net');
 const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
@@ -1393,6 +1394,32 @@ function createTimestamp() {
   return new Date().toISOString();
 }
 
+function checkPortAvailable(port) {
+  return new Promise((resolve, reject) => {
+    const probe = net.createServer();
+
+    probe.once('error', error => {
+      if (error && error.code === 'EADDRINUSE') {
+        resolve(false);
+        return;
+      }
+      reject(error);
+    });
+
+    probe.once('listening', () => {
+      probe.close(closeError => {
+        if (closeError) {
+          reject(closeError);
+          return;
+        }
+        resolve(true);
+      });
+    });
+
+    probe.listen(port);
+  });
+}
+
 function runShellTask(name) {
   const command = COMMAND_SCRIPTS[name];
   if (!command || name === 'serve') {
@@ -1437,9 +1464,14 @@ function runShellTask(name) {
   });
 }
 
-function startHexoServer() {
+async function startHexoServer() {
   if (commandState.serverProcess && commandState.serverStatus.running) {
     throw new Error('预览服务器已经在运行。');
+  }
+
+  const isAvailable = await checkPortAvailable(4000);
+  if (!isAvailable) {
+    throw new Error('4000 端口已被占用。先停止现有预览进程，或运行 `lsof -nP -iTCP:4000 -sTCP:LISTEN` 找到 PID 后结束它；也可以改用 `npm run server -- -p 4001`。');
   }
 
   commandState.serverStatus = {
@@ -2088,7 +2120,7 @@ const server = http.createServer(async (req, res) => {
       const name = decodeURIComponent(pathname.replace('/api/commands/', ''));
 
       if (name === 'serve') {
-        startHexoServer();
+        await startHexoServer();
         jsonResponse(res, 200, serializeCommandState());
         return;
       }

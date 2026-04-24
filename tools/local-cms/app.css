@@ -67,11 +67,11 @@ select {
 }
 
 .sidebar.is-collapsed {
-  padding-inline: 14px;
+  padding: 18px 12px;
 }
 
 .app-shell:has(.sidebar.is-collapsed) {
-  grid-template-columns: 88px minmax(0, 1fr);
+  grid-template-columns: 64px minmax(0, 1fr);
 }
 
 .sidebar-heading,
@@ -92,8 +92,16 @@ select {
 }
 
 .sidebar-toggle {
-  padding-inline: 12px;
-  min-width: 64px;
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 12px;
+  font-size: 1.15rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sidebar-top h1,
@@ -134,7 +142,7 @@ select {
 
 .mode-switch {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .mode-button,
@@ -360,9 +368,26 @@ select:focus {
   gap: 20px;
 }
 
+.workspace-header > :first-child {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
 .workspace-header h2 {
   margin-top: 6px;
   font-size: 2rem;
+  overflow-wrap: anywhere;
+}
+
+.workspace-actions {
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+}
+
+.workspace-actions .ghost-button,
+.workspace-actions .primary-button {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .status-bar {
@@ -1008,35 +1033,25 @@ select:focus {
   }
 
   .mode-switch {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
+.sidebar.is-collapsed .sidebar-brand,
 .sidebar.is-collapsed .sidebar-copy,
-.sidebar.is-collapsed .search-box,
-.sidebar.is-collapsed .sidebar-actions,
-.sidebar.is-collapsed .list-panel,
-.sidebar.is-collapsed .list-pagination {
+.sidebar.is-collapsed .sidebar-body {
   display: none;
 }
 
-.sidebar.is-collapsed .mode-switch {
-  grid-template-columns: 1fr;
+.sidebar.is-collapsed {
+  align-items: center;
 }
 
-.sidebar.is-collapsed .mode-button {
-  padding-inline: 0;
-  min-width: 0;
-  font-size: 0;
+.sidebar.is-collapsed .sidebar-heading {
+  justify-content: center;
 }
 
-.sidebar.is-collapsed .mode-button::after {
-  content: attr(data-short);
-  font-size: 0.95rem;
-  font-weight: 700;
-}
-
-.sidebar.is-collapsed .sidebar-top h1,
-.sidebar.is-collapsed .eyebrow {
-  display: none;
+.sidebar.is-collapsed .sidebar-top {
+  display: flex;
+  justify-content: center;
 }
