@@ -9,6 +9,7 @@
 - 顺手在同一个后台里执行常用 Hexo 命令
 - 在后台里直接上传封面图并创建 `source/images/` 子目录
 - 给中文稿接入可配置的 LLM 一键排版
+- 针对画廊提供和真实数据结构一致的相册管理器
 
 ## 启动方式
 
@@ -130,6 +131,42 @@ LOCAL_CMS_PORT=4012 npm run cms:local
 - 额外 front matter YAML
 - 正文
 
+### 3. 画廊
+
+画廊不是单纯改：
+
+`source/gallery/index.md`
+`source/en/gallery/index.md`
+
+这两份文件只是画廊首页介绍文案。
+
+真正的相册内容来源是：
+
+`content/gallery/*.md`
+
+前台消费的数据文件是：
+
+`source/_data/gallery.yml`
+
+现在本地 CMS 在你打开 `Gallery 中文` 或 `Gallery English` 页面时，会额外显示一个 `画廊内容管理` 区域，专门管理这条链路。
+
+你可以在这里直接：
+
+- 查看当前所有相册列表
+- 新建相册
+- 编辑 slug、中英文标题、时期、地点、器材、简介、标签
+- 给相册增删照片
+- 调整照片顺序
+- 给每张照片填写中英文标题、中英文说明和 meta
+- 直接上传图片到 `source/images/` 的指定目录，并自动追加为新的照片条目
+
+每次保存相册时，后台会自动：
+
+- 回写对应的 `content/gallery/<slug>.md`
+- 同步更新 `source/_data/gallery.yml`
+
+也就是说，后续你维护画廊时，不需要再自己去手敲 Markdown 表格和同步数据文件了。
+
 ## 分类规则
 
 文章分类不会强迫你回到代码里手写中英文两份配置。
@@ -160,10 +197,10 @@ LOCAL_CMS_PORT=4012 npm run cms:local
 - 文章双语编辑
 - 独立页面修改
 - 分类映射
+- 画廊相册管理与同步
 
 暂时还没有做：
 
-- 图片上传器
 - 菜单 / 友情链接 / 主题配置的可视化修改
 - 自动生成英文稿
 - 自动预览 Markdown 渲染结果

@@ -455,6 +455,222 @@ select:focus {
   line-height: 1.55;
 }
 
+.gallery-manager {
+  padding: 24px;
+}
+
+.gallery-manager-shell {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.gallery-album-sidebar,
+.gallery-inner-card {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 18px;
+  background: rgba(248, 248, 248, 0.9);
+}
+
+.gallery-album-sidebar {
+  position: sticky;
+  top: 28px;
+  padding: 16px;
+}
+
+.gallery-sidebar-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.gallery-sidebar-copy span {
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.gallery-album-list,
+.gallery-editor-stack,
+.gallery-language-column,
+.gallery-photo-fields,
+.gallery-photo-actions,
+.gallery-photo-toolbar {
+  display: flex;
+  flex-direction: column;
+}
+
+.gallery-album-list,
+.gallery-editor-stack {
+  gap: 14px;
+}
+
+.gallery-album-item {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.gallery-album-item:hover {
+  transform: translateY(-1px);
+  border-color: var(--border-strong);
+}
+
+.gallery-album-item.is-active {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+
+.gallery-album-item-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.gallery-album-item-head span,
+.gallery-album-item-subtitle,
+.gallery-album-item-meta,
+.gallery-empty-state,
+.gallery-photo-placeholder {
+  color: var(--muted);
+}
+
+.gallery-album-item-subtitle,
+.gallery-album-item-meta {
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.gallery-album-item-meta {
+  margin-top: 8px;
+}
+
+.gallery-empty-state {
+  padding: 18px;
+  border: 1px dashed rgba(0, 0, 0, 0.14);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  line-height: 1.55;
+}
+
+.gallery-meta-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
+.gallery-file-field,
+.gallery-language-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gallery-file-field > span:first-child,
+.gallery-language-field > span:first-child {
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.gallery-language-options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.compact-checkbox {
+  justify-content: flex-start;
+  flex-direction: row;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.compact-checkbox input {
+  margin: 0;
+}
+
+.gallery-language-grid {
+  align-items: start;
+}
+
+.gallery-language-column {
+  gap: 14px;
+}
+
+.gallery-photo-list {
+  display: grid;
+  gap: 16px;
+}
+
+.gallery-photo-card {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.gallery-photo-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 190px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: rgba(240, 240, 240, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.gallery-photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-photo-placeholder {
+  font-size: 0.88rem;
+}
+
+.gallery-photo-fields {
+  gap: 12px;
+}
+
+.gallery-photo-toolbar {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.gallery-photo-actions {
+  flex-direction: row;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gallery-photo-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .checkbox-field {
   justify-content: center;
 }
@@ -489,7 +705,10 @@ select:focus {
   .language-grid,
   .command-status-grid,
   .image-tools-grid,
-  .category-custom-grid {
+  .category-custom-grid,
+  .gallery-meta-grid,
+  .gallery-photo-grid,
+  .gallery-manager-shell {
     grid-template-columns: 1fr;
   }
 
@@ -500,5 +719,13 @@ select:focus {
 
   .workspace-actions {
     justify-content: flex-start;
+  }
+
+  .gallery-photo-card {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-album-sidebar {
+    position: static;
   }
 }

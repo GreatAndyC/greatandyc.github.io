@@ -15,10 +15,17 @@ const PORT = Number(process.env.LOCAL_CMS_PORT || 4010);
 const ROOT = path.resolve(__dirname, '..');
 const POSTS_DIR = path.join(ROOT, 'source', '_posts');
 const IMAGES_DIR = path.join(ROOT, 'source', 'images');
+const GALLERY_DOC_DIR = path.join(ROOT, 'content', 'gallery');
+const GALLERY_DATA_PATH = path.join(ROOT, 'source', '_data', 'gallery.yml');
 const STATIC_DIR = path.join(ROOT, 'tools', 'local-cms');
 const CONFIG_PATH = path.join(ROOT, '_config.yml');
 const ENV_PATH = path.join(ROOT, '.env');
 const LOCAL_SETTINGS_PATH = path.join(ROOT, '.local-cms.json');
+const GALLERY_PAGE_IDS = new Set(['gallery-zh', 'gallery-en']);
+const GALLERY_DEFAULT_EMPTY = {
+  'zh-CN': '画廊还没有内容，后续会逐步补充更多作品。',
+  en: 'The gallery is empty for now. More work will be added over time.'
+};
 const LLM_ENV_KEYS = {
   endpoint: 'LOCAL_CMS_LLM_ENDPOINT',
   apiKey: 'LOCAL_CMS_LLM_API_KEY',
@@ -101,6 +108,11 @@ function jsonResponse(res, statusCode, payload) {
 
 function textResponse(res, statusCode, contentType, body) {
   res.writeHead(statusCode, { 'Content-Type': `${contentType}; charset=utf-8` });
+  res.end(body);
+}
+
+function binaryResponse(res, statusCode, contentType, body) {
+  res.writeHead(statusCode, { 'Content-Type': contentType });
   res.end(body);
 }
 
@@ -324,6 +336,354 @@ function buildFrontMatterString(data, body) {
 
   const normalizedBody = String(body || '').replace(/^\n+/, '');
   return `---\n${serialized}---\n\n${normalizedBody}`;
+}
+
+function normalizeGallerySlug(value) {
+  const slug = String(value || '').trim();
+  if (!slug) {
+    throw new Error('画廊相册的 slug 不能为空。');
+  }
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+    throw new Error('画廊相册的 slug 只能包含小写字母、数字和连字符。');
+  }
+  return slug;
+}
+
+function normalizeGalleryLanguages(value) {
+  const raw = Array.isArray(value)
+    ? value
+    : String(value || '')
+      .split(',')
+      .map(item => item.trim())
+      .filter(Boolean);
+
+  const unique = Array.from(new Set(raw.filter(item => item === 'zh-CN' || item === 'en')));
+  return unique.length ? unique : ['zh-CN', 'en'];
+}
+
+function splitMarkdownTableRow(line) {
+  const row = String(line || '').trim();
+  const content = row.replace(/^\|/, '').replace(/\|$/, '');
+  const cells = [];
+  let current = '';
+
+  for (let index = 0; index < content.length; index += 1) {
+    const char = content[index];
+    const previous = index > 0 ? content[index - 1] : '';
+
+    if (char === '|' && previous !== '\\') {
+      cells.push(current.trim().replace(/\\\|/g, '|'));
+      current = '';
+      continue;
+    }
+
+    current += char;
+  }
+
+  cells.push(current.trim().replace(/\\\|/g, '|'));
+  return cells;
+}
+
+function parseGalleryPhotoTable(body) {
+  const rows = String(body || '')
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(line => line.startsWith('|') && line.endsWith('|'));
+
+  if (rows.length < 2) return [];
+
+  const header = splitMarkdownTableRow(rows[0]);
+  const divider = splitMarkdownTableRow(rows[1]);
+  if (!divider.every(cell => /^:?-{3,}:?$/.test(cell))) {
+    throw new Error('画廊照片表格格式不合法，请使用标准 Markdown 表格。');
+  }
+
+  return rows.slice(2).map(line => {
+    const cells = splitMarkdownTableRow(line);
+    const row = {};
+    header.forEach((key, index) => {
+      row[key] = (cells[index] || '').replace(/<br\s*\/?>/gi, '\n');
+    });
+    return row;
+  }).filter(row => Object.values(row).some(Boolean));
+}
+
+function escapeMarkdownTableCell(value) {
+  return String(value || '')
+    .replace(/\|/g, '\\|')
+    .replace(/\r?\n/g, '<br>');
+}
+
+function normalizeGalleryPhotoSrc(rawSrc) {
+  return String(rawSrc || '').trim();
+}
+
+function galleryDocPathFromSlug(slug) {
+  return ensureInsideRoot(path.join(GALLERY_DOC_DIR, `${slug}.md`));
+}
+
+function loadGalleryEmptyState() {
+  if (!fs.existsSync(GALLERY_DATA_PATH)) {
+    return { ...GALLERY_DEFAULT_EMPTY };
+  }
+
+  const existing = yaml.load(fs.readFileSync(GALLERY_DATA_PATH, 'utf8')) || {};
+  const empty = existing.empty && typeof existing.empty === 'object' ? existing.empty : {};
+  return {
+    'zh-CN': String(empty['zh-CN'] || GALLERY_DEFAULT_EMPTY['zh-CN']),
+    en: String(empty.en || GALLERY_DEFAULT_EMPTY.en)
+  };
+}
+
+function buildGalleryAlbumRecord(filePath) {
+  const parsed = parseMarkdownFile(filePath);
+  const data = parsed.data || {};
+  const slug = normalizeGallerySlug(data.slug || path.basename(filePath, '.md'));
+  const photos = parseGalleryPhotoTable(parsed.body).map(row => {
+    const src = normalizeGalleryPhotoSrc(row.src);
+    if (!src) {
+      throw new Error(`画廊相册 ${slug} 中存在空图片路径。`);
+    }
+
+    return {
+      src,
+      title: {
+        'zh-CN': String(row.title_zh || ''),
+        en: String(row.title_en || '')
+      },
+      caption: {
+        'zh-CN': String(row.caption_zh || ''),
+        en: String(row.caption_en || '')
+      },
+      meta: String(row.meta || '')
+    };
+  });
+
+  return {
+    kind: 'gallery-album',
+    slug,
+    sourceSlug: slug,
+    file: toPosixPath(filePath),
+    languages: normalizeGalleryLanguages(data.languages),
+    title: {
+      'zh-CN': String(data.title_zh || ''),
+      en: String(data.title_en || '')
+    },
+    period: {
+      'zh-CN': String(data.period_zh || ''),
+      en: String(data.period_en || '')
+    },
+    location: {
+      'zh-CN': String(data.location_zh || ''),
+      en: String(data.location_en || '')
+    },
+    camera: {
+      'zh-CN': String(data.camera_zh || ''),
+      en: String(data.camera_en || '')
+    },
+    description: {
+      'zh-CN': String(data.description_zh || ''),
+      en: String(data.description_en || '')
+    },
+    tags: {
+      'zh-CN': normalizeStringList(data.tags_zh),
+      en: normalizeStringList(data.tags_en)
+    },
+    photos
+  };
+}
+
+function listGalleryAlbumFiles() {
+  if (!fs.existsSync(GALLERY_DOC_DIR)) {
+    fs.mkdirSync(GALLERY_DOC_DIR, { recursive: true });
+  }
+
+  return fs.readdirSync(GALLERY_DOC_DIR)
+    .filter(name => name.endsWith('.md') && name !== '_template.md')
+    .sort((left, right) => left.localeCompare(right))
+    .map(name => path.join(GALLERY_DOC_DIR, name));
+}
+
+function listGalleryAlbumsDetailed() {
+  return listGalleryAlbumFiles().map(filePath => buildGalleryAlbumRecord(filePath));
+}
+
+function listGalleryAlbums() {
+  return listGalleryAlbumsDetailed().map(album => ({
+    slug: album.slug,
+    file: album.file,
+    titleZh: album.title['zh-CN'],
+    titleEn: album.title.en,
+    periodZh: album.period['zh-CN'],
+    periodEn: album.period.en,
+    locationZh: album.location['zh-CN'],
+    locationEn: album.location.en,
+    photoCount: album.photos.length,
+    cover: album.photos[0] ? album.photos[0].src : ''
+  }));
+}
+
+function readGalleryAlbumBySlug(slug) {
+  const normalizedSlug = normalizeGallerySlug(slug);
+  const filePath = galleryDocPathFromSlug(normalizedSlug);
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`找不到画廊相册：${normalizedSlug}`);
+  }
+  return buildGalleryAlbumRecord(filePath);
+}
+
+function buildGalleryMarkdownTable(photos) {
+  const rows = [
+    '| src | title_zh | title_en | caption_zh | caption_en | meta |',
+    '| --- | --- | --- | --- | --- | --- |'
+  ];
+
+  photos.forEach(photo => {
+    rows.push([
+      '|',
+      ` ${escapeMarkdownTableCell(photo.src)} |`,
+      ` ${escapeMarkdownTableCell(photo.title['zh-CN'])} |`,
+      ` ${escapeMarkdownTableCell(photo.title.en)} |`,
+      ` ${escapeMarkdownTableCell(photo.caption['zh-CN'])} |`,
+      ` ${escapeMarkdownTableCell(photo.caption.en)} |`,
+      ` ${escapeMarkdownTableCell(photo.meta)} |`
+    ].join(''));
+  });
+
+  return rows.join('\n');
+}
+
+function serializeGalleryAlbum(record) {
+  const frontMatterData = {
+    slug: record.slug,
+    languages: record.languages.join(','),
+    title_zh: record.title['zh-CN'],
+    title_en: record.title.en,
+    period_zh: record.period['zh-CN'],
+    period_en: record.period.en,
+    location_zh: record.location['zh-CN'],
+    location_en: record.location.en,
+    camera_zh: record.camera['zh-CN'],
+    camera_en: record.camera.en,
+    description_zh: record.description['zh-CN'],
+    description_en: record.description.en,
+    tags_zh: record.tags['zh-CN'].join(','),
+    tags_en: record.tags.en.join(',')
+  };
+
+  return buildFrontMatterString(frontMatterData, buildGalleryMarkdownTable(record.photos));
+}
+
+function syncGalleryDataFile() {
+  const albums = listGalleryAlbumsDetailed().map(album => ({
+    slug: album.slug,
+    languages: album.languages,
+    title: album.title,
+    period: album.period,
+    location: album.location,
+    camera: album.camera,
+    description: album.description,
+    tags: album.tags,
+    photos: album.photos.map(photo => {
+      const next = {
+        src: photo.src,
+        title: photo.title,
+        caption: photo.caption
+      };
+      if (photo.meta) {
+        next.meta = photo.meta;
+      }
+      return next;
+    })
+  }));
+
+  const output = yaml.dump({
+    empty: loadGalleryEmptyState(),
+    albums
+  }, {
+    lineWidth: -1,
+    noRefs: true,
+    sortKeys: false
+  });
+
+  fs.mkdirSync(path.dirname(GALLERY_DATA_PATH), { recursive: true });
+  fs.writeFileSync(GALLERY_DATA_PATH, output, 'utf8');
+}
+
+function writeGalleryAlbum(payload) {
+  const sourceSlug = String(payload && payload.sourceSlug || '').trim();
+  const slug = normalizeGallerySlug(payload && payload.slug);
+  const targetPath = galleryDocPathFromSlug(slug);
+  const sourcePath = sourceSlug ? galleryDocPathFromSlug(normalizeGallerySlug(sourceSlug)) : '';
+
+  if (sourcePath && sourcePath !== targetPath && fs.existsSync(targetPath)) {
+    throw new Error(`目标 slug 已存在：${slug}`);
+  }
+
+  if (!sourcePath && fs.existsSync(targetPath)) {
+    throw new Error(`画廊相册已存在：${slug}`);
+  }
+
+  const record = {
+    slug,
+    languages: normalizeGalleryLanguages(payload.languages),
+    title: {
+      'zh-CN': String(payload.title && payload.title['zh-CN'] || '').trim(),
+      en: String(payload.title && payload.title.en || '').trim()
+    },
+    period: {
+      'zh-CN': String(payload.period && payload.period['zh-CN'] || '').trim(),
+      en: String(payload.period && payload.period.en || '').trim()
+    },
+    location: {
+      'zh-CN': String(payload.location && payload.location['zh-CN'] || '').trim(),
+      en: String(payload.location && payload.location.en || '').trim()
+    },
+    camera: {
+      'zh-CN': String(payload.camera && payload.camera['zh-CN'] || '').trim(),
+      en: String(payload.camera && payload.camera.en || '').trim()
+    },
+    description: {
+      'zh-CN': String(payload.description && payload.description['zh-CN'] || '').trim(),
+      en: String(payload.description && payload.description.en || '').trim()
+    },
+    tags: {
+      'zh-CN': normalizeStringList(payload.tags && payload.tags['zh-CN']),
+      en: normalizeStringList(payload.tags && payload.tags.en)
+    },
+    photos: Array.isArray(payload.photos)
+      ? payload.photos.map(item => ({
+        src: normalizeGalleryPhotoSrc(item && item.src),
+        title: {
+          'zh-CN': String(item && item.title && item.title['zh-CN'] || '').trim(),
+          en: String(item && item.title && item.title.en || '').trim()
+        },
+        caption: {
+          'zh-CN': String(item && item.caption && item.caption['zh-CN'] || '').trim(),
+          en: String(item && item.caption && item.caption.en || '').trim()
+        },
+        meta: String(item && item.meta || '').trim()
+      })).filter(item => item.src)
+      : []
+  };
+
+  if (!record.title['zh-CN'] || !record.title.en) {
+    throw new Error('画廊相册的中英文标题都不能为空。');
+  }
+
+  if (!record.photos.length) {
+    throw new Error('至少需要一张照片才能保存画廊相册。');
+  }
+
+  fs.mkdirSync(GALLERY_DOC_DIR, { recursive: true });
+  fs.writeFileSync(targetPath, serializeGalleryAlbum(record), 'utf8');
+
+  if (sourcePath && sourcePath !== targetPath && fs.existsSync(sourcePath)) {
+    fs.unlinkSync(sourcePath);
+  }
+
+  syncGalleryDataFile();
+  return readGalleryAlbumBySlug(slug);
 }
 
 function parseDotEnv(content = '') {
@@ -867,6 +1227,7 @@ function readPageById(id) {
     id: page.id,
     label: page.label,
     file: toPosixPath(page.file),
+    isGalleryPage: GALLERY_PAGE_IDS.has(page.id),
     title: String(data.title || ''),
     date: toDateTimeLocalValue(data.date || ''),
     lang: String(data.lang || ''),
@@ -1002,6 +1363,29 @@ function serveStaticAsset(res, pathname) {
   textResponse(res, 200, contentType, fs.readFileSync(filePath, 'utf8'));
 }
 
+function serveProjectImage(res, pathname) {
+  const relativePath = pathname.replace(/^\/images\//, '');
+  const filePath = ensureInsideRoot(path.join(IMAGES_DIR, relativePath));
+
+  if (!filePath.startsWith(IMAGES_DIR) || !fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+    textResponse(res, 404, 'text/plain', 'Not found');
+    return;
+  }
+
+  const ext = path.extname(filePath).toLowerCase();
+  const contentType = ({
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.gif': 'image/gif',
+    '.webp': 'image/webp',
+    '.svg': 'image/svg+xml',
+    '.avif': 'image/avif'
+  })[ext] || 'application/octet-stream';
+
+  binaryResponse(res, 200, contentType, fs.readFileSync(filePath));
+}
+
 function collectBody(req) {
   return new Promise((resolve, reject) => {
     let buffer = '';
@@ -1102,6 +1486,26 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === 'GET' && pathname === '/api/gallery') {
+      jsonResponse(res, 200, {
+        items: listGalleryAlbums()
+      });
+      return;
+    }
+
+    if (req.method === 'GET' && pathname.startsWith('/api/gallery/')) {
+      const slug = decodeURIComponent(pathname.replace('/api/gallery/', ''));
+      jsonResponse(res, 200, readGalleryAlbumBySlug(slug));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/gallery') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, writeGalleryAlbum(payload));
+      return;
+    }
+
     if (req.method === 'POST' && pathname.startsWith('/api/commands/')) {
       const name = decodeURIComponent(pathname.replace('/api/commands/', ''));
 
@@ -1137,6 +1541,10 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === 'GET') {
+      if (pathname.startsWith('/images/')) {
+        serveProjectImage(res, pathname);
+        return;
+      }
       serveStaticAsset(res, pathname);
       return;
     }
@@ -1155,16 +1563,25 @@ function cleanupChildren() {
   }
 }
 
-process.on('SIGINT', () => {
-  cleanupChildren();
-  process.exit(0);
-});
+if (require.main === module) {
+  process.on('SIGINT', () => {
+    cleanupChildren();
+    process.exit(0);
+  });
 
-process.on('SIGTERM', () => {
-  cleanupChildren();
-  process.exit(0);
-});
+  process.on('SIGTERM', () => {
+    cleanupChildren();
+    process.exit(0);
+  });
 
-server.listen(PORT, HOST, () => {
-  console.log(`Local CMS running at http://${HOST}:${PORT}`);
-});
+  server.listen(PORT, HOST, () => {
+    console.log(`Local CMS running at http://${HOST}:${PORT}`);
+  });
+}
+
+module.exports = {
+  listGalleryAlbums,
+  readGalleryAlbumBySlug,
+  writeGalleryAlbum,
+  syncGalleryDataFile
+};

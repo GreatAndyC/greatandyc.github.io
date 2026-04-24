@@ -295,6 +295,157 @@
               <textarea id="page-body" rows="28"></textarea>
             </label>
           </div>
+
+          <section id="gallery-manager" class="editor-card gallery-manager" hidden>
+            <div class="card-heading">
+              <div>
+                <p class="eyebrow">Gallery Manager</p>
+                <h3>画廊内容管理</h3>
+              </div>
+              <div class="card-heading-actions">
+                <button id="refresh-gallery-button" class="ghost-button" type="button">刷新相册</button>
+                <button id="new-gallery-album-button" class="ghost-button" type="button">新建相册</button>
+                <button id="save-gallery-button" class="primary-button" type="button">保存相册</button>
+              </div>
+            </div>
+
+            <div class="gallery-manager-shell">
+              <aside class="gallery-album-sidebar">
+                <div class="gallery-sidebar-copy">
+                  <strong>当前相册列表</strong>
+                  <span>这里编辑的是 `content/gallery/*.md`，保存后会自动同步 `source/_data/gallery.yml`。</span>
+                </div>
+                <div id="gallery-album-list" class="gallery-album-list"></div>
+              </aside>
+
+              <div class="gallery-editor-stack">
+                <div class="editor-card gallery-inner-card">
+                  <div class="gallery-meta-grid">
+                    <label>
+                      <span>相册 Slug</span>
+                      <input id="gallery-slug" type="text" placeholder="heartbeat-pi-2026">
+                    </label>
+                    <div class="gallery-file-field">
+                      <span>文件路径</span>
+                      <span id="gallery-file" class="meta-pill">新建后生成</span>
+                    </div>
+                    <div class="gallery-language-field">
+                      <span>语言</span>
+                      <div class="gallery-language-options">
+                        <label class="checkbox-field compact-checkbox">
+                          <input id="gallery-lang-zh" type="checkbox" checked>
+                          <span>中文</span>
+                        </label>
+                        <label class="checkbox-field compact-checkbox">
+                          <input id="gallery-lang-en" type="checkbox" checked>
+                          <span>English</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="editor-card gallery-inner-card">
+                  <div class="language-grid gallery-language-grid">
+                    <section class="gallery-language-column">
+                      <div class="card-heading">
+                        <h3>中文信息</h3>
+                      </div>
+                      <label>
+                        <span>标题</span>
+                        <input id="gallery-title-zh" type="text">
+                      </label>
+                      <label>
+                        <span>时期 / 活动说明</span>
+                        <input id="gallery-period-zh" type="text">
+                      </label>
+                      <label>
+                        <span>地点</span>
+                        <input id="gallery-location-zh" type="text">
+                      </label>
+                      <label>
+                        <span>器材</span>
+                        <input id="gallery-camera-zh" type="text">
+                      </label>
+                      <label>
+                        <span>标签（逗号分隔）</span>
+                        <input id="gallery-tags-zh" type="text" placeholder="舞台, 演出, 活动摄影">
+                      </label>
+                      <label>
+                        <span>简介</span>
+                        <textarea id="gallery-description-zh" rows="5"></textarea>
+                      </label>
+                    </section>
+
+                    <section class="gallery-language-column">
+                      <div class="card-heading">
+                        <h3>English Info</h3>
+                      </div>
+                      <label>
+                        <span>Title</span>
+                        <input id="gallery-title-en" type="text">
+                      </label>
+                      <label>
+                        <span>Period / Event</span>
+                        <input id="gallery-period-en" type="text">
+                      </label>
+                      <label>
+                        <span>Location</span>
+                        <input id="gallery-location-en" type="text">
+                      </label>
+                      <label>
+                        <span>Camera</span>
+                        <input id="gallery-camera-en" type="text">
+                      </label>
+                      <label>
+                        <span>Tags (comma separated)</span>
+                        <input id="gallery-tags-en" type="text" placeholder="Stage, Performance, Event Photography">
+                      </label>
+                      <label>
+                        <span>Description</span>
+                        <textarea id="gallery-description-en" rows="5"></textarea>
+                      </label>
+                    </section>
+                  </div>
+                </div>
+
+                <div class="editor-card gallery-inner-card">
+                  <div class="card-heading">
+                    <div class="card-heading-copy">
+                      <h3>相册图片</h3>
+                      <span class="field-hint">可直接上传到 `source/images/`，上传成功后会自动追加到当前相册的照片列表末尾。</span>
+                    </div>
+                    <div class="card-heading-actions">
+                      <button id="gallery-add-photo-button" class="ghost-button" type="button">新增一张</button>
+                      <button id="gallery-upload-image-button" class="ghost-button" type="button">上传图片</button>
+                    </div>
+                  </div>
+
+                  <div class="image-tools-grid">
+                    <label>
+                      <span>图片目录</span>
+                      <select id="gallery-image-folder-select"></select>
+                    </label>
+                    <label>
+                      <span>新建目录</span>
+                      <div class="inline-field">
+                        <input id="gallery-image-new-folder" type="text" placeholder="例如 gallery/heartbeat-pi-2026">
+                        <button id="gallery-create-image-folder-button" class="ghost-button" type="button">创建</button>
+                      </div>
+                    </label>
+                  </div>
+
+                  <div id="gallery-image-dropzone" class="image-dropzone" tabindex="0">
+                    <input id="gallery-image-file-input" type="file" accept="image/*" multiple hidden>
+                    <p>拖动图片到这里，或点击选择本地文件</p>
+                    <span id="gallery-image-dropzone-meta">上传后的图片会作为新的照片条目追加到当前相册里。</span>
+                  </div>
+
+                  <div id="gallery-photo-list" class="gallery-photo-list"></div>
+                </div>
+              </div>
+            </div>
+          </section>
         </section>
       </main>
     </div>
