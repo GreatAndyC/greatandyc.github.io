@@ -14,8 +14,10 @@ const HOST = process.env.LOCAL_CMS_HOST || '127.0.0.1';
 const PORT = Number(process.env.LOCAL_CMS_PORT || 4010);
 const ROOT = process.cwd();
 const POSTS_DIR = path.join(ROOT, 'source', '_posts');
+const IMAGES_DIR = path.join(ROOT, 'source', 'images');
 const STATIC_DIR = path.join(ROOT, 'tools', 'local-cms');
 const CONFIG_PATH = path.join(ROOT, '_config.yml');
+const LOCAL_SETTINGS_PATH = path.join(ROOT, '.local-cms.json');
 
 const PAGE_DEFINITIONS = [
   { id: 'about-zh', label: 'About 中文', file: path.join(ROOT, 'source', 'about', 'index.md') },
@@ -54,6 +56,20 @@ const COMMAND_SCRIPTS = {
   build: { label: '构建站点', script: 'build' },
   deploy: { label: '部署站点', script: 'deploy' },
   serve: { label: '启动预览', script: 'server' }
+};
+
+const DEFAULT_LLM_SETTINGS = {
+  endpoint: 'https://api.openai.com/v1/chat/completions',
+  apiKey: '',
+  model: '',
+  temperature: 0.2,
+  prompt: [
+    '你是一个严谨的中文 Markdown 编辑助手。',
+    '请把用户给出的中文博客草稿整理成更清晰的 Markdown 正文。',
+    '只输出排版后的正文，不要额外解释。',
+    '保留事实、链接、图片地址和代码块，不要捏造信息。',
+    '不输出 front matter。'
+  ].join('\n')
 };
 
 const commandState = {
@@ -225,6 +241,224 @@ function buildFrontMatterString(data, body) {
 
   const normalizedBody = String(body || '').replace(/^\n+/, '');
   return `---\n${serialized}---\n\n${normalizedBody}`;
+}
+
+function loadLocalSettings() {
+  if (!fs.existsSync(LOCAL_SETTINGS_PATH)) {
+    return { llm: { ...DEFAULT_LLM_SETTINGS } };
+  }
+
+  const raw = fs.readFileSync(LOCAL_SETTINGS_PATH, 'utf8');
+  const parsed = JSON.parse(raw || '{}');
+
+  return {
+    llm: {
+      ...DEFAULT_LLM_SETTINGS,
+      ...(parsed.llm || {})
+    }
+  };
+}
+
+function saveLocalSettings(payload) {
+  const current = loadLocalSettings();
+  const next = {
+    llm: {
+      ...current.llm,
+      ...(payload.llm || {})
+    }
+  };
+
+  fs.writeFileSync(LOCAL_SETTINGS_PATH, `${JSON.stringify(next, null, 2)}\n`, 'utf8');
+  return next;
+}
+
+function getLlmSettingsPayload() {
+  const settings = loadLocalSettings();
+  return {
+    llm: {
+      endpoint: settings.llm.endpoint || '',
+      apiKey: settings.llm.apiKey || '',
+      model: settings.llm.model || '',
+      temperature: Number(settings.llm.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
+      prompt: settings.llm.prompt || DEFAULT_LLM_SETTINGS.prompt
+    }
+  };
+}
+
+function normalizeFolderPath(input = '') {
+  const parts = String(input || '')
+    .replace(/^\/+|\/+$/g, '')
+    .split(/[\\/]+/)
+    .map(part => part.trim())
+    .filter(Boolean);
+
+  parts.forEach(part => {
+    if (part === '.' || part === '..') {
+      throw new Error('目录名不能包含 . 或 ..');
+    }
+  });
+
+  return parts.join('/');
+}
+
+function resolveImageFolder(folder = '') {
+  const normalized = normalizeFolderPath(folder);
+  const absolute = ensureInsideRoot(path.join(IMAGES_DIR, normalized));
+
+  if (!absolute.startsWith(IMAGES_DIR)) {
+    throw new Error('图片目录必须位于 source/images 下。');
+  }
+
+  return {
+    normalized,
+    absolute
+  };
+}
+
+function listImageFoldersRecursive(currentDir, prefix = '') {
+  const entries = fs.readdirSync(currentDir, { withFileTypes: true });
+  const result = [];
+
+  entries
+    .filter(entry => entry.isDirectory())
+    .sort((left, right) => left.name.localeCompare(right.name, 'zh-Hans-CN'))
+    .forEach(entry => {
+      const relative = prefix ? `${prefix}/${entry.name}` : entry.name;
+      result.push(relative);
+      result.push(...listImageFoldersRecursive(path.join(currentDir, entry.name), relative));
+    });
+
+  return result;
+}
+
+function listImageFolders() {
+  fs.mkdirSync(IMAGES_DIR, { recursive: true });
+  return [''].concat(listImageFoldersRecursive(IMAGES_DIR));
+}
+
+function createImageFolder(folder) {
+  const { normalized, absolute } = resolveImageFolder(folder);
+  if (!normalized) {
+    throw new Error('请输入要创建的目录名。');
+  }
+
+  fs.mkdirSync(absolute, { recursive: true });
+  return {
+    folder: normalized,
+    folders: listImageFolders()
+  };
+}
+
+function sanitizeUploadFilename(filename = '') {
+  const safe = path.basename(String(filename || ''))
+    .replace(/[<>:"/\\|?*\u0000-\u001f]/g, '-')
+    .trim();
+
+  return safe || `upload-${Date.now()}.bin`;
+}
+
+function uploadImageFiles(folder, files) {
+  const { normalized, absolute } = resolveImageFolder(folder);
+  fs.mkdirSync(absolute, { recursive: true });
+
+  const uploaded = (Array.isArray(files) ? files : []).map(file => {
+    const filename = sanitizeUploadFilename(file.name);
+    const targetPath = path.join(absolute, filename);
+    const content = String(file.content || '');
+
+    if (!content) {
+      throw new Error(`文件 ${filename} 缺少内容。`);
+    }
+
+    fs.writeFileSync(targetPath, Buffer.from(content, 'base64'));
+
+    const publicPath = normalized
+      ? `/images/${normalized}/${filename}`
+      : `/images/${filename}`;
+
+    return {
+      name: filename,
+      path: publicPath
+    };
+  });
+
+  return {
+    folder: normalized,
+    uploaded,
+    folders: listImageFolders()
+  };
+}
+
+function parseLlmResponseContent(payload) {
+  const choice = payload && Array.isArray(payload.choices) ? payload.choices[0] : null;
+  const content = choice && choice.message ? choice.message.content : '';
+
+  if (typeof content === 'string') return content.trim();
+  if (Array.isArray(content)) {
+    return content.map(item => {
+      if (typeof item === 'string') return item;
+      if (item && typeof item.text === 'string') return item.text;
+      return '';
+    }).join('').trim();
+  }
+
+  return '';
+}
+
+async function formatChineseDraftWithLlm(payload) {
+  const settings = getLlmSettingsPayload().llm;
+
+  if (!settings.endpoint || !settings.apiKey || !settings.model) {
+    throw new Error('请先在 LLM 配置里填写 endpoint、API Key 和 model。');
+  }
+
+  const body = String(payload.body || '').trim();
+  if (!body) {
+    throw new Error('中文正文为空，无法排版。');
+  }
+
+  const response = await fetch(settings.endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${settings.apiKey}`
+    },
+    body: JSON.stringify({
+      model: settings.model,
+      temperature: Number(settings.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
+      messages: [
+        { role: 'system', content: settings.prompt || DEFAULT_LLM_SETTINGS.prompt },
+        {
+          role: 'user',
+          content: [
+            '请整理下面这篇中文博客草稿，只返回排版后的 Markdown 正文。',
+            '',
+            `标题：${String(payload.title || '').trim()}`,
+            `一句话概括：${String(payload.description || '').trim()}`,
+            '',
+            '正文：',
+            body
+          ].join('\n')
+        }
+      ]
+    })
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`LLM 请求失败：${response.status} ${text.slice(0, 300)}`);
+  }
+
+  const data = await response.json();
+  const formatted = parseLlmResponseContent(data);
+
+  if (!formatted) {
+    throw new Error('LLM 没有返回可用内容。');
+  }
+
+  return {
+    content: formatted
+  };
 }
 
 function trimLog(content, maxLength = 30000) {
@@ -588,7 +822,7 @@ function collectBody(req) {
     let buffer = '';
     req.on('data', chunk => {
       buffer += chunk;
-      if (buffer.length > 5 * 1024 * 1024) {
+      if (buffer.length > 60 * 1024 * 1024) {
         reject(new Error('请求体过大。'));
       }
     });
@@ -608,6 +842,46 @@ const server = http.createServer(async (req, res) => {
         categories: categoryOptions,
         pages: listPages()
       });
+      return;
+    }
+
+    if (req.method === 'GET' && pathname === '/api/settings') {
+      jsonResponse(res, 200, getLlmSettingsPayload());
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/settings') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, saveLocalSettings(payload));
+      return;
+    }
+
+    if (req.method === 'GET' && pathname === '/api/images/folders') {
+      jsonResponse(res, 200, {
+        folders: listImageFolders()
+      });
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/images/folders') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, createImageFolder(payload.folder));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/images/upload') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, uploadImageFiles(payload.folder, payload.files));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/format/zh') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, await formatChineseDraftWithLlm(payload));
       return;
     }
 

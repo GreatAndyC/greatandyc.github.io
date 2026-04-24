@@ -5,6 +5,16 @@ const state = {
   meta: { categories: [], pages: [] },
   posts: [],
   pages: [],
+  imageFolders: [],
+  settings: {
+    llm: {
+      endpoint: '',
+      apiKey: '',
+      model: '',
+      temperature: 0.2,
+      prompt: ''
+    }
+  },
   selectedId: '',
   currentRecord: null,
   commands: {
@@ -27,6 +37,10 @@ const elements = {
   saveButton: document.querySelector('#save-button'),
   refreshButton: document.querySelector('#refresh-button'),
   newPostButton: document.querySelector('#new-post-button'),
+  saveLlmButton: document.querySelector('#save-llm-button'),
+  formatZhButton: document.querySelector('#format-zh-button'),
+  uploadImageButton: document.querySelector('#upload-image-button'),
+  createImageFolderButton: document.querySelector('#create-image-folder-button'),
   statusBar: document.querySelector('#status-bar'),
   commandButtons: Array.from(document.querySelectorAll('[data-command]')),
   commandCurrentTask: document.querySelector('#command-current-task'),
@@ -37,6 +51,13 @@ const elements = {
   commandLastMeta: document.querySelector('#command-last-meta'),
   commandLog: document.querySelector('#command-log'),
   commandPreviewLink: document.querySelector('#command-preview-link'),
+  llm: {
+    endpoint: document.querySelector('#llm-endpoint'),
+    apiKey: document.querySelector('#llm-api-key'),
+    model: document.querySelector('#llm-model'),
+    temperature: document.querySelector('#llm-temperature'),
+    prompt: document.querySelector('#llm-prompt')
+  },
   workspaceKicker: document.querySelector('#workspace-kicker'),
   workspaceTitle: document.querySelector('#workspace-title'),
   postEditor: document.querySelector('#post-editor'),
@@ -47,6 +68,11 @@ const elements = {
     toc: document.querySelector('#post-toc'),
     category: document.querySelector('#post-category'),
     photos: document.querySelector('#post-photos'),
+    imageFolderSelect: document.querySelector('#image-folder-select'),
+    imageNewFolder: document.querySelector('#image-new-folder'),
+    imageDropzone: document.querySelector('#image-dropzone'),
+    imageDropzoneMeta: document.querySelector('#image-dropzone-meta'),
+    imageFileInput: document.querySelector('#image-file-input'),
     zhFile: document.querySelector('#post-zh-file'),
     zhTitle: document.querySelector('#post-zh-title'),
     zhDescription: document.querySelector('#post-zh-description'),
@@ -137,6 +163,24 @@ function renderCategoryOptions() {
     }));
 
   elements.post.category.innerHTML = options.join('');
+}
+
+function renderImageFolders() {
+  const options = state.imageFolders.map(folder => {
+    const label = folder ? `images/${folder}` : 'images/';
+    return `<option value="${escapeHtml(folder)}">${escapeHtml(label)}</option>`;
+  });
+
+  elements.post.imageFolderSelect.innerHTML = options.join('');
+}
+
+function fillLlmSettings() {
+  const llm = state.settings.llm || {};
+  elements.llm.endpoint.value = llm.endpoint || '';
+  elements.llm.apiKey.value = llm.apiKey || '';
+  elements.llm.model.value = llm.model || '';
+  elements.llm.temperature.value = String(llm.temperature ?? 0.2);
+  elements.llm.prompt.value = llm.prompt || '';
 }
 
 function formatPostListTitle(item) {
@@ -245,6 +289,13 @@ function fillPostEditor(record) {
   elements.post.enDescription.value = record.en.description || '';
   elements.post.enTags.value = record.en.tags || '';
   elements.post.enBody.value = record.en.body || '';
+
+  const inferredFolder = inferImageFolder(record);
+  if (state.imageFolders.includes(inferredFolder)) {
+    elements.post.imageFolderSelect.value = inferredFolder;
+  } else {
+    elements.post.imageFolderSelect.value = '';
+  }
 }
 
 function fillPageEditor(record) {
@@ -262,10 +313,51 @@ function fillPageEditor(record) {
   elements.page.file.textContent = record.file || '';
 }
 
+function inferImageFolder(record) {
+  const firstPhoto = String(record && record.common && record.common.photos || '')
+    .split(/\r?\n/)
+    .map(item => item.trim())
+    .find(Boolean);
+
+  if (firstPhoto && firstPhoto.startsWith('/images/')) {
+    const rest = firstPhoto.replace(/^\/images\//, '');
+    const parts = rest.split('/');
+    parts.pop();
+    return parts.join('/');
+  }
+
+  return '';
+}
+
+function appendPhotoPaths(paths) {
+  const existing = elements.post.photos.value
+    .split(/\r?\n/)
+    .map(item => item.trim())
+    .filter(Boolean);
+  const next = existing.slice();
+
+  paths.forEach(item => {
+    if (!next.includes(item)) next.push(item);
+  });
+
+  elements.post.photos.value = next.join('\n');
+}
+
 async function loadMeta() {
   state.meta = await request('/api/meta');
   state.pages = state.meta.pages;
   renderCategoryOptions();
+}
+
+async function loadSettings() {
+  state.settings = await request('/api/settings');
+  fillLlmSettings();
+}
+
+async function loadImageFolders() {
+  const payload = await request('/api/images/folders');
+  state.imageFolders = payload.folders || [''];
+  renderImageFolders();
 }
 
 async function loadCommands() {
@@ -335,6 +427,110 @@ function buildPagePayload() {
     extraYaml: elements.page.extra.value,
     body: elements.page.body.value
   };
+}
+
+function buildLlmPayload() {
+  return {
+    llm: {
+      endpoint: elements.llm.endpoint.value.trim(),
+      apiKey: elements.llm.apiKey.value.trim(),
+      model: elements.llm.model.value.trim(),
+      temperature: Number(elements.llm.temperature.value || 0.2),
+      prompt: elements.llm.prompt.value
+    }
+  };
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = String(reader.result || '');
+      const content = result.includes(',') ? result.split(',')[1] : result;
+      resolve({
+        name: file.name,
+        content
+      });
+    };
+    reader.onerror = () => reject(new Error(`读取文件失败：${file.name}`));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleSaveLlmSettings() {
+  try {
+    const payload = buildLlmPayload();
+    state.settings = await request('/api/settings', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    fillLlmSettings();
+    setStatus('LLM 配置已保存到本地。', 'success');
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
+async function handleCreateImageFolder() {
+  try {
+    const folder = elements.post.imageNewFolder.value.trim();
+    const payload = await request('/api/images/folders', {
+      method: 'POST',
+      body: JSON.stringify({ folder })
+    });
+    state.imageFolders = payload.folders || [''];
+    renderImageFolders();
+    elements.post.imageFolderSelect.value = payload.folder || '';
+    elements.post.imageNewFolder.value = '';
+    setStatus(`已创建目录：images/${payload.folder}`, 'success');
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
+async function uploadSelectedImages(fileList) {
+  const files = Array.from(fileList || []);
+  if (!files.length) return;
+
+  try {
+    setStatus(`正在上传 ${files.length} 个文件...`);
+    const encoded = await Promise.all(files.map(fileToBase64));
+    const payload = await request('/api/images/upload', {
+      method: 'POST',
+      body: JSON.stringify({
+        folder: elements.post.imageFolderSelect.value,
+        files: encoded
+      })
+    });
+
+    state.imageFolders = payload.folders || state.imageFolders;
+    renderImageFolders();
+    appendPhotoPaths((payload.uploaded || []).map(item => item.path));
+    elements.post.imageDropzoneMeta.textContent = (payload.uploaded || []).map(item => item.path).join('  ');
+    elements.post.imageFileInput.value = '';
+    setStatus(`已上传 ${(payload.uploaded || []).length} 个文件。`, 'success');
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
+async function handleFormatZh() {
+  try {
+    setStatus('正在调用 LLM 排版中文稿...');
+    const payload = await request('/api/format/zh', {
+      method: 'POST',
+      body: JSON.stringify({
+        title: elements.post.zhTitle.value,
+        description: elements.post.zhDescription.value,
+        body: elements.post.zhBody.value
+      })
+    });
+
+    elements.post.zhBody.value = payload.content || '';
+    setStatus('中文稿已完成一键排版。', 'success');
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
 }
 
 async function handleSave() {
@@ -424,6 +620,8 @@ async function bootstrap() {
   try {
     applyMode('posts');
     await loadMeta();
+    await loadSettings();
+    await loadImageFolders();
     await loadCommands();
     await loadPosts(true);
     setStatus('本地 CMS 已加载。');
@@ -456,12 +654,38 @@ elements.listPanel.addEventListener('click', async event => {
 
 elements.searchInput.addEventListener('input', renderList);
 elements.saveButton.addEventListener('click', handleSave);
+elements.saveLlmButton.addEventListener('click', handleSaveLlmSettings);
+elements.formatZhButton.addEventListener('click', handleFormatZh);
+elements.createImageFolderButton.addEventListener('click', handleCreateImageFolder);
+elements.uploadImageButton.addEventListener('click', () => {
+  elements.post.imageFileInput.click();
+});
+elements.post.imageFileInput.addEventListener('change', event => {
+  uploadSelectedImages(event.target.files);
+});
+elements.post.imageDropzone.addEventListener('click', () => {
+  elements.post.imageFileInput.click();
+});
+elements.post.imageDropzone.addEventListener('dragover', event => {
+  event.preventDefault();
+  elements.post.imageDropzone.classList.add('is-dragover');
+});
+elements.post.imageDropzone.addEventListener('dragleave', () => {
+  elements.post.imageDropzone.classList.remove('is-dragover');
+});
+elements.post.imageDropzone.addEventListener('drop', event => {
+  event.preventDefault();
+  elements.post.imageDropzone.classList.remove('is-dragover');
+  uploadSelectedImages(event.dataTransfer.files);
+});
 elements.commandButtons.forEach(button => {
   button.addEventListener('click', () => handleCommand(button.dataset.command));
 });
 elements.refreshButton.addEventListener('click', async () => {
   try {
     await loadMeta();
+    await loadSettings();
+    await loadImageFolders();
     await loadCommands();
     await loadPosts(false);
     renderList();

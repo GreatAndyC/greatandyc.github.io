@@ -13,7 +13,8 @@ db.json
 Thumbs.db
 db.json
 *.log
+.local-cms.json
 # backups
 _backup/
 images_backup/
-source/images_backup/
+source/images_backup/

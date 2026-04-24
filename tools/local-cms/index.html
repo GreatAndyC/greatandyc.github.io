@@ -87,6 +87,41 @@
           </label>
         </section>
 
+        <section class="editor-card llm-panel">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">LLM Config</p>
+              <h3>一键排版配置</h3>
+            </div>
+            <button id="save-llm-button" class="ghost-button" type="button">保存配置</button>
+          </div>
+
+          <div class="compact-grid llm-grid">
+            <label>
+              <span>API Endpoint</span>
+              <input id="llm-endpoint" type="url" placeholder="https://api.openai.com/v1/chat/completions">
+            </label>
+            <label>
+              <span>Model</span>
+              <input id="llm-model" type="text" placeholder="gpt-4.1 / kimi / qwen-max">
+            </label>
+            <label>
+              <span>Temperature</span>
+              <input id="llm-temperature" type="number" min="0" max="2" step="0.1">
+            </label>
+            <label>
+              <span>API Key</span>
+              <input id="llm-api-key" type="password" placeholder="sk-...">
+            </label>
+          </div>
+
+          <label>
+            <span>排版 Prompt</span>
+            <textarea id="llm-prompt" rows="6"></textarea>
+          </label>
+          <p class="field-hint">当前实现按 OpenAI 兼容的 Chat Completions 接口发送请求。你可以切换不同供应商的 endpoint 和 model。</p>
+        </section>
+
         <section id="post-editor" class="editor-panel" hidden>
           <div class="editor-card compact-grid">
             <label>
@@ -109,8 +144,30 @@
           </div>
 
           <div class="editor-card">
+            <div class="card-heading">
+              <h3>封面图 / 代表图</h3>
+              <button id="upload-image-button" class="ghost-button" type="button">上传到 images</button>
+            </div>
+            <div class="image-tools-grid">
+              <label>
+                <span>图片目录</span>
+                <select id="image-folder-select"></select>
+              </label>
+              <label>
+                <span>新建目录</span>
+                <div class="inline-field">
+                  <input id="image-new-folder" type="text" placeholder="例如 posts/ios-vol4">
+                  <button id="create-image-folder-button" class="ghost-button" type="button">创建</button>
+                </div>
+              </label>
+            </div>
+            <div id="image-dropzone" class="image-dropzone" tabindex="0">
+              <input id="image-file-input" type="file" accept="image/*" multiple hidden>
+              <p>拖动图片到这里，或点击选择本地文件</p>
+              <span id="image-dropzone-meta">上传后会自动写入 `source/images/` 下的所选目录，并把路径追加到封面图列表。</span>
+            </div>
             <label>
-              <span>封面图 / 代表图</span>
+              <span>封面图路径列表</span>
               <textarea id="post-photos" rows="3" placeholder="/images/xxx/cover.png&#10;/images/xxx/detail.png"></textarea>
             </label>
           </div>
@@ -118,8 +175,11 @@
           <div class="language-grid">
             <section class="editor-card">
               <div class="card-heading">
-                <h3>中文稿</h3>
-                <span id="post-zh-file" class="meta-pill"></span>
+                <div class="card-heading-copy">
+                  <h3>中文稿</h3>
+                  <span id="post-zh-file" class="meta-pill"></span>
+                </div>
+                <button id="format-zh-button" class="ghost-button" type="button">一键排版</button>
               </div>
               <label>
                 <span>标题</span>
