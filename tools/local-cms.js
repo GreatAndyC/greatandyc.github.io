@@ -22,6 +22,7 @@ const STATIC_DIR = path.join(ROOT, 'tools', 'local-cms');
 const CONFIG_PATH = path.join(ROOT, '_config.yml');
 const ENV_PATH = path.join(ROOT, '.env');
 const LOCAL_SETTINGS_PATH = path.join(ROOT, '.local-cms.json');
+const AUDIT_LOG_PATH = path.join(ROOT, '.local-cms-audit.log');
 const GALLERY_PAGE_IDS = new Set(['gallery-zh', 'gallery-en']);
 const GALLERY_DEFAULT_EMPTY = {
   'zh-CN': '画廊还没有内容，后续会逐步补充更多作品。',
@@ -1128,20 +1129,35 @@ function renameImageFolder(currentFolder, nextFolder) {
     throw new Error(`目录不存在：images/${current.normalized}`);
   }
 
+  if (next.normalized === current.normalized) {
+    throw new Error('目录名未变化。');
+  }
+
+  if (next.normalized.startsWith(`${current.normalized}/`)) {
+    throw new Error('不能把目录重命名到自己的子目录中。');
+  }
+
   if (fs.existsSync(next.absolute)) {
     throw new Error(`目标目录已存在：images/${next.normalized}`);
   }
 
   fs.mkdirSync(path.dirname(next.absolute), { recursive: true });
   fs.renameSync(current.absolute, next.absolute);
+  const replaceResult = replaceTextInProjectFiles(
+    `/images/${current.normalized}/`,
+    `/images/${next.normalized}/`
+  );
 
   return {
+    previousFolder: current.normalized,
     folder: next.normalized,
-    folders: listImageFolders()
+    folders: listImageFolders(),
+    updatedFiles: replaceResult.updatedFiles,
+    replacementCount: replaceResult.replacementCount
   };
 }
 
-function deleteImageFolder(folder) {
+function deleteImageFolder(folder, options = {}) {
   const target = resolveImageFolder(folder);
 
   if (!target.normalized) {
@@ -1152,10 +1168,18 @@ function deleteImageFolder(folder) {
     throw new Error(`目录不存在：images/${target.normalized}`);
   }
 
+  const referencePayload = getImageReferencePayload({ folder: target.normalized });
+  if (referencePayload.referenceCount > 0 && !options.force) {
+    throw new Error(`目录 images/${target.normalized} 仍被 ${referencePayload.referenceCount} 个文件引用，不能直接删除。`);
+  }
+
   fs.rmSync(target.absolute, { recursive: true, force: true });
   return {
     deleted: target.normalized,
-    folders: listImageFolders()
+    folders: listImageFolders(),
+    references: referencePayload.references,
+    referenceCount: referencePayload.referenceCount,
+    forced: Boolean(options.force)
   };
 }
 
@@ -1178,10 +1202,160 @@ function resolveImagePublicPath(imagePath = '') {
   };
 }
 
-function deleteImageFile(imagePath) {
+function countSubstringOccurrences(content, searchValue) {
+  if (!searchValue) return 0;
+  let count = 0;
+  let cursor = 0;
+
+  while (cursor < content.length) {
+    const nextIndex = content.indexOf(searchValue, cursor);
+    if (nextIndex === -1) break;
+    count += 1;
+    cursor = nextIndex + searchValue.length;
+  }
+
+  return count;
+}
+
+function collectProjectTextMatches(searchValue, excludedFiles = []) {
+  if (!searchValue) return [];
+
+  const excluded = new Set(excludedFiles.map(filePath => ensureInsideRoot(filePath)));
+  const files = listSearchableProjectFiles(ROOT);
+  const matches = [];
+
+  files.forEach(filePath => {
+    if (excluded.has(filePath)) return;
+
+    const content = fs.readFileSync(filePath, 'utf8');
+    if (!content.includes(searchValue)) return;
+
+    matches.push({
+      file: toPosixPath(filePath),
+      count: countSubstringOccurrences(content, searchValue)
+    });
+  });
+
+  return matches;
+}
+
+function getImageReferencePayload({ publicPath = '', folder = '' } = {}) {
+  const normalizedPath = String(publicPath || '').trim();
+  const normalizedFolder = normalizeFolderPath(folder);
+
+  if (normalizedPath) {
+    const target = resolveImagePublicPath(normalizedPath);
+    const references = collectProjectTextMatches(target.normalized);
+    return {
+      kind: 'image',
+      path: target.normalized,
+      references,
+      referenceCount: references.length,
+      matchCount: references.reduce((sum, item) => sum + Number(item.count || 0), 0)
+    };
+  }
+
+  if (normalizedFolder) {
+    const folderPrefix = `/images/${normalizedFolder}/`;
+    const references = collectProjectTextMatches(folderPrefix);
+    return {
+      kind: 'folder',
+      folder: normalizedFolder,
+      path: `images/${normalizedFolder}`,
+      references,
+      referenceCount: references.length,
+      matchCount: references.reduce((sum, item) => sum + Number(item.count || 0), 0)
+    };
+  }
+
+  throw new Error('请提供图片路径或目录路径。');
+}
+
+function replaceTextInProjectFiles(searchValue, replaceValue, excludedFiles = []) {
+  if (!searchValue) {
+    return {
+      updatedFiles: [],
+      replacementCount: 0
+    };
+  }
+
+  const excluded = new Set(excludedFiles.map(filePath => ensureInsideRoot(filePath)));
+  const files = listSearchableProjectFiles(ROOT);
+  const updatedFiles = [];
+  let replacementCount = 0;
+
+  files.forEach(filePath => {
+    if (excluded.has(filePath)) return;
+
+    const content = fs.readFileSync(filePath, 'utf8');
+    if (!content.includes(searchValue)) return;
+
+    const count = countSubstringOccurrences(content, searchValue);
+    const nextContent = content.split(searchValue).join(replaceValue);
+    if (nextContent === content) return;
+
+    fs.writeFileSync(filePath, nextContent, 'utf8');
+    updatedFiles.push(toPosixPath(filePath));
+    replacementCount += count;
+  });
+
+  return {
+    updatedFiles,
+    replacementCount
+  };
+}
+
+function moveImageFile(imagePath, nextFolder, nextName) {
+  const current = resolveImagePublicPath(imagePath);
+  if (!fs.existsSync(current.absolutePath) || !fs.statSync(current.absolutePath).isFile()) {
+    throw new Error(`图片不存在：${current.normalized}`);
+  }
+
+  const currentFolder = path.dirname(current.relativePath) === '.'
+    ? ''
+    : path.dirname(current.relativePath).split(path.sep).join('/');
+  const targetFolder = resolveImageFolder(typeof nextFolder === 'string' ? nextFolder : currentFolder);
+  const targetName = nextName
+    ? sanitizeUploadFilename(nextName)
+    : path.basename(current.relativePath);
+  const nextAbsolutePath = path.join(targetFolder.absolute, targetName);
+  const nextPublicPath = targetFolder.normalized
+    ? `/images/${targetFolder.normalized}/${targetName}`
+    : `/images/${targetName}`;
+
+  if (nextPublicPath === current.normalized) {
+    throw new Error('图片路径未变化。');
+  }
+
+  if (fs.existsSync(nextAbsolutePath)) {
+    throw new Error(`目标图片已存在：${nextPublicPath}`);
+  }
+
+  fs.mkdirSync(targetFolder.absolute, { recursive: true });
+  fs.renameSync(current.absolutePath, nextAbsolutePath);
+  const replaceResult = replaceTextInProjectFiles(current.normalized, nextPublicPath);
+  cleanupEmptyImageDirectories(current.absolutePath);
+
+  return {
+    previousPath: current.normalized,
+    path: nextPublicPath,
+    folder: targetFolder.normalized,
+    name: targetName,
+    folders: listImageFolders(),
+    updatedFiles: replaceResult.updatedFiles,
+    replacementCount: replaceResult.replacementCount
+  };
+}
+
+function deleteImageFile(imagePath, options = {}) {
   const target = resolveImagePublicPath(imagePath);
   if (!fs.existsSync(target.absolutePath) || !fs.statSync(target.absolutePath).isFile()) {
     throw new Error(`图片不存在：${target.normalized}`);
+  }
+
+  const referencePayload = getImageReferencePayload({ publicPath: target.normalized });
+  if (referencePayload.referenceCount > 0 && !options.force) {
+    throw new Error(`图片 ${target.normalized} 仍被 ${referencePayload.referenceCount} 个文件引用，不能直接删除。`);
   }
 
   fs.rmSync(target.absolutePath, { force: true });
@@ -1194,7 +1368,10 @@ function deleteImageFile(imagePath) {
   return {
     deleted: target.normalized,
     folder,
-    folders: listImageFolders()
+    folders: listImageFolders(),
+    references: referencePayload.references,
+    referenceCount: referencePayload.referenceCount,
+    forced: Boolean(options.force)
   };
 }
 
@@ -1365,6 +1542,75 @@ function trimLog(content, maxLength = 30000) {
   const value = String(content || '');
   if (value.length <= maxLength) return value;
   return value.slice(value.length - maxLength);
+}
+
+function createAuditId() {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function getRequestActor(req) {
+  const forwarded = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+  const ip = forwarded || req.socket.remoteAddress || '';
+  return {
+    ip: ip.replace(/^::ffff:/, ''),
+    userAgent: String(req.headers['user-agent'] || '').trim()
+  };
+}
+
+function appendAuditLog(req, payload) {
+  const entry = {
+    id: createAuditId(),
+    timestamp: createTimestamp(),
+    entityType: String(payload.entityType || '').trim(),
+    action: String(payload.action || '').trim(),
+    summary: String(payload.summary || '').trim(),
+    target: String(payload.target || '').trim(),
+    details: payload.details && typeof payload.details === 'object' ? payload.details : {},
+    request: {
+      method: req.method,
+      path: new URL(req.url, `http://${req.headers.host || `${HOST}:${PORT}`}`).pathname,
+      ...getRequestActor(req)
+    }
+  };
+
+  fs.appendFileSync(AUDIT_LOG_PATH, `${JSON.stringify(entry)}\n`, 'utf8');
+  return entry;
+}
+
+function readAuditLogs(filters = {}) {
+  const entityType = String(filters.entityType || '').trim();
+  const action = String(filters.action || '').trim();
+  const rawLimit = Number(filters.limit || 120);
+  const limit = Number.isFinite(rawLimit) ? Math.max(1, Math.min(500, Math.floor(rawLimit))) : 120;
+
+  if (!fs.existsSync(AUDIT_LOG_PATH)) {
+    return {
+      file: toPosixPath(AUDIT_LOG_PATH),
+      items: []
+    };
+  }
+
+  const lines = fs.readFileSync(AUDIT_LOG_PATH, 'utf8')
+    .split(/\r?\n/)
+    .filter(Boolean);
+  const items = [];
+
+  for (let index = lines.length - 1; index >= 0; index -= 1) {
+    try {
+      const parsed = JSON.parse(lines[index]);
+      if (entityType && parsed.entityType !== entityType) continue;
+      if (action && parsed.action !== action) continue;
+      items.push(parsed);
+      if (items.length >= limit) break;
+    } catch (error) {
+      continue;
+    }
+  }
+
+  return {
+    file: toPosixPath(AUDIT_LOG_PATH),
+    items
+  };
 }
 
 function appendTaskLog(text) {
@@ -1735,7 +1981,7 @@ function listSearchableProjectFiles(currentPath, result = []) {
     '.md', '.markdown', '.yml', '.yaml', '.json', '.js', '.cjs', '.mjs',
     '.ejs', '.njk', '.html', '.xml', '.txt', '.styl', '.css', '.scss'
   ]);
-  const ignoredDirs = new Set(['.git', 'node_modules', 'public', 'source/images']);
+  const ignoredDirs = new Set(['.git', '.deploy_git', 'node_modules', 'public', 'source/images']);
 
   entries.forEach(entry => {
     const fullPath = path.join(currentPath, entry.name);
@@ -1791,6 +2037,9 @@ function deletePostPair(key) {
     throw new Error(`找不到文章：${normalizedKey}`);
   }
 
+  const deletedRecord = readPostPair(normalizedKey, loadCategoryOptions());
+  const deletedTitle = deletedRecord.zh.title || deletedRecord.en.title || normalizedKey;
+
   const referencedPhotos = Array.from(new Set([
     ...collectPostPhotoPaths(zhPath),
     ...collectPostPhotoPaths(enPath)
@@ -1819,6 +2068,7 @@ function deletePostPair(key) {
 
   return {
     deleted: normalizedKey,
+    title: deletedTitle,
     deletedImages,
     keptImages
   };
@@ -1983,63 +2233,218 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === 'GET' && pathname === '/api/images/folders') {
-      jsonResponse(res, 200, {
+      const payload = {
         folders: listImageFolders()
+      };
+      appendAuditLog(req, {
+        entityType: 'image-folder',
+        action: 'read',
+        summary: `查看图片目录列表（${payload.folders.length} 个目录）`,
+        target: 'source/images',
+        details: {
+          folderCount: payload.folders.length
+        }
       });
+      jsonResponse(res, 200, payload);
       return;
     }
 
     if (req.method === 'GET' && pathname === '/api/images/library') {
-      jsonResponse(res, 200, listImageLibrary(requestUrl.searchParams.get('folder') || ''));
+      const payload = listImageLibrary(requestUrl.searchParams.get('folder') || '');
+      appendAuditLog(req, {
+        entityType: 'image',
+        action: 'read',
+        summary: `查看图片目录 ${payload.folder ? `images/${payload.folder}` : 'images/'}（${payload.items.length} 个文件）`,
+        target: payload.folder ? `images/${payload.folder}` : 'images/',
+        details: {
+          folder: payload.folder,
+          itemCount: payload.items.length
+        }
+      });
+      jsonResponse(res, 200, payload);
+      return;
+    }
+
+    if (req.method === 'GET' && pathname === '/api/images/references') {
+      const payload = getImageReferencePayload({
+        publicPath: requestUrl.searchParams.get('path') || '',
+        folder: requestUrl.searchParams.get('folder') || ''
+      });
+      appendAuditLog(req, {
+        entityType: payload.kind === 'folder' ? 'image-folder' : 'image',
+        action: 'read',
+        summary: payload.kind === 'folder'
+          ? `查看图片目录引用 images/${payload.folder}（${payload.referenceCount} 个文件）`
+          : `查看图片引用 ${payload.path}（${payload.referenceCount} 个文件）`,
+        target: payload.kind === 'folder' ? `images/${payload.folder}` : payload.path,
+        details: {
+          kind: payload.kind,
+          referenceCount: payload.referenceCount,
+          matchCount: payload.matchCount,
+          references: payload.references
+        }
+      });
+      jsonResponse(res, 200, payload);
       return;
     }
 
     if (req.method === 'POST' && pathname === '/api/images/folders') {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
-      jsonResponse(res, 200, createImageFolder(payload.folder));
+      const result = createImageFolder(payload.folder);
+      appendAuditLog(req, {
+        entityType: 'image-folder',
+        action: 'create',
+        summary: `创建图片目录 ${result.folder ? `images/${result.folder}` : 'images/'}`,
+        target: result.folder ? `images/${result.folder}` : 'images/',
+        details: {
+          folder: result.folder
+        }
+      });
+      jsonResponse(res, 200, result);
       return;
     }
 
     if (req.method === 'PATCH' && pathname === '/api/images/folders') {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
-      jsonResponse(res, 200, renameImageFolder(payload.currentFolder, payload.nextFolder));
+      const result = renameImageFolder(payload.currentFolder, payload.nextFolder);
+      appendAuditLog(req, {
+        entityType: 'image-folder',
+        action: 'update',
+        summary: `重命名图片目录 images/${payload.currentFolder} -> images/${result.folder}`,
+        target: result.folder ? `images/${result.folder}` : 'images/',
+        details: {
+          previousFolder: String(payload.currentFolder || '').trim(),
+          nextFolder: result.folder,
+          replacementCount: result.replacementCount,
+          updatedFiles: result.updatedFiles
+        }
+      });
+      jsonResponse(res, 200, result);
       return;
     }
 
     if (req.method === 'POST' && pathname === '/api/images/folders/rename') {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
-      jsonResponse(res, 200, renameImageFolder(payload.currentFolder, payload.nextFolder));
+      const result = renameImageFolder(payload.currentFolder, payload.nextFolder);
+      appendAuditLog(req, {
+        entityType: 'image-folder',
+        action: 'update',
+        summary: `重命名图片目录 images/${payload.currentFolder} -> images/${result.folder}`,
+        target: result.folder ? `images/${result.folder}` : 'images/',
+        details: {
+          previousFolder: String(payload.currentFolder || '').trim(),
+          nextFolder: result.folder,
+          replacementCount: result.replacementCount,
+          updatedFiles: result.updatedFiles
+        }
+      });
+      jsonResponse(res, 200, result);
       return;
     }
 
     if (req.method === 'DELETE' && pathname === '/api/images/folders') {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
-      jsonResponse(res, 200, deleteImageFolder(payload.folder));
+      const result = deleteImageFolder(payload.folder, {
+        force: Boolean(payload.force)
+      });
+      appendAuditLog(req, {
+        entityType: 'image-folder',
+        action: 'delete',
+        summary: `删除图片目录 images/${result.deleted}`,
+        target: `images/${result.deleted}`,
+        details: {
+          folder: result.deleted,
+          force: result.forced,
+          referenceCount: result.referenceCount
+        }
+      });
+      jsonResponse(res, 200, result);
       return;
     }
 
     if (req.method === 'POST' && pathname === '/api/images/folders/delete') {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
-      jsonResponse(res, 200, deleteImageFolder(payload.folder));
+      const result = deleteImageFolder(payload.folder, {
+        force: Boolean(payload.force)
+      });
+      appendAuditLog(req, {
+        entityType: 'image-folder',
+        action: 'delete',
+        summary: `删除图片目录 images/${result.deleted}`,
+        target: `images/${result.deleted}`,
+        details: {
+          folder: result.deleted,
+          force: result.forced,
+          referenceCount: result.referenceCount
+        }
+      });
+      jsonResponse(res, 200, result);
       return;
     }
 
     if (req.method === 'POST' && pathname === '/api/images/upload') {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
-      jsonResponse(res, 200, uploadImageFiles(payload.folder, payload.files));
+      const result = uploadImageFiles(payload.folder, payload.files);
+      appendAuditLog(req, {
+        entityType: 'image',
+        action: 'create',
+        summary: `上传 ${(result.uploaded || []).length} 张图片到 ${result.folder ? `images/${result.folder}` : 'images/'}`,
+        target: result.folder ? `images/${result.folder}` : 'images/',
+        details: {
+          folder: result.folder,
+          uploaded: (result.uploaded || []).map(item => item.path)
+        }
+      });
+      jsonResponse(res, 200, result);
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/images/move') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      const result = moveImageFile(payload.path, payload.folder, payload.name);
+      appendAuditLog(req, {
+        entityType: 'image',
+        action: 'update',
+        summary: `移动图片 ${result.previousPath} -> ${result.path}`,
+        target: result.path,
+        details: {
+          previousPath: result.previousPath,
+          path: result.path,
+          folder: result.folder,
+          replacementCount: result.replacementCount,
+          updatedFiles: result.updatedFiles
+        }
+      });
+      jsonResponse(res, 200, result);
       return;
     }
 
     if (req.method === 'POST' && pathname === '/api/images/delete') {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
-      jsonResponse(res, 200, deleteImageFile(payload.path));
+      const result = deleteImageFile(payload.path, {
+        force: Boolean(payload.force)
+      });
+      appendAuditLog(req, {
+        entityType: 'image',
+        action: 'delete',
+        summary: `删除图片 ${result.deleted}`,
+        target: result.deleted,
+        details: {
+          path: result.deleted,
+          folder: result.folder,
+          force: result.forced,
+          referenceCount: result.referenceCount
+        }
+      });
+      jsonResponse(res, 200, result);
       return;
     }
 
@@ -2065,34 +2470,109 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === 'GET' && pathname === '/api/posts') {
-      jsonResponse(res, 200, {
+      const payload = {
         items: listPostPairs(categoryOptions)
+      };
+      appendAuditLog(req, {
+        entityType: 'post',
+        action: 'read',
+        summary: `查看文章列表（${payload.items.length} 篇）`,
+        target: 'source/_posts',
+        details: {
+          itemCount: payload.items.length
+        }
       });
+      jsonResponse(res, 200, payload);
       return;
     }
 
     if (req.method === 'GET' && pathname.startsWith('/api/posts/')) {
       const key = decodeURIComponent(pathname.replace('/api/posts/', ''));
-      jsonResponse(res, 200, readPostPair(key, categoryOptions));
+      const result = readPostPair(key, categoryOptions);
+      appendAuditLog(req, {
+        entityType: 'post',
+        action: 'read',
+        summary: `查看文章《${result.zh.title || result.en.title || result.key}》`,
+        target: result.key,
+        details: {
+          key: result.key,
+          titleZh: result.zh.title || '',
+          titleEn: result.en.title || '',
+          sourceFiles: result.sourceFiles
+        }
+      });
+      jsonResponse(res, 200, result);
       return;
     }
 
     if (req.method === 'POST' && pathname === '/api/posts') {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
-      jsonResponse(res, 200, writePostFiles(payload, categoryOptions));
+      const isUpdate = Boolean(String(payload.key || '').trim());
+      const result = writePostFiles(payload, categoryOptions);
+      appendAuditLog(req, {
+        entityType: 'post',
+        action: isUpdate ? 'update' : 'create',
+        summary: `${isUpdate ? '更新' : '创建'}文章《${result.zh.title || result.en.title || result.key}》`,
+        target: result.key,
+        details: {
+          key: result.key,
+          previousKey: String(payload.key || '').trim(),
+          titleZh: result.zh.title || '',
+          titleEn: result.en.title || '',
+          slug: result.common.slug || '',
+          sourceFiles: result.sourceFiles,
+          photoCount: normalizePhotoList(result.common.photos).length
+        }
+      });
+      jsonResponse(res, 200, result);
       return;
     }
 
     if (req.method === 'DELETE' && pathname.startsWith('/api/posts/')) {
       const key = decodeURIComponent(pathname.replace('/api/posts/', ''));
-      jsonResponse(res, 200, deletePostPair(key));
+      const result = deletePostPair(key);
+      appendAuditLog(req, {
+        entityType: 'post',
+        action: 'delete',
+        summary: `删除文章《${result.title || result.deleted}》`,
+        target: result.deleted,
+        details: {
+          key: result.deleted,
+          title: result.title || '',
+          deletedImages: result.deletedImages || [],
+          keptImages: result.keptImages || []
+        }
+      });
+      jsonResponse(res, 200, result);
       return;
     }
 
     if (req.method === 'POST' && pathname.startsWith('/api/posts/') && pathname.endsWith('/delete')) {
       const key = decodeURIComponent(pathname.replace('/api/posts/', '').replace(/\/delete$/, ''));
-      jsonResponse(res, 200, deletePostPair(key));
+      const result = deletePostPair(key);
+      appendAuditLog(req, {
+        entityType: 'post',
+        action: 'delete',
+        summary: `删除文章《${result.title || result.deleted}》`,
+        target: result.deleted,
+        details: {
+          key: result.deleted,
+          title: result.title || '',
+          deletedImages: result.deletedImages || [],
+          keptImages: result.keptImages || []
+        }
+      });
+      jsonResponse(res, 200, result);
+      return;
+    }
+
+    if (req.method === 'GET' && pathname === '/api/audit-logs') {
+      jsonResponse(res, 200, readAuditLogs({
+        entityType: requestUrl.searchParams.get('entityType') || '',
+        action: requestUrl.searchParams.get('action') || '',
+        limit: requestUrl.searchParams.get('limit') || '120'
+      }));
       return;
     }
 

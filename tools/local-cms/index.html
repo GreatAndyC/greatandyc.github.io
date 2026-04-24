@@ -26,6 +26,7 @@
             <button class="mode-button" type="button" data-mode="pages" data-short="页" title="页面">页面</button>
             <button class="mode-button" type="button" data-mode="gallery" data-short="廊" title="画廊">画廊</button>
             <button class="mode-button" type="button" data-mode="images" data-short="图" title="图片库">图片库</button>
+            <button class="mode-button" type="button" data-mode="logs" data-short="志" title="日志">日志</button>
             <button class="mode-button" type="button" data-mode="settings" data-short="设" title="设置">设置</button>
           </div>
 
@@ -61,25 +62,26 @@
 
         <section id="post-command-panel" class="editor-card command-panel">
           <div class="card-heading">
-            <div>
-              <p class="eyebrow">Hexo Actions</p>
-              <h3>站点命令</h3>
+            <div class="command-heading-main">
+              <div>
+                <p class="eyebrow">Hexo Actions</p>
+                <h3>站点命令</h3>
+              </div>
+              <div class="command-inline-actions">
+                <button class="ghost-button compact-action-button" type="button" data-command="clean">清缓存</button>
+                <button class="ghost-button compact-action-button" type="button" data-command="build">构建</button>
+                <button class="ghost-button compact-action-button" type="button" data-command="serve">启动预览</button>
+                <button class="ghost-button compact-action-button" type="button" data-command="stop-serve">停止预览</button>
+                <button class="primary-button compact-action-button" type="button" data-command="deploy">部署</button>
+              </div>
             </div>
             <div class="card-heading-actions">
               <a id="command-preview-link" class="preview-link" href="http://127.0.0.1:4000/" target="_blank" rel="noreferrer">打开预览</a>
-              <button id="toggle-command-panel" class="ghost-button" type="button" aria-expanded="true">隐藏</button>
+              <button id="toggle-command-panel" class="ghost-button" type="button" aria-expanded="false">展开</button>
             </div>
           </div>
 
           <div id="command-panel-body">
-            <div class="command-actions">
-              <button class="ghost-button" type="button" data-command="clean">清缓存</button>
-              <button class="ghost-button" type="button" data-command="build">构建</button>
-              <button class="ghost-button" type="button" data-command="serve">启动预览</button>
-              <button class="ghost-button" type="button" data-command="stop-serve">停止预览</button>
-              <button class="primary-button" type="button" data-command="deploy">部署</button>
-            </div>
-
             <div class="command-status-grid">
               <div class="command-status-card">
                 <span class="status-label">当前任务</span>
@@ -540,6 +542,53 @@
               </div>
             </div>
             <div id="library-grid" class="library-grid"></div>
+          </div>
+        </section>
+
+        <section id="audit-viewer" class="editor-panel" hidden>
+          <div class="editor-card">
+            <div class="card-heading">
+              <div>
+                <p class="eyebrow">Audit Trail</p>
+                <h3>内容操作日志</h3>
+              </div>
+              <div class="card-heading-actions">
+                <button id="refresh-audit-log-button" class="ghost-button" type="button">刷新日志</button>
+              </div>
+            </div>
+
+            <div class="audit-log-toolbar">
+              <label>
+                <span>对象</span>
+                <select id="audit-entity-filter">
+                  <option value="">全部</option>
+                  <option value="post">文章</option>
+                  <option value="image">图片</option>
+                  <option value="image-folder">图片目录</option>
+                </select>
+              </label>
+              <label>
+                <span>操作</span>
+                <select id="audit-action-filter">
+                  <option value="">全部</option>
+                  <option value="create">创建</option>
+                  <option value="read">读取</option>
+                  <option value="update">更新</option>
+                  <option value="delete">删除</option>
+                </select>
+              </label>
+              <p id="audit-log-meta" class="field-hint">正在加载日志…</p>
+            </div>
+          </div>
+
+          <div class="editor-card">
+            <div class="card-heading">
+              <div class="card-heading-copy">
+                <h3>日志详情</h3>
+                <span class="field-hint">左侧会列出最近日志；右侧展示当前选中记录的详细信息。</span>
+              </div>
+            </div>
+            <div id="audit-log-list" class="audit-log-list"></div>
           </div>
         </section>
       </main>

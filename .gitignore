@@ -13,6 +13,7 @@ db.json
 Thumbs.db
 db.json
 *.log
+.local-cms-audit.log
 .env
 .env.*
 .local-cms.json

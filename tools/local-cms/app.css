@@ -308,6 +308,26 @@ select:focus {
   margin-bottom: 18px;
 }
 
+.command-heading-main {
+  display: flex;
+  align-items: center;
+  gap: 16px 18px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.command-inline-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.compact-action-button {
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+
 .preview-link {
   color: var(--text);
   text-decoration: none;
@@ -318,11 +338,6 @@ select:focus {
 .preview-link.is-disabled {
   opacity: 0.4;
   pointer-events: none;
-}
-
-.command-actions {
-  flex-wrap: wrap;
-  margin-bottom: 16px;
 }
 
 .command-status-grid {
@@ -554,6 +569,88 @@ select:focus {
   color: var(--muted);
   font-size: 0.84rem;
   line-height: 1.55;
+}
+
+.audit-log-toolbar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 220px)) minmax(0, 1fr);
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 16px;
+}
+
+.audit-log-list {
+  display: grid;
+  gap: 12px;
+}
+
+.audit-log-card {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
+  background: rgba(250, 250, 250, 0.95);
+  padding: 16px 18px;
+}
+
+.audit-log-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.audit-log-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.audit-log-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.08);
+  color: #111111;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.audit-log-badge.is-muted {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--muted);
+}
+
+.audit-log-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.audit-log-details {
+  margin-top: 12px;
+}
+
+.audit-log-details summary {
+  cursor: pointer;
+  color: #111111;
+  font-weight: 600;
+}
+
+.audit-log-details pre {
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .post-photo-preview {
@@ -1015,7 +1112,8 @@ select:focus {
   .category-custom-grid,
   .folder-action-grid,
   .gallery-meta-grid,
-  .gallery-photo-grid {
+  .gallery-photo-grid,
+  .audit-log-toolbar {
     grid-template-columns: 1fr;
   }
 
@@ -1026,6 +1124,14 @@ select:focus {
 
   .workspace-actions {
     justify-content: flex-start;
+  }
+
+  .command-heading-main {
+    width: 100%;
+  }
+
+  .command-inline-actions {
+    width: 100%;
   }
 
   .gallery-photo-card {

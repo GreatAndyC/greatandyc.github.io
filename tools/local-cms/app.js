@@ -42,12 +42,37 @@ const state = {
       log: ''
     }
   },
+  audit: {
+    file: '',
+    items: [],
+    error: '',
+    filters: {
+      entityType: '',
+      action: ''
+    }
+  },
   panels: {
-    commandsExpanded: true,
+    commandsExpanded: false,
     llmExpanded: true
   },
   pagination: {
     posts: {
+      page: 1,
+      perPage: 12
+    },
+    pages: {
+      page: 1,
+      perPage: 12
+    },
+    gallery: {
+      page: 1,
+      perPage: 12
+    },
+    images: {
+      page: 1,
+      perPage: 12
+    },
+    logs: {
       page: 1,
       perPage: 12
     }
@@ -94,6 +119,11 @@ const elements = {
   commandLastMeta: document.querySelector('#command-last-meta'),
   commandLog: document.querySelector('#command-log'),
   commandPreviewLink: document.querySelector('#command-preview-link'),
+  auditLogMeta: document.querySelector('#audit-log-meta'),
+  auditLogList: document.querySelector('#audit-log-list'),
+  auditLogRefreshButton: document.querySelector('#refresh-audit-log-button'),
+  auditEntityFilter: document.querySelector('#audit-entity-filter'),
+  auditActionFilter: document.querySelector('#audit-action-filter'),
   commandPanelBody: document.querySelector('#command-panel-body'),
   llmPanelBody: document.querySelector('#llm-panel-body'),
   postCommandPanel: document.querySelector('#post-command-panel'),
@@ -111,6 +141,7 @@ const elements = {
   pageEditor: document.querySelector('#page-editor'),
   galleryManager: document.querySelector('#gallery-manager'),
   imageLibrary: document.querySelector('#image-library'),
+  auditViewer: document.querySelector('#audit-viewer'),
   feedbackToast: document.querySelector('#feedback-toast'),
   feedbackToastTitle: document.querySelector('#feedback-toast-title'),
   feedbackToastMessage: document.querySelector('#feedback-toast-message'),
@@ -271,12 +302,24 @@ function getModeLabel(mode) {
   if (mode === 'pages') return '页面';
   if (mode === 'gallery') return '画廊';
   if (mode === 'images') return '图片库';
+  if (mode === 'logs') return '日志';
   if (mode === 'settings') return '设置';
   return '内容';
 }
 
 function resetPostPagination() {
   state.pagination.posts.page = 1;
+}
+
+function getListPaginationState(mode = state.mode) {
+  return state.pagination[mode] || null;
+}
+
+function resetCurrentModePagination() {
+  const pagination = getListPaginationState();
+  if (pagination) {
+    pagination.page = 1;
+  }
 }
 
 function getCurrentModeItems() {
@@ -291,6 +334,7 @@ function getCurrentModeItems() {
       subtitle: folder ? folder : '根目录'
     }));
   }
+  if (state.mode === 'logs') return state.audit.items;
   if (state.mode === 'settings') return [];
   return [];
 }
@@ -331,10 +375,169 @@ function renderCommandPanel() {
   });
 }
 
+function getAuditEntityLabel(entityType) {
+  if (entityType === 'post') return '文章';
+  if (entityType === 'image') return '图片';
+  if (entityType === 'image-folder') return '图片目录';
+  return entityType || '操作';
+}
+
+function getAuditActionLabel(action) {
+  if (action === 'create') return '创建';
+  if (action === 'read') return '读取';
+  if (action === 'update') return '更新';
+  if (action === 'delete') return '删除';
+  return action || '操作';
+}
+
+function formatAuditTarget(item) {
+  return item.target || '未指定对象';
+}
+
+function formatAuditActor(item) {
+  const request = item.request || {};
+  const parts = [request.ip, request.method].filter(Boolean);
+  return parts.join(' · ') || '本地请求';
+}
+
+function renderAuditPanel() {
+  const audit = state.audit || { items: [], error: '' };
+  const selected = (audit.items || []).find(item => item.id === state.selectedId) || null;
+  const metaParts = [];
+
+  if (audit.file) {
+    metaParts.push(`日志文件：${audit.file}`);
+  }
+  if (audit.error) {
+    metaParts.push(`加载失败：${audit.error}`);
+  } else {
+    metaParts.push(`当前展示 ${audit.items.length} 条记录`);
+  }
+  elements.auditLogMeta.textContent = metaParts.join(' · ');
+
+  if (audit.error) {
+    elements.auditLogList.innerHTML = `<div class="gallery-empty-state">${escapeHtml(audit.error)}</div>`;
+    return;
+  }
+
+  if (!audit.items.length) {
+    elements.auditLogList.innerHTML = '<div class="gallery-empty-state">还没有符合筛选条件的日志记录。</div>';
+    return;
+  }
+
+  if (!selected) {
+    elements.auditLogList.innerHTML = '<div class="gallery-empty-state">请先从左侧选择一条日志记录。</div>';
+    return;
+  }
+
+  const detailText = JSON.stringify(selected.details || {}, null, 2);
+  const request = selected.request || {};
+  elements.auditLogList.innerHTML = `
+    <article class="audit-log-card">
+      <div class="audit-log-header">
+        <div>
+          <div class="audit-log-badges">
+            <span class="audit-log-badge">${escapeHtml(getAuditEntityLabel(selected.entityType))}</span>
+            <span class="audit-log-badge is-muted">${escapeHtml(getAuditActionLabel(selected.action))}</span>
+          </div>
+          <strong>${escapeHtml(selected.summary || '未命名操作')}</strong>
+        </div>
+        <span class="field-hint">${escapeHtml(formatTimestamp(selected.timestamp))}</span>
+      </div>
+      <div class="audit-log-meta">
+        <span>${escapeHtml(formatAuditTarget(selected))}</span>
+        <span>${escapeHtml(formatAuditActor(selected))}</span>
+        ${request.path ? `<span>${escapeHtml(request.path)}</span>` : ''}
+        ${request.userAgent ? `<span>${escapeHtml(request.userAgent)}</span>` : ''}
+      </div>
+      <details class="audit-log-details" open>
+        <summary>查看详情</summary>
+        <pre>${escapeHtml(detailText)}</pre>
+      </details>
+    </article>
+  `;
+}
+
+function normalizeAuditLoadError(error) {
+  const message = String(error && error.message || '日志加载失败');
+  if (/not found/i.test(message)) {
+    return '当前本地 CMS 进程还没重启，后端缺少 /api/audit-logs 接口。重启 `npm run cms:local` 后再打开日志。';
+  }
+  return message;
+}
+
+function syncAuditSelection(selectFirst = false) {
+  if (state.audit.error) {
+    state.selectedId = '';
+    state.currentRecord = null;
+    return;
+  }
+
+  const items = state.audit.items || [];
+  if (!items.length) {
+    state.selectedId = '';
+    state.currentRecord = null;
+    return;
+  }
+
+  const matched = items.find(item => item.id === state.selectedId);
+  if (matched) {
+    state.currentRecord = matched;
+    return;
+  }
+
+  if (selectFirst || state.mode === 'logs') {
+    state.selectedId = items[0].id;
+    state.currentRecord = items[0];
+  }
+}
+
+async function loadAuditLogs(options = {}) {
+  const params = new URLSearchParams();
+  if (state.audit.filters.entityType) {
+    params.set('entityType', state.audit.filters.entityType);
+  }
+  if (state.audit.filters.action) {
+    params.set('action', state.audit.filters.action);
+  }
+  params.set('limit', '120');
+
+  const query = params.toString();
+  try {
+    const payload = await request(`/api/audit-logs${query ? `?${query}` : ''}`);
+    state.audit.file = payload.file || '';
+    state.audit.items = payload.items || [];
+    state.audit.error = '';
+    syncAuditSelection(Boolean(options.selectFirst));
+    if (state.mode === 'logs') {
+      renderList();
+      fillAuditWorkspace();
+    }
+    return payload;
+  } catch (error) {
+    state.audit.error = normalizeAuditLoadError(error);
+    state.audit.items = [];
+    state.selectedId = state.mode === 'logs' ? '' : state.selectedId;
+    if (state.mode === 'logs') {
+      state.currentRecord = null;
+      renderList();
+      fillAuditWorkspace();
+    }
+    if (!options.silent) {
+      throw error;
+    }
+    return null;
+  }
+}
+
+function refreshAuditLogsSilently() {
+  loadAuditLogs({ silent: true }).catch(() => {});
+}
+
 function renderPanelVisibility() {
   elements.commandPanelBody.classList.toggle('panel-body-collapsed', !state.panels.commandsExpanded);
   elements.llmPanelBody.classList.toggle('panel-body-collapsed', !state.panels.llmExpanded);
-  elements.toggleCommandPanelButton.textContent = state.panels.commandsExpanded ? '隐藏' : '显示';
+  elements.toggleCommandPanelButton.textContent = state.panels.commandsExpanded ? '收起' : '展开';
   elements.toggleLlmPanelButton.textContent = state.panels.llmExpanded ? '隐藏' : '显示';
   elements.toggleCommandPanelButton.setAttribute('aria-expanded', String(state.panels.commandsExpanded));
   elements.toggleLlmPanelButton.setAttribute('aria-expanded', String(state.panels.llmExpanded));
@@ -376,7 +579,7 @@ function updatePrimarySaveButtonLabel() {
     return;
   }
 
-  if (state.mode === 'images' || state.mode === 'settings') {
+  if (state.mode === 'images' || state.mode === 'settings' || state.mode === 'logs') {
     elements.saveButton.textContent = '保存';
     return;
   }
@@ -390,7 +593,7 @@ function updatePrimarySaveButtonLabel() {
 }
 
 function renderPrimarySaveButton() {
-  elements.saveButton.hidden = state.mode === 'images' || state.mode === 'settings';
+  elements.saveButton.hidden = state.mode === 'images' || state.mode === 'settings' || state.mode === 'logs';
 }
 
 function normalizeCommaList(value) {
@@ -544,6 +747,8 @@ function getFilteredItems() {
       raw = [item.id, item.label, item.file];
     } else if (state.mode === 'gallery') {
       raw = [item.slug, item.titleZh, item.titleEn, item.periodZh, item.periodEn, item.locationZh, item.locationEn];
+    } else if (state.mode === 'logs') {
+      raw = [item.summary, item.target, item.entityType, item.action];
     } else {
       raw = [item.folder, item.label, item.subtitle];
     }
@@ -554,19 +759,23 @@ function getFilteredItems() {
 
 function renderList() {
   const items = getFilteredItems();
-  const paginatedItems = state.mode === 'posts'
+  const pagination = getListPaginationState();
+  const paginatedItems = pagination
     ? (() => {
-      const totalPages = Math.max(1, Math.ceil(items.length / state.pagination.posts.perPage));
-      if (state.pagination.posts.page > totalPages) {
-        state.pagination.posts.page = totalPages;
+      const totalPages = Math.max(1, Math.ceil(items.length / pagination.perPage));
+      if (pagination.page > totalPages) {
+        pagination.page = totalPages;
       }
-      const start = (state.pagination.posts.page - 1) * state.pagination.posts.perPage;
-      return items.slice(start, start + state.pagination.posts.perPage);
+      const start = (pagination.page - 1) * pagination.perPage;
+      return items.slice(start, start + pagination.perPage);
     })()
     : items;
 
   if (!items.length) {
-    elements.listPanel.innerHTML = '<div class="list-item"><div class="list-title">没有匹配结果</div></div>';
+    const emptyMessage = state.mode === 'logs' && state.audit.error
+      ? state.audit.error
+      : '没有匹配结果';
+    elements.listPanel.innerHTML = `<div class="list-item"><div class="list-title">${escapeHtml(emptyMessage)}</div></div>`;
     renderListPagination(items.length);
     return;
   }
@@ -615,6 +824,18 @@ function renderList() {
       `;
     }
 
+    if (state.mode === 'logs') {
+      return `
+        <button class="list-item${isActive ? ' is-active' : ''}" type="button" data-item-id="${escapeHtml(item.id)}">
+          <div class="list-title">${escapeHtml(item.summary || '未命名操作')}</div>
+          <div class="list-subtitle">${escapeHtml([getAuditEntityLabel(item.entityType), getAuditActionLabel(item.action), formatAuditTarget(item)].filter(Boolean).join(' · '))}</div>
+          <div class="list-meta">
+            <span>${escapeHtml(formatTimestamp(item.timestamp))}</span>
+          </div>
+        </button>
+      `;
+    }
+
     return `
       <button class="list-item${isActive ? ' is-active' : ''}" type="button" data-item-id="${item.id}">
         <div class="list-title">${escapeHtml(item.label)}</div>
@@ -628,14 +849,15 @@ function renderList() {
 }
 
 function renderListPagination(totalItems) {
-  if (state.mode !== 'posts' || totalItems <= state.pagination.posts.perPage) {
+  const pagination = getListPaginationState();
+  if (!pagination || totalItems <= pagination.perPage) {
     elements.listPagination.innerHTML = '';
     elements.listPagination.hidden = true;
     return;
   }
 
-  const totalPages = Math.max(1, Math.ceil(totalItems / state.pagination.posts.perPage));
-  const currentPage = Math.min(state.pagination.posts.page, totalPages);
+  const totalPages = Math.max(1, Math.ceil(totalItems / pagination.perPage));
+  const currentPage = Math.min(pagination.page, totalPages);
   elements.listPagination.hidden = false;
   elements.listPagination.innerHTML = `
     <button class="ghost-button" type="button" data-list-page-action="prev" ${currentPage <= 1 ? 'disabled' : ''}>上一页</button>
@@ -736,6 +958,7 @@ function applyMode(mode) {
   elements.pageEditor.hidden = true;
   elements.galleryManager.hidden = true;
   elements.imageLibrary.hidden = true;
+  elements.auditViewer.hidden = true;
   elements.workspaceKicker.textContent = `${getModeLabel(mode)}编辑器`;
   elements.workspaceTitle.textContent = `请选择${getModeLabel(mode)}`;
   updatePrimarySaveButtonLabel();
@@ -791,10 +1014,27 @@ function fillSettingsWorkspace() {
   elements.pageEditor.hidden = true;
   elements.galleryManager.hidden = true;
   elements.imageLibrary.hidden = true;
+  elements.auditViewer.hidden = true;
   elements.workspaceTitle.textContent = '设置';
   updatePrimarySaveButtonLabel();
   renderPrimarySaveButton();
   renderDeleteButton();
+}
+
+function fillAuditWorkspace() {
+  renderWorkspaceSections();
+  elements.postEditor.hidden = true;
+  elements.pageEditor.hidden = true;
+  elements.galleryManager.hidden = true;
+  elements.imageLibrary.hidden = true;
+  elements.auditViewer.hidden = false;
+  elements.workspaceTitle.textContent = state.currentRecord
+    ? (state.currentRecord.summary || '日志详情')
+    : '内容操作日志';
+  updatePrimarySaveButtonLabel();
+  renderPrimarySaveButton();
+  renderDeleteButton();
+  renderAuditPanel();
 }
 
 function fillPageEditor(record) {
@@ -803,6 +1043,7 @@ function fillPageEditor(record) {
   elements.postEditor.hidden = true;
   elements.galleryManager.hidden = true;
   elements.imageLibrary.hidden = true;
+  elements.auditViewer.hidden = true;
   elements.workspaceTitle.textContent = record.label;
   updatePrimarySaveButtonLabel();
   renderPrimarySaveButton();
@@ -909,6 +1150,7 @@ function fillGalleryEditor(album) {
   elements.pageEditor.hidden = true;
   elements.galleryManager.hidden = false;
   elements.imageLibrary.hidden = true;
+  elements.auditViewer.hidden = true;
   elements.workspaceTitle.textContent = formatGalleryAlbumTitle(nextAlbum);
   updatePrimarySaveButtonLabel();
   renderPrimarySaveButton();
@@ -958,6 +1200,8 @@ function renderImageLibrary() {
       </div>
       <div class="library-card-actions">
         <button class="ghost-button" type="button" data-library-action="copy" data-library-path="${escapeHtml(item.path)}">复制路径</button>
+        <button class="ghost-button" type="button" data-library-action="references" data-library-path="${escapeHtml(item.path)}">查看引用</button>
+        <button class="ghost-button" type="button" data-library-action="move" data-library-path="${escapeHtml(item.path)}">重命名/移动</button>
         <button class="ghost-button danger-button" type="button" data-library-action="delete" data-library-path="${escapeHtml(item.path)}">删除图片</button>
       </div>
     </article>
@@ -970,6 +1214,7 @@ function fillImageLibraryWorkspace() {
   elements.pageEditor.hidden = true;
   elements.galleryManager.hidden = true;
   elements.imageLibrary.hidden = false;
+  elements.auditViewer.hidden = true;
   elements.workspaceTitle.textContent = state.images.selectedFolder ? `图片目录 · images/${state.images.selectedFolder}` : '图片目录 · images/';
   updatePrimarySaveButtonLabel();
   renderPrimarySaveButton();
@@ -1093,6 +1338,7 @@ async function loadPosts(selectFirst = false) {
   const payload = await request('/api/posts');
   state.posts = payload.items;
   renderList();
+  refreshAuditLogsSilently();
 
   if (selectFirst && state.posts.length) {
     await selectItem(state.posts[0].key);
@@ -1131,6 +1377,40 @@ async function loadImageLibrary(folder = '', options = {}) {
   if (!options.skipWorkspaceRender) {
     fillImageLibraryWorkspace();
   }
+  refreshAuditLogsSilently();
+}
+
+async function loadImageReferences({ path = '', folder = '' } = {}) {
+  const params = new URLSearchParams();
+  if (path) params.set('path', path);
+  if (folder) params.set('folder', folder);
+  return request(`/api/images/references?${params.toString()}`);
+}
+
+function formatReferenceSummary(payload, maxItems = 8) {
+  const references = Array.isArray(payload && payload.references) ? payload.references : [];
+  if (!references.length) {
+    return '当前没有发现引用。';
+  }
+
+  const lines = references.slice(0, maxItems).map(item => `- ${item.file}${item.count > 1 ? ` (${item.count} 处)` : ''}`);
+  if (references.length > maxItems) {
+    lines.push(`- 还有 ${references.length - maxItems} 个文件未展开`);
+  }
+  return lines.join('\n');
+}
+
+function getImagePathFolder(imagePath) {
+  const normalized = String(imagePath || '').trim().replace(/^\/images\//, '');
+  const parts = normalized.split('/').filter(Boolean);
+  parts.pop();
+  return parts.join('/');
+}
+
+function getImageFileName(imagePath) {
+  const normalized = String(imagePath || '').trim();
+  const parts = normalized.split('/').filter(Boolean);
+  return parts.length ? parts[parts.length - 1] : '';
 }
 
 async function selectItem(id) {
@@ -1141,6 +1421,7 @@ async function selectItem(id) {
     const record = await request(`/api/posts/${encodeURIComponent(id)}`);
     state.currentRecord = record;
     fillPostEditor(record);
+    refreshAuditLogsSilently();
     return;
   }
 
@@ -1158,6 +1439,12 @@ async function selectItem(id) {
 
   if (state.mode === 'settings') {
     fillSettingsWorkspace();
+    return;
+  }
+
+  if (state.mode === 'logs') {
+    state.currentRecord = (state.audit.items || []).find(item => item.id === id) || null;
+    fillAuditWorkspace();
     return;
   }
 
@@ -1285,6 +1572,7 @@ async function handleCreateImageFolder() {
     elements.post.imageNewFolder.value = '';
     setStatus(`已创建目录：images/${payload.folder}`, 'success');
     showToast('目录已创建', `已创建 images/${payload.folder}`);
+    refreshAuditLogsSilently();
   } catch (error) {
     setStatus(error.message, 'error');
   }
@@ -1305,6 +1593,7 @@ async function handleRenameImageFolder() {
     elements.post.imageNewFolder.value = '';
     setStatus(`已重命名目录：images/${payload.folder}`, 'success');
     showToast('目录已重命名', `当前目录：images/${payload.folder}`);
+    refreshAuditLogsSilently();
   } catch (error) {
     setStatus(error.message, 'error');
   }
@@ -1331,6 +1620,7 @@ async function handleDeleteImageFolder() {
     elements.post.imageFolderSelect.value = '';
     setStatus(`已删除目录：images/${payload.deleted}`, 'success');
     showToast('目录已删除', `已删除 images/${payload.deleted}`);
+    refreshAuditLogsSilently();
   } catch (error) {
     setStatus(error.message, 'error');
   }
@@ -1358,6 +1648,7 @@ async function uploadSelectedImages(fileList) {
     elements.post.imageFileInput.value = '';
     renderPostPhotoPreview();
     setStatus(`已上传 ${(payload.uploaded || []).length} 个文件。`, 'success');
+    refreshAuditLogsSilently();
   } catch (error) {
     setStatus(error.message, 'error');
   }
@@ -1422,6 +1713,7 @@ async function handleGalleryCreateImageFolder() {
     elements.gallery.imageFolderSelect.value = payload.folder || '';
     elements.gallery.imageNewFolder.value = '';
     setStatus(`已创建目录：images/${payload.folder}`, 'success');
+    refreshAuditLogsSilently();
   } catch (error) {
     setStatus(error.message, 'error');
   }
@@ -1448,6 +1740,7 @@ async function uploadGalleryImages(fileList) {
     elements.gallery.imageDropzoneMeta.textContent = (payload.uploaded || []).map(item => item.path).join('  ');
     elements.gallery.imageFileInput.value = '';
     setStatus(`已上传 ${(payload.uploaded || []).length} 张画廊图片。`, 'success');
+    refreshAuditLogsSilently();
   } catch (error) {
     setStatus(error.message, 'error');
   }
@@ -1474,11 +1767,23 @@ async function handleLibraryCreateImageFolder() {
 
 async function handleLibraryRenameImageFolder() {
   try {
+    const currentFolder = elements.library.folderSelect.value;
+    const nextFolder = elements.library.folderInput.value.trim();
+    if (currentFolder) {
+      const references = await loadImageReferences({ folder: currentFolder });
+      if (references.referenceCount > 0) {
+        const confirmed = window.confirm(
+          `目录 images/${currentFolder} 当前被 ${references.referenceCount} 个文件引用。继续重命名会自动同步这些引用。\n\n${formatReferenceSummary(references, 6)}\n\n确认继续吗？`
+        );
+        if (!confirmed) return;
+      }
+    }
+
     const payload = await request('/api/images/folders/rename', {
       method: 'POST',
       body: JSON.stringify({
-        currentFolder: elements.library.folderSelect.value,
-        nextFolder: elements.library.folderInput.value.trim()
+        currentFolder,
+        nextFolder
       })
     });
     state.imageFolders = payload.folders || [''];
@@ -1486,7 +1791,7 @@ async function handleLibraryRenameImageFolder() {
     state.selectedId = payload.folder || '__root__';
     elements.library.folderInput.value = '';
     await loadImageLibrary(payload.folder || '');
-    setStatus(`已重命名目录：images/${payload.folder}`, 'success');
+    setStatus(`已重命名目录：images/${payload.folder}，同步 ${payload.replacementCount || 0} 处引用。`, 'success');
     showToast('目录已重命名', `当前目录：images/${payload.folder}`);
   } catch (error) {
     setStatus(error.message, 'error');
@@ -1500,14 +1805,22 @@ async function handleLibraryDeleteImageFolder() {
     return;
   }
 
-  if (!window.confirm(`确认删除 images/${folder} 目录及其所有内容吗？`)) {
-    return;
-  }
-
   try {
+    const references = await loadImageReferences({ folder });
+    let force = false;
+
+    if (references.referenceCount > 0) {
+      force = window.confirm(
+        `目录 images/${folder} 当前仍被 ${references.referenceCount} 个文件引用。继续删除会造成坏链。\n\n${formatReferenceSummary(references, 6)}\n\n确认强制删除吗？`
+      );
+      if (!force) return;
+    } else if (!window.confirm(`确认删除 images/${folder} 目录及其所有内容吗？`)) {
+      return;
+    }
+
     const payload = await request('/api/images/folders/delete', {
       method: 'POST',
-      body: JSON.stringify({ folder })
+      body: JSON.stringify({ folder, force })
     });
     state.imageFolders = payload.folders || [''];
     renderImageFolders();
@@ -1552,15 +1865,70 @@ async function copyText(value) {
   await navigator.clipboard.writeText(value);
 }
 
-async function handleLibraryDeleteImage(imagePath) {
-  if (!window.confirm(`确认删除图片 ${imagePath} 吗？`)) {
-    return;
-  }
+async function handleLibraryShowReferences(imagePath) {
+  const payload = await loadImageReferences({ path: imagePath });
+  const title = payload.referenceCount > 0
+    ? `${imagePath} 当前被 ${payload.referenceCount} 个文件引用，共 ${payload.matchCount} 处。`
+    : `${imagePath} 当前没有被项目内容引用。`;
 
+  window.alert(`${title}\n\n${formatReferenceSummary(payload, 12)}`);
+  setStatus(title, 'success');
+}
+
+async function handleLibraryMoveImage(imagePath) {
+  const currentFolder = getImagePathFolder(imagePath);
+  const currentName = getImageFileName(imagePath);
+  const nextNameInput = window.prompt('输入新的文件名。直接回车表示只移动目录。', currentName);
+  if (nextNameInput === null) return;
+  const nextFolderInput = window.prompt('输入目标目录。留空表示移动到 images/ 根目录。', currentFolder);
+  if (nextFolderInput === null) return;
+
+  const nextName = nextNameInput.trim();
+  const nextFolder = nextFolderInput.trim();
+  const targetPath = nextFolder ? `/images/${nextFolder}/${nextName || currentName}` : `/images/${nextName || currentName}`;
+  const references = await loadImageReferences({ path: imagePath });
+
+  const confirmed = window.confirm(
+    references.referenceCount > 0
+      ? `图片当前被 ${references.referenceCount} 个文件引用。继续后会自动同步这些引用。\n\n${formatReferenceSummary(references, 6)}\n\n确认更新为 ${targetPath} 吗？`
+      : `确认将图片更新为 ${targetPath} 吗？`
+  );
+  if (!confirmed) return;
+
+  const payload = await request('/api/images/move', {
+    method: 'POST',
+    body: JSON.stringify({
+      path: imagePath,
+      folder: nextFolder,
+      name: nextName
+    })
+  });
+
+  state.imageFolders = payload.folders || state.imageFolders;
+  renderImageFolders();
+  state.selectedId = payload.folder || '__root__';
+  await loadImageLibrary(payload.folder || '');
+  setStatus(`已更新图片路径：${payload.path}，同步 ${payload.replacementCount || 0} 处引用。`, 'success');
+  showToast('图片已更新', payload.path);
+}
+
+async function handleLibraryDeleteImage(imagePath) {
   try {
+    const references = await loadImageReferences({ path: imagePath });
+    let force = false;
+
+    if (references.referenceCount > 0) {
+      force = window.confirm(
+        `图片 ${imagePath} 当前仍被 ${references.referenceCount} 个文件引用。继续删除会造成坏链。\n\n${formatReferenceSummary(references, 6)}\n\n确认强制删除吗？`
+      );
+      if (!force) return;
+    } else if (!window.confirm(`确认删除图片 ${imagePath} 吗？`)) {
+      return;
+    }
+
     const payload = await request('/api/images/delete', {
       method: 'POST',
-      body: JSON.stringify({ path: imagePath })
+      body: JSON.stringify({ path: imagePath, force })
     });
     await loadImageLibrary(payload.folder || '');
     setStatus(`已删除图片：${payload.deleted}`, 'success');
@@ -1831,6 +2199,7 @@ async function bootstrap() {
     await loadImageFolders();
     await loadCommands();
     await loadPosts(true);
+    await loadAuditLogs({ silent: true });
     setStatus('本地 CMS 已加载。');
   } catch (error) {
     setStatus(error.message, 'error');
@@ -1847,6 +2216,8 @@ document.querySelectorAll('.mode-button').forEach(button => {
         await loadGallery(true);
       } else if (button.dataset.mode === 'images') {
         await loadImageLibrary('', { skipWorkspaceRender: false });
+      } else if (button.dataset.mode === 'logs') {
+        await loadAuditLogs({ selectFirst: true, silent: true });
       } else if (button.dataset.mode === 'settings') {
         fillSettingsWorkspace();
       } else {
@@ -1878,19 +2249,22 @@ elements.listPagination.addEventListener('click', async event => {
   const button = event.target.closest('[data-list-page-action]');
   if (!button) return;
 
+  const pagination = getListPaginationState();
+  if (!pagination) return;
+
   const filteredItems = getFilteredItems();
-  const totalPages = Math.max(1, Math.ceil(filteredItems.length / state.pagination.posts.perPage));
-  if (button.dataset.listPageAction === 'prev' && state.pagination.posts.page > 1) {
-    state.pagination.posts.page -= 1;
+  const totalPages = Math.max(1, Math.ceil(filteredItems.length / pagination.perPage));
+  if (button.dataset.listPageAction === 'prev' && pagination.page > 1) {
+    pagination.page -= 1;
   }
-  if (button.dataset.listPageAction === 'next' && state.pagination.posts.page < totalPages) {
-    state.pagination.posts.page += 1;
+  if (button.dataset.listPageAction === 'next' && pagination.page < totalPages) {
+    pagination.page += 1;
   }
   renderList();
 });
 
 elements.searchInput.addEventListener('input', () => {
-  resetPostPagination();
+  resetCurrentModePagination();
   renderList();
 });
 elements.saveButton.addEventListener('click', handleSave);
@@ -2082,9 +2456,43 @@ elements.library.grid.addEventListener('click', async event => {
       return;
     }
 
+    if (button.dataset.libraryAction === 'references') {
+      await handleLibraryShowReferences(imagePath);
+      return;
+    }
+
+    if (button.dataset.libraryAction === 'move') {
+      await handleLibraryMoveImage(imagePath);
+      return;
+    }
+
     if (button.dataset.libraryAction === 'delete') {
       await handleLibraryDeleteImage(imagePath);
     }
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+});
+elements.auditLogRefreshButton.addEventListener('click', async () => {
+  try {
+    await loadAuditLogs();
+    setStatus('操作日志已刷新。', 'success');
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+});
+elements.auditEntityFilter.addEventListener('change', async () => {
+  state.audit.filters.entityType = elements.auditEntityFilter.value;
+  try {
+    await loadAuditLogs();
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+});
+elements.auditActionFilter.addEventListener('change', async () => {
+  state.audit.filters.action = elements.auditActionFilter.value;
+  try {
+    await loadAuditLogs();
   } catch (error) {
     setStatus(error.message, 'error');
   }
@@ -2104,8 +2512,13 @@ elements.refreshButton.addEventListener('click', async () => {
       await loadGallery(true);
     } else if (state.mode === 'images') {
       await loadImageLibrary(state.images.selectedFolder || '');
+    } else if (state.mode === 'logs') {
+      await loadAuditLogs({ selectFirst: true, silent: true });
     } else if (state.mode === 'settings') {
       fillSettingsWorkspace();
+    }
+    if (state.mode !== 'logs') {
+      await loadAuditLogs({ silent: true });
     }
     renderList();
     setStatus('列表已刷新。', 'success');
