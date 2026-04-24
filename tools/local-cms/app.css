@@ -350,6 +350,13 @@ select:focus {
   margin-bottom: 14px;
 }
 
+.card-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .card-heading-copy {
   display: flex;
   flex-direction: column;
@@ -378,6 +385,28 @@ select:focus {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 10px;
+}
+
+.category-custom-panel {
+  grid-column: 1 / -1;
+  padding: 18px;
+  border: 1px dashed rgba(0, 0, 0, 0.12);
+  border-radius: 18px;
+  background: rgba(249, 249, 249, 0.96);
+}
+
+.category-custom-panel .card-heading {
+  margin-bottom: 12px;
+}
+
+.category-custom-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.panel-body-collapsed {
+  display: none;
 }
 
 .image-tools-grid {
@@ -455,7 +484,8 @@ select:focus {
   .compact-grid,
   .language-grid,
   .command-status-grid,
-  .image-tools-grid {
+  .image-tools-grid,
+  .category-custom-grid {
     grid-template-columns: 1fr;
   }
 

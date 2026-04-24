@@ -52,39 +52,44 @@
               <p class="eyebrow">Hexo Actions</p>
               <h3>站点命令</h3>
             </div>
-            <a id="command-preview-link" class="preview-link" href="http://127.0.0.1:4000/" target="_blank" rel="noreferrer">打开预览</a>
-          </div>
-
-          <div class="command-actions">
-            <button class="ghost-button" type="button" data-command="clean">清缓存</button>
-            <button class="ghost-button" type="button" data-command="build">构建</button>
-            <button class="ghost-button" type="button" data-command="serve">启动预览</button>
-            <button class="ghost-button" type="button" data-command="stop-serve">停止预览</button>
-            <button class="primary-button" type="button" data-command="deploy">部署</button>
-          </div>
-
-          <div class="command-status-grid">
-            <div class="command-status-card">
-              <span class="status-label">当前任务</span>
-              <strong id="command-current-task">空闲</strong>
-              <span id="command-current-meta" class="status-meta">没有任务在运行</span>
-            </div>
-            <div class="command-status-card">
-              <span class="status-label">预览服务</span>
-              <strong id="command-server-status">未启动</strong>
-              <span id="command-server-meta" class="status-meta">127.0.0.1:4000</span>
-            </div>
-            <div class="command-status-card">
-              <span class="status-label">最近结果</span>
-              <strong id="command-last-task">暂无记录</strong>
-              <span id="command-last-meta" class="status-meta">等待第一次执行</span>
+            <div class="card-heading-actions">
+              <a id="command-preview-link" class="preview-link" href="http://127.0.0.1:4000/" target="_blank" rel="noreferrer">打开预览</a>
+              <button id="toggle-command-panel" class="ghost-button" type="button" aria-expanded="true">隐藏</button>
             </div>
           </div>
 
-          <label>
-            <span>命令日志</span>
-            <textarea id="command-log" rows="12" readonly></textarea>
-          </label>
+          <div id="command-panel-body">
+            <div class="command-actions">
+              <button class="ghost-button" type="button" data-command="clean">清缓存</button>
+              <button class="ghost-button" type="button" data-command="build">构建</button>
+              <button class="ghost-button" type="button" data-command="serve">启动预览</button>
+              <button class="ghost-button" type="button" data-command="stop-serve">停止预览</button>
+              <button class="primary-button" type="button" data-command="deploy">部署</button>
+            </div>
+
+            <div class="command-status-grid">
+              <div class="command-status-card">
+                <span class="status-label">当前任务</span>
+                <strong id="command-current-task">空闲</strong>
+                <span id="command-current-meta" class="status-meta">没有任务在运行</span>
+              </div>
+              <div class="command-status-card">
+                <span class="status-label">预览服务</span>
+                <strong id="command-server-status">未启动</strong>
+                <span id="command-server-meta" class="status-meta">127.0.0.1:4000</span>
+              </div>
+              <div class="command-status-card">
+                <span class="status-label">最近结果</span>
+                <strong id="command-last-task">暂无记录</strong>
+                <span id="command-last-meta" class="status-meta">等待第一次执行</span>
+              </div>
+            </div>
+
+            <label>
+              <span>命令日志</span>
+              <textarea id="command-log" rows="12" readonly></textarea>
+            </label>
+          </div>
         </section>
 
         <section class="editor-card llm-panel">
@@ -93,33 +98,38 @@
               <p class="eyebrow">LLM Config</p>
               <h3>一键排版配置</h3>
             </div>
-            <button id="save-llm-button" class="ghost-button" type="button">保存配置</button>
+            <div class="card-heading-actions">
+              <button id="save-llm-button" class="ghost-button" type="button">保存配置</button>
+              <button id="toggle-llm-panel" class="ghost-button" type="button" aria-expanded="true">隐藏</button>
+            </div>
           </div>
 
-          <div class="compact-grid llm-grid">
-            <label>
-              <span>API Endpoint</span>
-              <input id="llm-endpoint" type="url" placeholder="https://api.openai.com/v1/chat/completions">
-            </label>
-            <label>
-              <span>Model</span>
-              <input id="llm-model" type="text" placeholder="gpt-4.1 / kimi / qwen-max">
-            </label>
-            <label>
-              <span>Temperature</span>
-              <input id="llm-temperature" type="number" min="0" max="2" step="0.1">
-            </label>
-            <label>
-              <span>API Key</span>
-              <input id="llm-api-key" type="password" placeholder="sk-...">
-            </label>
-          </div>
+          <div id="llm-panel-body">
+            <div class="compact-grid llm-grid">
+              <label>
+                <span>API Endpoint</span>
+                <input id="llm-endpoint" type="url" placeholder="https://api.openai.com/v1/chat/completions">
+              </label>
+              <label>
+                <span>Model</span>
+                <input id="llm-model" type="text" placeholder="gpt-4.1 / kimi / qwen-max">
+              </label>
+              <label>
+                <span>Temperature</span>
+                <input id="llm-temperature" type="number" min="0" max="2" step="0.1">
+              </label>
+              <label>
+                <span>API Key</span>
+                <input id="llm-api-key" type="password" placeholder="sk-...">
+              </label>
+            </div>
 
-          <label>
-            <span>排版 Prompt</span>
-            <textarea id="llm-prompt" rows="6"></textarea>
-          </label>
-          <p class="field-hint">当前实现按 OpenAI 兼容的 Chat Completions 接口发送请求。你可以切换不同供应商的 endpoint 和 model。</p>
+            <label>
+              <span>排版 Prompt</span>
+              <textarea id="llm-prompt" rows="6"></textarea>
+            </label>
+            <p class="field-hint">当前实现按 OpenAI 兼容的 Chat Completions 接口发送请求。你可以切换不同供应商的 endpoint 和 model。</p>
+          </div>
         </section>
 
         <section id="post-editor" class="editor-panel" hidden>
@@ -141,6 +151,25 @@
               <span>分类</span>
               <select id="post-category"></select>
             </label>
+            <div id="post-category-custom-panel" class="category-custom-panel" hidden>
+              <div class="card-heading">
+                <div class="card-heading-copy">
+                  <h3>自定义分类</h3>
+                  <span class="field-hint">当前分类不在预设列表里时，直接填写中英文名称；需要反复使用时，再一键加入预设。</span>
+                </div>
+                <button id="add-category-preset-button" class="ghost-button" type="button">加入预设分类</button>
+              </div>
+              <div class="category-custom-grid">
+                <label>
+                  <span>中文分类名</span>
+                  <input id="post-category-custom-zh" type="text" placeholder="例如：电影">
+                </label>
+                <label>
+                  <span>英文分类名</span>
+                  <input id="post-category-custom-en" type="text" placeholder="例如：Film">
+                </label>
+              </div>
+            </div>
           </div>
 
           <div class="editor-card">

@@ -198,6 +198,81 @@ function findCategoryOptionByNames(options, zhCategory, enCategory) {
   return options.find(option => option.zh === zhCategory || option.en === enCategory) || null;
 }
 
+function formatYamlInlineString(value) {
+  const text = String(value || '').trim();
+  if (!text) return '""';
+  if (/^[\p{L}\p{N}_-]+$/u.test(text)) return text;
+  return JSON.stringify(text);
+}
+
+function appendCategoryMapEntry(configText, zh, en) {
+  const lines = configText.split(/\r?\n/);
+  const lineBreak = configText.includes('\r\n') ? '\r\n' : '\n';
+  const startIndex = lines.findIndex(line => /^category_map:\s*$/.test(line));
+
+  if (startIndex === -1) {
+    throw new Error('找不到 _config.yml 里的 category_map 配置。');
+  }
+
+  let insertIndex = startIndex + 1;
+  while (insertIndex < lines.length) {
+    const line = lines[insertIndex];
+    if (!line.trim()) {
+      insertIndex += 1;
+      continue;
+    }
+    if (/^\s/.test(line) || /^#/.test(line)) {
+      insertIndex += 1;
+      continue;
+    }
+    break;
+  }
+
+  lines.splice(insertIndex, 0, `  ${formatYamlInlineString(zh)}: ${formatYamlInlineString(en)}`);
+  return lines.join(lineBreak);
+}
+
+function addCategoryOption(payload) {
+  const zh = String(payload && payload.zh || '').trim();
+  const en = String(payload && payload.en || '').trim();
+
+  if (!zh || !en) {
+    throw new Error('新增预设分类时，中英文名称都不能为空。');
+  }
+
+  const existingOptions = loadCategoryOptions();
+  const newId = slugifyFileSegment(en || zh);
+  const exactMatch = existingOptions.find(option => option.zh === zh && option.en === en);
+
+  if (exactMatch) {
+    return {
+      category: exactMatch,
+      categories: existingOptions
+    };
+  }
+
+  if (existingOptions.some(option => option.zh === zh && option.en !== en)) {
+    throw new Error('这个中文分类已经存在，但对应的英文名不同，请先统一命名。');
+  }
+
+  if (existingOptions.some(option => option.en === en && option.zh !== zh)) {
+    throw new Error('这个英文分类已经存在，但对应的中文名不同，请先统一命名。');
+  }
+
+  if (existingOptions.some(option => option.id === newId)) {
+    throw new Error('该英文分类生成的标识与现有分类冲突，请换一个英文名称。');
+  }
+
+  const configText = fs.readFileSync(CONFIG_PATH, 'utf8');
+  const updatedConfigText = appendCategoryMapEntry(configText, zh, en);
+  fs.writeFileSync(CONFIG_PATH, updatedConfigText, 'utf8');
+
+  return {
+    category: { id: newId, zh, en },
+    categories: loadCategoryOptions()
+  };
+}
+
 function splitPostKey(filename) {
   const match = filename.match(/^(.+)\.(zh-CN|en)\.md$/);
   if (!match) return null;
@@ -656,6 +731,12 @@ function listPostPairs(categoryOptions) {
         date: item.common.date,
         status: item.status,
         categoryId: item.common.categoryId || '',
+        categoryZh: item.common.categoryId
+          ? ((categoryOptions.find(option => option.id === item.common.categoryId) || {}).zh || '')
+          : (item.common.categoryCustomZh || ''),
+        categoryEn: item.common.categoryId
+          ? ((categoryOptions.find(option => option.id === item.common.categoryId) || {}).en || '')
+          : (item.common.categoryCustomEn || ''),
         sourceFiles: item.sourceFiles
       };
     })
@@ -854,6 +935,13 @@ const server = http.createServer(async (req, res) => {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
       jsonResponse(res, 200, saveLocalSettings(payload));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/categories') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, addCategoryOption(payload));
       return;
     }
 

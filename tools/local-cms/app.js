@@ -1,5 +1,7 @@
 'use strict';
 
+const CUSTOM_CATEGORY_VALUE = '__custom__';
+
 const state = {
   mode: 'posts',
   meta: { categories: [], pages: [] },
@@ -28,6 +30,10 @@ const state = {
       url: 'http://127.0.0.1:4000/',
       log: ''
     }
+  },
+  panels: {
+    commandsExpanded: true,
+    llmExpanded: true
   }
 };
 
@@ -41,7 +47,10 @@ const elements = {
   formatZhButton: document.querySelector('#format-zh-button'),
   uploadImageButton: document.querySelector('#upload-image-button'),
   createImageFolderButton: document.querySelector('#create-image-folder-button'),
+  addCategoryPresetButton: document.querySelector('#add-category-preset-button'),
   statusBar: document.querySelector('#status-bar'),
+  toggleCommandPanelButton: document.querySelector('#toggle-command-panel'),
+  toggleLlmPanelButton: document.querySelector('#toggle-llm-panel'),
   commandButtons: Array.from(document.querySelectorAll('[data-command]')),
   commandCurrentTask: document.querySelector('#command-current-task'),
   commandCurrentMeta: document.querySelector('#command-current-meta'),
@@ -51,6 +60,8 @@ const elements = {
   commandLastMeta: document.querySelector('#command-last-meta'),
   commandLog: document.querySelector('#command-log'),
   commandPreviewLink: document.querySelector('#command-preview-link'),
+  commandPanelBody: document.querySelector('#command-panel-body'),
+  llmPanelBody: document.querySelector('#llm-panel-body'),
   llm: {
     endpoint: document.querySelector('#llm-endpoint'),
     apiKey: document.querySelector('#llm-api-key'),
@@ -67,6 +78,9 @@ const elements = {
     slug: document.querySelector('#post-slug'),
     toc: document.querySelector('#post-toc'),
     category: document.querySelector('#post-category'),
+    categoryCustomPanel: document.querySelector('#post-category-custom-panel'),
+    categoryCustomZh: document.querySelector('#post-category-custom-zh'),
+    categoryCustomEn: document.querySelector('#post-category-custom-en'),
     photos: document.querySelector('#post-photos'),
     imageFolderSelect: document.querySelector('#image-folder-select'),
     imageNewFolder: document.querySelector('#image-new-folder'),
@@ -156,13 +170,24 @@ function renderCommandPanel() {
   });
 }
 
+function renderPanelVisibility() {
+  elements.commandPanelBody.classList.toggle('panel-body-collapsed', !state.panels.commandsExpanded);
+  elements.llmPanelBody.classList.toggle('panel-body-collapsed', !state.panels.llmExpanded);
+  elements.toggleCommandPanelButton.textContent = state.panels.commandsExpanded ? '隐藏' : '显示';
+  elements.toggleLlmPanelButton.textContent = state.panels.llmExpanded ? '隐藏' : '显示';
+  elements.toggleCommandPanelButton.setAttribute('aria-expanded', String(state.panels.commandsExpanded));
+  elements.toggleLlmPanelButton.setAttribute('aria-expanded', String(state.panels.llmExpanded));
+}
+
 function renderCategoryOptions() {
   const options = ['<option value="">请选择分类</option>']
     .concat(state.meta.categories.map(item => {
       return `<option value="${item.id}">${item.zh} / ${item.en}</option>`;
-    }));
+    }))
+    .concat(`<option value="${CUSTOM_CATEGORY_VALUE}">自定义分类</option>`);
 
   elements.post.category.innerHTML = options.join('');
+  syncCategoryPresetButtonState();
 }
 
 function renderImageFolders() {
@@ -190,11 +215,61 @@ function formatPostListTitle(item) {
 function formatPostListSubtitle(item) {
   const parts = [];
   if (item.titleZh && item.titleEn) parts.push(item.titleEn);
+  const categoryLabel = getPostCategoryLabel(item);
+  if (categoryLabel) parts.push(categoryLabel);
+  return parts.join(' · ');
+}
+
+function getPostCategoryLabel(item) {
   if (item.categoryId) {
     const category = state.meta.categories.find(option => option.id === item.categoryId);
-    if (category) parts.push(`${category.zh} / ${category.en}`);
+    if (category) return `${category.zh} / ${category.en}`;
   }
-  return parts.join(' · ');
+
+  if (item.categoryZh || item.categoryEn) {
+    return [item.categoryZh, item.categoryEn].filter(Boolean).join(' / ');
+  }
+
+  return '';
+}
+
+function syncCategoryPresetButtonState() {
+  const isCustom = elements.post.category.value === CUSTOM_CATEGORY_VALUE;
+  const hasRequiredNames = Boolean(
+    elements.post.categoryCustomZh.value.trim() &&
+    elements.post.categoryCustomEn.value.trim()
+  );
+  elements.addCategoryPresetButton.disabled = !isCustom || !hasRequiredNames;
+}
+
+function updateCategoryCustomPanel() {
+  const isCustom = elements.post.category.value === CUSTOM_CATEGORY_VALUE;
+  elements.post.categoryCustomPanel.hidden = !isCustom;
+  syncCategoryPresetButtonState();
+}
+
+function setCategoryFormValue(record) {
+  const categoryId = record.common.categoryId || '';
+  const hasPreset = Boolean(
+    categoryId &&
+    state.meta.categories.some(item => item.id === categoryId)
+  );
+
+  if (hasPreset) {
+    elements.post.category.value = categoryId;
+    elements.post.categoryCustomZh.value = '';
+    elements.post.categoryCustomEn.value = '';
+  } else if (record.common.categoryCustomZh || record.common.categoryCustomEn) {
+    elements.post.category.value = CUSTOM_CATEGORY_VALUE;
+    elements.post.categoryCustomZh.value = record.common.categoryCustomZh || '';
+    elements.post.categoryCustomEn.value = record.common.categoryCustomEn || '';
+  } else {
+    elements.post.category.value = '';
+    elements.post.categoryCustomZh.value = '';
+    elements.post.categoryCustomEn.value = '';
+  }
+
+  updateCategoryCustomPanel();
 }
 
 function getFilteredItems() {
@@ -277,7 +352,7 @@ function fillPostEditor(record) {
   elements.post.date.value = record.common.date || '保存后自动生成';
   elements.post.slug.value = record.common.slug || '';
   elements.post.toc.checked = Boolean(record.common.toc);
-  elements.post.category.value = record.common.categoryId || '';
+  setCategoryFormValue(record);
   elements.post.photos.value = record.common.photos || '';
   elements.post.zhFile.textContent = record.sourceFiles.zh || '新建后生成';
   elements.post.zhTitle.value = record.zh.title || '';
@@ -391,12 +466,16 @@ async function selectItem(id) {
 }
 
 function buildPostPayload() {
+  const isCustomCategory = elements.post.category.value === CUSTOM_CATEGORY_VALUE;
+
   return {
     key: state.currentRecord && state.currentRecord.key ? state.currentRecord.key : '',
     common: {
       slug: elements.post.slug.value,
       toc: elements.post.toc.checked,
-      categoryId: elements.post.category.value,
+      categoryId: isCustomCategory ? '' : elements.post.category.value,
+      categoryCustomZh: isCustomCategory ? elements.post.categoryCustomZh.value.trim() : '',
+      categoryCustomEn: isCustomCategory ? elements.post.categoryCustomEn.value.trim() : '',
       photos: elements.post.photos.value
     },
     zh: {
@@ -569,6 +648,34 @@ async function handleSave() {
   }
 }
 
+async function handleAddCategoryPreset() {
+  try {
+    setStatus('正在加入预设分类...');
+    const payload = await request('/api/categories', {
+      method: 'POST',
+      body: JSON.stringify({
+        zh: elements.post.categoryCustomZh.value.trim(),
+        en: elements.post.categoryCustomEn.value.trim()
+      })
+    });
+
+    state.meta.categories = payload.categories || [];
+    renderCategoryOptions();
+    elements.post.category.value = payload.category.id;
+    updateCategoryCustomPanel();
+
+    if (state.currentRecord && state.currentRecord.common) {
+      state.currentRecord.common.categoryId = payload.category.id;
+      state.currentRecord.common.categoryCustomZh = '';
+      state.currentRecord.common.categoryCustomEn = '';
+    }
+
+    setStatus(`已加入预设分类：${payload.category.zh} / ${payload.category.en}`, 'success');
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
 async function handleCommand(name) {
   try {
     const payload = await request(`/api/commands/${encodeURIComponent(name)}`, {
@@ -606,7 +713,9 @@ function createEmptyPost() {
       slug: '',
       toc: false,
       photos: '',
-      categoryId: ''
+      categoryId: '',
+      categoryCustomZh: '',
+      categoryCustomEn: ''
     },
     zh: { title: '', description: '', tags: '', permalink: '', body: '', extras: {} },
     en: { title: '', description: '', tags: '', permalink: '', body: '', extras: {} }
@@ -619,6 +728,7 @@ function createEmptyPost() {
 async function bootstrap() {
   try {
     applyMode('posts');
+    renderPanelVisibility();
     await loadMeta();
     await loadSettings();
     await loadImageFolders();
@@ -657,6 +767,18 @@ elements.saveButton.addEventListener('click', handleSave);
 elements.saveLlmButton.addEventListener('click', handleSaveLlmSettings);
 elements.formatZhButton.addEventListener('click', handleFormatZh);
 elements.createImageFolderButton.addEventListener('click', handleCreateImageFolder);
+elements.addCategoryPresetButton.addEventListener('click', handleAddCategoryPreset);
+elements.toggleCommandPanelButton.addEventListener('click', () => {
+  state.panels.commandsExpanded = !state.panels.commandsExpanded;
+  renderPanelVisibility();
+});
+elements.toggleLlmPanelButton.addEventListener('click', () => {
+  state.panels.llmExpanded = !state.panels.llmExpanded;
+  renderPanelVisibility();
+});
+elements.post.category.addEventListener('change', updateCategoryCustomPanel);
+elements.post.categoryCustomZh.addEventListener('input', syncCategoryPresetButtonState);
+elements.post.categoryCustomEn.addEventListener('input', syncCategoryPresetButtonState);
 elements.uploadImageButton.addEventListener('click', () => {
   elements.post.imageFileInput.click();
 });
