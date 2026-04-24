@@ -12,7 +12,7 @@ const frontMatter = require('hexo-front-matter');
 
 const HOST = process.env.LOCAL_CMS_HOST || '127.0.0.1';
 const PORT = Number(process.env.LOCAL_CMS_PORT || 4010);
-const ROOT = process.cwd();
+const ROOT = path.resolve(__dirname, '..');
 const POSTS_DIR = path.join(ROOT, 'source', '_posts');
 const IMAGES_DIR = path.join(ROOT, 'source', 'images');
 const STATIC_DIR = path.join(ROOT, 'tools', 'local-cms');
@@ -444,12 +444,16 @@ function saveLocalSettings(payload) {
     [LLM_ENV_KEYS.temperature]: String(Number(next.llm.temperature ?? DEFAULT_LLM_SETTINGS.temperature)),
     [LLM_ENV_KEYS.prompt]: next.llm.prompt || DEFAULT_LLM_SETTINGS.prompt
   });
-  return next;
+  return {
+    ...next,
+    envPath: toPosixPath(ENV_PATH)
+  };
 }
 
 function getLlmSettingsPayload() {
   const settings = loadLocalSettings();
   return {
+    envPath: toPosixPath(ENV_PATH),
     llm: {
       endpoint: settings.llm.endpoint || '',
       apiKey: settings.llm.apiKey || '',
