@@ -13,7 +13,22 @@ db.json
 Thumbs.db
 db.json
 *.log
+.env
+.env.*
 .local-cms.json
+!.env.example
+
+# local editor / temp
+.vscode/
+.idea/
+*.swp
+*.swo
+*.pid
+*.pid.lock
+.cache/
+.tmp/
+tmp/
+
 # backups
 _backup/
 images_backup/

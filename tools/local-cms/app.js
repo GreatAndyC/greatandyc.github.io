@@ -554,7 +554,7 @@ async function handleSaveLlmSettings() {
       body: JSON.stringify(payload)
     });
     fillLlmSettings();
-    setStatus('LLM 配置已保存到本地。', 'success');
+    setStatus('LLM 配置已保存到项目根目录的 .env。', 'success');
   } catch (error) {
     setStatus(error.message, 'error');
   }

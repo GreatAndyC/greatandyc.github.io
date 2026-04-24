@@ -17,7 +17,15 @@ const POSTS_DIR = path.join(ROOT, 'source', '_posts');
 const IMAGES_DIR = path.join(ROOT, 'source', 'images');
 const STATIC_DIR = path.join(ROOT, 'tools', 'local-cms');
 const CONFIG_PATH = path.join(ROOT, '_config.yml');
+const ENV_PATH = path.join(ROOT, '.env');
 const LOCAL_SETTINGS_PATH = path.join(ROOT, '.local-cms.json');
+const LLM_ENV_KEYS = {
+  endpoint: 'LOCAL_CMS_LLM_ENDPOINT',
+  apiKey: 'LOCAL_CMS_LLM_API_KEY',
+  model: 'LOCAL_CMS_LLM_MODEL',
+  temperature: 'LOCAL_CMS_LLM_TEMPERATURE',
+  prompt: 'LOCAL_CMS_LLM_PROMPT'
+};
 
 const PAGE_DEFINITIONS = [
   { id: 'about-zh', label: 'About 中文', file: path.join(ROOT, 'source', 'about', 'index.md') },
@@ -318,7 +326,93 @@ function buildFrontMatterString(data, body) {
   return `---\n${serialized}---\n\n${normalizedBody}`;
 }
 
+function parseDotEnv(content = '') {
+  return String(content || '')
+    .split(/\r?\n/)
+    .reduce((result, line) => {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) return result;
+
+      const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);
+      if (!match) return result;
+
+      const key = match[1];
+      let value = match[2] || '';
+      if (
+        (value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith('\'') && value.endsWith('\''))
+      ) {
+        value = value.slice(1, -1);
+      }
+
+      result[key] = value
+        .replace(/\\n/g, '\n')
+        .replace(/\\r/g, '\r')
+        .replace(/\\"/g, '"')
+        .replace(/\\\\/g, '\\');
+      return result;
+    }, {});
+}
+
+function encodeEnvValue(value) {
+  return `"${String(value ?? '')
+    .replace(/\\/g, '\\\\')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/"/g, '\\"')}"`;
+}
+
+function loadEnvSettings() {
+  if (!fs.existsSync(ENV_PATH)) return null;
+
+  const raw = fs.readFileSync(ENV_PATH, 'utf8');
+  const env = parseDotEnv(raw);
+  const hasAnyLlmConfig = Object.values(LLM_ENV_KEYS).some(key => Object.prototype.hasOwnProperty.call(env, key));
+
+  if (!hasAnyLlmConfig) return null;
+
+  return {
+    llm: {
+      ...DEFAULT_LLM_SETTINGS,
+      endpoint: env[LLM_ENV_KEYS.endpoint] || DEFAULT_LLM_SETTINGS.endpoint,
+      apiKey: env[LLM_ENV_KEYS.apiKey] || '',
+      model: env[LLM_ENV_KEYS.model] || '',
+      temperature: Number(env[LLM_ENV_KEYS.temperature] || DEFAULT_LLM_SETTINGS.temperature),
+      prompt: env[LLM_ENV_KEYS.prompt] || DEFAULT_LLM_SETTINGS.prompt
+    }
+  };
+}
+
+function updateEnvFile(entries) {
+  const lineBreak = fs.existsSync(ENV_PATH) && fs.readFileSync(ENV_PATH, 'utf8').includes('\r\n') ? '\r\n' : '\n';
+  const existingText = fs.existsSync(ENV_PATH) ? fs.readFileSync(ENV_PATH, 'utf8') : '';
+  const lines = existingText ? existingText.split(/\r?\n/) : [];
+  const handledKeys = new Set();
+
+  const nextLines = lines.map(line => {
+    const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=/);
+    if (!match) return line;
+
+    const key = match[1];
+    if (!Object.prototype.hasOwnProperty.call(entries, key)) return line;
+
+    handledKeys.add(key);
+    return `${key}=${encodeEnvValue(entries[key])}`;
+  });
+
+  Object.entries(entries).forEach(([key, value]) => {
+    if (handledKeys.has(key)) return;
+    nextLines.push(`${key}=${encodeEnvValue(value)}`);
+  });
+
+  const output = `${nextLines.filter((line, index, arr) => !(index === arr.length - 1 && line === '')).join(lineBreak)}${lineBreak}`;
+  fs.writeFileSync(ENV_PATH, output, 'utf8');
+}
+
 function loadLocalSettings() {
+  const envSettings = loadEnvSettings();
+  if (envSettings) return envSettings;
+
   if (!fs.existsSync(LOCAL_SETTINGS_PATH)) {
     return { llm: { ...DEFAULT_LLM_SETTINGS } };
   }
@@ -343,7 +437,13 @@ function saveLocalSettings(payload) {
     }
   };
 
-  fs.writeFileSync(LOCAL_SETTINGS_PATH, `${JSON.stringify(next, null, 2)}\n`, 'utf8');
+  updateEnvFile({
+    [LLM_ENV_KEYS.endpoint]: next.llm.endpoint || DEFAULT_LLM_SETTINGS.endpoint,
+    [LLM_ENV_KEYS.apiKey]: next.llm.apiKey || '',
+    [LLM_ENV_KEYS.model]: next.llm.model || '',
+    [LLM_ENV_KEYS.temperature]: String(Number(next.llm.temperature ?? DEFAULT_LLM_SETTINGS.temperature)),
+    [LLM_ENV_KEYS.prompt]: next.llm.prompt || DEFAULT_LLM_SETTINGS.prompt
+  });
   return next;
 }
 

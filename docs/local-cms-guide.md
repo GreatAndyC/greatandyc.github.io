@@ -57,9 +57,23 @@ http://127.0.0.1:4010
 
 LLM 配置会保存在项目根目录的：
 
-`/.local-cms.json`
+`/.env`
+
+当前后台会把下面这些字段写进 `.env`：
+
+- `LOCAL_CMS_LLM_ENDPOINT`
+- `LOCAL_CMS_LLM_API_KEY`
+- `LOCAL_CMS_LLM_MODEL`
+- `LOCAL_CMS_LLM_TEMPERATURE`
+- `LOCAL_CMS_LLM_PROMPT`
 
 这个文件已经加入 `.gitignore`，不会被自动提交。
+
+如果你之前已经用过旧版本后台，仓库根目录里的 `/.local-cms.json` 仍然可以作为兼容兜底读取；但新的保存都会写到 `.env`。
+
+仓库里也提供了一个模板文件：
+
+`/.env.example`
 
 如果你想改端口，可以这样：
 
