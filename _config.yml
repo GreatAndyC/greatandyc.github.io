@@ -94,6 +94,9 @@ category_map:
   其他: Others
 tag_map:
 
+home_category_panel:
+  max_items: 10
+
 # Metadata elements
 ## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
 meta_generator: true

@@ -56,6 +56,19 @@ function getLocalizedCategories(ctx, language = getCurrentLanguage(ctx)) {
   }).filter(Boolean);
 }
 
+function compareLocalizedValues(left, right, language = getDefaultLanguage()) {
+  if (left === right) return 0;
+
+  if (typeof left === 'number' && typeof right === 'number') {
+    return left - right;
+  }
+
+  return String(left).localeCompare(String(right), language, {
+    numeric: true,
+    sensitivity: 'base'
+  });
+}
+
 function getLocalizedValue(value, language, fallbackLanguage = getDefaultLanguage()) {
   if (value == null) return '';
   if (typeof value === 'string' || typeof value === 'number') return value;
@@ -410,12 +423,34 @@ hexo.extend.helper.register('localized_list_categories', function (options = {})
   const className = options.class || 'category';
   const orderby = options.orderby || 'name';
   const order = options.order || 1;
-  const localizedCategories = [...categories].sort((a, b) => {
-    const left = a[orderby];
-    const right = b[orderby];
-    if (left === right) return 0;
-    return left > right ? order : -order;
+  const amount = Number.isFinite(Number(options.amount)) ? Math.max(Math.trunc(Number(options.amount)), 0) : 0;
+  const includeCurrent = Boolean(options.include_current);
+  const currentCategoryName = String(options.current || '').trim();
+  const currentLanguage = getCurrentLanguage(this);
+  const normalizedCurrentCategory = currentCategoryName.toLowerCase();
+  const sortDirection = order >= 0 ? 1 : -1;
+  let localizedCategories = [...categories].sort((a, b) => {
+    const primaryResult = compareLocalizedValues(a[orderby], b[orderby], currentLanguage);
+    if (primaryResult !== 0) return primaryResult * sortDirection;
+
+    return compareLocalizedValues(a.name, b.name, currentLanguage);
   });
+
+  if (amount > 0 && localizedCategories.length > amount) {
+    localizedCategories = localizedCategories.slice(0, amount);
+
+    if (includeCurrent && normalizedCurrentCategory) {
+      const hasCurrentCategory = localizedCategories.some(category => category.name.toLowerCase() === normalizedCurrentCategory);
+
+      if (!hasCurrentCategory) {
+        const currentCategory = categories.find(category => category.name.toLowerCase() === normalizedCurrentCategory);
+
+        if (currentCategory) {
+          localizedCategories.push(currentCategory);
+        }
+      }
+    }
+  }
 
   if (style === 'list') {
     return `<ul class="${className}-list">${localizedCategories.map(category => {

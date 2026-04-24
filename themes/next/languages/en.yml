@@ -64,6 +64,7 @@ counter:
 
 home:
   all: All
+  more_categories: All categories
 
 state:
   posts: posts

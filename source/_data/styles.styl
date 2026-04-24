@@ -394,6 +394,13 @@ html
   background: var(--text-color)
   box-shadow: none
 
+.main .content.feed-page .home-category-link-more
+  border-style: dashed
+  color: var(--link-color)
+
+.main .content.feed-page .home-category-link-more:hover
+  border-color: currentColor
+
 .main .content.feed-page .home-category-count
   display: inline-flex
   align-items: center
@@ -563,24 +570,40 @@ html
     padding: 14px 16px
 
   .main .content.feed-page .home-category-panel
-    display: block
+    display: flex
+    flex-direction: column
+    align-items: stretch
     height: auto
     padding: 10px 12px
+    gap: 10px
 
   .main .content.feed-page .home-category-panel-head
-    margin-bottom: 8px
+    margin-bottom: 0
 
   .main .content.feed-page .home-category-nav
     flex-wrap: wrap
     overflow-x: visible
+    gap: 6px
 
   .main .content.feed-page .home-category-panel-tools
-    margin-top: 10px
+    margin-top: 0
     justify-content: flex-start
     flex-wrap: wrap
+    gap: 8px
+
+  .main .content.feed-page .home-category-link
+    padding: 4px 10px
+    font-size: 0.82rem
+
+  .main .content.feed-page .home-category-count
+    min-width: 18px
+    height: 17px
+    padding: 0 5px
+    font-size: 0.68rem
 
   .main .content.feed-page .home-category-search
-    width: auto
+    flex: 1 1 auto
+    justify-content: center
 
   .main .content.feed-page.posts-expand
     column-count: 1
