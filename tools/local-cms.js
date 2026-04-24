@@ -36,6 +36,8 @@ const LLM_ENV_KEYS = {
   prompt: 'LOCAL_CMS_LLM_PROMPT'
 };
 
+const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif', '.svg']);
+
 const PAGE_DEFINITIONS = [
   { id: 'about-zh', label: 'About 中文', file: path.join(ROOT, 'source', 'about', 'index.md') },
   { id: 'about-en', label: 'About English', file: path.join(ROOT, 'source', 'en', 'about', 'index.md') },
@@ -602,6 +604,24 @@ function normalizeGalleryPhotoSrc(rawSrc) {
   return String(rawSrc || '').trim();
 }
 
+function getGalleryPhotoFolderFromSrc(src = '') {
+  const normalized = String(src || '').trim();
+  if (!normalized.startsWith('/images/')) return '';
+  const relativePath = normalized.replace(/^\/images\//, '');
+  const segments = relativePath.split('/').filter(Boolean);
+  segments.pop();
+  return segments.join('/');
+}
+
+function inferGalleryImageFolder(photos = []) {
+  const folders = Array.from(new Set(
+    (Array.isArray(photos) ? photos : [])
+      .map(photo => getGalleryPhotoFolderFromSrc(photo && photo.src))
+      .filter(Boolean)
+  ));
+  return folders.length === 1 ? folders[0] : '';
+}
+
 function galleryDocPathFromSlug(slug) {
   return ensureInsideRoot(path.join(GALLERY_DOC_DIR, `${slug}.md`));
 }
@@ -648,6 +668,7 @@ function buildGalleryAlbumRecord(filePath) {
     slug,
     sourceSlug: slug,
     file: toPosixPath(filePath),
+    imageFolder: normalizeFolderPath(data.image_folder || inferGalleryImageFolder(photos)),
     languages: normalizeGalleryLanguages(data.languages),
     title: {
       'zh-CN': String(data.title_zh || ''),
@@ -696,6 +717,7 @@ function listGalleryAlbums() {
   return listGalleryAlbumsDetailed().map(album => ({
     slug: album.slug,
     file: album.file,
+    imageFolder: album.imageFolder,
     titleZh: album.title['zh-CN'],
     titleEn: album.title.en,
     periodZh: album.period['zh-CN'],
@@ -740,6 +762,7 @@ function buildGalleryMarkdownTable(photos) {
 function serializeGalleryAlbum(record) {
   const frontMatterData = {
     slug: record.slug,
+    image_folder: normalizeFolderPath(record.imageFolder || inferGalleryImageFolder(record.photos)),
     languages: record.languages.join(','),
     title_zh: record.title['zh-CN'],
     title_en: record.title.en,
@@ -761,6 +784,7 @@ function serializeGalleryAlbum(record) {
 function syncGalleryDataFile() {
   const albums = listGalleryAlbumsDetailed().map(album => ({
     slug: album.slug,
+    imageFolder: album.imageFolder,
     languages: album.languages,
     title: album.title,
     period: album.period,
@@ -810,6 +834,7 @@ function writeGalleryAlbum(payload) {
 
   const record = {
     slug,
+    imageFolder: normalizeFolderPath(payload && payload.imageFolder || ''),
     languages: normalizeGalleryLanguages(payload.languages),
     title: {
       'zh-CN': String(payload.title && payload.title['zh-CN'] || '').trim(),
@@ -857,6 +882,19 @@ function writeGalleryAlbum(payload) {
 
   if (!record.photos.length) {
     throw new Error('至少需要一张照片才能保存画廊相册。');
+  }
+
+  const uniqueFolders = Array.from(new Set(record.photos.map(photo => getGalleryPhotoFolderFromSrc(photo.src)).filter(Boolean)));
+  if (uniqueFolders.length !== 1) {
+    throw new Error('画廊相册的所有图片必须位于同一个 images 子目录。');
+  }
+
+  if (!record.imageFolder) {
+    record.imageFolder = uniqueFolders[0];
+  }
+
+  if (record.imageFolder !== uniqueFolders[0]) {
+    throw new Error(`相册目录与图片实际目录不一致：images/${record.imageFolder} / images/${uniqueFolders[0]}`);
   }
 
   fs.mkdirSync(GALLERY_DOC_DIR, { recursive: true });
@@ -1070,28 +1108,237 @@ function formatFileSize(size) {
   return `${value} B`;
 }
 
+function isImageFileName(filename = '') {
+  return IMAGE_EXTENSIONS.has(path.extname(String(filename || '')).toLowerCase());
+}
+
+function parseImageDimensions(filePath) {
+  try {
+    const buffer = fs.readFileSync(filePath);
+    if (buffer.length < 24) return null;
+
+    if (buffer[0] === 0x89 && buffer.toString('ascii', 1, 4) === 'PNG') {
+      return {
+        width: buffer.readUInt32BE(16),
+        height: buffer.readUInt32BE(20)
+      };
+    }
+
+    if (buffer[0] === 0xFF && buffer[1] === 0xD8) {
+      let offset = 2;
+      while (offset + 9 < buffer.length) {
+        if (buffer[offset] !== 0xFF) {
+          offset += 1;
+          continue;
+        }
+        const marker = buffer[offset + 1];
+        if (marker === 0xD9 || marker === 0xDA) break;
+        const blockLength = buffer.readUInt16BE(offset + 2);
+        if (blockLength < 2 || offset + 2 + blockLength > buffer.length) break;
+        if (
+          (marker >= 0xC0 && marker <= 0xC3) ||
+          (marker >= 0xC5 && marker <= 0xC7) ||
+          (marker >= 0xC9 && marker <= 0xCB) ||
+          (marker >= 0xCD && marker <= 0xCF)
+        ) {
+          return {
+            height: buffer.readUInt16BE(offset + 5),
+            width: buffer.readUInt16BE(offset + 7)
+          };
+        }
+        offset += 2 + blockLength;
+      }
+    }
+  } catch (error) {
+    return null;
+  }
+
+  return null;
+}
+
+function parseExifFromJpeg(filePath) {
+  let buffer;
+  try {
+    buffer = fs.readFileSync(filePath);
+  } catch (error) {
+    return null;
+  }
+
+  if (buffer.length < 8 || buffer[0] !== 0xFF || buffer[1] !== 0xD8) {
+    return null;
+  }
+
+  let offset = 2;
+  while (offset + 10 < buffer.length) {
+    if (buffer[offset] !== 0xFF) {
+      offset += 1;
+      continue;
+    }
+
+    const marker = buffer[offset + 1];
+    if (marker === 0xD9 || marker === 0xDA) break;
+    const blockLength = buffer.readUInt16BE(offset + 2);
+    if (blockLength < 2 || offset + 2 + blockLength > buffer.length) break;
+
+    if (marker === 0xE1 && buffer.toString('ascii', offset + 4, offset + 10) === 'Exif\u0000\u0000') {
+      return parseExifTiffBuffer(buffer.slice(offset + 10, offset + 2 + blockLength));
+    }
+
+    offset += 2 + blockLength;
+  }
+
+  return null;
+}
+
+function parseExifTiffBuffer(buffer) {
+  if (!buffer || buffer.length < 8) return null;
+
+  const littleEndian = buffer.toString('ascii', 0, 2) === 'II';
+  const readUInt16 = offset => littleEndian ? buffer.readUInt16LE(offset) : buffer.readUInt16BE(offset);
+  const readUInt32 = offset => littleEndian ? buffer.readUInt32LE(offset) : buffer.readUInt32BE(offset);
+
+  function readValue(type, count, rawOffset) {
+    const typeSizes = { 1: 1, 2: 1, 3: 2, 4: 4, 5: 8 };
+    const unitSize = typeSizes[type];
+    if (!unitSize) return null;
+    const byteLength = unitSize * count;
+    const valueOffset = byteLength <= 4 ? rawOffset : readUInt32(rawOffset);
+    if (valueOffset < 0 || valueOffset + byteLength > buffer.length) return null;
+
+    if (type === 2) {
+      return buffer.slice(valueOffset, valueOffset + byteLength).toString('utf8').replace(/\u0000+$/g, '').trim();
+    }
+
+    if (type === 3) {
+      if (count === 1) return littleEndian ? buffer.readUInt16LE(valueOffset) : buffer.readUInt16BE(valueOffset);
+      return Array.from({ length: count }, (_, index) => littleEndian
+        ? buffer.readUInt16LE(valueOffset + index * 2)
+        : buffer.readUInt16BE(valueOffset + index * 2));
+    }
+
+    if (type === 4) {
+      if (count === 1) return readUInt32(valueOffset);
+      return Array.from({ length: count }, (_, index) => readUInt32(valueOffset + index * 4));
+    }
+
+    if (type === 5) {
+      const numerator = readUInt32(valueOffset);
+      const denominator = readUInt32(valueOffset + 4);
+      if (!denominator) return null;
+      return numerator / denominator;
+    }
+
+    return null;
+  }
+
+  function readIfd(offset) {
+    if (!offset || offset + 2 > buffer.length) return {};
+    const count = readUInt16(offset);
+    const result = {};
+    for (let index = 0; index < count; index += 1) {
+      const entryOffset = offset + 2 + index * 12;
+      if (entryOffset + 12 > buffer.length) break;
+      const tag = readUInt16(entryOffset);
+      const type = readUInt16(entryOffset + 2);
+      const valueCount = readUInt32(entryOffset + 4);
+      result[tag] = readValue(type, valueCount, entryOffset + 8);
+    }
+    return result;
+  }
+
+  const firstIfdOffset = readUInt32(4);
+  const ifd0 = readIfd(firstIfdOffset);
+  const exifIfd = ifd0[0x8769] ? readIfd(ifd0[0x8769]) : {};
+
+  return {
+    make: String(ifd0[0x010F] || '').trim(),
+    model: String(ifd0[0x0110] || '').trim(),
+    exposureTime: exifIfd[0x829A] || null,
+    fNumber: exifIfd[0x829D] || null,
+    iso: exifIfd[0x8827] || null,
+    focalLength: exifIfd[0x920A] || null,
+    focalLength35mm: exifIfd[0xA405] || null,
+    pixelWidth: exifIfd[0xA002] || null,
+    pixelHeight: exifIfd[0xA003] || null
+  };
+}
+
+function trimDecimal(value, digits = 1) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return '';
+  const fixed = numeric.toFixed(digits);
+  return fixed.replace(/\.0+$/g, '').replace(/(\.\d*[1-9])0+$/g, '$1');
+}
+
+function formatExposureTime(value) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric) || numeric <= 0) return '';
+  if (numeric >= 1) return `${trimDecimal(numeric, 1)}s`;
+  const denominator = Math.round(1 / numeric);
+  return denominator > 0 ? `1/${denominator}s` : '';
+}
+
+function buildImageTechnicalMeta(filePath) {
+  const dimensions = parseImageDimensions(filePath);
+  const exif = parseExifFromJpeg(filePath);
+  const camera = [exif && exif.make, exif && exif.model].filter(Boolean).join(' · ');
+  const parts = [];
+
+  if (exif && exif.focalLength35mm) {
+    parts.push(`${Math.round(Number(exif.focalLength35mm))}mm`);
+  } else if (exif && exif.focalLength) {
+    parts.push(`${trimDecimal(exif.focalLength, 0)}mm`);
+  }
+
+  if (exif && exif.exposureTime) {
+    const exposure = formatExposureTime(exif.exposureTime);
+    if (exposure) parts.push(exposure);
+  }
+
+  if (exif && exif.fNumber) {
+    parts.push(`f/${trimDecimal(exif.fNumber, 1)}`);
+  }
+
+  if (exif && exif.iso) {
+    parts.push(`ISO ${Math.round(Number(exif.iso))}`);
+  }
+
+  return {
+    width: dimensions && dimensions.width ? dimensions.width : (exif && exif.pixelWidth ? Number(exif.pixelWidth) : null),
+    height: dimensions && dimensions.height ? dimensions.height : (exif && exif.pixelHeight ? Number(exif.pixelHeight) : null),
+    camera,
+    captureMeta: parts.join(' · ')
+  };
+}
+
 function listImageLibrary(folder = '') {
   const { normalized, absolute } = resolveImageFolder(folder);
   fs.mkdirSync(absolute, { recursive: true });
 
   const items = fs.readdirSync(absolute, { withFileTypes: true })
-    .filter(entry => entry.isFile())
+    .filter(entry => entry.isFile() && isImageFileName(entry.name))
     .map(entry => {
       const filePath = path.join(absolute, entry.name);
       const stat = fs.statSync(filePath);
       const publicPath = normalized
         ? `/images/${normalized}/${entry.name}`
         : `/images/${entry.name}`;
+      const technical = buildImageTechnicalMeta(filePath);
 
       return {
         name: entry.name,
         path: publicPath,
         size: stat.size,
         modifiedAt: stat.mtime.toISOString(),
-        meta: `${formatFileSize(stat.size)} · ${formatDate(stat.mtime)}`
+        meta: `${formatFileSize(stat.size)} · ${formatDate(stat.mtime)}`,
+        width: technical.width || null,
+        height: technical.height || null,
+        dimensions: technical.width && technical.height ? `${technical.width} × ${technical.height}` : '',
+        camera: technical.camera || '',
+        captureMeta: technical.captureMeta || ''
       };
     })
-    .sort((left, right) => String(right.modifiedAt).localeCompare(String(left.modifiedAt)));
+    .sort((left, right) => String(left.name).localeCompare(String(right.name), 'zh-Hans-CN', { numeric: true }));
 
   return {
     folder: normalized,
@@ -2135,7 +2382,7 @@ function serveStaticAsset(res, pathname) {
 }
 
 function serveProjectImage(res, pathname) {
-  const relativePath = pathname.replace(/^\/images\//, '');
+  const relativePath = decodeURIComponent(pathname.replace(/^\/images\//, ''));
   const filePath = ensureInsideRoot(path.join(IMAGES_DIR, relativePath));
 
   if (!filePath.startsWith(IMAGES_DIR) || !fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {

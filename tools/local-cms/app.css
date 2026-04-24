@@ -954,30 +954,54 @@ select:focus {
 
 .gallery-photo-card {
   display: grid;
-  grid-template-columns: 190px minmax(0, 1fr);
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
   gap: 16px;
   padding: 16px;
   border: 1px solid var(--border);
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.94);
+  align-items: start;
+}
+
+.gallery-photo-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .gallery-photo-preview {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 190px;
+  min-height: 260px;
   overflow: hidden;
   border-radius: 14px;
   background: rgba(240, 240, 240, 0.95);
   border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 12px;
+  position: relative;
 }
 
 .gallery-photo-preview img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 320px;
+  object-fit: contain;
   display: block;
+}
+
+.gallery-photo-preview[data-broken="true"]::after {
+  content: "图片加载失败";
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.gallery-photo-preview-meta {
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  word-break: break-word;
 }
 
 .gallery-photo-placeholder {

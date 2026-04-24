@@ -464,7 +464,7 @@
                 <div class="card-heading">
                   <div class="card-heading-copy">
                     <h3>相册图片</h3>
-                    <span class="field-hint">可直接上传到 `source/images/`，上传成功后会自动追加到当前相册的照片列表末尾。</span>
+                    <span class="field-hint">建议每个相册固定对应 `source/images/` 下的一个独立目录。选择目录后会自动导入该目录里的全部图片、路径和基础拍摄信息。</span>
                   </div>
                   <div class="card-heading-actions">
                     <button id="gallery-add-photo-button" class="ghost-button" type="button">新增一张</button>
@@ -474,14 +474,16 @@
 
                 <div class="image-tools-grid">
                   <label>
-                    <span>图片目录</span>
+                    <span>相册目录</span>
                     <select id="gallery-image-folder-select"></select>
+                    <small id="gallery-folder-meta" class="field-hint">未指定目录</small>
                   </label>
                   <label>
-                    <span>新建目录</span>
-                    <div class="inline-field">
+                    <span>目录操作</span>
+                    <div class="folder-action-grid">
                       <input id="gallery-image-new-folder" type="text" placeholder="例如 gallery/heartbeat-pi-2026">
-                      <button id="gallery-create-image-folder-button" class="ghost-button" type="button">创建</button>
+                      <button id="gallery-create-image-folder-button" class="ghost-button" type="button">创建目录</button>
+                      <button id="gallery-sync-folder-button" class="ghost-button" type="button">重新导入</button>
                     </div>
                   </label>
                 </div>

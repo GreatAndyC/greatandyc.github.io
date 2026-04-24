@@ -1,5 +1,6 @@
 ---
 slug: your-album-slug
+image_folder: gallery/your-album-slug
 languages: zh-CN,en
 title_zh: 中文标题
 title_en: English Title
