@@ -1057,6 +1057,47 @@ function listImageFolders() {
   return [''].concat(listImageFoldersRecursive(IMAGES_DIR));
 }
 
+function formatFileSize(size) {
+  const value = Number(size || 0);
+  if (value >= 1024 * 1024) {
+    return `${(value / (1024 * 1024)).toFixed(2)} MB`;
+  }
+  if (value >= 1024) {
+    return `${(value / 1024).toFixed(1)} KB`;
+  }
+  return `${value} B`;
+}
+
+function listImageLibrary(folder = '') {
+  const { normalized, absolute } = resolveImageFolder(folder);
+  fs.mkdirSync(absolute, { recursive: true });
+
+  const items = fs.readdirSync(absolute, { withFileTypes: true })
+    .filter(entry => entry.isFile())
+    .map(entry => {
+      const filePath = path.join(absolute, entry.name);
+      const stat = fs.statSync(filePath);
+      const publicPath = normalized
+        ? `/images/${normalized}/${entry.name}`
+        : `/images/${entry.name}`;
+
+      return {
+        name: entry.name,
+        path: publicPath,
+        size: stat.size,
+        modifiedAt: stat.mtime.toISOString(),
+        meta: `${formatFileSize(stat.size)} · ${formatDate(stat.mtime)}`
+      };
+    })
+    .sort((left, right) => String(right.modifiedAt).localeCompare(String(left.modifiedAt)));
+
+  return {
+    folder: normalized,
+    folders: listImageFolders(),
+    items
+  };
+}
+
 function createImageFolder(folder) {
   const { normalized, absolute } = resolveImageFolder(folder);
   if (!normalized) {
@@ -1113,6 +1154,45 @@ function deleteImageFolder(folder) {
   fs.rmSync(target.absolute, { recursive: true, force: true });
   return {
     deleted: target.normalized,
+    folders: listImageFolders()
+  };
+}
+
+function resolveImagePublicPath(imagePath = '') {
+  const normalized = String(imagePath || '').trim();
+  if (!normalized.startsWith('/images/')) {
+    throw new Error('图片路径必须以 /images/ 开头。');
+  }
+
+  const relativePath = normalized.replace(/^\/images\//, '');
+  const absolutePath = ensureInsideRoot(path.join(IMAGES_DIR, relativePath));
+  if (!absolutePath.startsWith(IMAGES_DIR)) {
+    throw new Error('图片路径必须位于 source/images 下。');
+  }
+
+  return {
+    normalized,
+    relativePath,
+    absolutePath
+  };
+}
+
+function deleteImageFile(imagePath) {
+  const target = resolveImagePublicPath(imagePath);
+  if (!fs.existsSync(target.absolutePath) || !fs.statSync(target.absolutePath).isFile()) {
+    throw new Error(`图片不存在：${target.normalized}`);
+  }
+
+  fs.rmSync(target.absolutePath, { force: true });
+  cleanupEmptyImageDirectories(path.dirname(target.absolutePath));
+
+  const folder = path.dirname(target.relativePath) === '.'
+    ? ''
+    : path.dirname(target.relativePath).split(path.sep).join('/');
+
+  return {
+    deleted: target.normalized,
+    folder,
     folders: listImageFolders()
   };
 }
@@ -1877,6 +1957,11 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === 'GET' && pathname === '/api/images/library') {
+      jsonResponse(res, 200, listImageLibrary(requestUrl.searchParams.get('folder') || ''));
+      return;
+    }
+
     if (req.method === 'POST' && pathname === '/api/images/folders') {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
@@ -1916,6 +2001,13 @@ const server = http.createServer(async (req, res) => {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
       jsonResponse(res, 200, uploadImageFiles(payload.folder, payload.files));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/images/delete') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, deleteImageFile(payload.path));
       return;
     }
 
@@ -2067,10 +2159,12 @@ if (require.main === module) {
 
 module.exports = {
   listGalleryAlbums,
+  listImageLibrary,
   readGalleryAlbumBySlug,
   writeGalleryAlbum,
   syncGalleryDataFile,
   writePostFiles,
   deletePostPair,
+  deleteImageFile,
   renderMarkdownPreview
 };

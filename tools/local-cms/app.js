@@ -8,10 +8,15 @@ const state = {
   meta: { categories: [], pages: [] },
   posts: [],
   pages: [],
+  sidebarCollapsed: false,
   gallery: {
     items: [],
     selectedSlug: '',
     currentAlbum: null
+  },
+  images: {
+    selectedFolder: '',
+    items: []
   },
   imageFolders: [],
   settings: {
@@ -41,6 +46,12 @@ const state = {
     commandsExpanded: true,
     llmExpanded: true
   },
+  pagination: {
+    posts: {
+      page: 1,
+      perPage: 12
+    }
+  },
   preview: {
     zhHtml: '',
     zhTimer: null,
@@ -50,12 +61,17 @@ const state = {
 };
 
 const elements = {
+  sidebar: document.querySelector('#sidebar'),
+  sidebarBody: document.querySelector('#sidebar-body'),
+  sidebarToggleButton: document.querySelector('#sidebar-toggle-button'),
   listPanel: document.querySelector('#list-panel'),
+  listPagination: document.querySelector('#list-pagination'),
   searchInput: document.querySelector('#search-input'),
   saveButton: document.querySelector('#save-button'),
   deleteButton: document.querySelector('#delete-button'),
   refreshButton: document.querySelector('#refresh-button'),
   newPostButton: document.querySelector('#new-post-button'),
+  newGalleryButton: document.querySelector('#new-gallery-button'),
   saveLlmButton: document.querySelector('#save-llm-button'),
   formatZhButton: document.querySelector('#format-zh-button'),
   uploadImageButton: document.querySelector('#upload-image-button'),
@@ -92,6 +108,7 @@ const elements = {
   postEditor: document.querySelector('#post-editor'),
   pageEditor: document.querySelector('#page-editor'),
   galleryManager: document.querySelector('#gallery-manager'),
+  imageLibrary: document.querySelector('#image-library'),
   feedbackToast: document.querySelector('#feedback-toast'),
   feedbackToastTitle: document.querySelector('#feedback-toast-title'),
   feedbackToastMessage: document.querySelector('#feedback-toast-message'),
@@ -140,7 +157,6 @@ const elements = {
     refreshButton: document.querySelector('#refresh-gallery-button'),
     newAlbumButton: document.querySelector('#new-gallery-album-button'),
     saveButton: document.querySelector('#save-gallery-button'),
-    albumList: document.querySelector('#gallery-album-list'),
     slug: document.querySelector('#gallery-slug'),
     file: document.querySelector('#gallery-file'),
     langZh: document.querySelector('#gallery-lang-zh'),
@@ -166,6 +182,20 @@ const elements = {
     imageDropzone: document.querySelector('#gallery-image-dropzone'),
     imageDropzoneMeta: document.querySelector('#gallery-image-dropzone-meta'),
     imageFileInput: document.querySelector('#gallery-image-file-input')
+  },
+  library: {
+    refreshButton: document.querySelector('#refresh-image-library-button'),
+    uploadButton: document.querySelector('#upload-library-image-button'),
+    folderSelect: document.querySelector('#library-folder-select'),
+    folderInput: document.querySelector('#library-folder-input'),
+    createFolderButton: document.querySelector('#library-create-folder-button'),
+    renameFolderButton: document.querySelector('#library-rename-folder-button'),
+    deleteFolderButton: document.querySelector('#library-delete-folder-button'),
+    imageDropzone: document.querySelector('#library-image-dropzone'),
+    imageDropzoneMeta: document.querySelector('#library-image-dropzone-meta'),
+    imageFileInput: document.querySelector('#library-image-file-input'),
+    grid: document.querySelector('#library-grid'),
+    summary: document.querySelector('#library-summary')
   }
 };
 
@@ -234,6 +264,33 @@ function formatTimestamp(value) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
 }
 
+function getModeLabel(mode) {
+  if (mode === 'posts') return '文章';
+  if (mode === 'pages') return '页面';
+  if (mode === 'gallery') return '画廊';
+  if (mode === 'images') return '图片库';
+  return '内容';
+}
+
+function resetPostPagination() {
+  state.pagination.posts.page = 1;
+}
+
+function getCurrentModeItems() {
+  if (state.mode === 'posts') return state.posts;
+  if (state.mode === 'pages') return state.pages;
+  if (state.mode === 'gallery') return state.gallery.items;
+  if (state.mode === 'images') {
+    return state.imageFolders.map(folder => ({
+      id: folder || '__root__',
+      folder,
+      label: folder ? `images/${folder}` : 'images/',
+      subtitle: folder ? folder : '根目录'
+    }));
+  }
+  return [];
+}
+
 function renderCommandPanel() {
   const commands = state.commands || {};
   const currentTask = commands.currentTask;
@@ -279,6 +336,12 @@ function renderPanelVisibility() {
   elements.toggleLlmPanelButton.setAttribute('aria-expanded', String(state.panels.llmExpanded));
 }
 
+function renderSidebarState() {
+  elements.sidebar.classList.toggle('is-collapsed', state.sidebarCollapsed);
+  elements.sidebarToggleButton.textContent = state.sidebarCollapsed ? '展开' : '收起';
+  elements.sidebarToggleButton.setAttribute('aria-expanded', String(!state.sidebarCollapsed));
+}
+
 function renderWorkspaceSections() {
   elements.postCommandPanel.hidden = false;
   elements.postLlmPanel.hidden = false;
@@ -294,12 +357,26 @@ function updatePrimarySaveButtonLabel() {
     return;
   }
 
+  if (state.mode === 'gallery') {
+    elements.saveButton.textContent = '保存相册';
+    return;
+  }
+
+  if (state.mode === 'images') {
+    elements.saveButton.textContent = '保存';
+    return;
+  }
+
   if (isGalleryPageRecord(state.currentRecord)) {
     elements.saveButton.textContent = '保存页面介绍';
     return;
   }
 
   elements.saveButton.textContent = '保存页面';
+}
+
+function renderPrimarySaveButton() {
+  elements.saveButton.hidden = state.mode === 'images';
 }
 
 function normalizeCommaList(value) {
@@ -346,6 +423,7 @@ function renderImageFolders() {
   const html = options.join('');
   elements.post.imageFolderSelect.innerHTML = html;
   elements.gallery.imageFolderSelect.innerHTML = html;
+  elements.library.folderSelect.innerHTML = html;
 }
 
 function fillLlmSettings() {
@@ -441,13 +519,20 @@ function setCategoryFormValue(record) {
 
 function getFilteredItems() {
   const keyword = elements.searchInput.value.trim().toLowerCase();
-  const items = state.mode === 'posts' ? state.posts : state.pages;
+  const items = getCurrentModeItems();
   if (!keyword) return items;
 
   return items.filter(item => {
-    const raw = state.mode === 'posts'
-      ? [item.key, item.titleZh, item.titleEn, item.sourceFiles.zh, item.sourceFiles.en]
-      : [item.id, item.label, item.file];
+    let raw;
+    if (state.mode === 'posts') {
+      raw = [item.key, item.titleZh, item.titleEn, item.sourceFiles.zh, item.sourceFiles.en];
+    } else if (state.mode === 'pages') {
+      raw = [item.id, item.label, item.file];
+    } else if (state.mode === 'gallery') {
+      raw = [item.slug, item.titleZh, item.titleEn, item.periodZh, item.periodEn, item.locationZh, item.locationEn];
+    } else {
+      raw = [item.folder, item.label, item.subtitle];
+    }
 
     return raw.filter(Boolean).some(value => String(value).toLowerCase().includes(keyword));
   });
@@ -455,13 +540,32 @@ function getFilteredItems() {
 
 function renderList() {
   const items = getFilteredItems();
+  const paginatedItems = state.mode === 'posts'
+    ? (() => {
+      const totalPages = Math.max(1, Math.ceil(items.length / state.pagination.posts.perPage));
+      if (state.pagination.posts.page > totalPages) {
+        state.pagination.posts.page = totalPages;
+      }
+      const start = (state.pagination.posts.page - 1) * state.pagination.posts.perPage;
+      return items.slice(start, start + state.pagination.posts.perPage);
+    })()
+    : items;
+
   if (!items.length) {
     elements.listPanel.innerHTML = '<div class="list-item"><div class="list-title">没有匹配结果</div></div>';
+    renderListPagination(items.length);
     return;
   }
 
-  const html = items.map(item => {
-    const isActive = item.key === state.selectedId || item.id === state.selectedId;
+  const html = paginatedItems.map(item => {
+    const itemId = state.mode === 'posts'
+      ? item.key
+      : state.mode === 'pages'
+        ? item.id
+        : state.mode === 'gallery'
+          ? item.slug
+          : item.id;
+    const isActive = itemId === state.selectedId;
     if (state.mode === 'posts') {
       return `
         <button class="list-item${isActive ? ' is-active' : ''}" type="button" data-item-id="${item.key}">
@@ -475,6 +579,28 @@ function renderList() {
       `;
     }
 
+    if (state.mode === 'gallery') {
+      return `
+        <button class="list-item${isActive ? ' is-active' : ''}" type="button" data-item-id="${escapeHtml(item.slug)}">
+          <div class="list-title">${escapeHtml(formatGalleryAlbumTitle(item))}</div>
+          <div class="list-subtitle">${escapeHtml(formatGalleryAlbumSubtitle(item))}</div>
+          <div class="list-meta">
+            <span>${escapeHtml(item.slug || '')}</span>
+            <span>${escapeHtml(`${item.photoCount || 0} 张`)}</span>
+          </div>
+        </button>
+      `;
+    }
+
+    if (state.mode === 'images') {
+      return `
+        <button class="list-item${isActive ? ' is-active' : ''}" type="button" data-item-id="${escapeHtml(item.id)}">
+          <div class="list-title">${escapeHtml(item.label)}</div>
+          <div class="list-subtitle">${escapeHtml(item.subtitle)}</div>
+        </button>
+      `;
+    }
+
     return `
       <button class="list-item${isActive ? ' is-active' : ''}" type="button" data-item-id="${item.id}">
         <div class="list-title">${escapeHtml(item.label)}</div>
@@ -484,6 +610,24 @@ function renderList() {
   }).join('');
 
   elements.listPanel.innerHTML = html;
+  renderListPagination(items.length);
+}
+
+function renderListPagination(totalItems) {
+  if (state.mode !== 'posts' || totalItems <= state.pagination.posts.perPage) {
+    elements.listPagination.innerHTML = '';
+    elements.listPagination.hidden = true;
+    return;
+  }
+
+  const totalPages = Math.max(1, Math.ceil(totalItems / state.pagination.posts.perPage));
+  const currentPage = Math.min(state.pagination.posts.page, totalPages);
+  elements.listPagination.hidden = false;
+  elements.listPagination.innerHTML = `
+    <button class="ghost-button" type="button" data-list-page-action="prev" ${currentPage <= 1 ? 'disabled' : ''}>上一页</button>
+    <span class="list-pagination-meta">第 ${currentPage} / ${totalPages} 页</span>
+    <button class="ghost-button" type="button" data-list-page-action="next" ${currentPage >= totalPages ? 'disabled' : ''}>下一页</button>
+  `;
 }
 
 function escapeHtml(value) {
@@ -565,18 +709,23 @@ function applyMode(mode) {
   state.currentRecord = null;
   state.gallery.selectedSlug = '';
   state.gallery.currentAlbum = null;
+  state.images.selectedFolder = '';
+  resetPostPagination();
 
   document.querySelectorAll('.mode-button').forEach(button => {
     button.classList.toggle('is-active', button.dataset.mode === mode);
   });
 
   elements.newPostButton.hidden = mode !== 'posts';
+  elements.newGalleryButton.hidden = mode !== 'gallery';
   elements.postEditor.hidden = true;
   elements.pageEditor.hidden = true;
   elements.galleryManager.hidden = true;
-  elements.workspaceKicker.textContent = mode === 'posts' ? '文章编辑器' : '页面编辑器';
-  elements.workspaceTitle.textContent = mode === 'posts' ? '请选择文章' : '请选择页面';
+  elements.imageLibrary.hidden = true;
+  elements.workspaceKicker.textContent = `${getModeLabel(mode)}编辑器`;
+  elements.workspaceTitle.textContent = `请选择${getModeLabel(mode)}`;
   updatePrimarySaveButtonLabel();
+  renderPrimarySaveButton();
   renderDeleteButton();
   renderWorkspaceSections();
   renderList();
@@ -587,8 +736,10 @@ function fillPostEditor(record) {
   elements.postEditor.hidden = false;
   elements.pageEditor.hidden = true;
   elements.galleryManager.hidden = true;
+  elements.imageLibrary.hidden = true;
   elements.workspaceTitle.textContent = record.zh.title || record.en.title || record.key || '新文章';
   updatePrimarySaveButtonLabel();
+  renderPrimarySaveButton();
   renderDeleteButton();
 
   elements.post.date.value = record.common.date || '保存后自动生成';
@@ -623,9 +774,11 @@ function fillPageEditor(record) {
   renderWorkspaceSections();
   elements.pageEditor.hidden = false;
   elements.postEditor.hidden = true;
-  elements.galleryManager.hidden = !isGalleryPageRecord(record);
+  elements.galleryManager.hidden = true;
+  elements.imageLibrary.hidden = true;
   elements.workspaceTitle.textContent = record.label;
   updatePrimarySaveButtonLabel();
+  renderPrimarySaveButton();
   renderDeleteButton();
 
   elements.page.title.value = record.title || '';
@@ -646,28 +799,6 @@ function formatGalleryAlbumSubtitle(item) {
   const parts = [item.titleEn, item.periodZh || item.periodEn, item.locationZh || item.locationEn]
     .filter(Boolean);
   return parts.join(' · ');
-}
-
-function renderGalleryAlbumList() {
-  const items = state.gallery.items || [];
-  if (!items.length) {
-    elements.gallery.albumList.innerHTML = '<div class="gallery-empty-state">还没有相册，点右上角“新建相册”开始。</div>';
-    return;
-  }
-
-  elements.gallery.albumList.innerHTML = items.map(item => {
-    const isActive = item.slug === state.gallery.selectedSlug;
-    return `
-      <button class="gallery-album-item${isActive ? ' is-active' : ''}" type="button" data-gallery-slug="${escapeHtml(item.slug)}">
-        <div class="gallery-album-item-head">
-          <strong>${escapeHtml(formatGalleryAlbumTitle(item))}</strong>
-          <span>${item.photoCount || 0} 张</span>
-        </div>
-        <div class="gallery-album-item-subtitle">${escapeHtml(formatGalleryAlbumSubtitle(item))}</div>
-        <div class="gallery-album-item-meta">${escapeHtml(item.slug)}</div>
-      </button>
-    `;
-  }).join('');
 }
 
 function renderGalleryPhotoList() {
@@ -745,6 +876,16 @@ function fillGalleryEditor(album) {
   const nextAlbum = album || createEmptyGalleryAlbum();
   state.gallery.currentAlbum = nextAlbum;
   state.gallery.selectedSlug = nextAlbum.sourceSlug || nextAlbum.slug || '';
+  state.selectedId = state.gallery.selectedSlug;
+  renderWorkspaceSections();
+  elements.postEditor.hidden = true;
+  elements.pageEditor.hidden = true;
+  elements.galleryManager.hidden = false;
+  elements.imageLibrary.hidden = true;
+  elements.workspaceTitle.textContent = formatGalleryAlbumTitle(nextAlbum);
+  updatePrimarySaveButtonLabel();
+  renderPrimarySaveButton();
+  renderDeleteButton();
 
   elements.gallery.slug.value = nextAlbum.slug || '';
   elements.gallery.file.textContent = nextAlbum.file || '新建后生成';
@@ -765,8 +906,48 @@ function fillGalleryEditor(album) {
 
   const folder = inferGalleryImageFolder(nextAlbum);
   elements.gallery.imageFolderSelect.value = state.imageFolders.includes(folder) ? folder : '';
-  renderGalleryAlbumList();
   renderGalleryPhotoList();
+}
+
+function renderImageLibrary() {
+  const folderLabel = state.images.selectedFolder ? `images/${state.images.selectedFolder}` : 'images/';
+  elements.library.folderSelect.value = state.images.selectedFolder;
+  elements.library.summary.textContent = `${folderLabel} 下共 ${state.images.items.length} 个文件。`;
+
+  if (!state.images.items.length) {
+    elements.library.grid.innerHTML = '<div class="gallery-empty-state">当前目录还没有图片。可以直接拖拽上传，或者切换到其他目录。</div>';
+    return;
+  }
+
+  elements.library.grid.innerHTML = state.images.items.map(item => `
+    <article class="library-card">
+      <button class="library-preview" type="button" data-library-action="copy" data-library-path="${escapeHtml(item.path)}" title="点击复制路径">
+        <img src="${escapeHtml(item.path)}" alt="${escapeHtml(item.name)}">
+      </button>
+      <div class="library-card-body">
+        <strong>${escapeHtml(item.name)}</strong>
+        <span>${escapeHtml(item.path)}</span>
+        <span>${escapeHtml(item.meta)}</span>
+      </div>
+      <div class="library-card-actions">
+        <button class="ghost-button" type="button" data-library-action="copy" data-library-path="${escapeHtml(item.path)}">复制路径</button>
+        <button class="ghost-button danger-button" type="button" data-library-action="delete" data-library-path="${escapeHtml(item.path)}">删除图片</button>
+      </div>
+    </article>
+  `).join('');
+}
+
+function fillImageLibraryWorkspace() {
+  renderWorkspaceSections();
+  elements.postEditor.hidden = true;
+  elements.pageEditor.hidden = true;
+  elements.galleryManager.hidden = true;
+  elements.imageLibrary.hidden = false;
+  elements.workspaceTitle.textContent = state.images.selectedFolder ? `图片目录 · images/${state.images.selectedFolder}` : '图片目录 · images/';
+  updatePrimarySaveButtonLabel();
+  renderPrimarySaveButton();
+  renderDeleteButton();
+  renderImageLibrary();
 }
 
 function syncGalleryDraftFromForm() {
@@ -894,10 +1075,12 @@ async function loadPosts(selectFirst = false) {
 async function loadGallery(selectFirst = false, preferredSlug = '') {
   const payload = await request('/api/gallery');
   state.gallery.items = payload.items || [];
-  renderGalleryAlbumList();
+  renderList();
 
   if (!state.gallery.items.length) {
-    fillGalleryEditor(createEmptyGalleryAlbum());
+    if (state.mode === 'gallery') {
+      fillGalleryEditor(createEmptyGalleryAlbum());
+    }
     return;
   }
 
@@ -910,6 +1093,19 @@ async function loadGallery(selectFirst = false, preferredSlug = '') {
   }
 }
 
+async function loadImageLibrary(folder = '', options = {}) {
+  const targetFolder = typeof folder === 'string' ? folder : '';
+  const query = targetFolder ? `?folder=${encodeURIComponent(targetFolder)}` : '';
+  const payload = await request(`/api/images/library${query}`);
+  state.images.selectedFolder = payload.folder || '';
+  state.selectedId = state.images.selectedFolder || '__root__';
+  state.images.items = payload.items || [];
+  renderList();
+  if (!options.skipWorkspaceRender) {
+    fillImageLibraryWorkspace();
+  }
+}
+
 async function selectItem(id) {
   state.selectedId = id;
   renderList();
@@ -918,14 +1114,22 @@ async function selectItem(id) {
     const record = await request(`/api/posts/${encodeURIComponent(id)}`);
     state.currentRecord = record;
     fillPostEditor(record);
-  } else {
+    return;
+  }
+
+  if (state.mode === 'pages') {
     const record = await request(`/api/pages/${encodeURIComponent(id)}`);
     state.currentRecord = record;
     fillPageEditor(record);
-    if (isGalleryPageRecord(record)) {
-      await loadGallery(true);
-    }
+    return;
   }
+
+  if (state.mode === 'gallery') {
+    await selectGalleryAlbum(id);
+    return;
+  }
+
+  await loadImageLibrary(id === '__root__' ? '' : id);
 }
 
 async function selectGalleryAlbum(slug) {
@@ -1217,6 +1421,123 @@ async function uploadGalleryImages(fileList) {
   }
 }
 
+async function handleLibraryCreateImageFolder() {
+  try {
+    const folder = elements.library.folderInput.value.trim();
+    const payload = await request('/api/images/folders', {
+      method: 'POST',
+      body: JSON.stringify({ folder })
+    });
+    state.imageFolders = payload.folders || [''];
+    renderImageFolders();
+    state.selectedId = payload.folder || '__root__';
+    elements.library.folderInput.value = '';
+    await loadImageLibrary(payload.folder || '');
+    setStatus(`已创建目录：images/${payload.folder}`, 'success');
+    showToast('目录已创建', `已创建 images/${payload.folder}`);
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
+async function handleLibraryRenameImageFolder() {
+  try {
+    const payload = await request('/api/images/folders/rename', {
+      method: 'POST',
+      body: JSON.stringify({
+        currentFolder: elements.library.folderSelect.value,
+        nextFolder: elements.library.folderInput.value.trim()
+      })
+    });
+    state.imageFolders = payload.folders || [''];
+    renderImageFolders();
+    state.selectedId = payload.folder || '__root__';
+    elements.library.folderInput.value = '';
+    await loadImageLibrary(payload.folder || '');
+    setStatus(`已重命名目录：images/${payload.folder}`, 'success');
+    showToast('目录已重命名', `当前目录：images/${payload.folder}`);
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
+async function handleLibraryDeleteImageFolder() {
+  const folder = elements.library.folderSelect.value;
+  if (!folder) {
+    setStatus('不能删除 images 根目录。', 'error');
+    return;
+  }
+
+  if (!window.confirm(`确认删除 images/${folder} 目录及其所有内容吗？`)) {
+    return;
+  }
+
+  try {
+    const payload = await request('/api/images/folders/delete', {
+      method: 'POST',
+      body: JSON.stringify({ folder })
+    });
+    state.imageFolders = payload.folders || [''];
+    renderImageFolders();
+    state.selectedId = '__root__';
+    elements.library.folderInput.value = '';
+    await loadImageLibrary('');
+    setStatus(`已删除目录：images/${payload.deleted}`, 'success');
+    showToast('目录已删除', `已删除 images/${payload.deleted}`);
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
+async function uploadLibraryImages(fileList) {
+  const files = Array.from(fileList || []);
+  if (!files.length) return;
+
+  try {
+    setStatus(`正在上传 ${files.length} 个图片文件...`);
+    const encoded = await Promise.all(files.map(fileToBase64));
+    const payload = await request('/api/images/upload', {
+      method: 'POST',
+      body: JSON.stringify({
+        folder: elements.library.folderSelect.value,
+        files: encoded
+      })
+    });
+
+    state.imageFolders = payload.folders || state.imageFolders;
+    renderImageFolders();
+    elements.library.imageDropzoneMeta.textContent = (payload.uploaded || []).map(item => item.path).join('  ');
+    elements.library.imageFileInput.value = '';
+    await loadImageLibrary(elements.library.folderSelect.value);
+    setStatus(`已上传 ${(payload.uploaded || []).length} 个图片文件。`, 'success');
+    showToast('图片已上传', `目标目录：${elements.library.folderSelect.value ? `images/${elements.library.folderSelect.value}` : 'images/'}`);
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
+async function copyText(value) {
+  await navigator.clipboard.writeText(value);
+}
+
+async function handleLibraryDeleteImage(imagePath) {
+  if (!window.confirm(`确认删除图片 ${imagePath} 吗？`)) {
+    return;
+  }
+
+  try {
+    const payload = await request('/api/images/delete', {
+      method: 'POST',
+      body: JSON.stringify({ path: imagePath })
+    });
+    await loadImageLibrary(payload.folder || '');
+    setStatus(`已删除图片：${payload.deleted}`, 'success');
+    showToast('图片已删除', payload.deleted);
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
 async function handleFormatZh() {
   try {
     setFormatProgress(12, '正在整理当前草稿…', true);
@@ -1280,7 +1601,7 @@ async function handleSaveGalleryAlbum() {
 }
 
 async function handleSave() {
-  if (!state.currentRecord && state.mode !== 'posts') {
+  if (!state.currentRecord && !['posts', 'gallery'].includes(state.mode)) {
     setStatus('请先选择一个页面。', 'error');
     return;
   }
@@ -1293,6 +1614,8 @@ async function handleSave() {
         message: '文章保存成功。'
       });
       showToast('文章已保存', '双语 Markdown 文件与当前编辑内容已同步。');
+    } else if (state.mode === 'gallery') {
+      await handleSaveGalleryAlbum();
     } else {
       const payload = buildPagePayload();
       const saved = await request(`/api/pages/${encodeURIComponent(state.currentRecord.id)}`, {
@@ -1469,6 +1792,7 @@ function createEmptyPost() {
 async function bootstrap() {
   try {
     applyMode('posts');
+    renderSidebarState();
     renderPanelVisibility();
     await loadMeta();
     await loadSettings();
@@ -1484,12 +1808,25 @@ async function bootstrap() {
 document.querySelectorAll('.mode-button').forEach(button => {
   button.addEventListener('click', async () => {
     applyMode(button.dataset.mode);
-    if (button.dataset.mode === 'pages') {
-      renderList();
-    } else {
-      await loadPosts(false);
+    try {
+      if (button.dataset.mode === 'posts') {
+        await loadPosts(false);
+      } else if (button.dataset.mode === 'gallery') {
+        await loadGallery(true);
+      } else if (button.dataset.mode === 'images') {
+        await loadImageLibrary('', { skipWorkspaceRender: false });
+      } else {
+        renderList();
+      }
+    } catch (error) {
+      setStatus(error.message, 'error');
     }
   });
+});
+
+elements.sidebarToggleButton.addEventListener('click', () => {
+  state.sidebarCollapsed = !state.sidebarCollapsed;
+  renderSidebarState();
 });
 
 elements.listPanel.addEventListener('click', async event => {
@@ -1503,7 +1840,25 @@ elements.listPanel.addEventListener('click', async event => {
   }
 });
 
-elements.searchInput.addEventListener('input', renderList);
+elements.listPagination.addEventListener('click', async event => {
+  const button = event.target.closest('[data-list-page-action]');
+  if (!button) return;
+
+  const filteredItems = getFilteredItems();
+  const totalPages = Math.max(1, Math.ceil(filteredItems.length / state.pagination.posts.perPage));
+  if (button.dataset.listPageAction === 'prev' && state.pagination.posts.page > 1) {
+    state.pagination.posts.page -= 1;
+  }
+  if (button.dataset.listPageAction === 'next' && state.pagination.posts.page < totalPages) {
+    state.pagination.posts.page += 1;
+  }
+  renderList();
+});
+
+elements.searchInput.addEventListener('input', () => {
+  resetPostPagination();
+  renderList();
+});
 elements.saveButton.addEventListener('click', handleSave);
 elements.deleteButton.addEventListener('click', handleDeletePost);
 elements.saveLlmButton.addEventListener('click', handleSaveLlmSettings);
@@ -1524,7 +1879,19 @@ elements.gallery.refreshButton.addEventListener('click', async () => {
 });
 elements.gallery.newAlbumButton.addEventListener('click', () => {
   state.gallery.selectedSlug = '';
+  state.selectedId = '';
   fillGalleryEditor(createEmptyGalleryAlbum());
+  renderList();
+  setStatus('已进入新建相册模式。');
+});
+elements.newGalleryButton.addEventListener('click', () => {
+  if (state.mode !== 'gallery') {
+    return;
+  }
+  state.gallery.selectedSlug = '';
+  state.selectedId = '';
+  fillGalleryEditor(createEmptyGalleryAlbum());
+  renderList();
   setStatus('已进入新建相册模式。');
 });
 elements.gallery.addPhotoButton.addEventListener('click', () => {
@@ -1565,11 +1932,20 @@ elements.gallery.uploadImageButton.addEventListener('click', () => {
 elements.gallery.imageFileInput.addEventListener('change', event => {
   uploadGalleryImages(event.target.files);
 });
+elements.library.uploadButton.addEventListener('click', () => {
+  elements.library.imageFileInput.click();
+});
+elements.library.imageFileInput.addEventListener('change', event => {
+  uploadLibraryImages(event.target.files);
+});
 elements.post.imageDropzone.addEventListener('click', () => {
   elements.post.imageFileInput.click();
 });
 elements.gallery.imageDropzone.addEventListener('click', () => {
   elements.gallery.imageFileInput.click();
+});
+elements.library.imageDropzone.addEventListener('click', () => {
+  elements.library.imageFileInput.click();
 });
 elements.post.imageDropzone.addEventListener('dragover', event => {
   event.preventDefault();
@@ -1579,11 +1955,18 @@ elements.gallery.imageDropzone.addEventListener('dragover', event => {
   event.preventDefault();
   elements.gallery.imageDropzone.classList.add('is-dragover');
 });
+elements.library.imageDropzone.addEventListener('dragover', event => {
+  event.preventDefault();
+  elements.library.imageDropzone.classList.add('is-dragover');
+});
 elements.post.imageDropzone.addEventListener('dragleave', () => {
   elements.post.imageDropzone.classList.remove('is-dragover');
 });
 elements.gallery.imageDropzone.addEventListener('dragleave', () => {
   elements.gallery.imageDropzone.classList.remove('is-dragover');
+});
+elements.library.imageDropzone.addEventListener('dragleave', () => {
+  elements.library.imageDropzone.classList.remove('is-dragover');
 });
 elements.post.imageDropzone.addEventListener('drop', event => {
   event.preventDefault();
@@ -1595,15 +1978,10 @@ elements.gallery.imageDropzone.addEventListener('drop', event => {
   elements.gallery.imageDropzone.classList.remove('is-dragover');
   uploadGalleryImages(event.dataTransfer.files);
 });
-elements.gallery.albumList.addEventListener('click', async event => {
-  const button = event.target.closest('[data-gallery-slug]');
-  if (!button) return;
-  try {
-    await selectGalleryAlbum(button.dataset.gallerySlug);
-    setStatus('已加载画廊相册。', 'success');
-  } catch (error) {
-    setStatus(error.message, 'error');
-  }
+elements.library.imageDropzone.addEventListener('drop', event => {
+  event.preventDefault();
+  elements.library.imageDropzone.classList.remove('is-dragover');
+  uploadLibraryImages(event.dataTransfer.files);
 });
 elements.gallery.photoList.addEventListener('click', event => {
   const button = event.target.closest('[data-gallery-photo-action]');
@@ -1637,6 +2015,46 @@ elements.gallery.photoList.addEventListener('click', event => {
     });
   }
 });
+elements.library.refreshButton.addEventListener('click', async () => {
+  try {
+    await loadImageLibrary(state.images.selectedFolder || '');
+    setStatus('图片库已刷新。', 'success');
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+});
+elements.library.folderSelect.addEventListener('change', async () => {
+  try {
+    state.selectedId = elements.library.folderSelect.value || '__root__';
+    await loadImageLibrary(elements.library.folderSelect.value || '');
+    renderList();
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+});
+elements.library.createFolderButton.addEventListener('click', handleLibraryCreateImageFolder);
+elements.library.renameFolderButton.addEventListener('click', handleLibraryRenameImageFolder);
+elements.library.deleteFolderButton.addEventListener('click', handleLibraryDeleteImageFolder);
+elements.library.grid.addEventListener('click', async event => {
+  const button = event.target.closest('[data-library-action]');
+  if (!button) return;
+
+  const imagePath = button.dataset.libraryPath;
+  try {
+    if (button.dataset.libraryAction === 'copy') {
+      await copyText(imagePath);
+      setStatus(`已复制路径：${imagePath}`, 'success');
+      showToast('图片路径已复制', imagePath);
+      return;
+    }
+
+    if (button.dataset.libraryAction === 'delete') {
+      await handleLibraryDeleteImage(imagePath);
+    }
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+});
 elements.commandButtons.forEach(button => {
   button.addEventListener('click', () => handleCommand(button.dataset.command));
 });
@@ -1648,8 +2066,10 @@ elements.refreshButton.addEventListener('click', async () => {
     await loadCommands();
     if (state.mode === 'posts') {
       await loadPosts(false);
-    } else if (isGalleryPageRecord(state.currentRecord)) {
+    } else if (state.mode === 'gallery') {
       await loadGallery(true);
+    } else if (state.mode === 'images') {
+      await loadImageLibrary(state.images.selectedFolder || '');
     }
     renderList();
     setStatus('列表已刷新。', 'success');
