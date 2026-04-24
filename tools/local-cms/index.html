@@ -40,6 +40,7 @@
             <h2 id="workspace-title">请选择左侧内容</h2>
           </div>
           <div class="workspace-actions">
+            <button id="delete-button" class="ghost-button danger-button" type="button" hidden>删除</button>
             <button id="save-button" class="primary-button" type="button">保存</button>
           </div>
         </header>
@@ -140,24 +141,36 @@
               <small class="field-hint">每次保存都会自动同步为当前时间。</small>
             </label>
             <label>
+              <span>源文件名</span>
+              <input id="post-file-key" type="text" placeholder="2026-04-24-ios-app-from-zero-vol4">
+              <small class="field-hint">保存为 `文件名.zh-CN.md` 与 `文件名.en.md`。</small>
+            </label>
+            <label>
               <span>Slug</span>
               <input id="post-slug" type="text" placeholder="ios-app-from-zero-vol4">
             </label>
-            <label class="checkbox-field">
+            <label class="toggle-field">
               <input id="post-toc" type="checkbox">
-              <span>启用目录（toc）</span>
+              <span class="toggle-control"></span>
+              <span class="toggle-copy">
+                <strong>启用目录</strong>
+                <small>控制文章页是否显示目录模块</small>
+              </span>
             </label>
             <label>
               <span>分类</span>
               <select id="post-category"></select>
             </label>
-            <div id="post-category-custom-panel" class="category-custom-panel" hidden>
+            <div id="post-category-custom-panel" class="category-custom-panel">
               <div class="card-heading">
                 <div class="card-heading-copy">
-                  <h3>自定义分类</h3>
-                  <span class="field-hint">当前分类不在预设列表里时，直接填写中英文名称；需要反复使用时，再一键加入预设。</span>
+                  <h3>分类管理</h3>
+                  <span class="field-hint">这里既可以把当前分类加入预设，也可以修改或删除已经存在的预设分类。</span>
                 </div>
-                <button id="add-category-preset-button" class="ghost-button" type="button">加入预设分类</button>
+                <div class="card-heading-actions">
+                  <button id="save-category-preset-button" class="ghost-button" type="button">保存到预设</button>
+                  <button id="delete-category-preset-button" class="ghost-button danger-button" type="button">删除预设</button>
+                </div>
               </div>
               <div class="category-custom-grid">
                 <label>
@@ -183,10 +196,12 @@
                 <select id="image-folder-select"></select>
               </label>
               <label>
-                <span>新建目录</span>
-                <div class="inline-field">
+                <span>目录操作</span>
+                <div class="folder-action-grid">
                   <input id="image-new-folder" type="text" placeholder="例如 posts/ios-vol4">
                   <button id="create-image-folder-button" class="ghost-button" type="button">创建</button>
+                  <button id="rename-image-folder-button" class="ghost-button" type="button">重命名当前目录</button>
+                  <button id="delete-image-folder-button" class="ghost-button danger-button" type="button">删除当前目录</button>
                 </div>
               </label>
             </div>
@@ -199,6 +214,10 @@
               <span>封面图路径列表</span>
               <textarea id="post-photos" rows="3" placeholder="/images/xxx/cover.png&#10;/images/xxx/detail.png"></textarea>
             </label>
+            <div>
+              <span class="field-label">封面图预览</span>
+              <div id="post-photo-preview" class="post-photo-preview"></div>
+            </div>
           </div>
 
           <div class="language-grid">
@@ -208,7 +227,15 @@
                   <h3>中文稿</h3>
                   <span id="post-zh-file" class="meta-pill"></span>
                 </div>
-                <button id="format-zh-button" class="ghost-button" type="button">一键排版</button>
+                <div class="format-toolbar">
+                  <div id="format-progress" class="format-progress" hidden>
+                    <div class="format-progress-bar">
+                      <span id="format-progress-fill" class="format-progress-fill"></span>
+                    </div>
+                    <span id="format-progress-text">准备排版…</span>
+                  </div>
+                  <button id="format-zh-button" class="ghost-button" type="button">一键排版</button>
+                </div>
               </div>
               <label>
                 <span>标题</span>
@@ -226,6 +253,15 @@
                 <span>正文 Markdown</span>
                 <textarea id="post-zh-body" rows="24"></textarea>
               </label>
+              <div class="markdown-preview-card">
+                <div class="card-heading">
+                  <div class="card-heading-copy">
+                    <h3>正文预览</h3>
+                    <span class="field-hint">这里会显示中文正文当前的 Markdown 渲染结果。</span>
+                  </div>
+                </div>
+                <div id="post-zh-preview" class="markdown-preview"></div>
+              </div>
             </section>
 
             <section class="editor-card">
@@ -268,13 +304,21 @@
               <span>语言</span>
               <input id="page-lang" type="text" placeholder="zh-CN / en">
             </label>
-            <label class="checkbox-field">
+            <label class="toggle-field">
               <input id="page-comments" type="checkbox">
-              <span>允许评论</span>
+              <span class="toggle-control"></span>
+              <span class="toggle-copy">
+                <strong>允许评论</strong>
+                <small>控制页面是否开放评论区域</small>
+              </span>
             </label>
-            <label class="checkbox-field">
+            <label class="toggle-field">
               <input id="page-toc" type="checkbox">
-              <span>启用目录（toc）</span>
+              <span class="toggle-control"></span>
+              <span class="toggle-copy">
+                <strong>启用目录</strong>
+                <small>控制页面右侧是否显示目录模块</small>
+              </span>
             </label>
           </div>
 
@@ -448,6 +492,11 @@
           </section>
         </section>
       </main>
+    </div>
+
+    <div id="feedback-toast" class="feedback-toast" hidden>
+      <strong id="feedback-toast-title">操作完成</strong>
+      <p id="feedback-toast-message"></p>
     </div>
 
     <script src="/app.js"></script>

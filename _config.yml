@@ -92,6 +92,7 @@ category_map:
   Hexo: Hexo
   回顾: Recap
   其他: Others
+  测试: Test
 tag_map:
 
 home_category_panel:

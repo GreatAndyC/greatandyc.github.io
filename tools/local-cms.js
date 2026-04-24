@@ -252,16 +252,127 @@ function appendCategoryMapEntry(configText, zh, en) {
   return lines.join(lineBreak);
 }
 
-function addCategoryOption(payload) {
+function getCategoryMapRange(configText) {
+  const lines = configText.split(/\r?\n/);
+  const startIndex = lines.findIndex(line => /^category_map:\s*$/.test(line));
+
+  if (startIndex === -1) {
+    throw new Error('找不到 _config.yml 里的 category_map 配置。');
+  }
+
+  let endIndex = startIndex + 1;
+  while (endIndex < lines.length) {
+    const line = lines[endIndex];
+    if (!line.trim() || /^\s/.test(line) || /^#/.test(line)) {
+      endIndex += 1;
+      continue;
+    }
+    break;
+  }
+
+  return {
+    startIndex,
+    endIndex,
+    lines,
+    lineBreak: configText.includes('\r\n') ? '\r\n' : '\n'
+  };
+}
+
+function rewriteCategoryMap(configText, categories) {
+  const { startIndex, endIndex, lines, lineBreak } = getCategoryMapRange(configText);
+  const nextLines = [
+    'category_map:',
+    ...categories.map(item => `  ${formatYamlInlineString(item.zh)}: ${formatYamlInlineString(item.en)}`)
+  ];
+
+  lines.splice(startIndex, endIndex - startIndex, ...nextLines);
+  return lines.join(lineBreak);
+}
+
+function normalizeCategoryPayload(payload) {
   const zh = String(payload && payload.zh || '').trim();
   const en = String(payload && payload.en || '').trim();
 
   if (!zh || !en) {
-    throw new Error('新增预设分类时，中英文名称都不能为空。');
+    throw new Error('分类的中英文名称都不能为空。');
   }
 
+  return {
+    zh,
+    en,
+    id: slugifyFileSegment(en || zh)
+  };
+}
+
+function rewriteSinglePostCategory(filePath, fromCategory, toCategory) {
+  if (!fs.existsSync(filePath)) return false;
+
+  const parsed = parseMarkdownFile(filePath);
+  const categories = Array.isArray(parsed.data.categories) ? parsed.data.categories.slice() : [];
+  if (!categories.length || categories[0] !== fromCategory) {
+    return false;
+  }
+
+  categories[0] = toCategory;
+  const nextData = {
+    ...omitReservedFields(parsed.data, new Set()),
+    ...parsed.data,
+    categories
+  };
+
+  delete nextData._content;
+  fs.writeFileSync(filePath, buildFrontMatterString(nextData, parsed.body), 'utf8');
+  return true;
+}
+
+function renameCategoryInPosts(fromCategoryZh, fromCategoryEn, toCategoryZh, toCategoryEn) {
+  if (!fs.existsSync(POSTS_DIR)) return;
+
+  const files = fs.readdirSync(POSTS_DIR).filter(file => file.endsWith('.md'));
+  files.forEach(filename => {
+    const split = splitPostKey(filename);
+    if (!split) return;
+
+    const filePath = path.join(POSTS_DIR, filename);
+    if (split.lang === 'zh-CN') {
+      rewriteSinglePostCategory(filePath, fromCategoryZh, toCategoryZh);
+      return;
+    }
+
+    if (split.lang === 'en') {
+      rewriteSinglePostCategory(filePath, fromCategoryEn, toCategoryEn);
+    }
+  });
+}
+
+function findPostsUsingCategory(categoryZh, categoryEn) {
+  if (!fs.existsSync(POSTS_DIR)) return [];
+
+  const keys = new Set();
+  const files = fs.readdirSync(POSTS_DIR).filter(file => file.endsWith('.md'));
+
+  files.forEach(filename => {
+    const split = splitPostKey(filename);
+    if (!split) return;
+
+    const parsed = parseMarkdownFile(path.join(POSTS_DIR, filename));
+    const categories = Array.isArray(parsed.data.categories) ? parsed.data.categories : [];
+    const firstCategory = String(categories[0] || '');
+
+    if (
+      (split.lang === 'zh-CN' && firstCategory === categoryZh) ||
+      (split.lang === 'en' && firstCategory === categoryEn)
+    ) {
+      keys.add(split.key);
+    }
+  });
+
+  return Array.from(keys).sort();
+}
+
+function addCategoryOption(payload) {
+  const { zh, en, id: newId } = normalizeCategoryPayload(payload);
   const existingOptions = loadCategoryOptions();
-  const newId = slugifyFileSegment(en || zh);
   const exactMatch = existingOptions.find(option => option.zh === zh && option.en === en);
 
   if (exactMatch) {
@@ -293,6 +404,62 @@ function addCategoryOption(payload) {
   };
 }
 
+function updateCategoryOption(id, payload) {
+  const normalizedId = String(id || '').trim();
+  const existingOptions = loadCategoryOptions();
+  const target = existingOptions.find(option => option.id === normalizedId);
+
+  if (!target) {
+    throw new Error(`找不到预设分类：${normalizedId}`);
+  }
+
+  const next = normalizeCategoryPayload(payload);
+  const duplicate = existingOptions.find(option => {
+    if (option.id === normalizedId) return false;
+    return option.zh === next.zh || option.en === next.en || option.id === next.id;
+  });
+
+  if (duplicate) {
+    throw new Error('新的分类名称与现有预设冲突，请调整后再保存。');
+  }
+
+  const nextCategories = existingOptions.map(option => (
+    option.id === normalizedId ? { id: next.id, zh: next.zh, en: next.en } : option
+  ));
+
+  const configText = fs.readFileSync(CONFIG_PATH, 'utf8');
+  fs.writeFileSync(CONFIG_PATH, rewriteCategoryMap(configText, nextCategories), 'utf8');
+  renameCategoryInPosts(target.zh, target.en, next.zh, next.en);
+
+  return {
+    category: { id: next.id, zh: next.zh, en: next.en },
+    categories: loadCategoryOptions()
+  };
+}
+
+function deleteCategoryOption(id) {
+  const normalizedId = String(id || '').trim();
+  const existingOptions = loadCategoryOptions();
+  const target = existingOptions.find(option => option.id === normalizedId);
+
+  if (!target) {
+    throw new Error(`找不到预设分类：${normalizedId}`);
+  }
+
+  const usedBy = findPostsUsingCategory(target.zh, target.en);
+  if (usedBy.length) {
+    throw new Error(`这个预设分类仍被文章使用，无法删除：${usedBy.slice(0, 5).join('、')}${usedBy.length > 5 ? ' 等' : ''}`);
+  }
+
+  const nextCategories = existingOptions.filter(option => option.id !== normalizedId);
+  const configText = fs.readFileSync(CONFIG_PATH, 'utf8');
+  fs.writeFileSync(CONFIG_PATH, rewriteCategoryMap(configText, nextCategories), 'utf8');
+
+  return {
+    categories: loadCategoryOptions()
+  };
+}
+
 function splitPostKey(filename) {
   const match = filename.match(/^(.+)\.(zh-CN|en)\.md$/);
   if (!match) return null;
@@ -304,6 +471,21 @@ function splitPostKey(filename) {
 
 function deriveSlugFromKey(key) {
   return String(key || '').replace(/^\d{4}-\d{2}-\d{2}-/, '');
+}
+
+function normalizePostKeyInput(value) {
+  const raw = path.basename(String(value || '').trim())
+    .replace(/\.zh-CN\.md$/i, '')
+    .replace(/\.en\.md$/i, '')
+    .replace(/\.md$/i, '')
+    .trim();
+
+  if (!raw) return '';
+  if (/[<>:"/\\|?*\u0000-\u001f]/.test(raw)) {
+    throw new Error('源文件名不能包含路径分隔符或非法字符。');
+  }
+
+  return raw.replace(/\s+/g, '-');
 }
 
 function derivePermalink(language, dateValue, slug, fallbackPermalink) {
@@ -888,6 +1070,53 @@ function createImageFolder(folder) {
   };
 }
 
+function renameImageFolder(currentFolder, nextFolder) {
+  const current = resolveImageFolder(currentFolder);
+  const next = resolveImageFolder(nextFolder);
+
+  if (!current.normalized) {
+    throw new Error('请选择要重命名的目录。');
+  }
+
+  if (!next.normalized) {
+    throw new Error('请输入新的目录名。');
+  }
+
+  if (!fs.existsSync(current.absolute) || !fs.statSync(current.absolute).isDirectory()) {
+    throw new Error(`目录不存在：images/${current.normalized}`);
+  }
+
+  if (fs.existsSync(next.absolute)) {
+    throw new Error(`目标目录已存在：images/${next.normalized}`);
+  }
+
+  fs.mkdirSync(path.dirname(next.absolute), { recursive: true });
+  fs.renameSync(current.absolute, next.absolute);
+
+  return {
+    folder: next.normalized,
+    folders: listImageFolders()
+  };
+}
+
+function deleteImageFolder(folder) {
+  const target = resolveImageFolder(folder);
+
+  if (!target.normalized) {
+    throw new Error('不能删除 source/images 根目录。');
+  }
+
+  if (!fs.existsSync(target.absolute) || !fs.statSync(target.absolute).isDirectory()) {
+    throw new Error(`目录不存在：images/${target.normalized}`);
+  }
+
+  fs.rmSync(target.absolute, { recursive: true, force: true });
+  return {
+    deleted: target.normalized,
+    folders: listImageFolders()
+  };
+}
+
 function sanitizeUploadFilename(filename = '') {
   const safe = path.basename(String(filename || ''))
     .replace(/[<>:"/\\|?*\u0000-\u001f]/g, '-')
@@ -998,6 +1227,57 @@ async function formatChineseDraftWithLlm(payload) {
   return {
     content: formatted
   };
+}
+
+function renderMarkdownPreview(markdown, sourcePath = 'source/_posts/preview.zh-CN.md') {
+  const render = require('hexo-renderer-marked/lib/renderer');
+  const config = yaml.load(fs.readFileSync(CONFIG_PATH, 'utf8')) || {};
+  const sourceDir = path.join(ROOT, 'source') + path.sep;
+  const fakeHexo = {
+    config: {
+      ...config,
+      source_dir: sourceDir,
+      post_asset_folder: Boolean(config.post_asset_folder),
+      marked: {
+        gfm: true,
+        pedantic: false,
+        breaks: true,
+        smartLists: true,
+        smartypants: true,
+        modifyAnchors: 0,
+        autolink: true,
+        mangle: true,
+        sanitizeUrl: false,
+        dompurify: false,
+        headerIds: true,
+        anchorAlias: false,
+        lazyload: false,
+        prependRoot: true,
+        postAsset: false,
+        external_link: {
+          enable: false,
+          exclude: [],
+          nofollow: false
+        },
+        descriptionLists: true,
+        ...(config.marked || {})
+      }
+    },
+    source_dir: sourceDir,
+    execFilterSync() {},
+    model() {
+      return {
+        findOne() {
+          return null;
+        }
+      };
+    }
+  };
+
+  return render.call(fakeHexo, {
+    path: sourcePath,
+    text: String(markdown || '')
+  }, {});
 }
 
 function trimLog(content, maxLength = 30000) {
@@ -1148,6 +1428,7 @@ function readPostPair(key, categoryOptions) {
     },
     common: {
       date: toDateTimeLocalValue(zhData.date || enData.date || ''),
+      fileKey: key,
       slug: String(zhData.slug || enData.slug || deriveSlugFromKey(key)),
       toc: Boolean(zhData.toc || enData.toc),
       photos: (zhData.photos || enData.photos || []).join('\n'),
@@ -1247,9 +1528,16 @@ function writePostFiles(payload, categoryOptions) {
   if (!slug) throw new Error('Slug 不能为空。');
   if (!normalizedDate) throw new Error('保存时间格式不合法。');
 
-  const key = sourceKey || `${normalizedDate.slice(0, 10)}-${slugifyFileSegment(slug)}`;
+  const desiredKey = normalizePostKeyInput(payload.common && payload.common.fileKey);
+  const key = desiredKey || sourceKey || `${normalizedDate.slice(0, 10)}-${slugifyFileSegment(slug)}`;
   const zhPath = ensureInsideRoot(path.join(POSTS_DIR, `${key}.zh-CN.md`));
   const enPath = ensureInsideRoot(path.join(POSTS_DIR, `${key}.en.md`));
+  const sourceZhPath = sourceKey ? ensureInsideRoot(path.join(POSTS_DIR, `${sourceKey}.zh-CN.md`)) : '';
+  const sourceEnPath = sourceKey ? ensureInsideRoot(path.join(POSTS_DIR, `${sourceKey}.en.md`)) : '';
+
+  if (sourceKey && key !== sourceKey && (fs.existsSync(zhPath) || fs.existsSync(enPath))) {
+    throw new Error(`目标文件名已存在：${key}`);
+  }
 
   const categoryId = String(payload.common.categoryId || '').trim();
   const matchedCategory = categoryOptions.find(option => option.id === categoryId);
@@ -1300,7 +1588,128 @@ function writePostFiles(payload, categoryOptions) {
   fs.writeFileSync(zhPath, buildFrontMatterString(zhFrontMatter, payload.zh.body), 'utf8');
   fs.writeFileSync(enPath, buildFrontMatterString(enFrontMatter, payload.en.body), 'utf8');
 
+  if (sourceKey && key !== sourceKey) {
+    if (sourceZhPath && fs.existsSync(sourceZhPath)) fs.unlinkSync(sourceZhPath);
+    if (sourceEnPath && fs.existsSync(sourceEnPath)) fs.unlinkSync(sourceEnPath);
+  }
+
   return readPostPair(key, categoryOptions);
+}
+
+function collectPostPhotoPaths(filePath) {
+  if (!fs.existsSync(filePath)) return [];
+  const parsed = parseMarkdownFile(filePath);
+  return normalizePhotoList(parsed.data.photos);
+}
+
+function resolvePublicImagePath(publicPath) {
+  const normalized = String(publicPath || '').trim();
+  if (!normalized.startsWith('/images/')) return null;
+
+  const relativePath = normalized.replace(/^\/images\//, '');
+  const absolutePath = ensureInsideRoot(path.join(IMAGES_DIR, relativePath));
+  if (!absolutePath.startsWith(IMAGES_DIR)) return null;
+
+  return {
+    publicPath: normalized,
+    relativePath,
+    absolutePath
+  };
+}
+
+function listSearchableProjectFiles(currentPath, result = []) {
+  const entries = fs.readdirSync(currentPath, { withFileTypes: true });
+  const textExtensions = new Set([
+    '.md', '.markdown', '.yml', '.yaml', '.json', '.js', '.cjs', '.mjs',
+    '.ejs', '.njk', '.html', '.xml', '.txt', '.styl', '.css', '.scss'
+  ]);
+  const ignoredDirs = new Set(['.git', 'node_modules', 'public', 'source/images']);
+
+  entries.forEach(entry => {
+    const fullPath = path.join(currentPath, entry.name);
+    const relative = toPosixPath(fullPath);
+
+    if (entry.isDirectory()) {
+      if (ignoredDirs.has(relative) || ignoredDirs.has(entry.name)) return;
+      listSearchableProjectFiles(fullPath, result);
+      return;
+    }
+
+    if (textExtensions.has(path.extname(entry.name).toLowerCase())) {
+      result.push(fullPath);
+    }
+  });
+
+  return result;
+}
+
+function isImageReferencedElsewhere(publicPath, excludedFiles = []) {
+  const excluded = new Set(excludedFiles.map(filePath => ensureInsideRoot(filePath)));
+  const files = listSearchableProjectFiles(ROOT);
+
+  return files.some(filePath => {
+    if (excluded.has(filePath)) return false;
+    return fs.readFileSync(filePath, 'utf8').includes(publicPath);
+  });
+}
+
+function cleanupEmptyImageDirectories(startPath) {
+  let currentPath = path.dirname(startPath);
+
+  while (currentPath.startsWith(IMAGES_DIR) && currentPath !== IMAGES_DIR) {
+    if (!fs.existsSync(currentPath) || !fs.statSync(currentPath).isDirectory()) break;
+    if (fs.readdirSync(currentPath).length > 0) break;
+    fs.rmdirSync(currentPath);
+    currentPath = path.dirname(currentPath);
+  }
+}
+
+function deletePostPair(key) {
+  const normalizedKey = String(key || '').trim();
+  if (!normalizedKey) {
+    throw new Error('缺少要删除的文章标识。');
+  }
+
+  const zhPath = ensureInsideRoot(path.join(POSTS_DIR, `${normalizedKey}.zh-CN.md`));
+  const enPath = ensureInsideRoot(path.join(POSTS_DIR, `${normalizedKey}.en.md`));
+  const zhExists = fs.existsSync(zhPath);
+  const enExists = fs.existsSync(enPath);
+
+  if (!zhExists && !enExists) {
+    throw new Error(`找不到文章：${normalizedKey}`);
+  }
+
+  const referencedPhotos = Array.from(new Set([
+    ...collectPostPhotoPaths(zhPath),
+    ...collectPostPhotoPaths(enPath)
+  ]));
+  const deletedImages = [];
+  const keptImages = [];
+
+  if (zhExists) fs.unlinkSync(zhPath);
+  if (enExists) fs.unlinkSync(enPath);
+
+  referencedPhotos.forEach(publicPath => {
+    const resolved = resolvePublicImagePath(publicPath);
+    if (!resolved || !fs.existsSync(resolved.absolutePath)) {
+      return;
+    }
+
+    if (isImageReferencedElsewhere(publicPath, [zhPath, enPath])) {
+      keptImages.push(publicPath);
+      return;
+    }
+
+    fs.unlinkSync(resolved.absolutePath);
+    cleanupEmptyImageDirectories(resolved.absolutePath);
+    deletedImages.push(publicPath);
+  });
+
+  return {
+    deleted: normalizedKey,
+    deletedImages,
+    keptImages
+  };
 }
 
 function parseYamlObject(input) {
@@ -1433,6 +1842,34 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === 'PATCH' && pathname.startsWith('/api/categories/')) {
+      const id = decodeURIComponent(pathname.replace('/api/categories/', ''));
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, updateCategoryOption(id, payload));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname.startsWith('/api/categories/') && pathname.endsWith('/update')) {
+      const id = decodeURIComponent(pathname.replace('/api/categories/', '').replace(/\/update$/, ''));
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, updateCategoryOption(id, payload));
+      return;
+    }
+
+    if (req.method === 'DELETE' && pathname.startsWith('/api/categories/')) {
+      const id = decodeURIComponent(pathname.replace('/api/categories/', ''));
+      jsonResponse(res, 200, deleteCategoryOption(id));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname.startsWith('/api/categories/') && pathname.endsWith('/delete')) {
+      const id = decodeURIComponent(pathname.replace('/api/categories/', '').replace(/\/delete$/, ''));
+      jsonResponse(res, 200, deleteCategoryOption(id));
+      return;
+    }
+
     if (req.method === 'GET' && pathname === '/api/images/folders') {
       jsonResponse(res, 200, {
         folders: listImageFolders()
@@ -1447,6 +1884,34 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === 'PATCH' && pathname === '/api/images/folders') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, renameImageFolder(payload.currentFolder, payload.nextFolder));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/images/folders/rename') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, renameImageFolder(payload.currentFolder, payload.nextFolder));
+      return;
+    }
+
+    if (req.method === 'DELETE' && pathname === '/api/images/folders') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, deleteImageFolder(payload.folder));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/images/folders/delete') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, deleteImageFolder(payload.folder));
+      return;
+    }
+
     if (req.method === 'POST' && pathname === '/api/images/upload') {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
@@ -1458,6 +1923,15 @@ const server = http.createServer(async (req, res) => {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
       jsonResponse(res, 200, await formatChineseDraftWithLlm(payload));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/preview/markdown') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, {
+        html: renderMarkdownPreview(payload.markdown, payload.sourcePath)
+      });
       return;
     }
 
@@ -1483,6 +1957,18 @@ const server = http.createServer(async (req, res) => {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
       jsonResponse(res, 200, writePostFiles(payload, categoryOptions));
+      return;
+    }
+
+    if (req.method === 'DELETE' && pathname.startsWith('/api/posts/')) {
+      const key = decodeURIComponent(pathname.replace('/api/posts/', ''));
+      jsonResponse(res, 200, deletePostPair(key));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname.startsWith('/api/posts/') && pathname.endsWith('/delete')) {
+      const key = decodeURIComponent(pathname.replace('/api/posts/', '').replace(/\/delete$/, ''));
+      jsonResponse(res, 200, deletePostPair(key));
       return;
     }
 
@@ -1583,5 +2069,8 @@ module.exports = {
   listGalleryAlbums,
   readGalleryAlbumBySlug,
   writeGalleryAlbum,
-  syncGalleryDataFile
+  syncGalleryDataFile,
+  writePostFiles,
+  deletePostPair,
+  renderMarkdownPreview
 };
