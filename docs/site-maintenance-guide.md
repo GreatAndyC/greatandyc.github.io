@@ -37,6 +37,7 @@
 | 英文 Tags / Categories / Archives / Gallery 页面入口 | `source/en/...` |
 | 画廊内容数据 | `source/_data/gallery.yml` |
 | 后台编辑入口 | `source/admin/` |
+| 本地内容后台 | `tools/local-cms.js`、`tools/local-cms/` |
 | 图片资源 | `source/images/` |
 | 多语言分类/标签生成逻辑 | `scripts/localized-taxonomy.js` |
 | 语言感知链接、同语言文章导航、画廊渲染逻辑 | `themes/next/scripts/helpers/engine.js` |
@@ -44,6 +45,7 @@
 如果你主要是在写文章和排版，建议先看这份文档：
 
 - [`docs/writing-style-guide.md`](/Users/andycao/Documents/Project/greatandyc.github.io/docs/writing-style-guide.md)
+- [`docs/local-cms-guide.md`](/Users/andycao/Documents/Project/greatandyc.github.io/docs/local-cms-guide.md)
 
 新文章默认模板在这里：
 
@@ -55,6 +57,16 @@
 - [`source/admin/config.yml`](/Users/andycao/Documents/Project/greatandyc.github.io/source/admin/config.yml)
 
 当前后台按“只给自己登录”的思路配置，采用 Git Gateway + Invite only 的方式；你只需要把 Netlify Identity 打开并把自己邀请进去，就能在 `/admin/` 里维护画廊数据。
+
+如果你不想依赖远程登录，而是希望本地直接开一个图形化后台维护文章和页面，可以使用：
+
+```bash
+npm run cms:local
+```
+
+它会启动一个本地服务，直接读写仓库里的 Markdown 文件。详细说明见：
+
+- [`docs/local-cms-guide.md`](/Users/andycao/Documents/Project/greatandyc.github.io/docs/local-cms-guide.md)
 
 ### 3.5 后台编辑器怎么开
 

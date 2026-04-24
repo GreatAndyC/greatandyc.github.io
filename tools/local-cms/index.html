@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Local Content CMS</title>
+    <link rel="stylesheet" href="/app.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="sidebar-top">
+          <p class="eyebrow">Local CMS</p>
+          <h1>内容后台</h1>
+          <p class="sidebar-copy">本地管理文章与独立页面，直接回写到仓库里的 Markdown 文件。</p>
+        </div>
+
+        <div class="mode-switch" role="tablist" aria-label="编辑模式">
+          <button class="mode-button is-active" type="button" data-mode="posts">文章</button>
+          <button class="mode-button" type="button" data-mode="pages">页面</button>
+        </div>
+
+        <label class="search-box">
+          <span>搜索</span>
+          <input id="search-input" type="search" placeholder="标题 / slug / 页面名">
+        </label>
+
+        <div class="sidebar-actions">
+          <button id="new-post-button" class="ghost-button" type="button">新建文章</button>
+          <button id="refresh-button" class="ghost-button" type="button">刷新列表</button>
+        </div>
+
+        <div id="list-panel" class="list-panel"></div>
+      </aside>
+
+      <main class="workspace">
+        <header class="workspace-header">
+          <div>
+            <p id="workspace-kicker" class="eyebrow">文章编辑器</p>
+            <h2 id="workspace-title">请选择左侧内容</h2>
+          </div>
+          <div class="workspace-actions">
+            <button id="save-button" class="primary-button" type="button">保存</button>
+          </div>
+        </header>
+
+        <p id="status-bar" class="status-bar">准备就绪。</p>
+
+        <section class="editor-card command-panel">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">Hexo Actions</p>
+              <h3>站点命令</h3>
+            </div>
+            <a id="command-preview-link" class="preview-link" href="http://127.0.0.1:4000/" target="_blank" rel="noreferrer">打开预览</a>
+          </div>
+
+          <div class="command-actions">
+            <button class="ghost-button" type="button" data-command="clean">清缓存</button>
+            <button class="ghost-button" type="button" data-command="build">构建</button>
+            <button class="ghost-button" type="button" data-command="serve">启动预览</button>
+            <button class="ghost-button" type="button" data-command="stop-serve">停止预览</button>
+            <button class="primary-button" type="button" data-command="deploy">部署</button>
+          </div>
+
+          <div class="command-status-grid">
+            <div class="command-status-card">
+              <span class="status-label">当前任务</span>
+              <strong id="command-current-task">空闲</strong>
+              <span id="command-current-meta" class="status-meta">没有任务在运行</span>
+            </div>
+            <div class="command-status-card">
+              <span class="status-label">预览服务</span>
+              <strong id="command-server-status">未启动</strong>
+              <span id="command-server-meta" class="status-meta">127.0.0.1:4000</span>
+            </div>
+            <div class="command-status-card">
+              <span class="status-label">最近结果</span>
+              <strong id="command-last-task">暂无记录</strong>
+              <span id="command-last-meta" class="status-meta">等待第一次执行</span>
+            </div>
+          </div>
+
+          <label>
+            <span>命令日志</span>
+            <textarea id="command-log" rows="12" readonly></textarea>
+          </label>
+        </section>
+
+        <section id="post-editor" class="editor-panel" hidden>
+          <div class="editor-card compact-grid">
+            <label>
+              <span>发布时间</span>
+              <input id="post-date" type="text" readonly>
+              <small class="field-hint">每次保存都会自动同步为当前时间。</small>
+            </label>
+            <label>
+              <span>Slug</span>
+              <input id="post-slug" type="text" placeholder="ios-app-from-zero-vol4">
+            </label>
+            <label class="checkbox-field">
+              <input id="post-toc" type="checkbox">
+              <span>启用目录（toc）</span>
+            </label>
+            <label>
+              <span>分类</span>
+              <select id="post-category"></select>
+            </label>
+          </div>
+
+          <div class="editor-card">
+            <label>
+              <span>封面图 / 代表图</span>
+              <textarea id="post-photos" rows="3" placeholder="/images/xxx/cover.png&#10;/images/xxx/detail.png"></textarea>
+            </label>
+          </div>
+
+          <div class="language-grid">
+            <section class="editor-card">
+              <div class="card-heading">
+                <h3>中文稿</h3>
+                <span id="post-zh-file" class="meta-pill"></span>
+              </div>
+              <label>
+                <span>标题</span>
+                <input id="post-zh-title" type="text">
+              </label>
+              <label>
+                <span>一句话概括</span>
+                <input id="post-zh-description" type="text">
+              </label>
+              <label>
+                <span>标签（逗号分隔）</span>
+                <input id="post-zh-tags" type="text" placeholder="AI, iOS, 独立开发">
+              </label>
+              <label>
+                <span>正文 Markdown</span>
+                <textarea id="post-zh-body" rows="24"></textarea>
+              </label>
+            </section>
+
+            <section class="editor-card">
+              <div class="card-heading">
+                <h3>English Draft</h3>
+                <span id="post-en-file" class="meta-pill"></span>
+              </div>
+              <label>
+                <span>Title</span>
+                <input id="post-en-title" type="text">
+              </label>
+              <label>
+                <span>One-line summary</span>
+                <input id="post-en-description" type="text">
+              </label>
+              <label>
+                <span>Tags (comma separated)</span>
+                <input id="post-en-tags" type="text" placeholder="AI, iOS, Indie Development">
+              </label>
+              <label>
+                <span>Markdown body</span>
+                <textarea id="post-en-body" rows="24"></textarea>
+              </label>
+            </section>
+          </div>
+        </section>
+
+        <section id="page-editor" class="editor-panel" hidden>
+          <div class="editor-card compact-grid">
+            <label>
+              <span>标题</span>
+              <input id="page-title" type="text">
+            </label>
+            <label>
+              <span>页面时间</span>
+              <input id="page-date" type="text" readonly>
+              <small class="field-hint">保存页面时也会自动刷新这个时间。</small>
+            </label>
+            <label>
+              <span>语言</span>
+              <input id="page-lang" type="text" placeholder="zh-CN / en">
+            </label>
+            <label class="checkbox-field">
+              <input id="page-comments" type="checkbox">
+              <span>允许评论</span>
+            </label>
+            <label class="checkbox-field">
+              <input id="page-toc" type="checkbox">
+              <span>启用目录（toc）</span>
+            </label>
+          </div>
+
+          <div class="editor-card">
+            <div class="card-heading">
+              <h3>页面信息</h3>
+              <span id="page-file" class="meta-pill"></span>
+            </div>
+            <label>
+              <span>高级 front matter（YAML，可留空）</span>
+              <textarea id="page-extra" rows="8" placeholder="type: gallery"></textarea>
+            </label>
+          </div>
+
+          <div class="editor-card">
+            <label>
+              <span>正文 Markdown / HTML</span>
+              <textarea id="page-body" rows="28"></textarea>
+            </label>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

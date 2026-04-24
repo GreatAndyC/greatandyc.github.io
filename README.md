@@ -37,6 +37,18 @@
 2. 运行 `npm run gallery:sync`
 3. 自动生成 `source/_data/gallery.yml`
 
+如果你想在本地直接用图形化后台维护文章和页面，现在也可以运行：
+
+```bash
+npm run cms:local
+```
+
+默认打开地址：
+
+- `http://127.0.0.1:4010`
+
+详细说明见：[docs/local-cms-guide.md](/Users/andycao/Documents/Project/greatandyc.github.io/docs/local-cms-guide.md:1)
+
 ## 本地开发
 
 ### 1. 安装依赖

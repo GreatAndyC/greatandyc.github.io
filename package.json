@@ -5,6 +5,7 @@
   "scripts": {
     "build": "hexo generate",
     "clean": "hexo clean",
+    "cms:local": "node tools/local-cms.js",
     "deploy": "hexo deploy",
     "server": "hexo server",
     "pub": "hexo clean && hexo g && hexo d",
