@@ -84,7 +84,12 @@ const state = {
     zhTimer: null,
     zhRequestToken: 0
   },
-  toastTimer: null
+  toastTimer: null,
+  commandAlerts: {
+    lastTaskFinishedAt: '',
+    titleTimer: null,
+    originalTitle: document.title
+  }
 };
 
 const elements = {
@@ -289,6 +294,93 @@ function showToast(title, message) {
   }, 2600);
 }
 
+function requestBrowserNotificationPermission() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'default') {
+    Notification.requestPermission().catch(() => {});
+  }
+}
+
+function showBrowserNotification(title, message) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  try {
+    const notification = new Notification(title, {
+      body: message,
+      tag: 'local-cms-command-result'
+    });
+    window.setTimeout(() => notification.close(), 8000);
+  } catch (_) {}
+}
+
+function playCommandAlert(tone = 'success') {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) return;
+
+  try {
+    const context = new AudioContextClass();
+    const notes = tone === 'error' ? [440, 330, 220] : [659.25, 783.99, 987.77];
+
+    notes.forEach((frequency, index) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      const startAt = context.currentTime + index * 0.16;
+      oscillator.type = tone === 'error' ? 'square' : 'sine';
+      oscillator.frequency.value = frequency;
+      gain.gain.setValueAtTime(0.0001, startAt);
+      gain.gain.exponentialRampToValueAtTime(0.08, startAt + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.14);
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start(startAt);
+      oscillator.stop(startAt + 0.15);
+    });
+
+    window.setTimeout(() => {
+      if (typeof context.close === 'function') {
+        context.close().catch(() => {});
+      }
+    }, 1200);
+  } catch (_) {}
+}
+
+function flashDocumentTitle(prefix) {
+  if (state.commandAlerts.titleTimer) {
+    window.clearInterval(state.commandAlerts.titleTimer);
+  }
+
+  let highlighted = true;
+  document.title = `${prefix} ${state.commandAlerts.originalTitle}`;
+  state.commandAlerts.titleTimer = window.setInterval(() => {
+    document.title = highlighted ? `${prefix} ${state.commandAlerts.originalTitle}` : state.commandAlerts.originalTitle;
+    highlighted = !highlighted;
+  }, 1000);
+
+  window.setTimeout(() => {
+    if (state.commandAlerts.titleTimer) {
+      window.clearInterval(state.commandAlerts.titleTimer);
+      state.commandAlerts.titleTimer = null;
+    }
+    document.title = state.commandAlerts.originalTitle;
+  }, 12000);
+}
+
+function notifyDeployCompletion(task) {
+  if (!task || !task.finishedAt || state.commandAlerts.lastTaskFinishedAt === task.finishedAt) return;
+  state.commandAlerts.lastTaskFinishedAt = task.finishedAt;
+
+  const isSuccess = task.status === 'success';
+  const title = isSuccess ? '部署成功' : '部署失败';
+  const message = isSuccess
+    ? `部署已完成，退出码 ${task.exitCode}。`
+    : `部署执行失败，退出码 ${task.exitCode}。请查看命令日志。`;
+
+  setStatus(message, isSuccess ? 'success' : 'error');
+  showToast(title, message);
+  showBrowserNotification(title, message);
+  playCommandAlert(isSuccess ? 'success' : 'error');
+  flashDocumentTitle(isSuccess ? '[部署成功]' : '[部署失败]');
+}
+
 function setFormatProgress(percent, message, indeterminate = false) {
   elements.post.formatProgress.hidden = false;
   elements.post.formatProgress.dataset.indeterminate = indeterminate ? 'true' : 'false';
@@ -388,6 +480,10 @@ function renderCommandPanel() {
     const disabledByServer = (name === 'serve' && server.running) || (name === 'stop-serve' && !server.running);
     button.disabled = disabledByTask || disabledByServer;
   });
+
+  if (!currentTask && lastTask && lastTask.name === 'deploy') {
+    notifyDeployCompletion(lastTask);
+  }
 }
 
 function getAuditEntityLabel(entityType) {
@@ -2711,6 +2807,7 @@ async function handleDeletePost() {
 
 async function handleCommand(name) {
   try {
+    requestBrowserNotificationPermission();
     const payload = await request(`/api/commands/${encodeURIComponent(name)}`, {
       method: 'POST',
       body: JSON.stringify({})

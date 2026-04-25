@@ -4,8 +4,8 @@ image_folder: gallery/Main_Campus_Photo_Walk
 languages: zh-CN,en
 title_zh: 主校区扫街
 title_en: Main Campus Photo Walk
-period_zh: ""
-period_en: ""
+period_zh: "2023-12-22"
+period_en: "2023-12-22"
 location_zh: 主校区
 location_en: Main Campus
 camera_zh: NIKON D5600
