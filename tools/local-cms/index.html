@@ -202,7 +202,7 @@
           <div class="editor-card">
             <div class="card-heading">
               <h3>封面图 / 代表图</h3>
-              <button id="upload-image-button" class="ghost-button" type="button">上传到 images</button>
+              <button id="upload-image-button" class="ghost-button" type="button">上传到 posts</button>
             </div>
             <div class="image-tools-grid">
               <label>
@@ -222,11 +222,11 @@
             <div id="image-dropzone" class="image-dropzone" tabindex="0">
               <input id="image-file-input" type="file" accept="image/*" multiple hidden>
               <p>拖动图片到这里，或点击选择本地文件</p>
-              <span id="image-dropzone-meta">上传后会自动写入 `source/images/` 下的所选目录，并把路径追加到封面图列表。</span>
+              <span id="image-dropzone-meta">上传后会自动写入 `source/images/posts/` 下的所选目录，并把路径追加到封面图列表。</span>
             </div>
             <label>
               <span>封面图路径列表</span>
-              <textarea id="post-photos" rows="3" placeholder="/images/xxx/cover.png&#10;/images/xxx/detail.png"></textarea>
+              <textarea id="post-photos" rows="3" placeholder="/images/posts/ios-vol4/cover.png&#10;/images/posts/ios-vol4/detail.png"></textarea>
             </label>
             <div>
               <span class="field-label">封面图预览</span>
@@ -464,7 +464,7 @@
                 <div class="card-heading">
                   <div class="card-heading-copy">
                     <h3>相册图片</h3>
-                    <span class="field-hint">建议每个相册固定对应 `source/images/` 下的一个独立目录。选择目录后会自动导入该目录里的全部图片、路径和基础拍摄信息。</span>
+                    <span class="field-hint">建议每个相册固定对应 `source/images/gallery/` 下的一个独立目录。选择目录后会自动导入该目录里的全部图片、路径和基础拍摄信息。</span>
                   </div>
                   <div class="card-heading-actions">
                     <button id="gallery-add-photo-button" class="ghost-button" type="button">新增一张</button>

@@ -6,7 +6,7 @@ slug: ios-app-from-zero-vol2
 permalink: 2026/03/30/ios-app-from-zero-vol2/
 description: 从模型格局、编程能力、订阅方式和 API 成本出发，讨论独立开发者为什么要建立多模型能力体系。
 photos:
-  - /images/feishu-migration/ios-app-from-zero-vol2/ios_series_vol2_cover.png
+  - /images/posts/feishu-migration/ios-app-from-zero-vol2/ios_series_vol2_cover.png
 tags:
   - iOS
   - AI
@@ -17,7 +17,7 @@ toc: true
 ---
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/ios-app-from-zero-vol2/ios_series_vol2_cover.png" alt="">
+  <img src="/images/posts/feishu-migration/ios-app-from-zero-vol2/ios_series_vol2_cover.png" alt="">
   <figcaption>封面图由 Nano Banana 2 生成</figcaption>
 </figure>
 
@@ -33,7 +33,7 @@ toc: true
 在独立测评AI模型的第三方平台https://artificialanalysis.ai/ 可以看到一个供参考的模型供应商的排行榜
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/ios-app-from-zero-vol2/artificial_analysis_leaderboard.png" alt="">
+  <img src="/images/posts/feishu-migration/ios-app-from-zero-vol2/artificial_analysis_leaderboard.png" alt="">
   <figcaption>模型供应商排行榜</figcaption>
 </figure>
 从当前模型排行榜可以看出，AI模型的竞争已经不再是单纯的性能比拼，而是逐渐演变为一种“基础设施控制权”的竞争：中美大模型正面硬刚 + 少量欧洲补位。
@@ -98,7 +98,7 @@ Chatgpt的评价是：前沿模型主要由美国大厂主导，中国模型快�
 
 ## 编程能力的对比
 <figure class="post-figure">
-  <img src="/images/feishu-migration/ios-app-from-zero-vol2/coding_index_benchmark.png" alt="">
+  <img src="/images/posts/feishu-migration/ios-app-from-zero-vol2/coding_index_benchmark.png" alt="">
   <figcaption>Coding Index 编程能力对比</figcaption>
 </figure>
 在第二个Coding Index中显示出了编程能力的横向测评，这也是我们应该重点关注的地方。
@@ -112,7 +112,7 @@ Ai模型的算力是驱动各种Ai能力的基础，计费基础单位是Token�
 ### API调用
 按量付费———相当于厂商给你接一条电线，用多少给多少钱。是所有的厂商都支持的付费方式
 <figure class="post-figure">
-  <img src="/images/feishu-migration/ios-app-from-zero-vol2/openrouter_token_consumption.png" alt="">
+  <img src="/images/posts/feishu-migration/ios-app-from-zero-vol2/openrouter_token_consumption.png" alt="">
   <figcaption>OpenRouter Token 消耗示意</figcaption>
 </figure>
 中转站OpenRouter上的Weekly Token消耗排行榜，可以直观地查看Token在Input和Output的价格和消耗情况，作为目前大模型流行度的一个参考，更多信息需要到对应的公司开放平台网页上查询
@@ -122,7 +122,7 @@ Google Gemini、Anthropic Claude、Openai Chatgpt支持的计费方式。
 标准版会员订阅的价格，御三家都是20美刀一个月，可以获得网页版会员权益，以及AI编程的额度。
 例如：Openai的Plus订阅会额外给予Codex（Chatgpt官方的编程Agent）的使用配额，以每5小时和每周限定额度的方式限制，同样的Anthropic也会提供Claude code的额度，Google会给予Antigravity的额度
 <figure class="post-figure">
-  <img src="/images/feishu-migration/ios-app-from-zero-vol2/chatgpt_plus_pricing_plans.png" alt="">
+  <img src="/images/posts/feishu-migration/ios-app-from-zero-vol2/chatgpt_plus_pricing_plans.png" alt="">
   <figcaption>ChatGPT 订阅计划价格</figcaption>
 </figure>
 
@@ -137,7 +137,7 @@ Google Gemini、Anthropic Claude、Openai Chatgpt支持的计费方式。
 Coding Plan的出现，本质上是AI从“按量计费”走向“基础设施化”的标志。类似于电力从按次收费变为包月供电，开发者可以在一个可控成本范围内持续调用AI能力。
 这意味着AI开始从“工具”变成“可持续供给的生产资源”
 <figure class="post-figure">
-  <img src="/images/feishu-migration/ios-app-from-zero-vol2/zhipu_glm_coding_plan.png" alt="">
+  <img src="/images/posts/feishu-migration/ios-app-from-zero-vol2/zhipu_glm_coding_plan.png" alt="">
   <figcaption>智谱 Coding Plan 页面</figcaption>
 </figure>
 
@@ -152,7 +152,7 @@ https://www.bigmodel.cn/glm-coding?ic=PH3OZYF5I9
 
 因此在架构设计上，应避免对单一地区或单一供应商形成依赖。
 <figure class="post-figure">
-  <img src="/images/feishu-migration/ios-app-from-zero-vol2/cursor_subscription_view.png" alt="">
+  <img src="/images/posts/feishu-migration/ios-app-from-zero-vol2/cursor_subscription_view.png" alt="">
   <figcaption>Cursor 价格页面</figcaption>
 </figure>
 

@@ -6,7 +6,7 @@ slug: Full-Review-of-Building-a-Blog-with-GitHub-and-Hexo
 permalink: en/2025/09/01/Full-Review-of-Building-a-Blog-with-GitHub-and-Hexo/
 description: A walkthrough of building a personal blog with GitHub and Hexo.
 photos:
-  - /images/mainpage.png
+  - /images/posts/mainpage.png
 tags:
   - Hexo
 categories:
@@ -106,7 +106,7 @@ You can also choose among NexT's sub-schemes in the theme config file. I will no
 
 After following the tutorial on [theme optimization](https://zhuanlan.zhihu.com/p/106060640) to configure homepage sections such as the sidebar, comments, and friend links, your homepage should look roughly like this:
 
-<img src="/images/mainpage.png" alt=""
+<img src="/images/posts/mainpage.png" alt=""
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 
 After that, you can happily start adding posts to your blog.

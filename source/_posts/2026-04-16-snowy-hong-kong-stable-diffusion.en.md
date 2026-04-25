@@ -6,15 +6,16 @@ slug: snowy-hong-kong-stable-diffusion
 permalink: en/2026/04/16/snowy-hong-kong-stable-diffusion/
 description: A practical experiment in turning Hong Kong street scenes into snowy landscapes with Stable Diffusion.
 photos:
-  - /images/feishu-migration/snowy-hong-kong-stable-diffusion/snow-hk-cover.png
+  - /images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/snow-hk-cover.png
 tags:
   - Stable Diffusion
   - AI Art
   - Photography
 categories:
   - Tutorial
-toc: true
+toc: false
 ---
+
 > Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
 I first saw a snowy AI effect on the vivo X200 and wanted to recreate the same feeling on my own street photos, even though I did not have the phone itself.
@@ -24,7 +25,7 @@ I first saw a snowy AI effect on the vivo X200 and wanted to recreate the same f
 I wanted to generate a snow scene from ordinary Hong Kong street photography.
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/hong_kong_snow_sd_cover.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/hong_kong_snow_sd_cover.png" alt="">
   <figcaption>Snow effect shown by the vivo X200</figcaption>
 </figure>
 
@@ -77,51 +78,51 @@ Sampling settings:
 ## 4. Results
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_lora_parameter_config.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_lora_parameter_config.png" alt="">
   <figcaption>Alfafa side</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_prompt_eng_process.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_prompt_eng_process.png" alt="">
   <figcaption>HKU Red Wall</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_img2img_base_photo.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_img2img_base_photo.png" alt="">
   <figcaption>AIA Ferris Wheel</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_generation_variation_1.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_generation_variation_1.png" alt="">
   <figcaption>Tsim Sha Tsui Apple Store</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_generation_variation_2.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_generation_variation_2.png" alt="">
   <figcaption>Centennial Campus 1</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_generation_variation_3.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_generation_variation_3.png" alt="">
   <figcaption>Kennedy Town</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_upscale_detail_enhance.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_upscale_detail_enhance.png" alt="">
   <figcaption>Centennial Campus 2</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_post_process_color_grading.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_post_process_color_grading.png" alt="">
   <figcaption>HKU B1 Exit</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_final_comparison_grid.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_final_comparison_grid.png" alt="">
   <figcaption>Centennial Garden</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_metadata_exif_info.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_metadata_exif_info.png" alt="">
   <figcaption>Tsim Sha Tsui</figcaption>
 </figure>

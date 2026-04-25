@@ -6,15 +6,16 @@ slug: snowy-hong-kong-stable-diffusion
 permalink: 2026/04/16/snowy-hong-kong-stable-diffusion/
 description: 记录一次用 Stable Diffusion 为香港街景制作雪景效果的完整实践，包括模型选择、图生图参数配置和结果对比。
 photos:
-  - /images/feishu-migration/snowy-hong-kong-stable-diffusion/snow-hk-cover.png
+  - /images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/snow-hk-cover.png
 tags:
   - Stable Diffusion
   - AI绘画
   - 摄影
 categories:
   - 教程
-toc: true
+toc: false
 ---
+
 雪中香港-SD定制化生图实践Snowy Hong Kong: AI-Generated Landscapes with Stable Diffusion
 
 
@@ -23,7 +24,7 @@ toc: true
 在社交媒体上看到vivox200的雪景Ai效果（如下图所示），感觉非常惊艳，想要拍摄同款，但是没有相应的手机，于是打算通过自己的方式制作下雪效果
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/hong_kong_snow_sd_cover.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/hong_kong_snow_sd_cover.png" alt="">
   <figcaption>vivo X200的雪景Ai效果</figcaption>
 </figure>
 
@@ -71,51 +72,51 @@ Negative Prompt:
 生成图片如下
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_lora_parameter_config.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_lora_parameter_config.png" alt="">
   <figcaption>Alfafa旁</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_prompt_eng_process.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_prompt_eng_process.png" alt="">
   <figcaption>港大红墙</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_img2img_base_photo.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_img2img_base_photo.png" alt="">
   <figcaption>AIA摩天轮</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_generation_variation_1.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_generation_variation_1.png" alt="">
   <figcaption>尖沙咀Apple直营店</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_generation_variation_2.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_generation_variation_2.png" alt="">
   <figcaption>百周年校园-1</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_generation_variation_3.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_generation_variation_3.png" alt="">
   <figcaption>坚尼地城</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_upscale_detail_enhance.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_upscale_detail_enhance.png" alt="">
   <figcaption>百周年校园-2</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_post_process_color_grading.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_post_process_color_grading.png" alt="">
   <figcaption>港大B1口</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_final_comparison_grid.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_final_comparison_grid.png" alt="">
   <figcaption>百周年花园</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/snowy-hong-kong-stable-diffusion/sd_metadata_exif_info.png" alt="">
+  <img src="/images/posts/feishu-migration/snowy-hong-kong-stable-diffusion/sd_metadata_exif_info.png" alt="">
   <figcaption>尖沙咀</figcaption>
 </figure>

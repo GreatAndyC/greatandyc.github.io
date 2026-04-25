@@ -52,6 +52,7 @@ const PAGE_DEFINITIONS = [
 const RESERVED_POST_FIELDS = new Set([
   'title',
   'date',
+  'updated',
   'lang',
   'slug',
   'permalink',
@@ -622,6 +623,10 @@ function inferGalleryImageFolder(photos = []) {
   return folders.length === 1 ? folders[0] : '';
 }
 
+function isGalleryManagedFolder(folder = '') {
+  return String(folder || '').trim().startsWith('gallery/');
+}
+
 function galleryDocPathFromSlug(slug) {
   return ensureInsideRoot(path.join(GALLERY_DOC_DIR, `${slug}.md`));
 }
@@ -891,6 +896,10 @@ function writeGalleryAlbum(payload) {
 
   if (!record.imageFolder) {
     record.imageFolder = uniqueFolders[0];
+  }
+
+  if (!isGalleryManagedFolder(record.imageFolder) || !isGalleryManagedFolder(uniqueFolders[0])) {
+    throw new Error('画廊相册只能引用 images/gallery/... 目录下的图片，请先把图片迁移到专用 gallery 目录。');
   }
 
   if (record.imageFolder !== uniqueFolders[0]) {
@@ -2128,13 +2137,13 @@ function writePostFiles(payload, categoryOptions) {
   const sourceKey = String(payload.key || '').trim();
   const slug = String(payload.common && payload.common.slug || '').trim();
   const saveTime = new Date();
-  const normalizedDate = formatDate(saveTime);
+  const normalizedSaveTime = formatDate(saveTime);
 
   if (!slug) throw new Error('Slug 不能为空。');
-  if (!normalizedDate) throw new Error('保存时间格式不合法。');
+  if (!normalizedSaveTime) throw new Error('保存时间格式不合法。');
 
   const desiredKey = normalizePostKeyInput(payload.common && payload.common.fileKey);
-  const key = desiredKey || sourceKey || `${normalizedDate.slice(0, 10)}-${slugifyFileSegment(slug)}`;
+  const key = desiredKey || sourceKey || `${normalizedSaveTime.slice(0, 10)}-${slugifyFileSegment(slug)}`;
   const zhPath = ensureInsideRoot(path.join(POSTS_DIR, `${key}.zh-CN.md`));
   const enPath = ensureInsideRoot(path.join(POSTS_DIR, `${key}.en.md`));
   const sourceZhPath = sourceKey ? ensureInsideRoot(path.join(POSTS_DIR, `${sourceKey}.zh-CN.md`)) : '';
@@ -2157,33 +2166,46 @@ function writePostFiles(payload, categoryOptions) {
   const toc = Boolean(payload.common.toc);
   const zhExtras = payload.zh && typeof payload.zh.extras === 'object' ? payload.zh.extras : {};
   const enExtras = payload.en && typeof payload.en.extras === 'object' ? payload.en.extras : {};
+  const existingZhData = sourceZhPath && fs.existsSync(sourceZhPath) ? parseMarkdownFile(sourceZhPath).data : {};
+  const existingEnData = sourceEnPath && fs.existsSync(sourceEnPath) ? parseMarkdownFile(sourceEnPath).data : {};
+  const preservedPublishedDate = formatDate(
+    existingZhData.date
+    || existingEnData.date
+    || normalizedSaveTime
+  );
+
+  if (!preservedPublishedDate) {
+    throw new Error('文章发布时间格式不合法。');
+  }
 
   const zhFrontMatter = {
     title: String(payload.zh.title || '').trim(),
-    date: normalizedDate,
+    date: preservedPublishedDate,
     lang: 'zh-CN',
     slug,
-    permalink: derivePermalink('zh-CN', normalizedDate, slug, String(payload.zh.permalink || '').trim()),
+    permalink: derivePermalink('zh-CN', preservedPublishedDate, slug, String(payload.zh.permalink || '').trim()),
     description: String(payload.zh.description || '').trim(),
     photos,
     tags: normalizeStringList(payload.zh.tags),
     categories: [categoryZh],
     toc,
-    ...zhExtras
+    ...zhExtras,
+    updated: normalizedSaveTime
   };
 
   const enFrontMatter = {
     title: String(payload.en.title || '').trim(),
-    date: normalizedDate,
+    date: preservedPublishedDate,
     lang: 'en',
     slug,
-    permalink: derivePermalink('en', normalizedDate, slug, String(payload.en.permalink || '').trim()),
+    permalink: derivePermalink('en', preservedPublishedDate, slug, String(payload.en.permalink || '').trim()),
     description: String(payload.en.description || '').trim(),
     photos,
     tags: normalizeStringList(payload.en.tags),
     categories: [categoryEn],
     toc,
-    ...enExtras
+    ...enExtras,
+    updated: normalizedSaveTime
   };
 
   if (!zhFrontMatter.title) throw new Error('中文标题不能为空。');

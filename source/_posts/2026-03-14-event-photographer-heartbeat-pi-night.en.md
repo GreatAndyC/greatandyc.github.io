@@ -6,7 +6,7 @@ slug: The-Craft-of-an-Event-Photographer-and-a-Recap-of-Heartbeat-Pi-Night
 permalink: en/2026/03/14/The-Craft-of-an-Event-Photographer-and-a-Recap-of-Heartbeat-Pi-Night/
 description: A recap of an event-photography experience and what it felt like.
 photos:
-  - /images/recap_314/3.16_封面图.jpg
+  - /images/gallery/heartbeat-pi-2026/3.16_封面图.jpg
 tags:
   - Photography
   - Recap
@@ -16,7 +16,7 @@ categories:
 > Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
 
 <figure class="post-figure">
-  <img src="/images/recap_314/3.16_封面图.jpg" alt="">
+  <img src="/images/gallery/heartbeat-pi-2026/3.16_封面图.jpg" alt="">
 </figure>
 
 Summary: This article looks back on my experience photographing an HKU evening event over the weekend, along with some reflections on the craft.
@@ -61,7 +61,7 @@ That leads to the first rule for this kind of assignment:
 Leaving yourself buffer time makes it much easier to handle surprises. During rehearsal I discovered, for example, that my own SD cards would not be enough for the whole event, so I borrowed a larger one from another student. I also had to assess whether the batteries would last and whether the lighting was usable. Once those things are under control, you can judge the whole session more calmly and form an overall plan.
 
 <figure class="post-figure">
-  <img src="/images/recap_314/3.16_Prepare.jpg" alt="">
+  <img src="/images/gallery/heartbeat-pi-2026/3.16_Prepare.jpg" alt="">
   <figcaption>The SD card I borrowed from another student</figcaption>
 </figure>
 
@@ -78,7 +78,7 @@ From my own experience, the key things to remember when photographing dance are:
 2. **Fairness matters more than abundance**: if you are shooting individual close-ups, try to make sure each dancer gets at least one good photo, instead of giving everything to the center or the performer who happens to have the strongest camera presence. Otherwise, you are likely to get messages such as: "Teacher, why doesn't our Zihan have any photos?" or "Why are you always staring at our Zihan?" Of course, if there is no practical interest involved, then feel free to follow your own taste.
 
 <figure class="post-figure">
-  <img src="/images/recap_314/3.16_Kpop.jpg" alt="">
+  <img src="/images/gallery/heartbeat-pi-2026/3.16_Kpop.jpg" alt="">
   <figcaption>A K-pop group dance performance</figcaption>
 </figure>
 
@@ -92,12 +92,12 @@ That brings up the second and third rules:
 > 3. **Solve what you can in the shooting stage instead of leaving it to post-production**: a properly exposed file in camera is far better than trying to raise the exposure later, especially when you need to deliver quickly
 
 <figure class="post-figure">
-  <img src="/images/recap_314/3.16_对比img1.jpg" alt="">
+  <img src="/images/gallery/heartbeat-pi-2026/3.16_对比img1.jpg" alt="">
   <figcaption>Test Shot 1: an underexposed frame from the preparation stage</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/recap_314/3.16_对比img2.jpg" alt="">
+  <img src="/images/gallery/heartbeat-pi-2026/3.16_对比img2.jpg" alt="">
   <figcaption>Test Shot 2: the result after raising exposure in post</figcaption>
 </figure>
 
@@ -109,14 +109,14 @@ As the second half began, some audience members had left, and my left hand had a
 *Perhaps the ability to make fast decisions and adapt on the fly is also one of the irreplaceable skills in the age of AI.*
 
 <figure class="post-figure">
-  <img src="/images/recap_314/3.16_FirstView.jpg" alt="">
+  <img src="/images/gallery/heartbeat-pi-2026/3.16_FirstView.jpg" alt="">
   <figcaption>The lightweight D5600</figcaption>
 </figure>
 
 Once part of the audience left, I had more room to move. At that point I noticed that if I photographed singers straight from the front, the microphone often blocked their faces. So I decisively moved to the side.
 
 <figure class="post-figure">
-  <img src="/images/recap_314/3.16_Singer1.jpg" alt="">
+  <img src="/images/gallery/heartbeat-pi-2026/3.16_Singer1.jpg" alt="">
   <figcaption>A side-angle singer shot. The microphone shadow still affects the image, but it is much better than having the whole face blocked.</figcaption>
 </figure>
 
@@ -127,7 +127,7 @@ That leads to the fourth rule:
 When you hold a camera, you actually gain the privilege of becoming "invisible." The audience will instinctively ignore you or quickly get used to your presence. So move boldly and look for the best angle instead of shrinking back because you are afraid of disturbing others. Many beginners, including my earlier self, lack this awareness in event photography. Of course, do not make loud noises, initiate unnecessary physical contact, or fire the flash aggressively.
 
 <figure class="post-figure">
-  <img src="/images/recap_314/3.16_梯子.jpg" alt="">
+  <img src="/images/gallery/heartbeat-pi-2026/3.16_梯子.jpg" alt="">
   <figcaption>They say that if you wear work clothes, carry a ladder, and walk confidently, you can enter anywhere, even the Louvre.</figcaption>
 </figure>
 
@@ -159,7 +159,7 @@ The answer is still the same old line: *Practice makes perfect.*
 If you get chances like this, take them actively. Over time, you will notice that your leadership improves too.
 
 <figure class="post-figure">
-  <img src="/images/recap_314/3.16_GroupPhotos.jpg" alt="">
+  <img src="/images/gallery/heartbeat-pi-2026/3.16_GroupPhotos.jpg" alt="">
   <figcaption>The standard group photo everyone receives. Where is the photographer? Behind the camera, of course.</figcaption>
 </figure>
 
@@ -219,26 +219,26 @@ Among all the photos, two received extra processing.
 The first was a stitched panorama of the band at the start of the show. The light was stable at that moment, and the guitarist was about to graduate, so it felt worth preserving in a special way. Compared with simply cropping from a wide shot, a panorama preserves clarity and perspective better, so I quickly shot three frames and stitched them together.
 
 <figure class="post-figure">
-  <img src="/images/recap_314/3.16_LongPic.jpg" alt="">
+  <img src="/images/gallery/heartbeat-pi-2026/3.16_LongPic.jpg" alt="">
   <figcaption>Band performance: "Anhe Bridge" and "Lilian"</figcaption>
 </figure>
 
 The second was a K-pop group dance composite. Because of timing and framing, the best pose and the best composition were not captured in the same frame. I happened to have two photos, each with a different strength, so I combined them.
 
 <figure class="post-figure">
-  <img src="/images/recap_314/3.16_Kpop1.jpg" alt="">
+  <img src="/images/gallery/heartbeat-pi-2026/3.16_Kpop1.jpg" alt="">
   <figcaption>"Expectation" cover by Girls' Day - Pic 1: the movement is great, the composition is not</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/recap_314/3.16_Kpop2.jpg" alt="">
+  <img src="/images/gallery/heartbeat-pi-2026/3.16_Kpop2.jpg" alt="">
   <figcaption>"Expectation" cover by Girls' Day - Pic 2: the composition works, but the movement is not synchronized</figcaption>
 </figure>
 
 So I used Photoshop to composite them.
 
 <figure class="post-figure">
-  <img src="/images/recap_314/3.16_Kpop.jpg" alt="">
+  <img src="/images/gallery/heartbeat-pi-2026/3.16_Kpop.jpg" alt="">
   <figcaption>If you look closely, the light and shadow on the dancers are a little uncanny.</figcaption>
 </figure>
 

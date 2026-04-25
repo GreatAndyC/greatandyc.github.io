@@ -6,7 +6,7 @@ slug: duan-yongping-xueqiu-crawler
 permalink: en/2026/03/18/duan-yongping-xueqiu-crawler/
 description: A crawl log of Duan Yongping’s Xueqiu comments, including tool choice, debugging, and export results.
 photos:
-  - /images/feishu-migration/duan-yongping-xueqiu-crawler/duan-buffett-cover.png
+  - /images/posts/feishu-migration/duan-yongping-xueqiu-crawler/duan-buffett-cover.png
 tags:
   - Crawler
   - Xueqiu
@@ -59,11 +59,11 @@ In the end, I used a semi-automatic workflow to collect all public comments post
 **Statistics:** 458 pages at 20 comments per page, for a total of **9,151** comments.
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/duan-yongping-xueqiu-crawler/xueqiu_crawler_output_csv.png" alt="">
+  <img src="/images/posts/feishu-migration/duan-yongping-xueqiu-crawler/xueqiu_crawler_output_csv.png" alt="">
   <figcaption>Exported Xueqiu comment table</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/duan-yongping-xueqiu-crawler/duan_yongping_comment_sample.png" alt="">
+  <img src="/images/posts/feishu-migration/duan-yongping-xueqiu-crawler/duan_yongping_comment_sample.png" alt="">
   <figcaption>Sample Duan Yongping comment</figcaption>
 </figure>

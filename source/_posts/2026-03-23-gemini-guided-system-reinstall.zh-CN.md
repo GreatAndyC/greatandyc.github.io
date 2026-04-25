@@ -6,7 +6,7 @@ slug: gemini-guided-system-reinstall
 permalink: 2026/03/23/gemini-guided-system-reinstall/
 description: 记录一次在 Gemini 辅助下完成系统重装、设备清理和旧电脑再利用的完整实践。
 photos:
-  - /images/feishu-migration/gemini-guided-system-reinstall/system_clean_project_cover.png
+  - /images/posts/feishu-migration/gemini-guided-system-reinstall/system_clean_project_cover.png
 tags:
   - Gemini
   - 系统重装
@@ -19,7 +19,7 @@ toc: true
 
 https://my.feishu.cn/wiki/I7T9wXh2CiuO7Qkx8RqcxbfvnNh
 写于26.3.23 4pm-5:40pm
-![alt text](/images/feishu-migration/gemini-guided-system-reinstall/system_clean_project_cover.png)
+![alt text](/images/posts/feishu-migration/gemini-guided-system-reinstall/system_clean_project_cover.png)
 封面图由Nano banana2生成
 
 <!-- more -->
@@ -54,7 +54,7 @@ Chrome浏览器：https://www.google.com/intl/zh-CN/chrome/
 首先清理电脑资料，这部分不做过多赘述，相信大家都有搬家&打扫的经验，因人而异。
 C盘可以重点关注下载、文档等文件夹下的文件，可以在Powershell&Bash里合理使用Tree命令获取文件夹结构，将文件拆分发给AI工具询问哪些可能是有价值的文档，进行针对性保存。
 可以使用工具WizTree帮助快速可视化分析硬盘空间，加快清理过程https://diskanalyzer.com/
-![alt text](/images/feishu-migration/gemini-guided-system-reinstall/wiztree_disk_space_analysis.png)
+![alt text](/images/posts/feishu-migration/gemini-guided-system-reinstall/wiztree_disk_space_analysis.png)
 当然一开始其实并没有想要重装电脑的想法，只是想要把软件给进行深度清理，做一下大扫除。此时刚刚打开电脑，运行Antigravity的Gemini模型，读取电脑配置和运行信息：“为什么我的电脑这么卡”。（这一步可以手动进行，不过我懒，就让Agent帮我代劳了）
 
 获得一份Markdown格式的笔记本配置文件以及，已经248天没有重启的信息，所以积累了很多碎片文件，间接导致了系统运行卡顿。
@@ -66,7 +66,7 @@ C盘可以重点关注下载、文档等文件夹下的文件，可以在Powersh
 存储 256 GB SSD LITEON CV1-CC256
 
 当时已经到了开启浏览器都要卡5秒的程度了，查看任务管理器（Ctrl+Shift+Esc）和程序与卸载页面（Win+R输入“appwiz.cpl”进入），截多张图（Snipaste），发给Gemini，让它给我解释每一个进程、软件有什么用处和开发公司，并且按照顺序给我卸载清单，发现后台和本地磁盘运行了诸多如X里巴巴系残留、x软、厂商原装软件等吃资源大户。
-![alt text](/images/feishu-migration/gemini-guided-system-reinstall/windows_app_uninstall_list.png)
+![alt text](/images/posts/feishu-migration/gemini-guided-system-reinstall/windows_app_uninstall_list.png)
 挨个卸载过时的软件、没有用的软件等，大约给硬盘腾出了40GB左右的空间，花费了不少时间（学到了很多关于Windows系统权限、以及如何做深度清理的一般方法的知识），但是也遇到了一些流氓软件需要非常复杂的卸载手段的情况（请神容易送神难），遂打算直接重装系统。
 联网获取系统镜像
 在和Gemini讨论我的需求（稳定，清爽系统）后，在Ubuntu 24.04和Windows LTSC 2021之间选择了后者（考虑到软件生态和适配度等）
@@ -75,18 +75,18 @@ C盘可以重点关注下载、文档等文件夹下的文件，可以在Powersh
 
 将U盘变启动盘
 打开Rufus，在镜像文件中选择刚刚下载的iso文件，点击“选择”按钮左边的✅按钮进行Hash校验，确保没有被篡改或投毒。（我要验牌）
-![alt text](/images/feishu-migration/gemini-guided-system-reinstall/rufus_iso_selection_gui.png)
-![alt text](/images/feishu-migration/gemini-guided-system-reinstall/rufus_checksum_verification.png)
+![alt text](/images/posts/feishu-migration/gemini-guided-system-reinstall/rufus_iso_selection_gui.png)
+![alt text](/images/posts/feishu-migration/gemini-guided-system-reinstall/rufus_checksum_verification.png)
 校验值结果如下，牌没问题。
-![alt text](/images/feishu-migration/gemini-guided-system-reinstall/iso_hash_check_result_success.png)
+![alt text](/images/posts/feishu-migration/gemini-guided-system-reinstall/iso_hash_check_result_success.png)
 准备就绪后点击开始，勾选除了使用当前用户的区域设置以外的所有内容
-![alt text](/images/feishu-migration/gemini-guided-system-reinstall/rufus_bootable_usb_creation_start.png)
+![alt text](/images/posts/feishu-migration/gemini-guided-system-reinstall/rufus_bootable_usb_creation_start.png)
 直至写入完成。
 刷系统环节
 在最后一次检查资料已全部清空备份后，让AI生成一份刷机SOP的Markdown文档，用U盘/互联网转移到其他设备，手机拍照or云文档方式便于对照执行
-![alt text](/images/feishu-migration/gemini-guided-system-reinstall/bios_boot_order_config.png)
-![alt text](/images/feishu-migration/gemini-guided-system-reinstall/windows_ltsc_installation_step1.png)
-![alt text](/images/feishu-migration/gemini-guided-system-reinstall/windows_ltsc_disk_partitioning.png)
+![alt text](/images/posts/feishu-migration/gemini-guided-system-reinstall/bios_boot_order_config.png)
+![alt text](/images/posts/feishu-migration/gemini-guided-system-reinstall/windows_ltsc_installation_step1.png)
+![alt text](/images/posts/feishu-migration/gemini-guided-system-reinstall/windows_ltsc_disk_partitioning.png)
 具体内容不过多赘述，Ai给的详细的操作指南，进入BIOS的设置是为了让硬件能从U盘启动，SSD可以不用分区，机械盘最好进行分区。
 任何不懂的可以拍照问Gemini/豆包，谨慎操作一般不会导致设备变成大号砖头。
 （真变砖了请不要找作者负责🙏）
@@ -102,7 +102,7 @@ Todesk（远程控制软件：真得控制控制你了）
 一切就绪后，就开始配置你的Openclaw/Claude code/Open code吧！
 
 什么，你说，智能体把你的电脑搞崩了？
-![alt text](/images/feishu-migration/gemini-guided-system-reinstall/system_crash_humor_meme.png)
+![alt text](/images/posts/feishu-migration/gemini-guided-system-reinstall/system_crash_humor_meme.png)
 https://www.zhihu.com/question/1999136031413384196/answer/2011220677781365962
 
 不怕，点击这里，还可以抢救一下！（跳到本文开头）

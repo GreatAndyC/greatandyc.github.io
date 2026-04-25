@@ -6,7 +6,7 @@ slug: Full-Review-of-Building-a-Blog-with-GitHub-and-Hexo
 permalink: 2025/09/01/Full-Review-of-Building-a-Blog-with-GitHub-and-Hexo/
 description: 回顾如何用 GitHub 和 Hexo 搭建个人博客。
 photos:
-  - /images/mainpage.png
+  - /images/posts/mainpage.png
 tags:
   - Hexo
 categories:
@@ -92,7 +92,7 @@ TTL: Auto
 同时还可与在主题的配置文件里面对next的细分主题进行选择，此处不过多赘述，可以自行询问GPT老师和Google
 
 参考教程[优化主题](https://zhuanlan.zhihu.com/p/106060640)对主页的栏目设置(侧边栏、评论区、友链等)完成后，主页应该如下图类似：
-<img src="/images/mainpage.png" alt=""
+<img src="/images/posts/mainpage.png" alt=""
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 之后便可以愉快地在博客里面增加文章了
 

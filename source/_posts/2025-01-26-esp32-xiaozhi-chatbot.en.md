@@ -6,7 +6,7 @@ slug: esp32-xiaozhi-chatbot
 permalink: en/2025/01/26/esp32-xiaozhi-chatbot/
 description: A complete build log for an ESP32-based voice chatbot terminal, including parts, wiring, flashing, and setup.
 photos:
-  - /images/feishu-migration/esp32-xiaozhi-chatbot/xiaozhi-cover.jpg
+  - /images/posts/feishu-migration/esp32-xiaozhi-chatbot/xiaozhi-cover.jpg
 tags:
   - ESP32
   - IoT
@@ -76,19 +76,19 @@ Useful references:
 
 ### 5.1 Wiring
 
-![](/images/feishu-migration/esp32-xiaozhi-chatbot/esp32_xiaozhi_wiring_schematic.png)
-![](/images/feishu-migration/esp32-xiaozhi-chatbot/esp32_breadboard_real_connection.png)
+![](/images/posts/feishu-migration/esp32-xiaozhi-chatbot/esp32_xiaozhi_wiring_schematic.png)
+![](/images/posts/feishu-migration/esp32-xiaozhi-chatbot/esp32_breadboard_real_connection.png)
 
 ### 5.2 Flashing
 
-![](/images/feishu-migration/esp32-xiaozhi-chatbot/espressif_flash_download_tool.png)
-![](/images/feishu-migration/esp32-xiaozhi-chatbot/firmware_flashing_log_output.png)
+![](/images/posts/feishu-migration/esp32-xiaozhi-chatbot/espressif_flash_download_tool.png)
+![](/images/posts/feishu-migration/esp32-xiaozhi-chatbot/firmware_flashing_log_output.png)
 
 Use Espressif’s official flashing tool to burn the firmware.
 
 ### 5.3 Networking
 
-![](/images/feishu-migration/esp32-xiaozhi-chatbot/xiaozhi_console_backend_settings.png)
+![](/images/posts/feishu-migration/esp32-xiaozhi-chatbot/xiaozhi_console_backend_settings.png)
 
 Configure the backend in the Xiaozhi console and connect the device to the network.
 

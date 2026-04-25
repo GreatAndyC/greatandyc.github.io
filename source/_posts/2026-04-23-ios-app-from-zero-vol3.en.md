@@ -6,7 +6,7 @@ slug: ios-app-from-zero-vol3
 permalink: en/2026/04/23/ios-app-from-zero-vol3/
 description: Create and run your first iOS app with Xcode, from developer enrollment to AI-assisted debugging.
 photos:
-  - /images/2026-04-23-ios-app-from-zero-vol3/0-1-ios-cover.png
+  - /images/posts/2026-04-23-ios-app-from-zero-vol3/0-1-ios-cover.png
 tags:
   - iOS
   - AI
@@ -30,7 +30,7 @@ In the first two articles, I covered why to build iOS apps and how to prepare yo
 > https://developer.apple.com/cn/programs/enroll/
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/apple-developer-enrollment-page.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/apple-developer-enrollment-page.png" alt="">
   <figcaption>Apple Developer enrollment page</figcaption>
 </figure>
 
@@ -45,21 +45,21 @@ For an individual account, you generally need:
 Fill in your real personal information.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/apple-developer-personal-info.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/apple-developer-personal-info.png" alt="">
   <figcaption>Fill in personal information</figcaption>
 </figure>
 
 Choose `Entity Type` as `Individual`.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/apple-developer-entity-type.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/apple-developer-entity-type.png" alt="">
   <figcaption>Select account type</figcaption>
 </figure>
 
 Accept the agreement.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/apple-developer-terms-agreement.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/apple-developer-terms-agreement.png" alt="">
   <figcaption>Accept terms and conditions</figcaption>
 </figure>
 
@@ -68,7 +68,7 @@ Then pay the fee and wait for approval.
 If needed, use the "Contact Us" section for support.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/apple-developer-contact-support.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/apple-developer-contact-support.png" alt="">
   <figcaption>Contact support</figcaption>
 </figure>
 
@@ -79,7 +79,7 @@ If needed, use the "Contact Us" section for support.
 Search for Xcode in the Mac App Store and download it.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/app-store-xcode-download.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/app-store-xcode-download.png" alt="">
   <figcaption>Download Xcode from App Store</figcaption>
 </figure>
 
@@ -98,21 +98,21 @@ Xcode and Android Studio are similar in role: at the end of the day, you still n
 Open Xcode and click `Create a new Xcode project`.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/xcode-create-project.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-create-project.png" alt="">
   <figcaption>Create a project in Xcode</figcaption>
 </figure>
 
 Choose the `App` template, then click `Next`.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/xcode-app-template.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-app-template.png" alt="">
   <figcaption>Choose the App template</figcaption>
 </figure>
 
 Fill in project info:
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/xcode-project-info-config.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-project-info-config.png" alt="">
   <figcaption>Xcode project configuration</figcaption>
 </figure>
 
@@ -130,7 +130,7 @@ Click `Next`, choose where to save it, then click `Create`.
 Now you have a project.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/xcode-project-structure.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-project-structure.png" alt="">
   <figcaption>Xcode project structure</figcaption>
 </figure>
 
@@ -139,14 +139,14 @@ Left side: files. Middle: editor. Right side: simulator/device preview area.
 Choose device or simulator, then hit Run (`Command + R`). I ran directly on my real iPhone. (For first-time connection you need cable, developer mode, and signing trust steps. These details are tedious but manageable. Screenshot errors and ask AI when needed, and stay patient.)
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/xcode-device-selector.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-device-selector.png" alt="">
   <figcaption>Device selector</figcaption>
 </figure>
 
 Then came a huge `Build Failed` and a wall of red errors.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/xcode-build-failed.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-build-failed.png" alt="">
   <figcaption>Build failed</figcaption>
 </figure>
 
@@ -159,14 +159,14 @@ That is okay. I could not write a single line of SwiftUI either, and still got m
 > It is not because I suddenly became a stronger programmer. The workflow changed. A lot of repetitive app-layer work can now be delegated to AI. Only low-level, highly specific, or very large/complex cases still require heavy manual coding.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/generation-changed.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/generation-changed.png" alt="">
   <figcaption>The era has changed</figcaption>
 </figure>
 
 At this stage, one option is to copy all error messages to web AI tools (Gemini, GPT, etc.) and fix them one by one.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/ai-copy-error-message.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/ai-copy-error-message.png" alt="">
   <figcaption>Copy errors to AI</figcaption>
 </figure>
 
@@ -179,7 +179,7 @@ Ready to jump in and start?
 > One more thing: modern AI tools now have agentic capability. They can analyze and modify code directly, so you no longer need to manually copy and paste every error.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/martial-arts-secret-meme.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/martial-arts-secret-meme.png" alt="">
   <figcaption>“To master the skill, first remove distractions.” But read a few more pages first.</figcaption>
 </figure>
 
@@ -210,7 +210,7 @@ Pick based on your workflow.
 I use Antigravity + Cline as an example here (same idea in VSCode).
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/vscode-cline-plugin.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/vscode-cline-plugin.png" alt="">
   <figcaption>VSCode Cline plugin</figcaption>
 </figure>
 
@@ -218,7 +218,7 @@ I use Antigravity + Cline as an example here (same idea in VSCode).
 2. Configure your API key in Cline settings.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/cline-api-key-config.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/cline-api-key-config.png" alt="">
   <figcaption>Cline API key setup</figcaption>
 </figure>
 
@@ -232,7 +232,7 @@ I use Antigravity + Cline as an example here (same idea in VSCode).
 After setup, open your project folder in the editor, launch Cline, and ask the agent to read the project first.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/cline-open-project.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/cline-open-project.png" alt="">
   <figcaption>Open project in Cline</figcaption>
 </figure>
 
@@ -250,33 +250,33 @@ Then ask for specific tasks. Break your request into small, focused steps instea
 Then wait for the agent to execute. Cline’s strength and weakness are both in its real-time visible actions.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/cline-realtime-operations.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/cline-realtime-operations.png" alt="">
   <figcaption>Cline real-time operations</figcaption>
 </figure>
 
 After the agent finishes and reports all fixes done, return to Xcode and build again.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/cline-bugs-fixed.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/cline-bugs-fixed.png" alt="">
   <figcaption>Bugs fixed by the agent</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/xcode-build-success.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-build-success.png" alt="">
   <figcaption>Build succeeded</figcaption>
 </figure>
 
 If everything is connected correctly, your device will show an install animation and then finish app installation.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/ios-app-download-complete.jpeg" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/ios-app-download-complete.jpeg" alt="">
   <figcaption>App installed</figcaption>
 </figure>
 
 Open the app, and it runs.
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/ios-app-running-success.jpeg" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/ios-app-running-success.jpeg" alt="">
   <figcaption>App running successfully</figcaption>
 </figure>
 

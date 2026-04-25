@@ -6,7 +6,7 @@ slug: Markdown-Basics
 permalink: en/2025/09/01/Markdown-Basics/
 description: A short note on the Markdown syntax used in this blog.
 photos:
-  - /images/test.png
+  - /images/posts/test.png
 tags:
   - Markdown
   - Hexo
@@ -72,8 +72,8 @@ hello("Andy")
 ## Level-2 Heading: Links and Images
 This is a link to [Bing Search](www.bing.com).
 
-Local image (put it under `source/images/`):
-<img src="/images/test.png" 
+Local image (for posts, put it under `source/images/posts/`):
+<img src="/images/posts/test.png" 
      style="width:300px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 
 Reference links:
@@ -135,8 +135,8 @@ hello("Andy")
 ## Level-2 Heading: Links and Images
 This is a link to [Bing Search](www.bing.com).
 
-Local image (put it under `source/images/`):
-<img src="/images/test.png"
+Local image (for posts, put it under `source/images/posts/`):
+<img src="/images/posts/test.png"
      style="width:300px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 
 Reference links:

@@ -6,7 +6,7 @@ slug: ios-app-from-zero-vol3
 permalink: 2026/04/23/ios-app-from-zero-vol3/
 description: 通过 Xcode 创建并运行第一个 iOS App，掌握开发者账号注册和 AI 辅助开发流程。
 photos:
-  - /images/2026-04-23-ios-app-from-zero-vol3/0-1-ios-cover.png
+  - /images/posts/2026-04-23-ios-app-from-zero-vol3/0-1-ios-cover.png
 tags:
   - iOS
   - AI
@@ -30,7 +30,7 @@ toc: true
 > https://developer.apple.com/cn/programs/enroll/
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/apple-developer-enrollment-page.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/apple-developer-enrollment-page.png" alt="">
   <figcaption>苹果开发者注册页面</figcaption>
 </figure>
 
@@ -45,21 +45,21 @@ toc: true
 填写真实有效的个人信息。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/apple-developer-personal-info.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/apple-developer-personal-info.png" alt="">
   <figcaption>填写个人信息</figcaption>
 </figure>
 
 选择 Entity Type 为 Individual。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/apple-developer-entity-type.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/apple-developer-entity-type.png" alt="">
   <figcaption>选择账户类型</figcaption>
 </figure>
 
 同意条款。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/apple-developer-terms-agreement.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/apple-developer-terms-agreement.png" alt="">
   <figcaption>同意条款</figcaption>
 </figure>
 
@@ -68,7 +68,7 @@ toc: true
 任何问题都可以在「联系我们」处获取支持。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/apple-developer-contact-support.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/apple-developer-contact-support.png" alt="">
   <figcaption>联系支持</figcaption>
 </figure>
 
@@ -79,7 +79,7 @@ toc: true
 在 Mac 的 App Store 中搜索 Xcode，点击下载。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/app-store-xcode-download.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/app-store-xcode-download.png" alt="">
   <figcaption>App Store 下载 Xcode</figcaption>
 </figure>
 
@@ -98,21 +98,21 @@ Xcode 是苹果官方推出的 IDE（集成开发环境），主要作用是对 
 打开 Xcode，点击「Create a new Xcode project」。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/xcode-create-project.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-create-project.png" alt="">
   <figcaption>Xcode 创建项目</figcaption>
 </figure>
 
 选择「App」模板，然后点击「Next」。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/xcode-app-template.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-app-template.png" alt="">
   <figcaption>Xcode 选择 App 模板</figcaption>
 </figure>
 
 填写项目信息：
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/xcode-project-info-config.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-project-info-config.png" alt="">
   <figcaption>Xcode 项目配置</figcaption>
 </figure>
 
@@ -130,7 +130,7 @@ Xcode 是苹果官方推出的 IDE（集成开发环境），主要作用是对 
 现在就有一个项目文件啦。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/xcode-project-structure.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-project-structure.png" alt="">
   <figcaption>Xcode 项目结构</figcaption>
 </figure>
 
@@ -139,14 +139,14 @@ Xcode 是苹果官方推出的 IDE（集成开发环境），主要作用是对 
 这里可以点击选择在真机还是模拟器上运行我们的 App，点击右上角的运行按钮（Command+R）即可。我这里直接选择了我的真机进行运行。（初次连接需要插数据线并且开启设备的开发者选项，同时做签名确认，这些比较琐碎的问题都可以截图问 AI，重点是要足够耐心）
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/xcode-device-selector.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-device-selector.png" alt="">
   <figcaption>设备选择器</figcaption>
 </figure>
 
 弹出一个巨大的 Build Failed 以及左边全红的报错（如果是股市就好了呢）。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/xcode-build-failed.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-build-failed.png" alt="">
   <figcaption>构建失败</figcaption>
 </figure>
 
@@ -159,14 +159,14 @@ Xcode 是苹果官方推出的 IDE（集成开发环境），主要作用是对 
 > 这不是因为我变强了，而是开发方式变了。大部分简单重复的应用层面上的工作，都可以交给 AI 完成，只有一些非常底层和细节或者逻辑性要求很强/项目文件过大等特殊情况，才需要我们自己上手「古法编程」。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/generation-changed.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/generation-changed.png" alt="">
   <figcaption>时代变了</figcaption>
 </figure>
 
 这时候可以选择：把报错信息全部一起复制给网页端的 AI 工具，例如 Gemini、GPT，帮你一个个 Debug，你要做的，就是充当一个人肉复制机器，事实上笔者在开始探索的时候也是这么做的。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/ai-copy-error-message.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/ai-copy-error-message.png" alt="">
   <figcaption>复制错误信息给 AI</figcaption>
 </figure>
 
@@ -175,7 +175,7 @@ Xcode 是苹果官方推出的 IDE（集成开发环境），主要作用是对 
 > 且慢，随着时间的进行，现在的 AI 工具已经具备了 Agentic 的能力，能自主进行分析和修改代码，所以你可以直接在其他 AI 工具里面打开项目，用 Agent 插件实现自动 Debug，所以这种人肉复制的工作也不需要了。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/martial-arts-secret-meme.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/martial-arts-secret-meme.png" alt="">
   <figcaption>葵花宝典第一页：欲练神功，必先自宫。不过下刀之前，多翻两页，说不定是「预练神功，亦可不必自宫」</figcaption>
 </figure>
 
@@ -206,7 +206,7 @@ Xcode 是苹果官方推出的 IDE（集成开发环境），主要作用是对 
 这里以笔者常用的 Antigravity + Cline 为例进行编辑（VSCode 一样）。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/vscode-cline-plugin.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/vscode-cline-plugin.png" alt="">
   <figcaption>VSCode Cline 插件</figcaption>
 </figure>
 
@@ -214,7 +214,7 @@ Xcode 是苹果官方推出的 IDE（集成开发环境），主要作用是对 
 2. 在 Cline 设置页面配置好 API Key
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/cline-api-key-config.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/cline-api-key-config.png" alt="">
   <figcaption>Cline API Key 配置</figcaption>
 </figure>
 
@@ -228,7 +228,7 @@ Xcode 是苹果官方推出的 IDE（集成开发环境），主要作用是对 
 配置好后，在编辑器中打开项目文件夹，然后点击 Cline，和 Agent 互动，让 AI 先读一下这个项目。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/cline-open-project.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/cline-open-project.png" alt="">
   <figcaption>Cline 打开项目</figcaption>
 </figure>
 
@@ -246,35 +246,35 @@ Xcode 是苹果官方推出的 IDE（集成开发环境），主要作用是对 
 接着就是等待 Agent 自动帮你完成任务了，Cline 的优点和缺点都是会实时显示操作。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/cline-realtime-operations.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/cline-realtime-operations.png" alt="">
   <figcaption>Cline 实时操作</figcaption>
 </figure>
 
 等待 Agent 帮你修改完成，输出显示所有的 Bug 都已经完成修复了。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/cline-bugs-fixed.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/cline-bugs-fixed.png" alt="">
   <figcaption>Bug 修复完成</figcaption>
 </figure>
 
 回到 Xcode，再次运行 Build 命令。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/xcode-build-success.png" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-build-success.png" alt="">
   <figcaption>构建成功</figcaption>
 </figure>
 
 如果一切连接顺利，一个没有图标的 iOS App 就会在你的设备上显示出类似下载的动画，直至完成。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/ios-app-download-complete.jpeg" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/ios-app-download-complete.jpeg" alt="">
   <figcaption>App 下载完成</figcaption>
 </figure>
 
 打开这个 iOS App，运行成功。
 
 <figure class="post-figure">
-  <img src="/images/2026-04-23-ios-app-from-zero-vol3/ios-app-running-success.jpeg" alt="">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/ios-app-running-success.jpeg" alt="">
   <figcaption>App 运行成功</figcaption>
 </figure>
 

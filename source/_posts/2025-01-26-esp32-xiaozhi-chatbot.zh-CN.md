@@ -6,7 +6,7 @@ slug: esp32-xiaozhi-chatbot
 permalink: 2025/01/26/esp32-xiaozhi-chatbot/
 description: 记录一次基于 ESP32 搭建小智语音聊天终端的全过程，包括 BOM、接线、烧录和联网配置。
 photos:
-  - /images/feishu-migration/esp32-xiaozhi-chatbot/xiaozhi-cover.jpg
+  - /images/posts/feishu-migration/esp32-xiaozhi-chatbot/xiaozhi-cover.jpg
 tags:
   - ESP32
   - IoT
@@ -99,23 +99,23 @@ ESP32 小智Chatbot制作全流程记录
 
 ### 5.1 按照线路图组装
 
-![alt text](/images/feishu-migration/esp32-xiaozhi-chatbot/esp32_xiaozhi_wiring_schematic.png)
+![alt text](/images/posts/feishu-migration/esp32-xiaozhi-chatbot/esp32_xiaozhi_wiring_schematic.png)
 
-![alt text](/images/feishu-migration/esp32-xiaozhi-chatbot/esp32_breadboard_real_connection.png)
+![alt text](/images/posts/feishu-migration/esp32-xiaozhi-chatbot/esp32_breadboard_real_connection.png)
 
 组装完成后电路图如上图所示
 
 ### 5.2 烧录
 
-![alt text](/images/feishu-migration/esp32-xiaozhi-chatbot/espressif_flash_download_tool.png)
+![alt text](/images/posts/feishu-migration/esp32-xiaozhi-chatbot/espressif_flash_download_tool.png)
 
-![alt text](/images/feishu-migration/esp32-xiaozhi-chatbot/firmware_flashing_log_output.png)
+![alt text](/images/posts/feishu-migration/esp32-xiaozhi-chatbot/firmware_flashing_log_output.png)
 
 使用官方的烧录软件烧录固件到开发板中
 
 ### 5.3 联网
 
-![alt text](/images/feishu-migration/esp32-xiaozhi-chatbot/xiaozhi_console_backend_settings.png)
+![alt text](/images/posts/feishu-migration/esp32-xiaozhi-chatbot/xiaozhi_console_backend_settings.png)
 
 使用小智官网的网络服务连接到网络中，在https://xiaozhi.me/console/agents中配置好后端
 

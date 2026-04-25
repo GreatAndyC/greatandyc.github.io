@@ -6,7 +6,7 @@ slug: chatgpt-android-analysis-report
 permalink: en/2025/01/15/chatgpt-android-analysis-report/
 description: A comprehensive analysis of the ChatGPT Android app, covering product features, usage patterns, market context, and improvement suggestions.
 photos:
-  - /images/feishu-migration/chatgpt-android-analysis-report/chatgpt-cover.png
+  - /images/posts/feishu-migration/chatgpt-android-analysis-report/chatgpt-cover.png
 tags:
   - ChatGPT
   - Product Analysis

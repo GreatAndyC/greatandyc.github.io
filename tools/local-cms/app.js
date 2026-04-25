@@ -634,16 +634,71 @@ function renderCategoryOptions() {
   syncCategoryPresetButtonState();
 }
 
+function getGalleryManagedFolders() {
+  const currentFolder = state.gallery.currentAlbum ? inferGalleryImageFolder(state.gallery.currentAlbum) : '';
+  const folders = state.imageFolders.filter(folder => folder && folder.startsWith('gallery/'));
+  if (currentFolder && !folders.includes(currentFolder)) {
+    folders.unshift(currentFolder);
+  }
+  return Array.from(new Set(folders));
+}
+
+function getPostManagedFolders() {
+  const currentFolder = state.currentRecord ? inferImageFolder(state.currentRecord) : '';
+  const folders = state.imageFolders.filter(folder => folder && folder.startsWith('posts/'));
+  if (currentFolder && !folders.includes(currentFolder)) {
+    folders.unshift(currentFolder);
+  }
+  return Array.from(new Set(folders));
+}
+
+function normalizePostManagedFolder(value, fallbackKey = '') {
+  const raw = String(value || '').trim().replace(/^\/+|\/+$/g, '');
+  const fallback = String(fallbackKey || '').trim().replace(/^\/+|\/+$/g, '');
+  if (!raw) {
+    return fallback ? `posts/${fallback}` : '';
+  }
+  if (raw.startsWith('posts/')) {
+    return raw;
+  }
+  if (raw === 'posts') {
+    return fallback ? `posts/${fallback}` : '';
+  }
+  return `posts/${raw}`;
+}
+
+function normalizeGalleryManagedFolder(value, fallbackSlug = '') {
+  const raw = String(value || '').trim().replace(/^\/+|\/+$/g, '');
+  if (!raw) {
+    return fallbackSlug ? `gallery/${fallbackSlug}` : '';
+  }
+  if (raw.startsWith('gallery/')) {
+    return raw;
+  }
+  if (raw === 'gallery') {
+    return fallbackSlug ? `gallery/${fallbackSlug}` : '';
+  }
+  return `gallery/${raw}`;
+}
+
 function renderImageFolders() {
   const options = state.imageFolders.map(folder => {
     const label = folder ? `images/${folder}` : 'images/';
     return `<option value="${escapeHtml(folder)}">${escapeHtml(label)}</option>`;
   });
 
+  const postOptions = ['<option value="">请选择 posts 目录</option>']
+    .concat(getPostManagedFolders().map(folder => `<option value="${escapeHtml(folder)}">${escapeHtml(`images/${folder}`)}</option>`))
+    .join('');
+  elements.post.imageFolderSelect.innerHTML = postOptions;
+
   const html = options.join('');
-  elements.post.imageFolderSelect.innerHTML = html;
-  elements.gallery.imageFolderSelect.innerHTML = html;
   elements.library.folderSelect.innerHTML = html;
+
+  const galleryOptions = ['<option value="">请选择 gallery 目录</option>']
+    .concat(getGalleryManagedFolders().map(folder => `<option value="${escapeHtml(folder)}">${escapeHtml(`images/${folder}`)}</option>`))
+    .join('');
+  elements.gallery.imageFolderSelect.innerHTML = galleryOptions;
 }
 
 function fillLlmSettings() {
@@ -1206,9 +1261,14 @@ async function hydrateGalleryPhotosFromFolder(folder) {
 }
 
 async function syncGalleryFolderToAlbum(options = {}) {
-  const folder = elements.gallery.imageFolderSelect.value.trim();
+  const folder = normalizeGalleryManagedFolder(elements.gallery.imageFolderSelect.value, elements.gallery.slug.value.trim());
   if (!folder) {
     setStatus('请先为相册选择一个独立图片目录。', 'error');
+    return;
+  }
+
+  if (!folder.startsWith('gallery/')) {
+    setStatus('画廊相册只能使用 images/gallery/ 下的独立目录。', 'error');
     return;
   }
 
@@ -1229,6 +1289,7 @@ async function syncGalleryFolderToAlbum(options = {}) {
     imageFolder: payload.folder || folder,
     photos: nextPhotos
   };
+  elements.gallery.imageFolderSelect.value = payload.folder || folder;
 
   renderGalleryPhotoList();
   elements.gallery.folderMeta.textContent = buildGalleryFolderMeta(payload.folder || folder, nextPhotos.length);
@@ -1665,7 +1726,13 @@ async function handleSaveLlmSettings() {
 
 async function handleCreateImageFolder() {
   try {
-    const folder = elements.post.imageNewFolder.value.trim();
+    const folder = normalizePostManagedFolder(
+      elements.post.imageNewFolder.value,
+      elements.post.fileKey.value.trim() || elements.post.slug.value.trim()
+    );
+    if (!folder || !folder.startsWith('posts/')) {
+      throw new Error('文章目录必须创建在 images/posts/ 下。');
+    }
     const payload = await request('/api/images/folders', {
       method: 'POST',
       body: JSON.stringify({ folder })
@@ -1684,11 +1751,18 @@ async function handleCreateImageFolder() {
 
 async function handleRenameImageFolder() {
   try {
+    const nextFolder = normalizePostManagedFolder(
+      elements.post.imageNewFolder.value.trim(),
+      elements.post.fileKey.value.trim() || elements.post.slug.value.trim()
+    );
+    if (!nextFolder || !nextFolder.startsWith('posts/')) {
+      throw new Error('文章目录必须重命名到 images/posts/ 下。');
+    }
     const payload = await request('/api/images/folders/rename', {
       method: 'POST',
       body: JSON.stringify({
         currentFolder: elements.post.imageFolderSelect.value,
-        nextFolder: elements.post.imageNewFolder.value.trim()
+        nextFolder
       })
     });
     state.imageFolders = payload.folders || [''];
@@ -1704,9 +1778,14 @@ async function handleRenameImageFolder() {
 }
 
 async function handleDeleteImageFolder() {
-  const folder = elements.post.imageFolderSelect.value;
+  const folder = normalizePostManagedFolder(elements.post.imageFolderSelect.value);
   if (!folder) {
-    setStatus('不能删除 images 根目录。', 'error');
+    setStatus('请选择一个 images/posts/ 下的目录。', 'error');
+    return;
+  }
+
+  if (!folder.startsWith('posts/')) {
+    setStatus('文章编辑器只能删除 images/posts/ 下的目录。', 'error');
     return;
   }
 
@@ -1735,18 +1814,26 @@ async function uploadSelectedImages(fileList) {
   if (!files.length) return;
 
   try {
+    const folder = normalizePostManagedFolder(
+      elements.post.imageFolderSelect.value,
+      elements.post.fileKey.value.trim() || elements.post.slug.value.trim()
+    );
+    if (!folder || !folder.startsWith('posts/')) {
+      throw new Error('请先选择或创建一个 images/posts/ 下的文章图片目录。');
+    }
     setStatus(`正在上传 ${files.length} 个文件...`);
     const encoded = await Promise.all(files.map(fileToBase64));
     const payload = await request('/api/images/upload', {
       method: 'POST',
       body: JSON.stringify({
-        folder: elements.post.imageFolderSelect.value,
+        folder,
         files: encoded
       })
     });
 
     state.imageFolders = payload.folders || state.imageFolders;
     renderImageFolders();
+    elements.post.imageFolderSelect.value = payload.folder || folder;
     appendPhotoPaths((payload.uploaded || []).map(item => item.path));
     elements.post.imageDropzoneMeta.textContent = (payload.uploaded || []).map(item => item.path).join('  ');
     elements.post.imageFileInput.value = '';
@@ -1808,7 +1895,13 @@ function mutateGalleryPhotos(mutator) {
 
 async function handleGalleryCreateImageFolder() {
   try {
-    const folder = elements.gallery.imageNewFolder.value.trim();
+    const folder = normalizeGalleryManagedFolder(
+      elements.gallery.imageNewFolder.value,
+      elements.gallery.slug.value.trim()
+    );
+    if (!folder || !folder.startsWith('gallery/')) {
+      throw new Error('画廊目录必须创建在 images/gallery/ 下。');
+    }
     const payload = await request('/api/images/folders', {
       method: 'POST',
       body: JSON.stringify({ folder })
@@ -1830,12 +1923,16 @@ async function uploadGalleryImages(fileList) {
   if (!files.length) return;
 
   try {
+    const galleryFolder = normalizeGalleryManagedFolder(elements.gallery.imageFolderSelect.value, elements.gallery.slug.value.trim());
+    if (!galleryFolder || !galleryFolder.startsWith('gallery/')) {
+      throw new Error('请先选择或创建一个 images/gallery/ 下的相册目录。');
+    }
     setStatus(`正在上传 ${files.length} 张画廊图片...`);
     const encoded = await Promise.all(files.map(fileToBase64));
     const payload = await request('/api/images/upload', {
       method: 'POST',
       body: JSON.stringify({
-        folder: elements.gallery.imageFolderSelect.value,
+        folder: galleryFolder,
         files: encoded
       })
     });

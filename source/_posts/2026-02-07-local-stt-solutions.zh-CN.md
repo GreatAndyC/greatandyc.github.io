@@ -6,7 +6,7 @@ slug: local-stt-solutions
 permalink: 2026/02/07/local-stt-solutions/
 description: 汇总一套本地语音转文字方案的基本思路、工具选型与输出效果。
 photos:
-  - /images/feishu-migration/local-stt-solutions/stt-solution-cover.png
+  - /images/posts/feishu-migration/local-stt-solutions/stt-solution-cover.png
 tags:
   - STT
   - Whisper
@@ -22,7 +22,7 @@ toc: true
 HuggingFace链接：https://huggingface.co/openai/whisper-large-v3-turbo
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/local-stt-solutions/whisper_stt_local_speed_test.png" alt="">
+  <img src="/images/posts/feishu-migration/local-stt-solutions/whisper_stt_local_speed_test.png" alt="">
   <figcaption>Whisper 本地转录速度测试</figcaption>
 </figure>
 
@@ -32,14 +32,14 @@ HuggingFace链接：https://huggingface.co/openai/whisper-large-v3-turbo
 在Release页面下载好exe和对应的bin文件之后就可以开始使用了，初次使用的时候下载模型需要一定时间
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/local-stt-solutions/faster_whisper_config_panel.png" alt="">
+  <img src="/images/posts/feishu-migration/local-stt-solutions/faster_whisper_config_panel.png" alt="">
   <figcaption>Buzz 配置面板</figcaption>
 </figure>
 
 速度和效果都挺好的，还可以支持粤语识别和实时录制
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/local-stt-solutions/stt_result_srt_export.png" alt="">
+  <img src="/images/posts/feishu-migration/local-stt-solutions/stt_result_srt_export.png" alt="">
   <figcaption>字幕导出结果</figcaption>
 </figure>
 

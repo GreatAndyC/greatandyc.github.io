@@ -6,7 +6,7 @@ slug: gemini-guided-system-reinstall
 permalink: en/2026/03/23/gemini-guided-system-reinstall/
 description: A full record of reinstalling and repurposing an old laptop with Gemini’s help.
 photos:
-  - /images/feishu-migration/gemini-guided-system-reinstall/system_clean_project_cover.png
+  - /images/posts/feishu-migration/gemini-guided-system-reinstall/system_clean_project_cover.png
 tags:
   - Gemini
   - System Reinstall

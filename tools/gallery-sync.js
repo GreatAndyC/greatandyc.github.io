@@ -45,7 +45,7 @@ function normalizeSrc(slug, rawSrc) {
   if (src.startsWith("/") || src.startsWith("http://") || src.startsWith("https://")) {
     return src;
   }
-  return `/images/${slug}/${src}`;
+  return `/images/gallery/${slug}/${src}`;
 }
 
 function parseTable(body) {

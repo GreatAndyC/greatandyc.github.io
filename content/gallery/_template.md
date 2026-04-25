@@ -18,4 +18,4 @@ tags_en: Tag1,Tag2
 
 | src | title_zh | title_en | caption_zh | caption_en | meta |
 | --- | --- | --- | --- | --- | --- |
-| /images/your-album-slug/cover.jpg | 封面图 | Cover | 第一张图说明 | Caption for first image | 35mm · 1/125s · f/2.8 · ISO 800 |
+| /images/gallery/your-album-slug/cover.jpg | 封面图 | Cover | 第一张图说明 | Caption for first image | 35mm · 1/125s · f/2.8 · ISO 800 |

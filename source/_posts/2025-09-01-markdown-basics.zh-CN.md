@@ -76,8 +76,8 @@ hello("Andy")
 ## 二级标题 链接和图片
 这是一个[Bing搜索](www.bing.com)的链接
 
-本地图片(放在`source/images/`下)：
-<img src="/images/test.png" alt="示例图片"
+本地图片(文章建议放在`source/images/posts/`下)：
+<img src="/images/posts/test.png" alt="示例图片"
      style="width:300px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 
 参考系列文章链接：
@@ -142,8 +142,8 @@ hello("Andy")
 ## 二级标题 链接和图片
 这是一个[Bing搜索](www.bing.com)的链接
 
-本地图片(放在`source/images/`下)：
-<img src="/images/test.png"
+本地图片(文章建议放在`source/images/posts/`下)：
+<img src="/images/posts/test.png"
      style="width:300px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 
 

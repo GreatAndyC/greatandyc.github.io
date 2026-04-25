@@ -6,7 +6,7 @@ slug: star-home-scam-data-analysis
 permalink: 2025/01/14/star-home-scam-data-analysis/
 description: 基于公开互助档案与 LLM 辅助标注流程，对缅甸诈骗相关失踪人群进行结构化分析与可视化总结。
 photos:
-  - /images/feishu-migration/star-home-scam-data-analysis/star-comparison-cover.png
+  - /images/posts/feishu-migration/star-home-scam-data-analysis/star-comparison-cover.png
 tags:
   - LLM
   - 数据分析
@@ -16,7 +16,7 @@ categories:
 toc: true
 ---
 
-<img src="/images/feishu-migration/star-home-scam-data-analysis/star-comparison-cover.png"
+<img src="/images/posts/feishu-migration/star-home-scam-data-analysis/star-comparison-cover.png"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 
 摘要：本文基于近期网络流传的公开数据，对缅甸“诈骗”相关失踪人群进行结构化分析与可视化总结。
@@ -56,7 +56,7 @@ toc: true
 
 2025年1月14日由于演员“王星被骗泰国事件”的热议，网络上流传一份在线文档——“星星回家互助档案”，自发下载公开文档，开展独立探索性分析。
 
-![](/images/feishu-migration/star-home-scam-data-analysis/star_home_excel_source.png)
+![](/images/posts/feishu-migration/star-home-scam-data-analysis/star_home_excel_source.png)
 *星星回家互助档案 Excel 数据源*
 
 ### 分析方法
@@ -123,7 +123,7 @@ excel_to_txt_with_commas(excel_file_path, txt_file_path)
 ```
 
 得到结构化的 txt 文档：
-![](/images/feishu-migration/star-home-scam-data-analysis/scam_age_distribution_viz.png)
+![](/images/posts/feishu-migration/star-home-scam-data-analysis/scam_age_distribution_viz.png)
 *结构化 TXT 文档示例*
 
 ### 第二步：数据导入 LLM 中处理
@@ -148,15 +148,15 @@ excel_to_txt_with_commas(excel_file_path, txt_file_path)
 > 很好，现在试着从1开始逐条输出至全部。
 
 在 LLM 中得到相应的结果，Copy 到本地 txt 中：
-![](/images/feishu-migration/star-home-scam-data-analysis/scam_gender_ratio_viz.png)
+![](/images/posts/feishu-migration/star-home-scam-data-analysis/scam_gender_ratio_viz.png)
 *LLM 输出结果示例*
 
 同理，可以得到时间、国内地级市、年龄段、具体原因等数据。全部统计完成后转化为 Excel 文档：
-![](/images/feishu-migration/star-home-scam-data-analysis/scam_reasons_category_viz.png)
+![](/images/posts/feishu-migration/star-home-scam-data-analysis/scam_reasons_category_viz.png)
 *统计完成后的 Excel 文档*
 
 在 Excel 文档中对数据进行筛选统计，得到可视化的原始数据：
-![](/images/feishu-migration/star-home-scam-data-analysis/tableau_analysis_dashboard.png)
+![](/images/posts/feishu-migration/star-home-scam-data-analysis/tableau_analysis_dashboard.png)
 *Excel 数据筛选统计结果*
 
 ### 第三步：Tableau 数据可视化和结论
@@ -164,11 +164,11 @@ excel_to_txt_with_commas(excel_file_path, txt_file_path)
 
 **典型画像：** 95% 男性，80% 为 18–35 岁，72.53% 在西双版纳，88.49% 因高薪诱惑受骗。
 
-![](/images/feishu-migration/star-home-scam-data-analysis/star_home_data_filtering_process.png)
+![](/images/posts/feishu-migration/star-home-scam-data-analysis/star_home_data_filtering_process.png)
 *受骗原因-人数-柱/饼图*
 
-![](/images/feishu-migration/star-home-scam-data-analysis/star_home_source_doc_list.png)
+![](/images/posts/feishu-migration/star-home-scam-data-analysis/star_home_source_doc_list.png)
 *国内失联省份 & 云南省内城市位置-人数地图/饼图*
 
-![](/images/feishu-migration/star-home-scam-data-analysis/star_home_final_metric_viz.png)
+![](/images/posts/feishu-migration/star-home-scam-data-analysis/star_home_final_metric_viz.png)
 *失踪时间/年龄段/性别-人数柱状图*

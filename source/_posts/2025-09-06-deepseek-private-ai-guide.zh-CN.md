@@ -6,7 +6,7 @@ slug: deepseek-private-ai-guide
 permalink: 2025/09/06/deepseek-private-ai-guide/
 description: 从官方服务繁忙的背景切入，梳理共享 API、云端部署和本地部署的差异，并记录一条更适合普通用户的私有化使用路径。
 photos:
-  - /images/feishu-migration/deepseek-private-ai-guide/ai_era_wave_dalle.png
+  - /images/posts/feishu-migration/deepseek-private-ai-guide/ai_era_wave_dalle.png
 tags:
   - DeepSeek
   - API
@@ -17,7 +17,7 @@ toc: true
 ---
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/ai_era_wave_dalle.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/ai_era_wave_dalle.png" alt="">
   <figcaption>DALL-E-3 生成的 AI 浪潮示意图</figcaption>
 </figure>
 
@@ -32,12 +32,12 @@ toc: true
 然而作为一个普通用户，相信大家目前遇到的最大的问题是：使用Deepseek官方的时候，小鲸鱼下面的动画转动半天，结果却回复你“已深度思考——服务器繁忙，请稍后再试。”
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/deepseek_server_busy_error.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/deepseek_server_busy_error.png" alt="">
   <figcaption>DeepSeek 服务器繁忙提示</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/deepseek_on_thinking_busy.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/deepseek_on_thinking_busy.png" alt="">
   <figcaption>深度思考等待状态</figcaption>
 </figure>
 
@@ -64,7 +64,7 @@ https://zh.wikipedia.org/wiki/%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9
 用一个示意图来说明就是，DeepseekR1是一个有推理能力的大模型、是目前被广泛应用的AI模型之一
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/deepseek_r1_concept_logic.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/deepseek_r1_concept_logic.png" alt="">
   <figcaption>DeepSeek-R1 概念示意</figcaption>
 </figure>
 
@@ -87,7 +87,7 @@ https://finance.sina.com.cn/money/fund/fundzmt/2025-02-04/doc-ineiirxc2794659.sh
 最简单理解，Deepseek-R1可以看作一本当前物美价廉的“答案之书”，任何人都可以下载搬运给自己使用，你给他任何问题，它就会给你一个八九不离十的答案。只是你要让这个“答案之书”运行起来，需要强劲配备配套的基础设施和昂贵的显卡——就好比原神你可以免费玩，但是你用老人机肯定是运行不了的。
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/answer_book_comparison_dalle.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/answer_book_comparison_dalle.png" alt="">
   <figcaption>DALL-E-3 生成的答案之书示意图</figcaption>
 </figure>
 
@@ -105,7 +105,7 @@ https://finance.sina.com.cn/money/fund/fundzmt/2025-02-04/doc-ineiirxc2794659.sh
 所以并不是因为你问了它奇怪的问题导致被“盯上”或“封号”，当然如果真的被封号了，我觉得你得反思一下你平时都在问啥问题。
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/donnie_yen_puzzled_meme.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/donnie_yen_puzzled_meme.png" alt="">
   <figcaption>图源：甄子丹</figcaption>
 </figure>
 
@@ -120,7 +120,7 @@ https://finance.sina.com.cn/money/fund/fundzmt/2025-02-04/doc-ineiirxc2794659.sh
 API调用是从大饭馆（各大互联网公司）叫外卖、云端部署是租个专业厨房（服务器）做菜（你可以做给自己吃，甚至可以发展自己的外卖业务）、本地部署是在自己家的豪宅里装专业厨房做菜
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/api_request_response_flowchart.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/api_request_response_flowchart.png" alt="">
   <figcaption>API 请求与响应流程图</figcaption>
 </figure>
 
@@ -139,7 +139,7 @@ API调用是从大饭馆（各大互联网公司）叫外卖、云端部署是�
 通过量化和蒸馏等技术，让模型的运行需求降低，不过同样的也会带来一些诸如回答问题不够准确，回答速度慢等问题，以下是一些参考配置，相关教程可自行搜索。
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/deepseek_local_deploy_hardware_spec.png">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/deepseek_local_deploy_hardware_spec.png">
   <figcaption>
     <a href="https://fisherdaddy.com/posts/deepseek-r1-local-deployment-hardware-guide/" target="_blank" rel="noopener">
       本地部署硬件参考
@@ -154,14 +154,14 @@ API调用是从大饭馆（各大互联网公司）叫外卖、云端部署是�
 满血版和参数量最小蒸馏版的区别大概就是如图下派大星的区别
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/distill_vs_full_model_patric_meme.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/distill_vs_full_model_patric_meme.png" alt="">
   <figcaption>满血版与蒸馏版对比示意</figcaption>
 </figure>
 
 本地部署的大模型的优点在于，只有硬件成本费用、完全离线，隐私保护到最高，而且你还可以通过一些“越狱”方法，解开大模型的能力限制，限于篇幅和可能的法律风险，此处就不多介绍。
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/dragon_raja_finger_eva_cyber.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/dragon_raja_finger_eva_cyber.png" alt="">
   <figcaption>参考《龙族》芬格尔与 Eva</figcaption>
 </figure>
  
@@ -169,7 +169,7 @@ API调用是从大饭馆（各大互联网公司）叫外卖、云端部署是�
 这时候可能有人问了，“我用网页版豆包、Deepseek都是免费，怎么你说的这些都要收钱，要我付钱，想都别想，我只想白嫖。”
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/free_rider_logic_meme.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/free_rider_logic_meme.png" alt="">
   <figcaption>免费与付费的逻辑对比</figcaption>
 </figure>
 
@@ -183,7 +183,7 @@ API调用是从大饭馆（各大互联网公司）叫外卖、云端部署是�
 ## 题外话：关于 AI 时代广告和隐私的一些想法
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/personalized_ads_privacy_leak.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/personalized_ads_privacy_leak.png" alt="">
   <figcaption>个性化广告与隐私</figcaption>
 </figure>
 
@@ -191,7 +191,7 @@ API调用是从大饭馆（各大互联网公司）叫外卖、云端部署是�
 
 举个例子，你在和AI的多次对话中暴露了自己的学校、住址、经济情况等信息，AI识别出你的画像是：学历知识水平较低、家庭经济困难、和家人朋友疏远、性格孤僻喜欢冒险、负债30万。假如某一天晚上在你伤心欲绝希望得到AI的安慰的时候角落里面弹出一个高薪招聘广告，你真的能保证自己不会受到影响吗？
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/no_more_bets_scam_movie_still.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/no_more_bets_scam_movie_still.png" alt="">
   <figcaption>图源：金晨《孤注一掷》</figcaption>
 </figure>
 
@@ -215,7 +215,7 @@ API调用是从大饭馆（各大互联网公司）叫外卖、云端部署是�
 目前这个项目在代码托管网站Github上面已经收获了30K（非常高）的Star(可以理解为点赞)
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/chatbox_github_star_ranking.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_github_star_ranking.png" alt="">
   <figcaption>Chatbox GitHub Star 情况</figcaption>
 </figure>
 
@@ -229,7 +229,7 @@ Token可以简单理解为余额，生成文字和理解文字都会消耗token�
 ### 第一步：官网下载软件
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/chatbox_official_download_page.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_official_download_page.png" alt="">
   <figcaption>Chatbox 官方下载页</figcaption>
 </figure>
 
@@ -238,36 +238,36 @@ Token可以简单理解为余额，生成文字和理解文字都会消耗token�
 ### 第二步：进入定价页面
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/chatbox_pricing_plans_step2.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_pricing_plans_step2.png" alt="">
   <figcaption>Chatbox 定价页面</figcaption>
 </figure>
 
 ### 第三步：根据自己的需求选择订阅计划并打钱
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/chatbox_sub_plan_detail_part1.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_sub_plan_detail_part1.png" alt="">
   <figcaption>Chatbox 订阅方案 1</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/chatbox_sub_plan_detail_part2.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_sub_plan_detail_part2.png" alt="">
   <figcaption>Chatbox 订阅方案 2</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/chatbox_payment_method_selection.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_payment_method_selection.png" alt="">
   <figcaption>Chatbox 支付方式</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/chatbox_order_confirmation_page.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_order_confirmation_page.png" alt="">
   <figcaption>Chatbox 订单确认页</figcaption>
 </figure>
 
 请务必在此处填写正确的邮箱，这是找回API Key的唯一凭证
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/chatbox_email_verification_input.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_email_verification_input.png" alt="">
   <figcaption>邮箱验证输入页</figcaption>
 </figure>
 
@@ -278,19 +278,19 @@ Token可以简单理解为余额，生成文字和理解文字都会消耗token�
 支付成功后在跳转的网页可以查看Key，也会在邮箱受到Key和使用指南
  
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/chatbox_api_key_web_view.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_api_key_web_view.png" alt="">
   <figcaption>API Key 网页视图</figcaption>
 </figure>
 
 ### 第五步：打开 Chatbox 应用，复制粘贴自己的 Api Key 到 App 里
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/chatbox_app_settings_entry.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_app_settings_entry.png" alt="">
   <figcaption>Chatbox 应用设置入口</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/chatbox_api_key_config_input.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_api_key_config_input.png" alt="">
   <figcaption>Chatbox API Key 配置输入</figcaption>
 </figure>
 
@@ -315,7 +315,7 @@ API供应商：阿里云、腾讯云、火山引擎、硅基流动、商汤科�
 关于如何获得这些平台的API使用指南：在谷歌/必应/小红书/知乎/抖音/快手/Bilibili等社交媒体、搜索引擎上搜索相关关键词，然后一个个去找详细的教程，相信聪明好学的你肯定可以找到答案
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/eight_immortals_search_tutorial.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/eight_immortals_search_tutorial.png" alt="">
   <figcaption>八仙过海各显神通</figcaption>
 </figure>
 
@@ -324,7 +324,7 @@ API供应商：阿里云、腾讯云、火山引擎、硅基流动、商汤科�
 那你应该得知道这个不可能三角
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/impossible_triangle_ai_tech.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/impossible_triangle_ai_tech.png" alt="">
   <figcaption>AI 不可能三角</figcaption>
 </figure>
 
@@ -341,7 +341,7 @@ Deepseek给我的回复是：
 笔者曰：正如《天才基本法》里说的那样——“一以贯之的努力，不得懈怠的人生。每天的微小积累会决定最终结果，这就是答案。”与其过分担忧未来，不如着眼眼下，在AI时代的浪潮中，做一个英勇向前的浪花。
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/deepseek-private-ai-guide/unplugging_ai_server_humor.png" alt="">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/unplugging_ai_server_humor.png" alt="">
   <figcaption>拔 AI 服务器电源的幽默示意</figcaption>
 </figure>
 

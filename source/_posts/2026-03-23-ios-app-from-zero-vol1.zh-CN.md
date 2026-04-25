@@ -6,7 +6,7 @@ slug: ios-app-from-zero-vol1
 permalink: 2026/03/23/ios-app-from-zero-vol1/
 description: 从独立开发者视角讨论软件产品、产品经理角色以及为什么 iOS 是更适合作为起点的平台。
 photos:
-  - /images/feishu-migration/ios-app-from-zero-vol1/ios_series_vol1_cover.png
+  - /images/posts/feishu-migration/ios-app-from-zero-vol1/ios_series_vol1_cover.png
 tags:
   - iOS
   - 独立开发
@@ -18,7 +18,7 @@ toc: true
 **写于：** 26.3.23 6pm-7:30pm
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/ios-app-from-zero-vol1/ios_series_vol1_cover.png" alt="">
+  <img src="/images/posts/feishu-migration/ios-app-from-zero-vol1/ios_series_vol1_cover.png" alt="">
   <figcaption>封面图由 Nano banana 2 生成</figcaption>
 </figure>
 

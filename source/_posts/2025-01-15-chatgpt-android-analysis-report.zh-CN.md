@@ -6,7 +6,7 @@ slug: chatgpt-android-analysis-report
 permalink: 2025/01/15/chatgpt-android-analysis-report/
 description: ChatGPT 安卓端产品分析,市场竞争格局与产品改进方向的综合分析
 photos:
-  - /images/feishu-migration/chatgpt-android-analysis-report/chatgpt-cover.png
+  - /images/posts/feishu-migration/chatgpt-android-analysis-report/chatgpt-cover.png
 tags:
   - ChatGPT
   - 产品分析
@@ -118,7 +118,7 @@ ChatGPT不仅是一个聊天机器人，更是一个“口袋助手”，结合�
 对于909条评论，调用火山引擎的Doubao-pro-4k、Doubao-pro-32k、Doubao-pro-128k模型，对提取的评论进行逐条分析，得到包含“用途、画像、优点、缺点、需求”在内的五列数据的CSV文档。
 接着把五列内容每一列单独提取合并到每条对应的单独的txt文本文档中，上传到Google Ai Lab的Gemini 2.0 Flash Experimental模型逐个进行分析，得到每个数据对应的标签结果，最后对这些数据进行统计作图。
 具体的工作流程如下流程图所示:
-![](/images/feishu-migration/chatgpt-android-analysis-report/gpt_report_analysis_workflow.png)
+![](/images/posts/feishu-migration/chatgpt-android-analysis-report/gpt_report_analysis_workflow.png)
 *数据分析工作流程图*
 使用Google Gemini 2.0 Flash Experimental模型的原因：根据Chatbot Arena（一个盲测大模型功能进行评分的平台）数据显示，Gemini 2.0 Flash Experimental排行第四，而且实际使用来看具有不错的反应速度，因此选择此模型进行最后的分析。
 不直接把爬取后的原始的数据直接发给大模型进行处理的原因：实际也进行了尝试，但是发现即便是Google Gemini 2.0 Flash Experimental模型对于直接发过去给出的回复也非常有限，会忽略掉评论里面有价值的内容，因此选择逐条进行分析提取数据后再用大模型分析以此，最后用Excel进行数据统计，以此能够得到更加准确的数据。
@@ -190,7 +190,7 @@ ChatGPT不仅是一个聊天机器人，更是一个“口袋助手”，结合�
 | 翻译/语言处理 | 34 | 2.20% |
 | 总和 | 1542 | 100.00% |
 
-![](/images/feishu-migration/chatgpt-android-analysis-report/gpt_usage_distribution_bar_chart.png)
+![](/images/posts/feishu-migration/chatgpt-android-analysis-report/gpt_usage_distribution_bar_chart.png)
 *GPT用途分布柱状图*
 
 对这些数据进行分析
@@ -238,7 +238,7 @@ ChatGPT不仅是一个聊天机器人，更是一个“口袋助手”，结合�
 | 普通用户 | 395 | 48.89% |
 | 总和 | 808 | 100.00% |
 
-![](/images/feishu-migration/chatgpt-android-analysis-report/user_persona_demographics.png)
+![](/images/posts/feishu-migration/chatgpt-android-analysis-report/user_persona_demographics.png)
 *用户画像人口统计图*
 
 对这些数据进行分析
@@ -275,7 +275,7 @@ ChatGPT不仅是一个聊天机器人，更是一个“口袋助手”，结合�
 | 用户体验良好 | 207 | 27.97% |
 | 总和 | 740 | 100.00% |
 
-![](/images/feishu-migration/chatgpt-android-analysis-report/gpt_pros_cons_analysis_summary.png)
+![](/images/posts/feishu-migration/chatgpt-android-analysis-report/gpt_pros_cons_analysis_summary.png)
 *优缺点分析汇总图*
 
 主要结论（按数据占比排序）：
@@ -450,7 +450,7 @@ ChatGPT不仅是一个聊天机器人，更是一个“口袋助手”，结合�
 | 需求不明确 | 48 | 5.28% |
 | 总和 | 909 | 100.00% |
 
-![](/images/feishu-migration/chatgpt-android-analysis-report/user_needs_latent_analysis.png)
+![](/images/posts/feishu-migration/chatgpt-android-analysis-report/user_needs_latent_analysis.png)
 *用户潜在需求分析图*
 
 与之前优缺点分析的关联：
@@ -470,25 +470,25 @@ OpenAI正在考虑在ChatGPT中引入广告模式，以增加收入。虽然目�
 针对特定行业或企业需求，OpenAI可能提供定制化的模型训练和解决方案，以满足不同客户的需求，从而获得收益。（The Wall Street Journal, n.d.）
 
 #### 3.3.1 月下载量
-![](/images/feishu-migration/chatgpt-android-analysis-report/chatgpt_downloads_trend_statista.png)
+![](/images/posts/feishu-migration/chatgpt-android-analysis-report/chatgpt_downloads_trend_statista.png)
 *ChatGPT移动应用月下载量趋势（2023年5月—2024年9月，数据来源：Statista）*
 
 根据statista的数据显示从2023年5月至2024年9月，ChatGPT的移动应用下载量呈现出“快速增长-波动下降-恢复上升”的趋势。下载量在2023年11月达到峰值（约1870万次），随后有所回落，但到2024年9月重新攀升至约2357万次，显示出其强大的市场吸引力和用户基数。（Statista, n.d.）
 #### 3.3.2 实时排名
-![](/images/feishu-migration/chatgpt-android-analysis-report/google_play_ranking_history.png)
+![](/images/posts/feishu-migration/chatgpt-android-analysis-report/google_play_ranking_history.png)
 *ChatGPT在Google Play北美免费榜排名历史（数据来源：Sensor Tower）*
 根据SensorTower的数据显示，2025年1月9日，ChatGPT应用在北美地区的GooglePlay总榜免费榜排名为第7，最近90天在5-25的范围内波动，保持较高的热度。（Sensor Tower, n.d.）
 #### 3.3.3 内购和活跃用户情况
 随着GPT-4o的推出，明星级AI应用《ChatGPT》2024年5月收入环比增长43%。2024年8月收入超过4500万美元，创历史新高。2024年1-8月，《ChatGPT》吸金2.3亿美元，占AI+Chatbot赛道收入的39%。截至2024年8月，《ChatGPT》累计收入突破2.7亿美元。（Sensor Tower, 2024）
-![ChatGPT收入增长图](/images/feishu-migration/chatgpt-android-analysis-report/chatgpt_revenue_growth_sensortower.png)
+![ChatGPT收入增长图](/images/posts/feishu-migration/chatgpt-android-analysis-report/chatgpt_revenue_growth_sensortower.png)
 *ChatGPT移动端收入增长情况（数据来源：Sensor Tower）*
 从活跃用户规模来看，《ChatGPT》月活跃用户数一路增长，2024年8月超过1.9亿人，是全球活跃用户规模最大的AI应用。（Sensor Tower, 2024）
-![](/images/feishu-migration/chatgpt-android-analysis-report/monthly_active_users_growth.png)
+![](/images/posts/feishu-migration/chatgpt-android-analysis-report/monthly_active_users_growth.png)
 *ChatGPT月活跃用户增长情况（数据来源：Sensor Tower）*
 ## 四、产品分析
 
 ### 4.1 产品结构图
-![](/images/feishu-migration/chatgpt-android-analysis-report/chatgpt_app_structure_mindmap.png)
+![](/images/posts/feishu-migration/chatgpt-android-analysis-report/chatgpt_app_structure_mindmap.png)
 *ChatGPT安卓端产品结构图*
 从结构图可以看出：ChatGPT的结构相对简洁，核心功能在主界面就可全部设定完成，侧边栏主要为探索商店和历史记录，设计也符合手机用户使用习惯，可快速上手。
 ### 4.2 用户使用流程图
@@ -647,7 +647,7 @@ OpenAI正在考虑在ChatGPT中引入广告模式，以增加收入。虽然目�
 | 信息来源与偏向 | 10 | 1.97% |
 | 总和 | 507 | 100.00% |
 
-![](/images/feishu-migration/chatgpt-android-analysis-report/android_review_negative_feedback.png)
+![](/images/posts/feishu-migration/chatgpt-android-analysis-report/android_review_negative_feedback.png)
 *Google Play安卓用户负面反馈分类统计*
 
 从数据来看，最大的问题是网络连接问题(36.49%)，这作为一个几乎无法合法解决的问题，可以视为国内产品的优势；
@@ -659,10 +659,10 @@ OpenAI正在考虑在ChatGPT中引入广告模式，以增加收入。虽然目�
 针对国外和国内市场选取Google Gemini和豆包作为分析对象。
 
 ### 6.1 市场竞争格局
-![](/images/feishu-migration/chatgpt-android-analysis-report/swot_analysis_matrix.png)
+![](/images/posts/feishu-migration/chatgpt-android-analysis-report/swot_analysis_matrix.png)
 *全球AI APP下载量TOP5（2024年12月，数据来源：点点数据）*
 根据点点数据的数据显示，2024年12月，全球（含中国大陆）AI APP苹果端预估下载总量达6975.2万，其中，ChatGPT、Google Gemini、豆包、Kimi智能助手及ChatOn AI位列TOP 5，占据了全球苹果端AI下载量的56%。
-![](/images/feishu-migration/chatgpt-android-analysis-report/product_optimization_roadmap.png)
+![](/images/posts/feishu-migration/chatgpt-android-analysis-report/product_optimization_roadmap.png)
 *大陆市场AI APP苹果端下载量分布（2024年12月，数据来源：点点数据）*
 相应地，2024年12月，大陆市场AI APP苹果端预估下载量达1818.0万，豆包与Kimi继续领跑，二者分别以33%、25%的下载量占比占据第一梯队。（澎湃新闻, 2024）
 由上述数据可知在通用ChatBot产品的竞争中，国际市场主要是Gemini和ChatGPT引领市场，而在国内市场上豆包遥遥领先。

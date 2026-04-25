@@ -6,7 +6,7 @@ slug: duan-yongping-xueqiu-crawler
 permalink: 2026/03/18/duan-yongping-xueqiu-crawler/
 description: 记录一次围绕段永平雪球评论的爬取实践，包括技术路线选择、问题排查和结果导出。
 photos:
-  - /images/feishu-migration/duan-yongping-xueqiu-crawler/duan-buffett-cover.png
+  - /images/posts/feishu-migration/duan-yongping-xueqiu-crawler/duan-buffett-cover.png
 tags:
   - 爬虫
   - 雪球
@@ -57,11 +57,11 @@ toc: true
 **统计数据：** 458 页（每页 20 条）共计 **9151 条** 评论内容。作为一个小的数据金库，有待后续分析。
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/duan-yongping-xueqiu-crawler/xueqiu_crawler_output_csv.png" alt="">
+  <img src="/images/posts/feishu-migration/duan-yongping-xueqiu-crawler/xueqiu_crawler_output_csv.png" alt="">
   <figcaption>雪球评论导出结果表</figcaption>
 </figure>
 
 <figure class="post-figure">
-  <img src="/images/feishu-migration/duan-yongping-xueqiu-crawler/duan_yongping_comment_sample.png" alt="">
+  <img src="/images/posts/feishu-migration/duan-yongping-xueqiu-crawler/duan_yongping_comment_sample.png" alt="">
   <figcaption>段永平评论样本</figcaption>
 </figure>
