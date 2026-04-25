@@ -31,18 +31,18 @@ function ensureArray(input) {
   if (Array.isArray(input)) return input;
   if (typeof input !== "string" || !input.trim()) return [];
   return input
-    .split(",")
+    .split(/[,\uFF0C]/)
     .map((item) => item.trim())
     .filter(Boolean);
 }
 
-function normalizeSrc(slug, rawSrc) {
+function normalizeSrc(albumFolder, rawSrc) {
   const src = (rawSrc || "").trim();
   if (!src) return "";
   if (src.startsWith("/") || src.startsWith("http://") || src.startsWith("https://")) {
     return src;
   }
-  return `/images/gallery/${slug}/${src}`;
+  return `/images/${albumFolder}/${src}`;
 }
 
 function parseTable(body) {
@@ -91,10 +91,11 @@ function buildAlbumFromDoc(filePath) {
   if (!titleZh || !titleEn) {
     fail(`${filePath} requires title_zh and title_en`);
   }
+  const albumFolder = (fm.image_folder || `gallery/${slug}`).replace(/^\/+|\/+$/g, "");
 
   const rows = parseTable(body);
   const photos = rows.map((row) => {
-    const src = normalizeSrc(slug, row.src);
+    const src = normalizeSrc(albumFolder, row.src);
     if (!src) fail(`${filePath} has photo row with empty src`);
     const photo = {
       src,
@@ -167,7 +168,7 @@ function main() {
 
   const files = fs
     .readdirSync(GALLERY_DOC_DIR)
-    .filter((name) => name.endsWith(".md"))
+    .filter((name) => name.endsWith(".md") && !name.startsWith("_"))
     .sort()
     .map((name) => path.join(GALLERY_DOC_DIR, name));
 

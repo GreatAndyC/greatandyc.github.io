@@ -226,6 +226,7 @@ const elements = {
     renameImageFolderButton: document.querySelector('#gallery-rename-image-folder-button'),
     deleteImageFolderButton: document.querySelector('#gallery-delete-image-folder-button'),
     syncFolderButton: document.querySelector('#gallery-sync-folder-button'),
+    normalizeFilenamesButton: document.querySelector('#gallery-normalize-filenames-button'),
     folderMeta: document.querySelector('#gallery-folder-meta'),
     imageDropzone: document.querySelector('#gallery-image-dropzone'),
     imageDropzoneMeta: document.querySelector('#gallery-image-dropzone-meta'),
@@ -240,6 +241,7 @@ const elements = {
     createFolderButton: document.querySelector('#library-create-folder-button'),
     renameFolderButton: document.querySelector('#library-rename-folder-button'),
     deleteFolderButton: document.querySelector('#library-delete-folder-button'),
+    normalizeFilenamesButton: document.querySelector('#library-normalize-filenames-button'),
     imageDropzone: document.querySelector('#library-image-dropzone'),
     imageDropzoneMeta: document.querySelector('#library-image-dropzone-meta'),
     imageFileInput: document.querySelector('#library-image-file-input'),
@@ -1451,6 +1453,28 @@ async function syncGalleryFolderToAlbum(options = {}) {
   setStatus((payload.items || []).length ? `已扫描目录 images/${payload.folder || folder}，可继续筛选候选图。` : '当前目录没有可导入的图片。', (payload.items || []).length ? 'success' : 'error');
 }
 
+async function handleGalleryNormalizeFilenames() {
+  const folder = normalizeGalleryManagedFolder(elements.gallery.imageFolderSelect.value, elements.gallery.slug.value.trim());
+  if (!folder || !folder.startsWith('gallery/')) {
+    setStatus('请先选择或创建一个 images/gallery/ 下的相册目录。', 'error');
+    return;
+  }
+
+  try {
+    setStatus(`正在规范化 images/${folder} 的图片文件名...`);
+    const payload = await normalizeImageFilenames(folder);
+    state.imageFolders = payload.folders || state.imageFolders;
+    renderImageFolders();
+    elements.gallery.imageFolderSelect.value = payload.folder || folder;
+    await syncGalleryFolderToAlbum({ silent: true });
+    setStatus(formatNormalizeResult(payload), payload.renamedCount ? 'success' : '');
+    showToast('文件名规范化完成', formatNormalizeResult(payload));
+    refreshAuditLogsSilently();
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
 function fillGalleryEditor(album) {
   const nextAlbum = album || createEmptyGalleryAlbum();
   state.gallery.currentAlbum = nextAlbum;
@@ -1734,6 +1758,20 @@ async function loadImageReferences({ path = '', folder = '' } = {}) {
   if (path) params.set('path', path);
   if (folder) params.set('folder', folder);
   return request(`/api/images/references?${params.toString()}`);
+}
+
+async function normalizeImageFilenames(folder = '') {
+  return request('/api/images/normalize-filenames', {
+    method: 'POST',
+    body: JSON.stringify({ folder })
+  });
+}
+
+function formatNormalizeResult(payload) {
+  const count = Number(payload && payload.renamedCount || 0);
+  if (!count) return '当前目录没有需要规范化的图片文件名。';
+  const updated = Number(payload.replacementCount || 0);
+  return `已重命名 ${count} 个文件，同步 ${updated} 处引用。`;
 }
 
 function formatReferenceSummary(payload, maxItems = 8) {
@@ -2416,6 +2454,24 @@ async function handleLibraryDeleteImageFolder() {
   }
 }
 
+async function handleLibraryNormalizeFilenames() {
+  const folder = elements.library.folderSelect.value || '';
+
+  try {
+    setStatus(`正在规范化 ${folder ? `images/${folder}` : 'images/'} 的图片文件名...`);
+    const payload = await normalizeImageFilenames(folder);
+    state.imageFolders = payload.folders || state.imageFolders;
+    renderImageFolders();
+    state.selectedId = payload.folder || '__root__';
+    await loadImageLibrary(payload.folder || '');
+    setStatus(formatNormalizeResult(payload), payload.renamedCount ? 'success' : '');
+    showToast('文件名规范化完成', formatNormalizeResult(payload));
+    refreshAuditLogsSilently();
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
 async function uploadLibraryImages(fileList) {
   const files = Array.from(fileList || []);
   if (!files.length) return;
@@ -2993,6 +3049,7 @@ elements.gallery.syncFolderButton.addEventListener('click', async () => {
     setStatus(error.message, 'error');
   }
 });
+elements.gallery.normalizeFilenamesButton.addEventListener('click', handleGalleryNormalizeFilenames);
 elements.gallery.imageFolderSelect.addEventListener('change', async () => {
   try {
     await syncGalleryFolderToAlbum({ silent: true });
@@ -3156,6 +3213,7 @@ elements.library.folderSelect.addEventListener('change', async () => {
 elements.library.createFolderButton.addEventListener('click', handleLibraryCreateImageFolder);
 elements.library.renameFolderButton.addEventListener('click', handleLibraryRenameImageFolder);
 elements.library.deleteFolderButton.addEventListener('click', handleLibraryDeleteImageFolder);
+elements.library.normalizeFilenamesButton.addEventListener('click', handleLibraryNormalizeFilenames);
 elements.library.selectAllButton.addEventListener('click', selectAllLibraryImages);
 elements.library.clearSelectionButton.addEventListener('click', clearLibrarySelection);
 elements.library.deleteSelectedButton.addEventListener('click', handleLibraryDeleteSelectedImages);

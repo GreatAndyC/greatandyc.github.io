@@ -10,6 +10,11 @@ const { URL } = require('url');
 const { spawn } = require('child_process');
 const yaml = require('js-yaml');
 const frontMatter = require('hexo-front-matter');
+const {
+  isImageFileName,
+  sanitizeImageFilename,
+  getUniqueFilename
+} = require('./image-filenames');
 
 const HOST = process.env.LOCAL_CMS_HOST || '127.0.0.1';
 const PORT = Number(process.env.LOCAL_CMS_PORT || 4010);
@@ -35,8 +40,6 @@ const LLM_ENV_KEYS = {
   temperature: 'LOCAL_CMS_LLM_TEMPERATURE',
   prompt: 'LOCAL_CMS_LLM_PROMPT'
 };
-
-const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif', '.svg']);
 
 const PAGE_DEFINITIONS = [
   { id: 'about-zh', label: 'About 中文', file: path.join(ROOT, 'source', 'about', 'index.md') },
@@ -1138,10 +1141,6 @@ function formatFileSize(size) {
   return `${value} B`;
 }
 
-function isImageFileName(filename = '') {
-  return IMAGE_EXTENSIONS.has(path.extname(String(filename || '')).toLowerCase());
-}
-
 function parseImageDimensions(filePath) {
   try {
     const buffer = fs.readFileSync(filePath);
@@ -1377,6 +1376,81 @@ function listImageLibrary(folder = '') {
   };
 }
 
+function listImageFilesRecursive(currentPath, result = []) {
+  if (!fs.existsSync(currentPath)) return result;
+  const entries = fs.readdirSync(currentPath, { withFileTypes: true });
+
+  entries.forEach(entry => {
+    const fullPath = path.join(currentPath, entry.name);
+    if (entry.isDirectory()) {
+      listImageFilesRecursive(fullPath, result);
+      return;
+    }
+    if (entry.isFile() && isImageFileName(entry.name)) {
+      result.push(fullPath);
+    }
+  });
+
+  return result;
+}
+
+function normalizeImageFilenamesInFolder(folder = '') {
+  const { normalized, absolute } = resolveImageFolder(folder);
+  fs.mkdirSync(absolute, { recursive: true });
+
+  const reservedByDir = new Map();
+  const plan = [];
+  const files = listImageFilesRecursive(absolute).sort((left, right) => left.localeCompare(right));
+
+  files.forEach(filePath => {
+    const directory = path.dirname(filePath);
+    const currentName = path.basename(filePath);
+    const safeName = sanitizeImageFilename(currentName, 'image');
+    if (safeName === currentName) return;
+
+    if (!reservedByDir.has(directory)) {
+      reservedByDir.set(directory, new Set());
+    }
+
+    const nextName = getUniqueFilename(directory, safeName, reservedByDir.get(directory));
+    const nextPath = path.join(directory, nextName);
+    const oldRelative = toPosixPath(path.relative(IMAGES_DIR, filePath));
+    const nextRelative = toPosixPath(path.relative(IMAGES_DIR, nextPath));
+
+    plan.push({
+      oldPath: filePath,
+      nextPath,
+      oldName: currentName,
+      nextName,
+      oldPublicPath: `/images/${oldRelative}`,
+      nextPublicPath: `/images/${nextRelative}`
+    });
+  });
+
+  const updatedFiles = new Set();
+  let replacementCount = 0;
+  plan.forEach(item => {
+    fs.renameSync(item.oldPath, item.nextPath);
+    const replaceResult = replaceTextInProjectFiles(item.oldPublicPath, item.nextPublicPath);
+    replaceResult.updatedFiles.forEach(filePath => updatedFiles.add(filePath));
+    replacementCount += replaceResult.replacementCount;
+  });
+
+  return {
+    folder: normalized,
+    renamed: plan.map(item => ({
+      from: item.oldPublicPath,
+      to: item.nextPublicPath,
+      oldName: item.oldName,
+      nextName: item.nextName
+    })),
+    renamedCount: plan.length,
+    replacementCount,
+    updatedFiles: Array.from(updatedFiles),
+    folders: listImageFolders()
+  };
+}
+
 function createImageFolder(folder) {
   const { normalized, absolute } = resolveImageFolder(folder);
   if (!normalized) {
@@ -1593,7 +1667,7 @@ function moveImageFile(imagePath, nextFolder, nextName) {
     : path.dirname(current.relativePath).split(path.sep).join('/');
   const targetFolder = resolveImageFolder(typeof nextFolder === 'string' ? nextFolder : currentFolder);
   const targetName = nextName
-    ? sanitizeUploadFilename(nextName)
+    ? sanitizeUploadFilename(nextName, targetFolder.absolute)
     : path.basename(current.relativePath);
   const nextAbsolutePath = path.join(targetFolder.absolute, targetName);
   const nextPublicPath = targetFolder.normalized
@@ -1652,20 +1726,24 @@ function deleteImageFile(imagePath, options = {}) {
   };
 }
 
-function sanitizeUploadFilename(filename = '') {
-  const safe = path.basename(String(filename || ''))
-    .replace(/[<>:"/\\|?*\u0000-\u001f]/g, '-')
-    .trim();
-
-  return safe || `upload-${Date.now()}.bin`;
+function sanitizeUploadFilename(filename = '', directory = '') {
+  const safe = sanitizeImageFilename(filename, 'upload');
+  if (!directory) return safe;
+  return getUniqueFilename(directory, safe);
 }
 
 function uploadImageFiles(folder, files) {
   const { normalized, absolute } = resolveImageFolder(folder);
   fs.mkdirSync(absolute, { recursive: true });
 
+  const reservedNames = new Set();
   const uploaded = (Array.isArray(files) ? files : []).map(file => {
-    const filename = sanitizeUploadFilename(file.name);
+    const originalName = path.basename(String(file.name || ''));
+    const filename = getUniqueFilename(
+      absolute,
+      sanitizeUploadFilename(originalName),
+      reservedNames
+    );
     const targetPath = path.join(absolute, filename);
     const content = String(file.content || '');
 
@@ -1680,6 +1758,7 @@ function uploadImageFiles(folder, files) {
       : `/images/${filename}`;
 
     return {
+      originalName,
       name: filename,
       path: publicPath
     };
@@ -2715,6 +2794,26 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === 'POST' && pathname === '/api/images/normalize-filenames') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      const result = normalizeImageFilenamesInFolder(payload.folder || '');
+      appendAuditLog(req, {
+        entityType: 'image',
+        action: 'update',
+        summary: `规范化图片文件名 ${result.renamedCount} 个，目录 ${result.folder ? `images/${result.folder}` : 'images/'}`,
+        target: result.folder ? `images/${result.folder}` : 'images/',
+        details: {
+          folder: result.folder,
+          renamed: result.renamed,
+          replacementCount: result.replacementCount,
+          updatedFiles: result.updatedFiles
+        }
+      });
+      jsonResponse(res, 200, result);
+      return;
+    }
+
     if (req.method === 'POST' && pathname === '/api/images/move') {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
@@ -2982,6 +3081,7 @@ if (require.main === module) {
 module.exports = {
   listGalleryAlbums,
   listImageLibrary,
+  normalizeImageFilenamesInFolder,
   readGalleryAlbumBySlug,
   writeGalleryAlbum,
   syncGalleryDataFile,

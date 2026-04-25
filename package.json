@@ -12,7 +12,8 @@
     "gallery:sync": "node tools/gallery-sync.js",
     "gallery:list": "node tools/gallery-cli.js list-albums",
     "gallery:add-album": "node tools/gallery-cli.js add-album",
-    "gallery:add-photo": "node tools/gallery-cli.js add-photo"
+    "gallery:add-photo": "node tools/gallery-cli.js add-photo",
+    "images:normalize": "node tools/normalize-image-filenames.js"
   },
   "hexo": {
     "version": "7.3.0"
