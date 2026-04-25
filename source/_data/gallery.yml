@@ -216,8 +216,8 @@ albums:
       zh-CN: Nikon D5600 · AF-S DX NIKKOR 18-140mm
       en: Nikon D5600 · AF-S DX NIKKOR 18-140mm
     description:
-      zh-CN: 这组照片来自一次校园晚会拍摄。画面里有灯光、舞台、群舞、歌手和活动摄影现场的即时反应。
-      en: A selection from a campus performance night, focused on stage light, performers, crowd rhythm, and the on-the-fly decisions of event photography.
+      zh-CN: 青春与活力
+      en: Young and beautiful
     tags:
       zh-CN:
         - 舞台
@@ -236,14 +236,6 @@ albums:
           zh-CN: 作为整组照片的入口画面，重点是灯光和舞台氛围。
           en: A scene-setting frame that introduces the light and atmosphere of the show.
         meta: 18mm · 1/160s · f/3.5 · ISO 8000
-      - src: /images/gallery/heartbeat-pi-2026/3.16_FirstView.jpg
-        title:
-          zh-CN: 第一视角
-          en: First View
-        caption:
-          zh-CN: 演出开始前后的观众席与机位观察。
-          en: A field note from the opening phase, showing the point of view before the pace accelerates.
-        meta: 22mm · 1/125s · f/4.0 · ISO 6400
       - src: /images/gallery/heartbeat-pi-2026/3.16_GroupPhotos.jpg
         title:
           zh-CN: 合照时刻
@@ -386,6 +378,57 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/60s · f/1.8 · ISO 160
+  - slug: kennedy-town-night
+    imageFolder: gallery/Kennedy_Town_Night
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: 夜色坚尼地城
+      en: Kennedy Town Night
+    period:
+      zh-CN: '2024-01-14'
+      en: '2024-01-14'
+    location:
+      zh-CN: 坚尼地城篮球场
+      en: Kennedy Town Basketball court
+    camera:
+      zh-CN: Nikon D5600 · AF-S DX NIKKOR 18-140mm
+      en: Nikon D5600 · AF-S DX NIKKOR 18-140mm
+    description:
+      zh-CN: 坚尼地城经典的打卡照，港岛最“港岛”的地方
+      en: A classic photo spot in Kennedy Town — the most Hong Kong Island vibe on Hong Kong Island
+    tags:
+      zh-CN:
+        - 夜景，打卡
+      en:
+        - Night view
+        - Photo spot
+    photos:
+      - src: /images/gallery/Kennedy_Town_Night/DSC0003-1-1.jpg
+        title:
+          zh-CN: 经典打卡机位
+          en: Classic photo spot
+        caption:
+          zh-CN: 小红书爆火的打卡机位，不知道现在有没有围起来呢
+          en: A very classic photo spot for traveler
+        meta: 90mm · 2.5s · f/11 · ISO 100
+      - src: /images/gallery/Kennedy_Town_Night/DSC0015-1-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 112mm · 2.5s · f/13 · ISO 125
+      - src: /images/gallery/Kennedy_Town_Night/DSC0020-Pano-1-3.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 210mm · 83s · f/22 · ISO 100
   - slug: kennedy-town-photo-walk
     imageFolder: gallery/Kennedy_Town_Photo_Walk
     languages:
@@ -678,6 +721,98 @@ albums:
           zh-CN: ''
           en: ''
         meta: 52mm · 1/100s · f/2 · ISO 200
+  - slug: midnight-hku
+    imageFolder: gallery/midnight-hku
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: 夜半HKU
+      en: Mid-Night HKU
+    period:
+      zh-CN: '2024-01-28'
+      en: '2024-01-28'
+    location:
+      zh-CN: HKU红墙
+      en: HKU Red Wall
+    camera:
+      zh-CN: Nikon D5600 · AF-S DX NIKKOR 18-140mm
+      en: Nikon D5600 · AF-S DX NIKKOR 18-140mm
+    description:
+      zh-CN: 半夜独自在学校游荡
+      en: Night View of HKU Building
+    tags:
+      zh-CN:
+        - 风光
+        - 建筑
+      en:
+        - Landscape
+        - Architecture
+    photos:
+      - src: /images/gallery/midnight-hku/DSC0030-1-5.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 15mm · 10s · f/13 · ISO 100
+      - src: /images/gallery/midnight-hku/I_Love_HKU-6.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 28mm · 20s · f/20 · ISO 100
+      - src: /images/gallery/midnight-hku/20240128-_DSC0008-1.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 27mm · 10s · f/14 · ISO 100
+      - src: /images/gallery/midnight-hku/20240128-_DSC0017-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 63mm · 3s · f/18 · ISO 100
+      - src: /images/gallery/midnight-hku/20240128-_DSC0019-3.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 51mm · 5s · f/18 · ISO 100
+      - src: /images/gallery/midnight-hku/20240128-_DSC0022-4.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 15mm · 6s · f/16 · ISO 100
+      - src: /images/gallery/midnight-hku/20240128-_DSC0049-7.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 15mm · 20s · f/16 · ISO 100
+      - src: /images/gallery/midnight-hku/20240129-_DSC0062-8.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 90mm · 10s · f/18 · ISO 100
   - slug: monster-building-victoria-peak-in-fog
     imageFolder: gallery/Monster_Building&Victoria_Peak_in_Fog
     languages:
