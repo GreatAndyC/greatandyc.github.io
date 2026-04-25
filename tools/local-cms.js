@@ -1922,6 +1922,27 @@ function checkPortAvailable(port) {
   });
 }
 
+function spawnNpmScript(script) {
+  const options = {
+    cwd: ROOT,
+    stdio: ['ignore', 'pipe', 'pipe']
+  };
+  const npmExecPath = process.env.npm_execpath;
+
+  if (npmExecPath && fs.existsSync(npmExecPath)) {
+    return spawn(process.execPath, [npmExecPath, 'run', script], options);
+  }
+
+  if (process.platform === 'win32') {
+    return spawn('cmd.exe', ['/d', '/s', '/c', `npm run ${script}`], {
+      ...options,
+      windowsHide: true
+    });
+  }
+
+  return spawn('npm', ['run', script], options);
+}
+
 function runShellTask(name) {
   const command = COMMAND_SCRIPTS[name];
   if (!command || name === 'serve') {
@@ -1940,10 +1961,7 @@ function runShellTask(name) {
   };
   commandState.currentTaskLog = `$ npm run ${command.script}\n`;
 
-  const child = spawn('npm', ['run', command.script], {
-    cwd: ROOT,
-    stdio: ['ignore', 'pipe', 'pipe']
-  });
+  const child = spawnNpmScript(command.script);
 
   child.stdout.on('data', chunk => appendTaskLog(chunk.toString('utf8')));
   child.stderr.on('data', chunk => appendTaskLog(chunk.toString('utf8')));
@@ -1984,10 +2002,7 @@ async function startHexoServer() {
     log: '$ npm run server\n'
   };
 
-  const child = spawn('npm', ['run', 'server'], {
-    cwd: ROOT,
-    stdio: ['ignore', 'pipe', 'pipe']
-  });
+  const child = spawnNpmScript('server');
 
   commandState.serverProcess = child;
   commandState.serverStatus.pid = child.pid;
