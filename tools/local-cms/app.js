@@ -12,11 +12,13 @@ const state = {
   gallery: {
     items: [],
     selectedSlug: '',
-    currentAlbum: null
+    currentAlbum: null,
+    folderItems: []
   },
   images: {
     selectedFolder: '',
-    items: []
+    items: [],
+    selectedPaths: []
   },
   imageFolders: [],
   settings: {
@@ -207,16 +209,23 @@ const elements = {
     descriptionZh: document.querySelector('#gallery-description-zh'),
     descriptionEn: document.querySelector('#gallery-description-en'),
     addPhotoButton: document.querySelector('#gallery-add-photo-button'),
+    addAllCandidatesButton: document.querySelector('#gallery-add-all-candidates-button'),
     photoList: document.querySelector('#gallery-photo-list'),
+    candidateList: document.querySelector('#gallery-candidate-list'),
+    candidateMeta: document.querySelector('#gallery-candidate-meta'),
     uploadImageButton: document.querySelector('#gallery-upload-image-button'),
+    importDirectoryButton: document.querySelector('#gallery-import-directory-button'),
     imageFolderSelect: document.querySelector('#gallery-image-folder-select'),
     imageNewFolder: document.querySelector('#gallery-image-new-folder'),
     createImageFolderButton: document.querySelector('#gallery-create-image-folder-button'),
+    renameImageFolderButton: document.querySelector('#gallery-rename-image-folder-button'),
+    deleteImageFolderButton: document.querySelector('#gallery-delete-image-folder-button'),
     syncFolderButton: document.querySelector('#gallery-sync-folder-button'),
     folderMeta: document.querySelector('#gallery-folder-meta'),
     imageDropzone: document.querySelector('#gallery-image-dropzone'),
     imageDropzoneMeta: document.querySelector('#gallery-image-dropzone-meta'),
-    imageFileInput: document.querySelector('#gallery-image-file-input')
+    imageFileInput: document.querySelector('#gallery-image-file-input'),
+    directoryInput: document.querySelector('#gallery-directory-input')
   },
   library: {
     refreshButton: document.querySelector('#refresh-image-library-button'),
@@ -230,7 +239,11 @@ const elements = {
     imageDropzoneMeta: document.querySelector('#library-image-dropzone-meta'),
     imageFileInput: document.querySelector('#library-image-file-input'),
     grid: document.querySelector('#library-grid'),
-    summary: document.querySelector('#library-summary')
+    summary: document.querySelector('#library-summary'),
+    selectionMeta: document.querySelector('#library-selection-meta'),
+    selectAllButton: document.querySelector('#library-select-all-button'),
+    clearSelectionButton: document.querySelector('#library-clear-selection-button'),
+    deleteSelectedButton: document.querySelector('#library-delete-selected-button')
   }
 };
 
@@ -1003,6 +1016,7 @@ function applyMode(mode) {
   state.currentRecord = null;
   state.gallery.selectedSlug = '';
   state.gallery.currentAlbum = null;
+  state.gallery.folderItems = [];
   state.images.selectedFolder = '';
   resetPostPagination();
 
@@ -1127,12 +1141,56 @@ function formatGalleryAlbumSubtitle(item) {
   return parts.join(' · ');
 }
 
+function getSelectedGalleryPhotoMap() {
+  const photos = state.gallery.currentAlbum && Array.isArray(state.gallery.currentAlbum.photos)
+    ? state.gallery.currentAlbum.photos
+    : [];
+  return new Map(photos.map(photo => [photo.src, photo]));
+}
+
+function getGalleryCandidateItems() {
+  const selected = getSelectedGalleryPhotoMap();
+  return (state.gallery.folderItems || []).filter(item => !selected.has(item.path));
+}
+
+function renderGalleryCandidateList() {
+  const candidates = getGalleryCandidateItems();
+  const folder = elements.gallery.imageFolderSelect.value.trim();
+
+  elements.gallery.candidateMeta.textContent = candidates.length
+    ? `images/${folder || 'gallery/...'} 目录里还有 ${candidates.length} 张候选图未加入相册。`
+    : folder
+      ? `images/${folder} 目录里的图片已经全部处理完。`
+      : '先选择或创建一个 images/gallery/... 目录，再扫描目录。';
+
+  elements.gallery.addAllCandidatesButton.disabled = candidates.length === 0;
+
+  if (!candidates.length) {
+    elements.gallery.candidateList.innerHTML = '<div class="gallery-empty-state">当前没有待筛选的候选图。目录里的图片加入相册后会从这里消失。</div>';
+    return;
+  }
+
+  elements.gallery.candidateList.innerHTML = candidates.map(item => `
+    <article class="gallery-candidate-card">
+      <img class="gallery-candidate-preview" src="${escapeHtml(item.path)}" alt="${escapeHtml(item.name)}" loading="lazy">
+      <div class="gallery-candidate-body">
+        <strong>${escapeHtml(item.name)}</strong>
+        <span>${escapeHtml(item.path)}</span>
+        <span>${escapeHtml([item.dimensions || '', item.captureMeta || '', item.meta || ''].filter(Boolean).join(' · '))}</span>
+      </div>
+      <div class="gallery-candidate-actions">
+        <button class="ghost-button" type="button" data-gallery-candidate-action="add" data-gallery-candidate-path="${escapeHtml(item.path)}">加入相册</button>
+      </div>
+    </article>
+  `).join('');
+}
+
 function renderGalleryPhotoList() {
   const album = state.gallery.currentAlbum || createEmptyGalleryAlbum();
   const photos = album.photos || [];
 
   if (!photos.length) {
-    elements.gallery.photoList.innerHTML = '<div class="gallery-empty-state">当前相册还没有照片。可以上传图片，或者先新增一张手动填写。</div>';
+    elements.gallery.photoList.innerHTML = '<div class="gallery-empty-state">当前相册还没有已入选照片。先从上面的候选图区加入，或手动新增一张。</div>';
     return;
   }
 
@@ -1244,18 +1302,25 @@ function mergeGalleryPhotosFromLibrary(existingPhotos, items) {
 
 async function hydrateGalleryPhotosFromFolder(folder) {
   const targetFolder = String(folder || '').trim();
-  if (!targetFolder || !state.gallery.currentAlbum) return;
+  if (!targetFolder || !state.gallery.currentAlbum) {
+    state.gallery.folderItems = [];
+    renderGalleryCandidateList();
+    return;
+  }
 
   try {
     const payload = await request(`/api/images/library?folder=${encodeURIComponent(targetFolder)}`);
+    state.gallery.folderItems = payload.items || [];
     state.gallery.currentAlbum = {
       ...state.gallery.currentAlbum,
-      imageFolder: payload.folder || targetFolder,
-      photos: mergeGalleryPhotosFromLibrary(state.gallery.currentAlbum.photos, payload.items || [])
+      imageFolder: payload.folder || targetFolder
     };
     renderGalleryPhotoList();
+    renderGalleryCandidateList();
     elements.gallery.folderMeta.textContent = buildGalleryFolderMeta(payload.folder || targetFolder, (payload.items || []).length);
   } catch (error) {
+    state.gallery.folderItems = [];
+    renderGalleryCandidateList();
     elements.gallery.folderMeta.textContent = error.message;
   }
 }
@@ -1272,31 +1337,22 @@ async function syncGalleryFolderToAlbum(options = {}) {
     return;
   }
 
-  const currentPhotos = state.gallery.currentAlbum && Array.isArray(state.gallery.currentAlbum.photos)
-    ? state.gallery.currentAlbum.photos
-    : [];
-  const shouldConfirm = !options.silent && currentPhotos.length > 0 && inferGalleryImageFolder(state.gallery.currentAlbum) !== folder;
-
-  if (shouldConfirm && !window.confirm(`确认用 images/${folder} 目录里的图片重建当前相册列表吗？已有标题、说明会按同路径尽量保留。`)) {
-    return;
-  }
-
   const payload = await request(`/api/images/library?folder=${encodeURIComponent(folder)}`);
-  const nextPhotos = mergeGalleryPhotosFromLibrary(currentPhotos, payload.items || []);
+  state.gallery.folderItems = payload.items || [];
 
   state.gallery.currentAlbum = {
     ...(state.gallery.currentAlbum || createEmptyGalleryAlbum()),
-    imageFolder: payload.folder || folder,
-    photos: nextPhotos
+    imageFolder: payload.folder || folder
   };
   elements.gallery.imageFolderSelect.value = payload.folder || folder;
 
   renderGalleryPhotoList();
-  elements.gallery.folderMeta.textContent = buildGalleryFolderMeta(payload.folder || folder, nextPhotos.length);
-  elements.gallery.imageDropzoneMeta.textContent = nextPhotos.length
-    ? `已从 images/${payload.folder || folder} 导入 ${nextPhotos.length} 张图片，并自动补齐路径与基础拍摄信息。`
+  renderGalleryCandidateList();
+  elements.gallery.folderMeta.textContent = buildGalleryFolderMeta(payload.folder || folder, (payload.items || []).length);
+  elements.gallery.imageDropzoneMeta.textContent = (payload.items || []).length
+    ? `已扫描 images/${payload.folder || folder}，目录图片进入候选区，加入相册后才会写入展示列表。`
     : `images/${payload.folder || folder} 目录下还没有图片。`;
-  setStatus(nextPhotos.length ? `已同步目录 images/${payload.folder || folder} 的 ${nextPhotos.length} 张图片。` : '当前目录没有可导入的图片。', nextPhotos.length ? 'success' : 'error');
+  setStatus((payload.items || []).length ? `已扫描目录 images/${payload.folder || folder}，可继续筛选候选图。` : '当前目录没有可导入的图片。', (payload.items || []).length ? 'success' : 'error');
 }
 
 function fillGalleryEditor(album) {
@@ -1336,15 +1392,25 @@ function fillGalleryEditor(album) {
   elements.gallery.imageFolderSelect.value = state.imageFolders.includes(folder) ? folder : '';
   elements.gallery.folderMeta.textContent = buildGalleryFolderMeta(folder, (nextAlbum.photos || []).length);
   renderGalleryPhotoList();
+  renderGalleryCandidateList();
   if (folder) {
     hydrateGalleryPhotosFromFolder(folder);
+  } else {
+    state.gallery.folderItems = [];
+    renderGalleryCandidateList();
   }
 }
 
 function renderImageLibrary() {
   const folderLabel = state.images.selectedFolder ? `images/${state.images.selectedFolder}` : 'images/';
+  const selectedSet = new Set(state.images.selectedPaths || []);
+  const selectedCount = state.images.items.filter(item => selectedSet.has(item.path)).length;
   elements.library.folderSelect.value = state.images.selectedFolder;
   elements.library.summary.textContent = `${folderLabel} 下共 ${state.images.items.length} 个文件。`;
+  elements.library.selectionMeta.textContent = selectedCount ? `已选择 ${selectedCount} 张图片` : '未选择图片';
+  elements.library.selectAllButton.disabled = state.images.items.length === 0 || selectedCount === state.images.items.length;
+  elements.library.clearSelectionButton.disabled = selectedCount === 0;
+  elements.library.deleteSelectedButton.disabled = selectedCount === 0;
 
   if (!state.images.items.length) {
     elements.library.grid.innerHTML = '<div class="gallery-empty-state">当前目录还没有图片。可以直接拖拽上传，或者切换到其他目录。</div>';
@@ -1352,7 +1418,13 @@ function renderImageLibrary() {
   }
 
   elements.library.grid.innerHTML = state.images.items.map(item => `
-    <article class="library-card">
+    <article class="library-card${selectedSet.has(item.path) ? ' is-selected' : ''}">
+      <div class="library-card-header">
+        <label class="library-card-checkbox">
+          <input type="checkbox" data-library-selection-toggle="true" data-library-path="${escapeHtml(item.path)}"${selectedSet.has(item.path) ? ' checked' : ''}>
+          <span>选择</span>
+        </label>
+      </div>
       <button class="library-preview" type="button" data-library-action="copy" data-library-path="${escapeHtml(item.path)}" title="点击复制路径">
         <img src="${escapeHtml(item.path)}" alt="${escapeHtml(item.name)}">
       </button>
@@ -1395,18 +1467,32 @@ function syncGalleryDraftFromForm() {
     .filter(index => Number.isInteger(index));
 
   const uniqueIndexes = Array.from(new Set(photoIndexes)).sort((left, right) => left - right);
-  const photos = uniqueIndexes.map(index => ({
-    src: elements.gallery.photoList.querySelector(`[data-gallery-field="src"][data-photo-index="${index}"]`)?.value.trim() || '',
-    title: {
-      'zh-CN': elements.gallery.photoList.querySelector(`[data-gallery-field="title-zh"][data-photo-index="${index}"]`)?.value.trim() || '',
-      en: elements.gallery.photoList.querySelector(`[data-gallery-field="title-en"][data-photo-index="${index}"]`)?.value.trim() || ''
-    },
-    caption: {
-      'zh-CN': elements.gallery.photoList.querySelector(`[data-gallery-field="caption-zh"][data-photo-index="${index}"]`)?.value.trim() || '',
-      en: elements.gallery.photoList.querySelector(`[data-gallery-field="caption-en"][data-photo-index="${index}"]`)?.value.trim() || ''
-    },
-    meta: elements.gallery.photoList.querySelector(`[data-gallery-field="meta"][data-photo-index="${index}"]`)?.value.trim() || ''
-  }));
+  const currentPhotos = Array.isArray(state.gallery.currentAlbum.photos) ? state.gallery.currentAlbum.photos : [];
+  const currentPhotoMap = new Map(currentPhotos.map(photo => [photo.src, photo]));
+  const folderItemMap = new Map((state.gallery.folderItems || []).map(item => [item.path, item]));
+  const photos = uniqueIndexes.map(index => {
+    const src = elements.gallery.photoList.querySelector(`[data-gallery-field="src"][data-photo-index="${index}"]`)?.value.trim() || '';
+    const existing = currentPhotoMap.get(src) || {};
+    const folderItem = folderItemMap.get(src) || {};
+
+    return {
+      ...existing,
+      src,
+      title: {
+        'zh-CN': elements.gallery.photoList.querySelector(`[data-gallery-field="title-zh"][data-photo-index="${index}"]`)?.value.trim() || '',
+        en: elements.gallery.photoList.querySelector(`[data-gallery-field="title-en"][data-photo-index="${index}"]`)?.value.trim() || ''
+      },
+      caption: {
+        'zh-CN': elements.gallery.photoList.querySelector(`[data-gallery-field="caption-zh"][data-photo-index="${index}"]`)?.value.trim() || '',
+        en: elements.gallery.photoList.querySelector(`[data-gallery-field="caption-en"][data-photo-index="${index}"]`)?.value.trim() || ''
+      },
+      meta: elements.gallery.photoList.querySelector(`[data-gallery-field="meta"][data-photo-index="${index}"]`)?.value.trim() || '',
+      dimensions: existing.dimensions || folderItem.dimensions || '',
+      camera: existing.camera || folderItem.camera || '',
+      captureMeta: existing.captureMeta || folderItem.captureMeta || '',
+      fileMeta: existing.fileMeta || folderItem.meta || ''
+    };
+  });
 
   state.gallery.currentAlbum = {
     ...state.gallery.currentAlbum,
@@ -1534,9 +1620,12 @@ async function loadImageLibrary(folder = '', options = {}) {
   const targetFolder = typeof folder === 'string' ? folder : '';
   const query = targetFolder ? `?folder=${encodeURIComponent(targetFolder)}` : '';
   const payload = await request(`/api/images/library${query}`);
+  const nextItems = payload.items || [];
+  const nextPaths = new Set(nextItems.map(item => item.path));
   state.images.selectedFolder = payload.folder || '';
   state.selectedId = state.images.selectedFolder || '__root__';
-  state.images.items = payload.items || [];
+  state.images.items = nextItems;
+  state.images.selectedPaths = (state.images.selectedPaths || []).filter(path => nextPaths.has(path));
   renderList();
   if (!options.skipWorkspaceRender) {
     fillImageLibraryWorkspace();
@@ -1709,6 +1798,41 @@ function fileToBase64(file) {
   });
 }
 
+function isImageLikeFile(file) {
+  if (!file) return false;
+  const name = String(file.name || '').toLowerCase();
+  return /\.(jpg|jpeg|png|webp|gif|avif|svg)$/.test(name);
+}
+
+function getUploadFileKey(file) {
+  return String(file.webkitRelativePath || file.name || '').trim() || String(file.name || '').trim();
+}
+
+function normalizeUploadFiles(fileList) {
+  return Array.from(fileList || [])
+    .filter(isImageLikeFile)
+    .sort((left, right) => getUploadFileKey(left).localeCompare(getUploadFileKey(right), 'zh-Hans-CN', { numeric: true }));
+}
+
+function assertNoDuplicateUploadNames(files) {
+  const seen = new Map();
+
+  files.forEach(file => {
+    const name = String(file.name || '').trim();
+    if (!name) return;
+    const count = seen.get(name) || 0;
+    seen.set(name, count + 1);
+  });
+
+  const duplicates = Array.from(seen.entries())
+    .filter(([, count]) => count > 1)
+    .map(([name]) => name);
+
+  if (duplicates.length) {
+    throw new Error(`导入目录里存在重名图片，当前上传会覆盖同名文件：${duplicates.slice(0, 6).join('、')}${duplicates.length > 6 ? ' 等' : ''}`);
+  }
+}
+
 async function handleSaveLlmSettings() {
   try {
     const payload = buildLlmPayload();
@@ -1864,22 +1988,19 @@ async function savePostRecord(payload, options = {}) {
 }
 
 function appendGalleryPhotos(paths) {
-  syncGalleryDraftFromForm();
-
-  if (!state.gallery.currentAlbum) {
-    state.gallery.currentAlbum = createEmptyGalleryAlbum();
-  }
-
-  const nextPhotos = paths.map(path => ({
-    src: path,
-    title: { 'zh-CN': '', en: '' },
-    caption: { 'zh-CN': '', en: '' },
-    meta: ''
-  }));
-
-  state.gallery.currentAlbum.photos = (state.gallery.currentAlbum.photos || []).concat(nextPhotos);
-  state.gallery.currentAlbum.imageFolder = elements.gallery.imageFolderSelect.value.trim();
-  renderGalleryPhotoList();
+  const pathSet = new Set(paths || []);
+  const nextCandidates = (state.gallery.folderItems || []).filter(item => !pathSet.has(item.path)).concat(
+    (paths || []).map(path => ({
+      name: getImageFileName(path),
+      path,
+      dimensions: '',
+      camera: '',
+      captureMeta: '',
+      meta: ''
+    }))
+  );
+  state.gallery.folderItems = nextCandidates;
+  renderGalleryCandidateList();
 }
 
 function mutateGalleryPhotos(mutator) {
@@ -1891,6 +2012,152 @@ function mutateGalleryPhotos(mutator) {
     photos: nextPhotos
   };
   renderGalleryPhotoList();
+  renderGalleryCandidateList();
+}
+
+function addGalleryCandidatesToAlbum(paths) {
+  const candidates = new Map((state.gallery.folderItems || []).map(item => [item.path, item]));
+  const album = syncGalleryDraftFromForm() || createEmptyGalleryAlbum();
+  const existingPaths = new Set((album.photos || []).map(photo => photo.src));
+  const appended = [];
+
+  (paths || []).forEach(path => {
+    if (!path || existingPaths.has(path)) return;
+    const item = candidates.get(path) || {};
+    appended.push({
+      src: path,
+      title: { 'zh-CN': '', en: '' },
+      caption: { 'zh-CN': '', en: '' },
+      meta: item.captureMeta || '',
+      dimensions: item.dimensions || '',
+      camera: item.camera || '',
+      captureMeta: item.captureMeta || '',
+      fileMeta: item.meta || ''
+    });
+    existingPaths.add(path);
+  });
+
+  if (!appended.length) return;
+
+  state.gallery.currentAlbum = {
+    ...album,
+    imageFolder: elements.gallery.imageFolderSelect.value.trim(),
+    photos: (album.photos || []).concat(appended)
+  };
+  renderGalleryPhotoList();
+  renderGalleryCandidateList();
+}
+
+function rewriteGalleryDraftFolderPaths(currentFolder, nextFolder) {
+  const fromPrefix = `/images/${currentFolder}/`;
+  const toPrefix = `/images/${nextFolder}/`;
+  const album = syncGalleryDraftFromForm() || createEmptyGalleryAlbum();
+
+  state.gallery.currentAlbum = {
+    ...album,
+    imageFolder: nextFolder,
+    photos: (album.photos || []).map(photo => ({
+      ...photo,
+      src: String(photo.src || '').startsWith(fromPrefix)
+        ? String(photo.src || '').replace(fromPrefix, toPrefix)
+        : photo.src
+    }))
+  };
+  renderGalleryPhotoList();
+  renderGalleryCandidateList();
+}
+
+async function handleGalleryRenameImageFolder() {
+  try {
+    const currentFolder = normalizeGalleryManagedFolder(elements.gallery.imageFolderSelect.value, elements.gallery.slug.value.trim());
+    const nextFolder = normalizeGalleryManagedFolder(
+      elements.gallery.imageNewFolder.value,
+      elements.gallery.slug.value.trim()
+    );
+
+    if (!currentFolder || !currentFolder.startsWith('gallery/')) {
+      throw new Error('请先选择一个 images/gallery/ 下的目录。');
+    }
+    if (!nextFolder || !nextFolder.startsWith('gallery/')) {
+      throw new Error('请输入新的 gallery 目录名。');
+    }
+
+    const references = await loadImageReferences({ folder: currentFolder });
+    if (references.referenceCount > 0) {
+      const confirmed = window.confirm(
+        `目录 images/${currentFolder} 当前被 ${references.referenceCount} 个文件引用。继续重命名会自动同步这些已保存的引用。\n\n${formatReferenceSummary(references, 6)}\n\n确认继续吗？`
+      );
+      if (!confirmed) return;
+    }
+
+    const payload = await request('/api/images/folders/rename', {
+      method: 'POST',
+      body: JSON.stringify({
+        currentFolder,
+        nextFolder
+      })
+    });
+
+    state.imageFolders = payload.folders || [''];
+    renderImageFolders();
+    elements.gallery.imageFolderSelect.value = payload.folder || '';
+    elements.gallery.imageNewFolder.value = '';
+    rewriteGalleryDraftFolderPaths(currentFolder, payload.folder || '');
+    await hydrateGalleryPhotosFromFolder(payload.folder || '');
+    setStatus(`已重命名目录：images/${currentFolder} -> images/${payload.folder}`, 'success');
+    showToast('目录已重命名', `当前目录：images/${payload.folder}`);
+    refreshAuditLogsSilently();
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
+async function handleGalleryDeleteImageFolder() {
+  const folder = normalizeGalleryManagedFolder(elements.gallery.imageFolderSelect.value, elements.gallery.slug.value.trim());
+  if (!folder || !folder.startsWith('gallery/')) {
+    setStatus('请先选择一个 images/gallery/ 下的目录。', 'error');
+    return;
+  }
+
+  try {
+    const references = await loadImageReferences({ folder });
+    let force = false;
+
+    if (references.referenceCount > 0) {
+      force = window.confirm(
+        `目录 images/${folder} 当前仍被 ${references.referenceCount} 个文件引用。继续删除会造成坏链。\n\n${formatReferenceSummary(references, 6)}\n\n确认强制删除吗？`
+      );
+      if (!force) return;
+    } else if (!window.confirm(`确认删除 images/${folder} 目录及其所有内容吗？`)) {
+      return;
+    }
+
+    const payload = await request('/api/images/folders/delete', {
+      method: 'POST',
+      body: JSON.stringify({ folder, force })
+    });
+
+    const album = syncGalleryDraftFromForm() || createEmptyGalleryAlbum();
+    const removedPrefix = `/images/${folder}/`;
+    state.gallery.currentAlbum = {
+      ...album,
+      imageFolder: '',
+      photos: (album.photos || []).filter(photo => !String(photo.src || '').startsWith(removedPrefix))
+    };
+    state.gallery.folderItems = [];
+    state.imageFolders = payload.folders || [''];
+    renderImageFolders();
+    elements.gallery.imageFolderSelect.value = '';
+    elements.gallery.imageNewFolder.value = '';
+    elements.gallery.folderMeta.textContent = buildGalleryFolderMeta('', (state.gallery.currentAlbum.photos || []).length);
+    renderGalleryPhotoList();
+    renderGalleryCandidateList();
+    setStatus(`已删除目录：images/${payload.deleted}`, 'success');
+    showToast('目录已删除', `已删除 images/${payload.deleted}；当前草稿中的同目录图片已移除。`);
+    refreshAuditLogsSilently();
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
 }
 
 async function handleGalleryCreateImageFolder() {
@@ -1919,7 +2186,7 @@ async function handleGalleryCreateImageFolder() {
 }
 
 async function uploadGalleryImages(fileList) {
-  const files = Array.from(fileList || []);
+  const files = normalizeUploadFiles(fileList);
   if (!files.length) return;
 
   try {
@@ -1939,19 +2206,30 @@ async function uploadGalleryImages(fileList) {
 
     state.imageFolders = payload.folders || state.imageFolders;
     renderImageFolders();
-    appendGalleryPhotos((payload.uploaded || []).map(item => item.path));
     state.gallery.currentAlbum = {
       ...(state.gallery.currentAlbum || createEmptyGalleryAlbum()),
       imageFolder: payload.folder || elements.gallery.imageFolderSelect.value.trim()
     };
+    await hydrateGalleryPhotosFromFolder(payload.folder || elements.gallery.imageFolderSelect.value.trim());
     elements.gallery.imageDropzoneMeta.textContent = (payload.uploaded || []).map(item => item.path).join('  ');
     elements.gallery.imageFileInput.value = '';
-    elements.gallery.folderMeta.textContent = buildGalleryFolderMeta(payload.folder || elements.gallery.imageFolderSelect.value.trim(), (state.gallery.currentAlbum.photos || []).length);
-    setStatus(`已上传 ${(payload.uploaded || []).length} 张画廊图片。`, 'success');
+    elements.gallery.folderMeta.textContent = buildGalleryFolderMeta(payload.folder || elements.gallery.imageFolderSelect.value.trim(), (state.gallery.folderItems || []).length);
+    setStatus(`已上传 ${(payload.uploaded || []).length} 张画廊图片，已进入候选区。`, 'success');
     refreshAuditLogsSilently();
   } catch (error) {
     setStatus(error.message, 'error');
   }
+}
+
+async function importGalleryDirectory(fileList) {
+  const files = normalizeUploadFiles(fileList);
+  if (!files.length) {
+    setStatus('选中的目录里没有可导入的图片。', 'error');
+    return;
+  }
+
+  assertNoDuplicateUploadNames(files);
+  await uploadGalleryImages(files);
 }
 
 async function handleLibraryCreateImageFolder() {
@@ -2141,6 +2419,90 @@ async function handleLibraryDeleteImage(imagePath) {
     await loadImageLibrary(payload.folder || '');
     setStatus(`已删除图片：${payload.deleted}`, 'success');
     showToast('图片已删除', payload.deleted);
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
+function toggleLibrarySelection(imagePath, selected) {
+  const current = new Set(state.images.selectedPaths || []);
+  if (selected) {
+    current.add(imagePath);
+  } else {
+    current.delete(imagePath);
+  }
+  state.images.selectedPaths = Array.from(current);
+  renderImageLibrary();
+}
+
+function selectAllLibraryImages() {
+  state.images.selectedPaths = (state.images.items || []).map(item => item.path);
+  renderImageLibrary();
+}
+
+function clearLibrarySelection() {
+  state.images.selectedPaths = [];
+  renderImageLibrary();
+}
+
+async function handleLibraryDeleteSelectedImages() {
+  const selectedPaths = Array.from(new Set(state.images.selectedPaths || [])).filter(Boolean);
+  if (!selectedPaths.length) {
+    setStatus('请先选择要删除的图片。', 'error');
+    return;
+  }
+
+  try {
+    const referencePayloads = await Promise.all(selectedPaths.map(path => loadImageReferences({ path })));
+    const referenced = referencePayloads.filter(payload => payload.referenceCount > 0);
+    let force = false;
+
+    if (referenced.length > 0) {
+      const preview = referenced
+        .slice(0, 3)
+        .map(payload => formatReferenceSummary(payload, 3))
+        .join('\n\n');
+      force = window.confirm(
+        `已选中的 ${selectedPaths.length} 张图片里，有 ${referenced.length} 张仍被引用。继续删除会造成坏链。\n\n${preview}\n\n确认强制删除吗？`
+      );
+      if (!force) return;
+    } else if (!window.confirm(`确认删除已选中的 ${selectedPaths.length} 张图片吗？`)) {
+      return;
+    }
+
+    const deleted = [];
+    const failed = [];
+
+    for (let index = 0; index < selectedPaths.length; index += 1) {
+      const imagePath = selectedPaths[index];
+      setStatus(`正在删除图片 ${index + 1}/${selectedPaths.length}：${imagePath}`);
+      try {
+        await request('/api/images/delete', {
+          method: 'POST',
+          body: JSON.stringify({ path: imagePath, force })
+        });
+        deleted.push(imagePath);
+      } catch (error) {
+        failed.push({ path: imagePath, message: error.message });
+      }
+    }
+
+    if (deleted.length) {
+      await loadImageLibrary(state.images.selectedFolder || '');
+    } else {
+      renderImageLibrary();
+    }
+
+    state.images.selectedPaths = failed.map(item => item.path);
+
+    if (failed.length) {
+      setStatus(`已删除 ${deleted.length} 张，失败 ${failed.length} 张。`, deleted.length ? 'error' : 'error');
+      showToast('批量删除未完成', failed.slice(0, 3).map(item => `${item.path}: ${item.message}`).join(' | '));
+      return;
+    }
+
+    setStatus(`已删除 ${deleted.length} 张图片。`, 'success');
+    showToast('图片已删除', `已删除 ${deleted.length} 张图片`);
   } catch (error) {
     setStatus(error.message, 'error');
   }
@@ -2520,7 +2882,12 @@ elements.gallery.addPhotoButton.addEventListener('click', () => {
     });
   });
 });
+elements.gallery.addAllCandidatesButton.addEventListener('click', () => {
+  addGalleryCandidatesToAlbum(getGalleryCandidateItems().map(item => item.path));
+});
 elements.gallery.createImageFolderButton.addEventListener('click', handleGalleryCreateImageFolder);
+elements.gallery.renameImageFolderButton.addEventListener('click', handleGalleryRenameImageFolder);
+elements.gallery.deleteImageFolderButton.addEventListener('click', handleGalleryDeleteImageFolder);
 elements.gallery.syncFolderButton.addEventListener('click', async () => {
   try {
     await syncGalleryFolderToAlbum();
@@ -2557,11 +2924,14 @@ elements.uploadImageButton.addEventListener('click', () => {
 elements.post.imageFileInput.addEventListener('change', event => {
   uploadSelectedImages(event.target.files);
 });
-elements.gallery.uploadImageButton.addEventListener('click', () => {
-  elements.gallery.imageFileInput.click();
-});
 elements.gallery.imageFileInput.addEventListener('change', event => {
   uploadGalleryImages(event.target.files);
+  event.target.value = '';
+});
+elements.gallery.directoryInput.addEventListener('change', event => {
+  event.stopPropagation();
+  importGalleryDirectory(event.target.files);
+  event.target.value = '';
 });
 elements.library.uploadButton.addEventListener('click', () => {
   elements.library.imageFileInput.click();
@@ -2569,13 +2939,19 @@ elements.library.uploadButton.addEventListener('click', () => {
 elements.library.imageFileInput.addEventListener('change', event => {
   uploadLibraryImages(event.target.files);
 });
-elements.post.imageDropzone.addEventListener('click', () => {
+elements.post.imageDropzone.addEventListener('click', event => {
+  const target = event.target instanceof HTMLElement ? event.target : null;
+  if (target && target !== event.currentTarget && target.closest('input, button, label, select, textarea, a')) return;
   elements.post.imageFileInput.click();
 });
-elements.gallery.imageDropzone.addEventListener('click', () => {
+elements.gallery.imageDropzone.addEventListener('click', event => {
+  const target = event.target instanceof HTMLElement ? event.target : null;
+  if (target && target !== event.currentTarget && target.closest('input, button, label, select, textarea, a')) return;
   elements.gallery.imageFileInput.click();
 });
-elements.library.imageDropzone.addEventListener('click', () => {
+elements.library.imageDropzone.addEventListener('click', event => {
+  const target = event.target instanceof HTMLElement ? event.target : null;
+  if (target && target !== event.currentTarget && target.closest('input, button, label, select, textarea, a')) return;
   elements.library.imageFileInput.click();
 });
 elements.post.imageDropzone.addEventListener('dragover', event => {
@@ -2652,6 +3028,15 @@ elements.gallery.photoList.addEventListener('change', event => {
   if (target.matches('[data-gallery-field="src"]')) {
     syncGalleryDraftFromForm();
     renderGalleryPhotoList();
+    renderGalleryCandidateList();
+  }
+});
+elements.gallery.candidateList.addEventListener('click', event => {
+  const button = event.target.closest('[data-gallery-candidate-action]');
+  if (!button) return;
+
+  if (button.dataset.galleryCandidateAction === 'add') {
+    addGalleryCandidatesToAlbum([button.dataset.galleryCandidatePath || '']);
   }
 });
 elements.library.refreshButton.addEventListener('click', async () => {
@@ -2674,6 +3059,9 @@ elements.library.folderSelect.addEventListener('change', async () => {
 elements.library.createFolderButton.addEventListener('click', handleLibraryCreateImageFolder);
 elements.library.renameFolderButton.addEventListener('click', handleLibraryRenameImageFolder);
 elements.library.deleteFolderButton.addEventListener('click', handleLibraryDeleteImageFolder);
+elements.library.selectAllButton.addEventListener('click', selectAllLibraryImages);
+elements.library.clearSelectionButton.addEventListener('click', clearLibrarySelection);
+elements.library.deleteSelectedButton.addEventListener('click', handleLibraryDeleteSelectedImages);
 elements.library.grid.addEventListener('click', async event => {
   const button = event.target.closest('[data-library-action]');
   if (!button) return;
@@ -2703,6 +3091,12 @@ elements.library.grid.addEventListener('click', async event => {
   } catch (error) {
     setStatus(error.message, 'error');
   }
+});
+elements.library.grid.addEventListener('change', event => {
+  const target = event.target;
+  if (!(target instanceof HTMLInputElement)) return;
+  if (!target.matches('[data-library-selection-toggle="true"]')) return;
+  toggleLibrarySelection(target.dataset.libraryPath || '', target.checked);
 });
 elements.auditLogRefreshButton.addEventListener('click', async () => {
   try {

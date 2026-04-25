@@ -525,6 +525,27 @@ function buildFrontMatterString(data, body) {
   return `---\n${serialized}---\n\n${normalizedBody}`;
 }
 
+function parseDelimitedFrontMatter(raw, filePath = 'document') {
+  const text = String(raw || '');
+  const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+
+  if (!match) {
+    return {
+      data: {},
+      body: text
+    };
+  }
+
+  try {
+    return {
+      data: yaml.load(match[1]) || {},
+      body: match[2] || ''
+    };
+  } catch (error) {
+    throw new Error(`${filePath} front matter parse failed: ${error.message}`);
+  }
+}
+
 function normalizeGallerySlug(value) {
   const slug = String(value || '').trim();
   if (!slug) {
@@ -645,7 +666,7 @@ function loadGalleryEmptyState() {
 }
 
 function buildGalleryAlbumRecord(filePath) {
-  const parsed = parseMarkdownFile(filePath);
+  const parsed = parseDelimitedFrontMatter(fs.readFileSync(filePath, 'utf8'), filePath);
   const data = parsed.data || {};
   const slug = normalizeGallerySlug(data.slug || path.basename(filePath, '.md'));
   const photos = parseGalleryPhotoTable(parsed.body).map(row => {
@@ -2414,8 +2435,13 @@ function serveStaticAsset(res, pathname) {
     : ext === '.js'
       ? 'application/javascript'
       : 'text/html';
-
-  textResponse(res, 200, contentType, fs.readFileSync(filePath, 'utf8'));
+  res.writeHead(200, {
+    'Content-Type': `${contentType}; charset=utf-8`,
+    'Cache-Control': 'no-store, no-cache, must-revalidate',
+    Pragma: 'no-cache',
+    Expires: '0'
+  });
+  res.end(fs.readFileSync(filePath, 'utf8'));
 }
 
 function serveProjectImage(res, pathname) {

@@ -170,9 +170,48 @@ function normalizeGalleryPhoto(photo = {}, language = getDefaultLanguage()) {
   };
 }
 
+function parseGalleryAlbumSortDate(album) {
+  const candidates = [
+    getLocalizedValue(album.period, 'en'),
+    getLocalizedValue(album.period, 'zh-CN'),
+    album.period
+  ].map(value => String(value || '').trim()).filter(Boolean);
+
+  for (const candidate of candidates) {
+    const match = candidate.match(/(20\d{2})(?:[-/.](\d{1,2})(?:[-/.](\d{1,2}))?)?/);
+    if (!match) continue;
+
+    const year = Number(match[1]);
+    const month = Number(match[2] || 1);
+    const day = Number(match[3] || 1);
+    const timestamp = Date.UTC(year, month - 1, day);
+    if (!Number.isNaN(timestamp)) return timestamp;
+  }
+
+  return null;
+}
+
+function sortGalleryAlbums(albums = []) {
+  return albums
+    .map((album, index) => ({
+      album,
+      index,
+      sortDate: parseGalleryAlbumSortDate(album)
+    }))
+    .sort((left, right) => {
+      if (left.sortDate != null && right.sortDate != null && left.sortDate !== right.sortDate) {
+        return right.sortDate - left.sortDate;
+      }
+      if (left.sortDate != null && right.sortDate == null) return -1;
+      if (left.sortDate == null && right.sortDate != null) return 1;
+      return left.index - right.index;
+    })
+    .map(item => item.album);
+}
+
 hexo.extend.generator.register('gallery_data', function (locals) {
   const galleryData = (locals.data && locals.data.gallery) || {};
-  const albums = galleryData.albums || [];
+  const albums = sortGalleryAlbums(galleryData.albums || []);
   const languages = getLanguages();
 
   return languages.flatMap(language => {
@@ -465,9 +504,9 @@ hexo.extend.helper.register('localized_list_categories', function (options = {})
 
 hexo.extend.helper.register('render_gallery', function (language = getCurrentLanguage(this)) {
   const galleryData = this.site.data.gallery || {};
-  const albums = (galleryData.albums || []).filter(album => {
+  const albums = sortGalleryAlbums((galleryData.albums || []).filter(album => {
     return !album.languages || album.languages.includes(language);
-  });
+  }));
   const emptyText = escapeHTML(getLocalizedValue(galleryData.empty, language) || 'No gallery items yet.');
 
   if (!albums.length) {

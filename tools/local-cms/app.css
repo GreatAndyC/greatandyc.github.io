@@ -157,6 +157,26 @@ select {
   transition: transform 0.14s ease, background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
 }
 
+.file-trigger-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.native-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
+}
+
 .mode-button:disabled,
 .ghost-button:disabled,
 .primary-button:disabled {
@@ -947,6 +967,71 @@ select:focus {
   gap: 14px;
 }
 
+.gallery-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin: 8px 0 12px;
+}
+
+.gallery-section-header h4 {
+  margin: 0 0 4px;
+  font-size: 0.98rem;
+}
+
+.gallery-section-header p {
+  margin: 0;
+}
+
+.gallery-candidate-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.gallery-candidate-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.gallery-candidate-preview {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 14px;
+  background: rgba(240, 240, 240, 0.95);
+}
+
+.gallery-candidate-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gallery-candidate-body strong,
+.gallery-candidate-body span {
+  word-break: break-all;
+}
+
+.gallery-candidate-body span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.gallery-candidate-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .gallery-photo-list {
   display: grid;
   gap: 16px;
@@ -1047,6 +1132,11 @@ select:focus {
   background: rgba(255, 255, 255, 0.95);
 }
 
+.library-card.is-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
 .library-preview {
   border: 0;
   padding: 0;
@@ -1084,6 +1174,27 @@ select:focus {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+.library-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.library-card-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.library-card-checkbox input {
+  width: auto;
+  margin: 0;
 }
 
 .checkbox-field {

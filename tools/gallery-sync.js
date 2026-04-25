@@ -17,15 +17,12 @@ function readText(filePath) {
 }
 
 function parseFrontMatter(md, filePath) {
-  if (!md.startsWith("---\n")) {
+  const match = String(md || "").match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+  if (!match) {
     fail(`${filePath} missing front matter`);
   }
-  const endIdx = md.indexOf("\n---\n", 4);
-  if (endIdx === -1) {
-    fail(`${filePath} has invalid front matter delimiter`);
-  }
-  const fmRaw = md.slice(4, endIdx);
-  const body = md.slice(endIdx + 5);
+  const fmRaw = match[1];
+  const body = match[2] || "";
   const fm = yaml.load(fmRaw) || {};
   return { fm, body };
 }

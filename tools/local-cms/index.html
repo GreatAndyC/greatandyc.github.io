@@ -397,6 +397,66 @@
               </div>
 
               <div class="editor-card gallery-inner-card">
+                <div class="card-heading">
+                  <div class="card-heading-copy">
+                    <h3>相册图片</h3>
+                    <span class="field-hint">建议每个相册固定对应 `source/images/gallery/` 下的一个独立目录。选择目录后会自动导入该目录里的全部图片、路径和基础拍摄信息。</span>
+                  </div>
+                  <div class="card-heading-actions">
+                    <button id="gallery-add-photo-button" class="ghost-button" type="button">新增一张</button>
+                    <label id="gallery-upload-image-button" class="ghost-button file-trigger-button" for="gallery-image-file-input">上传图片</label>
+                    <label id="gallery-import-directory-button" class="ghost-button file-trigger-button" for="gallery-directory-input">导入目录</label>
+                  </div>
+                </div>
+
+                <div class="image-tools-grid">
+                  <label>
+                    <span>相册目录</span>
+                    <select id="gallery-image-folder-select"></select>
+                    <small id="gallery-folder-meta" class="field-hint">未指定目录</small>
+                  </label>
+                  <label>
+                    <span>目录操作</span>
+                    <div class="folder-action-grid">
+                      <input id="gallery-image-new-folder" type="text" placeholder="例如 gallery/heartbeat-pi-2026">
+                      <button id="gallery-create-image-folder-button" class="ghost-button" type="button">创建目录</button>
+                      <button id="gallery-rename-image-folder-button" class="ghost-button" type="button">重命名目录</button>
+                      <button id="gallery-delete-image-folder-button" class="ghost-button danger-button" type="button">删除目录</button>
+                      <button id="gallery-sync-folder-button" class="ghost-button" type="button">扫描目录</button>
+                    </div>
+                  </label>
+                </div>
+
+                <div id="gallery-image-dropzone" class="image-dropzone" tabindex="0">
+                  <input id="gallery-image-file-input" class="native-file-input" type="file" accept="image/*" multiple>
+                  <input id="gallery-directory-input" class="native-file-input" type="file" accept="image/*" webkitdirectory directory multiple>
+                  <p>拖动图片到这里，或点击选择本地文件</p>
+                  <span id="gallery-image-dropzone-meta">上传后的图片会先进入目录候选区，筛选后再加入相册。</span>
+                </div>
+
+                <div class="gallery-section-header">
+                  <div>
+                    <h4>目录候选图</h4>
+                    <p id="gallery-candidate-meta" class="field-hint">先扫描目录，再把要展示的图片加入相册。</p>
+                  </div>
+                  <div class="card-heading-actions">
+                    <button id="gallery-add-all-candidates-button" class="ghost-button" type="button">全部加入相册</button>
+                  </div>
+                </div>
+
+                <div id="gallery-candidate-list" class="gallery-candidate-list"></div>
+
+                <div class="gallery-section-header">
+                  <div>
+                    <h4>已入选相册</h4>
+                    <p class="field-hint">这里的顺序、标题和说明会写入相册 markdown，并决定前台展示结果。</p>
+                  </div>
+                </div>
+
+                <div id="gallery-photo-list" class="gallery-photo-list"></div>
+              </div>
+
+              <div class="editor-card gallery-inner-card">
                 <div class="language-grid gallery-language-grid">
                   <section class="gallery-language-column">
                     <div class="card-heading">
@@ -459,43 +519,6 @@
                   </section>
                 </div>
               </div>
-
-              <div class="editor-card gallery-inner-card">
-                <div class="card-heading">
-                  <div class="card-heading-copy">
-                    <h3>相册图片</h3>
-                    <span class="field-hint">建议每个相册固定对应 `source/images/gallery/` 下的一个独立目录。选择目录后会自动导入该目录里的全部图片、路径和基础拍摄信息。</span>
-                  </div>
-                  <div class="card-heading-actions">
-                    <button id="gallery-add-photo-button" class="ghost-button" type="button">新增一张</button>
-                    <button id="gallery-upload-image-button" class="ghost-button" type="button">上传图片</button>
-                  </div>
-                </div>
-
-                <div class="image-tools-grid">
-                  <label>
-                    <span>相册目录</span>
-                    <select id="gallery-image-folder-select"></select>
-                    <small id="gallery-folder-meta" class="field-hint">未指定目录</small>
-                  </label>
-                  <label>
-                    <span>目录操作</span>
-                    <div class="folder-action-grid">
-                      <input id="gallery-image-new-folder" type="text" placeholder="例如 gallery/heartbeat-pi-2026">
-                      <button id="gallery-create-image-folder-button" class="ghost-button" type="button">创建目录</button>
-                      <button id="gallery-sync-folder-button" class="ghost-button" type="button">重新导入</button>
-                    </div>
-                  </label>
-                </div>
-
-                <div id="gallery-image-dropzone" class="image-dropzone" tabindex="0">
-                  <input id="gallery-image-file-input" type="file" accept="image/*" multiple hidden>
-                  <p>拖动图片到这里，或点击选择本地文件</p>
-                  <span id="gallery-image-dropzone-meta">上传后的图片会作为新的照片条目追加到当前相册里。</span>
-                </div>
-
-                <div id="gallery-photo-list" class="gallery-photo-list"></div>
-              </div>
             </div>
           </div>
         </section>
@@ -537,12 +560,18 @@
           </div>
 
           <div class="editor-card">
-            <div class="card-heading">
-              <div class="card-heading-copy">
-                <h3>目录图片</h3>
-                <span id="library-summary" class="field-hint">请选择左侧目录查看图片。</span>
+              <div class="card-heading">
+                <div class="card-heading-copy">
+                  <h3>目录图片</h3>
+                  <span id="library-summary" class="field-hint">请选择左侧目录查看图片。</span>
+                </div>
+                <div class="card-heading-actions">
+                  <span id="library-selection-meta" class="field-hint">未选择图片</span>
+                  <button id="library-select-all-button" class="ghost-button" type="button">全选当前目录</button>
+                  <button id="library-clear-selection-button" class="ghost-button" type="button">清空选择</button>
+                  <button id="library-delete-selected-button" class="ghost-button danger-button" type="button">删除已选</button>
+                </div>
               </div>
-            </div>
             <div id="library-grid" class="library-grid"></div>
           </div>
         </section>
