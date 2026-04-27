@@ -304,7 +304,7 @@ This is the moment you move from a consumer role to a creator role.
 
 That reminds me of Douglas Adams’s Three Rules of Technology.
 
-### Douglas Adams’s Three Rules of Technology
+**Douglas Adams’s Three Rules of Technology**
 
 > 1. Anything that is in the world when you are born is normal and ordinary and is just a natural part of the way the world works.
 > 2. Anything invented between when you are 15 and 35 is new and exciting and revolutionary and you can probably get a career in it.

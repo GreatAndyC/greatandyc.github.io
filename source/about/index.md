@@ -58,6 +58,7 @@ comments: false
 - 系列文章：
   - [从 0 到 1 上架一款 iOS 应用（一）：软件开发生态，为什么是 iOS？](/2026/03/23/ios-app-from-zero-vol1/)
   - [从 0 到 1 上架一款 iOS 应用（二）：为什么你不应该只用一个 AI 模型？](/2026/03/30/ios-app-from-zero-vol2/)
+  - [从 0 到 1 上架一款 iOS 应用（三）：第一个 Hello World iOS APP](/2026/04/23/ios-app-from-zero-vol3/)
 
 ### AI × IoT 软硬结合探索
 

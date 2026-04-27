@@ -94,6 +94,7 @@ If you want to jump from the profile into the matching posts, start here:
 
 - [Building an iOS App from Zero to One (Part 1): Why iOS?](/en/2026/03/23/ios-app-from-zero-vol1/)
 - [Building an iOS App from Zero to One (Part 2): Why You Should Not Use Only One AI Model](/en/2026/03/30/ios-app-from-zero-vol2/)
+- [Building an iOS App from Zero to One (Part 3): My First Hello World iOS App](/en/2026/04/23/ios-app-from-zero-vol3/)
 
 ### AI / Hardware / Tools
 
