@@ -617,6 +617,15 @@ function clearTranslateProgress(delay = 800) {
   }, delay);
 }
 
+function getMissingEnglishTargets() {
+  return {
+    title: !elements.post.enTitle.value.trim(),
+    description: !elements.post.enDescription.value.trim(),
+    tags: !elements.post.enTags.value.trim(),
+    body: !elements.post.enBody.value.trim()
+  };
+}
+
 function formatTimestamp(value) {
   if (!value) return '';
   const date = new Date(value);
@@ -3182,11 +3191,20 @@ async function handleFormatZh() {
 
 async function handleTranslateEn() {
   try {
+    const targets = getMissingEnglishTargets();
+    const targetCount = Object.values(targets).filter(Boolean).length;
+    if (!targetCount) {
+      setStatus('英文标题、摘要、标签和正文都已经有内容了；当前一键翻译会自动跳过已填字段。', 'success');
+      showToast('无需翻译', '当前英文稿字段都已填充，没有新的空字段需要补。');
+      return;
+    }
+
     setTranslateProgress(12, '正在整理中文稿…', true);
-    setStatus('正在调用 LLM 生成英文稿...');
+    setStatus(`正在调用 LLM 补齐 ${targetCount} 个英文空字段...`);
     const payload = await request('/api/translate/en', {
       method: 'POST',
       body: JSON.stringify({
+        targets,
         zhTitle: elements.post.zhTitle.value,
         zhDescription: elements.post.zhDescription.value,
         zhTags: elements.post.zhTags.value,
@@ -3199,10 +3217,10 @@ async function handleTranslateEn() {
     });
 
     setTranslateProgress(78, '模型已返回结果，正在写入英文稿…');
-    elements.post.enTitle.value = payload.title || '';
-    elements.post.enDescription.value = payload.description || '';
-    elements.post.enTags.value = Array.isArray(payload.tags) ? payload.tags.join(', ') : (payload.tags || '');
-    elements.post.enBody.value = payload.body || '';
+    if (targets.title) elements.post.enTitle.value = payload.title || '';
+    if (targets.description) elements.post.enDescription.value = payload.description || '';
+    if (targets.tags) elements.post.enTags.value = Array.isArray(payload.tags) ? payload.tags.join(', ') : (payload.tags || '');
+    if (targets.body) elements.post.enBody.value = payload.body || '';
 
     const canAutoSave = Boolean(
       elements.post.slug.value.trim() &&
@@ -3215,12 +3233,12 @@ async function handleTranslateEn() {
         silent: true
       });
       setTranslateProgress(100, '英文稿已写入编辑区与 Markdown 文件。');
-      setStatus(`英文稿已完成一键翻译，并已自动写入 Markdown 文件。当前模型：${payload.modelUsed || '未返回'}`, 'success');
-      showToast('翻译完成', `英文标题、摘要、标签和正文已回填，并自动保存到文章 Markdown 文件。模型：${payload.modelUsed || '未返回'}`);
+      setStatus(`英文空字段已补齐，并已自动写入 Markdown 文件。当前模型：${payload.modelUsed || '未返回'}`, 'success');
+      showToast('翻译完成', `已自动跳过原本有内容的字段，只补齐空白英文内容。模型：${payload.modelUsed || '未返回'}`);
     } else {
       setTranslateProgress(100, '英文稿已写入编辑区，等待手动保存。');
-      setStatus(`英文稿已完成一键翻译，但当前文章信息不完整，暂未自动保存到文件。当前模型：${payload.modelUsed || '未返回'}`, 'success');
-      showToast('翻译完成', `英文稿已回填到右侧编辑区；补齐 slug 和标题后保存，即可写回 Markdown 文件。模型：${payload.modelUsed || '未返回'}`);
+      setStatus(`英文空字段已补齐，但当前文章信息不完整，暂未自动保存到文件。当前模型：${payload.modelUsed || '未返回'}`, 'success');
+      showToast('翻译完成', `已自动跳过原本有内容的字段；补齐 slug 和标题后保存，即可写回 Markdown 文件。模型：${payload.modelUsed || '未返回'}`);
     }
 
     clearTranslateProgress();

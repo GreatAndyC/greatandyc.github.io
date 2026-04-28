@@ -2366,15 +2366,39 @@ function extractWritingGuideSection(guide, heading) {
   return match ? match[0].trim() : '';
 }
 
+function compactWritingGuideSection(section, maxLines = 8) {
+  const lines = String(section || '')
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line && !line.startsWith('## ') && !line.startsWith('```'));
+
+  const picked = [];
+  for (const line of lines) {
+    if (
+      line.startsWith('- ')
+      || /^\d+\./.test(line)
+      || line.includes('sentence case')
+      || line.includes('Translation note:')
+      || line.includes('<!-- more -->')
+      || line.includes('30')
+    ) {
+      picked.push(line);
+    }
+    if (picked.length >= maxLines) break;
+  }
+
+  return picked.join('\n');
+}
+
 function buildTranslationStyleGuideContext() {
   const guide = loadProjectWritingStyleGuide();
   if (!guide) return '';
 
   return [
-    extractWritingGuideSection(guide, '2. 文章骨架'),
-    extractWritingGuideSection(guide, '3. 开头概括规范'),
-    extractWritingGuideSection(guide, '6. 通用写作标准'),
-    extractWritingGuideSection(guide, '7. 翻译稿规则')
+    compactWritingGuideSection(extractWritingGuideSection(guide, '2. 文章骨架'), 6),
+    compactWritingGuideSection(extractWritingGuideSection(guide, '3. 开头概括规范'), 6),
+    compactWritingGuideSection(extractWritingGuideSection(guide, '6. 通用写作标准'), 6),
+    compactWritingGuideSection(extractWritingGuideSection(guide, '7. 翻译稿规则'), 8)
   ].filter(Boolean).join('\n\n');
 }
 
@@ -2830,11 +2854,36 @@ async function translateGalleryAlbumToEnglish(payload) {
 
 async function translateChineseDraftToEnglish(payload) {
   const settings = ensureLlmSettingsReady();
-  const zhTitle = String(payload.zhTitle || '').trim();
-  const zhBody = String(payload.zhBody || '').trim();
+  const targets = payload && payload.targets && typeof payload.targets === 'object'
+    ? payload.targets
+    : { title: true, description: true, tags: true, body: true };
+  const needTitle = Boolean(targets.title);
+  const needDescription = Boolean(targets.description);
+  const needTags = Boolean(targets.tags);
+  const needBody = Boolean(targets.body);
 
-  if (!zhTitle && !zhBody) {
-    throw new Error('中文标题和正文至少要有一项，才能生成英文稿。');
+  if (!needTitle && !needDescription && !needTags && !needBody) {
+    return {
+      title: String(payload.existingEnTitle || '').trim(),
+      description: String(payload.existingEnDescription || '').trim(),
+      tags: normalizeStringList(payload.existingEnTags),
+      body: String(payload.existingEnBody || '').trim(),
+      modelUsed: settings.model,
+      translatedAt: '',
+      skipped: true
+    };
+  }
+
+  const zhTitle = needTitle ? String(payload.zhTitle || '').trim() : '';
+  const zhDescription = needDescription ? String(payload.zhDescription || '').trim() : '';
+  const zhTags = needTags ? normalizeStringList(payload.zhTags) : [];
+  const zhBody = needBody ? String(payload.zhBody || '').trim() : '';
+
+  if (needTitle && !zhTitle) {
+    throw new Error('需要翻译英文标题，但中文标题为空。');
+  }
+  if (needBody && !zhBody) {
+    throw new Error('需要翻译英文正文，但中文正文为空。');
   }
 
   const writingGuideContext = buildTranslationStyleGuideContext();
@@ -2850,6 +2899,7 @@ async function translateChineseDraftToEnglish(payload) {
           '- 如果正文里已有 `<!-- more -->`，请保留它。',
           '- 不要自行添加 front matter。',
           '- 不要自行编造翻译说明，我会在后处理中统一插入。',
+          '- 只翻译用户明确要求补齐的字段，不要重写已经存在的英文内容。',
           '',
           '下面是从项目文档实时读取的写作规范：',
           writingGuideContext
@@ -2859,38 +2909,51 @@ async function translateChineseDraftToEnglish(payload) {
           '英文标题尽量使用 sentence case。',
           '一句话概括要短、直接、有信息量。',
           '如果正文里已有 `<!-- more -->`，请保留它。',
+          '只翻译用户明确要求补齐的字段，不要重写已经存在的英文内容。',
           '不要自行添加 front matter 或翻译说明。'
         ].join('\n')
     },
     {
       role: 'user',
       content: JSON.stringify({
-        zhTitle,
-        zhDescription: String(payload.zhDescription || '').trim(),
-        zhTags: normalizeStringList(payload.zhTags),
-        zhBody,
-        existingEnDraft: {
-          title: String(payload.existingEnTitle || '').trim(),
-          description: String(payload.existingEnDescription || '').trim(),
-          tags: normalizeStringList(payload.existingEnTags),
-          body: String(payload.existingEnBody || '').trim()
+        task: 'Fill only the missing English fields for this bilingual blog post.',
+        targetFields: {
+          title: needTitle,
+          description: needDescription,
+          tags: needTags,
+          body: needBody
+        },
+        requiredOutput: {
+          title: needTitle ? 'Return translated English title.' : 'Return empty string.',
+          description: needDescription ? 'Return translated one-line English summary.' : 'Return empty string.',
+          tags: needTags ? 'Return translated English tags array.' : 'Return empty array.',
+          body: needBody ? 'Return translated and properly formatted English Markdown body.' : 'Return empty string.'
+        },
+        sourceDraft: {
+          zhTitle,
+          zhDescription,
+          zhTags,
+          zhBody
         }
       }, null, 2)
     }
   ]);
 
   const translated = parseJsonFromLlmText(content);
-  const title = String(translated.title || '').trim();
-  const description = String(translated.description || '').trim();
-  const tags = normalizeTranslatedTags(translated.tags);
+  const title = needTitle ? String(translated.title || '').trim() : String(payload.existingEnTitle || '').trim();
+  const description = needDescription ? String(translated.description || '').trim() : String(payload.existingEnDescription || '').trim();
+  const tags = needTags ? normalizeTranslatedTags(translated.tags) : normalizeStringList(payload.existingEnTags);
   const modelUsed = settings.model;
   const translatedAt = formatTranslationNoteTimestamp(new Date());
-  const body = upsertTranslationNote(String(translated.body || '').trim(), modelUsed, translatedAt);
+  const rawBody = needBody ? String(translated.body || '').trim() : String(payload.existingEnBody || '').trim();
+  const body = needBody
+    ? upsertTranslationNote(rawBody, modelUsed, translatedAt)
+    : rawBody;
 
-  if (!title) {
+  if (needTitle && !title) {
     throw new Error('LLM 返回的英文标题为空。');
   }
-  if (!body) {
+  if (needBody && !body) {
     throw new Error('LLM 返回的英文正文为空。');
   }
 
