@@ -5,6 +5,8 @@ const GALLERY_PAGE_IDS = new Set(['gallery-zh', 'gallery-en']);
 const CMS_SESSION_ID = `cms-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 const CMS_SESSION_HEARTBEAT_MS = 10000;
 let cmsSessionHeartbeatTimer = null;
+const POST_DRAFT_STORAGE_KEY = 'local-cms-post-drafts-v1';
+const PAGE_DRAFT_STORAGE_KEY = 'local-cms-page-drafts-v1';
 
 const state = {
   mode: 'posts',
@@ -88,6 +90,10 @@ const state = {
     zhHtml: '',
     zhTimer: null,
     zhRequestToken: 0
+  },
+  autosave: {
+    timer: null,
+    suspend: false
   },
   toastTimer: null,
   commandAlerts: {
@@ -289,6 +295,184 @@ async function request(url, options = {}) {
   }
 
   return isJson ? payload : { raw: payload };
+}
+
+function readStoredDraftMap(storageKey) {
+  try {
+    const raw = window.localStorage.getItem(storageKey);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch (_) {
+    return {};
+  }
+}
+
+function writeStoredDraftMap(storageKey, map) {
+  window.localStorage.setItem(storageKey, JSON.stringify(map));
+}
+
+function getCurrentPostDraftId() {
+  if (!state.currentRecord) return '';
+  return state.currentRecord.key
+    || elements.post.fileKey.value.trim()
+    || elements.post.slug.value.trim()
+    || '__new__';
+}
+
+function getCurrentPageDraftId() {
+  return state.currentRecord && state.currentRecord.id ? state.currentRecord.id : '';
+}
+
+function savePostDraftToStorage() {
+  const draftId = getCurrentPostDraftId();
+  if (!draftId) return;
+
+  const drafts = readStoredDraftMap(POST_DRAFT_STORAGE_KEY);
+  drafts[draftId] = {
+    savedAt: new Date().toISOString(),
+    payload: buildPostPayload()
+  };
+  writeStoredDraftMap(POST_DRAFT_STORAGE_KEY, drafts);
+}
+
+function loadPostDraftFromStorage(draftId) {
+  if (!draftId) return null;
+  const drafts = readStoredDraftMap(POST_DRAFT_STORAGE_KEY);
+  return drafts[draftId] || null;
+}
+
+function clearPostDraftFromStorage(draftId) {
+  if (!draftId) return;
+  const drafts = readStoredDraftMap(POST_DRAFT_STORAGE_KEY);
+  if (!Object.prototype.hasOwnProperty.call(drafts, draftId)) return;
+  delete drafts[draftId];
+  writeStoredDraftMap(POST_DRAFT_STORAGE_KEY, drafts);
+}
+
+function savePageDraftToStorage() {
+  const draftId = getCurrentPageDraftId();
+  if (!draftId) return;
+
+  const drafts = readStoredDraftMap(PAGE_DRAFT_STORAGE_KEY);
+  drafts[draftId] = {
+    savedAt: new Date().toISOString(),
+    payload: buildPagePayload()
+  };
+  writeStoredDraftMap(PAGE_DRAFT_STORAGE_KEY, drafts);
+}
+
+function loadPageDraftFromStorage(draftId) {
+  if (!draftId) return null;
+  const drafts = readStoredDraftMap(PAGE_DRAFT_STORAGE_KEY);
+  return drafts[draftId] || null;
+}
+
+function clearPageDraftFromStorage(draftId) {
+  if (!draftId) return;
+  const drafts = readStoredDraftMap(PAGE_DRAFT_STORAGE_KEY);
+  if (!Object.prototype.hasOwnProperty.call(drafts, draftId)) return;
+  delete drafts[draftId];
+  writeStoredDraftMap(PAGE_DRAFT_STORAGE_KEY, drafts);
+}
+
+function applyPostDraftPayload(payload) {
+  if (!payload) return;
+  state.autosave.suspend = true;
+  try {
+    elements.post.fileKey.value = payload.common && payload.common.fileKey ? payload.common.fileKey : elements.post.fileKey.value;
+    elements.post.slug.value = payload.common && payload.common.slug ? payload.common.slug : '';
+    elements.post.toc.checked = Boolean(payload.common && payload.common.toc);
+    elements.post.photos.value = payload.common && payload.common.photos ? payload.common.photos : '';
+    elements.post.zhTitle.value = payload.zh && payload.zh.title ? payload.zh.title : '';
+    elements.post.zhDescription.value = payload.zh && payload.zh.description ? payload.zh.description : '';
+    elements.post.zhTags.value = payload.zh && payload.zh.tags ? payload.zh.tags : '';
+    elements.post.zhBody.value = payload.zh && payload.zh.body ? payload.zh.body : '';
+    elements.post.enTitle.value = payload.en && payload.en.title ? payload.en.title : '';
+    elements.post.enDescription.value = payload.en && payload.en.description ? payload.en.description : '';
+    elements.post.enTags.value = payload.en && payload.en.tags ? payload.en.tags : '';
+    elements.post.enBody.value = payload.en && payload.en.body ? payload.en.body : '';
+
+    const categoryId = payload.common && payload.common.categoryId ? payload.common.categoryId : '';
+    if (categoryId) {
+      elements.post.category.value = categoryId;
+      setCategoryFormValue({
+        common: {
+          categoryId,
+          categoryCustomZh: '',
+          categoryCustomEn: ''
+        }
+      });
+    } else if (payload.common && (payload.common.categoryCustomZh || payload.common.categoryCustomEn)) {
+      elements.post.category.value = CUSTOM_CATEGORY_VALUE;
+      elements.post.categoryCustomZh.value = payload.common.categoryCustomZh || '';
+      elements.post.categoryCustomEn.value = payload.common.categoryCustomEn || '';
+      updateCategoryCustomPanel();
+    }
+  } finally {
+    state.autosave.suspend = false;
+  }
+
+  renderPostPhotoPreview();
+  scheduleZhPreviewRender(0);
+}
+
+function applyPageDraftPayload(payload) {
+  if (!payload) return;
+  state.autosave.suspend = true;
+  try {
+    elements.page.title.value = payload.title || '';
+    elements.page.lang.value = payload.lang || '';
+    elements.page.comments.checked = Boolean(payload.comments);
+    elements.page.toc.checked = Boolean(payload.toc);
+    elements.page.extra.value = payload.extraYaml || '';
+    elements.page.body.value = payload.body || '';
+  } finally {
+    state.autosave.suspend = false;
+  }
+}
+
+function maybeRestorePostDraft() {
+  const draftId = getCurrentPostDraftId();
+  const draft = loadPostDraftFromStorage(draftId);
+  if (!draft || !draft.payload) return;
+
+  const restore = window.confirm(`检测到这篇文章有一份本地草稿，保存时间为 ${formatTimestamp(draft.savedAt)}。要恢复到编辑器吗？`);
+  if (!restore) return;
+
+  applyPostDraftPayload(draft.payload);
+  setStatus(`已恢复本地草稿：${formatTimestamp(draft.savedAt)}`, 'success');
+}
+
+function maybeRestorePageDraft() {
+  const draftId = getCurrentPageDraftId();
+  const draft = loadPageDraftFromStorage(draftId);
+  if (!draft || !draft.payload) return;
+
+  const restore = window.confirm(`检测到这个页面有一份本地草稿，保存时间为 ${formatTimestamp(draft.savedAt)}。要恢复到编辑器吗？`);
+  if (!restore) return;
+
+  applyPageDraftPayload(draft.payload);
+  setStatus(`已恢复本地草稿：${formatTimestamp(draft.savedAt)}`, 'success');
+}
+
+function scheduleAutosave() {
+  if (state.autosave.suspend) return;
+  if (!['posts', 'pages'].includes(state.mode)) return;
+
+  if (state.autosave.timer) {
+    window.clearTimeout(state.autosave.timer);
+  }
+
+  state.autosave.timer = window.setTimeout(() => {
+    if (state.autosave.suspend) return;
+    if (state.mode === 'posts') {
+      savePostDraftToStorage();
+    } else if (state.mode === 'pages') {
+      savePageDraftToStorage();
+    }
+    setStatus('草稿已自动暂存到浏览器本地。');
+  }, 1200);
 }
 
 function setStatus(message, tone = '') {
@@ -1226,6 +1410,7 @@ function applyMode(mode) {
 }
 
 function fillPostEditor(record) {
+  state.autosave.suspend = true;
   renderWorkspaceSections();
   elements.postEditor.hidden = false;
   elements.pageEditor.hidden = true;
@@ -1262,6 +1447,8 @@ function fillPostEditor(record) {
 
   renderPostPhotoPreview();
   scheduleZhPreviewRender(0);
+  state.autosave.suspend = false;
+  maybeRestorePostDraft();
 }
 
 function fillSettingsWorkspace() {
@@ -1294,6 +1481,7 @@ function fillAuditWorkspace() {
 }
 
 function fillPageEditor(record) {
+  state.autosave.suspend = true;
   renderWorkspaceSections();
   elements.pageEditor.hidden = false;
   elements.postEditor.hidden = true;
@@ -1313,6 +1501,8 @@ function fillPageEditor(record) {
   elements.page.extra.value = record.extraYaml || '';
   elements.page.body.value = record.body || '';
   elements.page.file.textContent = record.file || '';
+  state.autosave.suspend = false;
+  maybeRestorePageDraft();
 }
 
 function formatGalleryAlbumTitle(item) {
@@ -2380,10 +2570,18 @@ async function uploadSelectedImages(fileList) {
 }
 
 async function savePostRecord(payload, options = {}) {
+  const draftIds = Array.from(new Set([
+    state.currentRecord && state.currentRecord.key ? state.currentRecord.key : '',
+    payload && payload.common && payload.common.fileKey ? String(payload.common.fileKey).trim() : '',
+    payload && payload.common && payload.common.slug ? String(payload.common.slug).trim() : '',
+    '__new__'
+  ].filter(Boolean)));
   const saved = await request('/api/posts', {
     method: 'POST',
     body: JSON.stringify(payload)
   });
+
+  draftIds.forEach(clearPostDraftFromStorage);
 
   state.currentRecord = saved;
   state.selectedId = saved.key;
@@ -3162,6 +3360,7 @@ async function handleSave() {
         method: 'POST',
         body: JSON.stringify(payload)
       });
+      clearPageDraftFromStorage(state.currentRecord.id);
       state.currentRecord = saved;
       fillPageEditor(saved);
       renderList();
@@ -3258,6 +3457,7 @@ async function handleDeletePost() {
 
   try {
     setStatus('正在删除文章...');
+    clearPostDraftFromStorage(state.currentRecord.key);
     const payload = await request(`/api/posts/${encodeURIComponent(state.currentRecord.key)}/delete`, {
       method: 'POST'
     });
@@ -3496,6 +3696,10 @@ elements.post.photos.addEventListener('input', renderPostPhotoPreview);
 elements.post.zhBody.addEventListener('input', () => {
   scheduleZhPreviewRender();
 });
+elements.postEditor.addEventListener('input', scheduleAutosave);
+elements.postEditor.addEventListener('change', scheduleAutosave);
+elements.pageEditor.addEventListener('input', scheduleAutosave);
+elements.pageEditor.addEventListener('change', scheduleAutosave);
 elements.uploadImageButton.addEventListener('click', () => {
   elements.post.imageFileInput.click();
 });

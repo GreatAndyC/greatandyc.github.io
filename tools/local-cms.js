@@ -2338,6 +2338,19 @@ function normalizeTranslatedTags(value) {
     .filter(Boolean);
 }
 
+function formatFetchErrorMessage(error, endpoint, model) {
+  const reason = error && error.cause && error.cause.message
+    ? error.cause.message
+    : (error && error.message ? error.message : '未知网络错误');
+
+  return [
+    `无法连接到 LLM 接口：${endpoint}`,
+    `当前模型配置：${model || '未填写'}`,
+    `底层错误：${reason}`,
+    '请检查 endpoint、模型名、API Key，以及当前网络是否能访问该接口。'
+  ].join('；');
+}
+
 function loadProjectWritingStyleGuide() {
   if (!fs.existsSync(WRITING_STYLE_GUIDE_PATH)) {
     return '';
@@ -2637,11 +2650,16 @@ async function requestLlmChat(messages, options = {}) {
     ? ensureLlmSettingsObject(options.settings)
     : ensureLlmSettingsReady();
   const requestConfig = buildLlmRequestConfig(settings, messages, options);
-  const response = await fetch(requestConfig.endpoint, {
-    method: 'POST',
-    headers: requestConfig.headers,
-    body: JSON.stringify(requestConfig.body)
-  });
+  let response;
+  try {
+    response = await fetch(requestConfig.endpoint, {
+      method: 'POST',
+      headers: requestConfig.headers,
+      body: JSON.stringify(requestConfig.body)
+    });
+  } catch (error) {
+    throw new Error(formatFetchErrorMessage(error, requestConfig.endpoint, settings.model));
+  }
 
   if (!response.ok) {
     const text = await response.text();
