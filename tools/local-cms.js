@@ -27,6 +27,7 @@ const CONFIG_PATH = path.join(ROOT, '_config.yml');
 const ENV_PATH = path.join(ROOT, '.env');
 const LOCAL_SETTINGS_PATH = path.join(ROOT, '.local-cms.json');
 const AUDIT_LOG_PATH = path.join(ROOT, '.local-cms-audit.log');
+const WRITING_STYLE_GUIDE_PATH = path.join(ROOT, 'docs', 'writing-style-guide.md');
 const GALLERY_PAGE_IDS = new Set(['gallery-zh', 'gallery-en']);
 const GALLERY_DEFAULT_EMPTY = {
   'zh-CN': '画廊还没有内容，后续会逐步补充更多作品。',
@@ -37,7 +38,8 @@ const LLM_ENV_KEYS = {
   apiKey: 'LOCAL_CMS_LLM_API_KEY',
   model: 'LOCAL_CMS_LLM_MODEL',
   temperature: 'LOCAL_CMS_LLM_TEMPERATURE',
-  prompt: 'LOCAL_CMS_LLM_PROMPT'
+  prompt: 'LOCAL_CMS_LLM_PROMPT',
+  translationPrompt: 'LOCAL_CMS_TRANSLATION_PROMPT'
 };
 const CMS_SESSION_TTL_MS = 30000;
 const CMS_SHUTDOWN_GRACE_MS = 5000;
@@ -93,6 +95,14 @@ const DEFAULT_LLM_SETTINGS = {
     '只输出排版后的正文，不要额外解释。',
     '保留事实、链接、图片地址和代码块，不要捏造信息。',
     '不输出 front matter。'
+  ].join('\n'),
+  translationPrompt: [
+    '你是一个严谨的中译英博客编辑助手。',
+    '请把用户提供的中文博客稿翻译成自然、准确、可发布的英文博客稿。',
+    '需要同时输出英文标题、英文一句话概括、英文标签数组和英文 Markdown 正文。',
+    '保留原文事实、链接、图片地址、代码块、项目名和专有名词，不要捏造信息。',
+    '输出必须是 JSON 对象，结构为 {"title":"","description":"","tags":[""],"body":""}。',
+    '不要输出 JSON 以外的任何解释文字。'
   ].join('\n')
 };
 
@@ -1245,7 +1255,8 @@ function loadEnvSettings() {
       apiKey: env[LLM_ENV_KEYS.apiKey] || '',
       model: env[LLM_ENV_KEYS.model] || '',
       temperature: Number(env[LLM_ENV_KEYS.temperature] || DEFAULT_LLM_SETTINGS.temperature),
-      prompt: env[LLM_ENV_KEYS.prompt] || DEFAULT_LLM_SETTINGS.prompt
+      prompt: env[LLM_ENV_KEYS.prompt] || DEFAULT_LLM_SETTINGS.prompt,
+      translationPrompt: env[LLM_ENV_KEYS.translationPrompt] || DEFAULT_LLM_SETTINGS.translationPrompt
     }
   };
 }
@@ -1309,7 +1320,8 @@ function saveLocalSettings(payload) {
     [LLM_ENV_KEYS.apiKey]: next.llm.apiKey || '',
     [LLM_ENV_KEYS.model]: next.llm.model || '',
     [LLM_ENV_KEYS.temperature]: String(Number(next.llm.temperature ?? DEFAULT_LLM_SETTINGS.temperature)),
-    [LLM_ENV_KEYS.prompt]: next.llm.prompt || DEFAULT_LLM_SETTINGS.prompt
+    [LLM_ENV_KEYS.prompt]: next.llm.prompt || DEFAULT_LLM_SETTINGS.prompt,
+    [LLM_ENV_KEYS.translationPrompt]: next.llm.translationPrompt || DEFAULT_LLM_SETTINGS.translationPrompt
   });
   return {
     ...next,
@@ -1326,7 +1338,8 @@ function getLlmSettingsPayload() {
       apiKey: settings.llm.apiKey || '',
       model: settings.llm.model || '',
       temperature: Number(settings.llm.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
-      prompt: settings.llm.prompt || DEFAULT_LLM_SETTINGS.prompt
+      prompt: settings.llm.prompt || DEFAULT_LLM_SETTINGS.prompt,
+      translationPrompt: settings.llm.translationPrompt || DEFAULT_LLM_SETTINGS.translationPrompt
     }
   };
 }
@@ -2314,6 +2327,77 @@ function ensureLlmSettingsReady() {
   return settings;
 }
 
+function normalizeTranslatedTags(value) {
+  if (Array.isArray(value)) {
+    return value.map(item => String(item || '').trim()).filter(Boolean);
+  }
+
+  return String(value || '')
+    .split(',')
+    .map(item => item.trim())
+    .filter(Boolean);
+}
+
+function loadProjectWritingStyleGuide() {
+  if (!fs.existsSync(WRITING_STYLE_GUIDE_PATH)) {
+    return '';
+  }
+
+  return fs.readFileSync(WRITING_STYLE_GUIDE_PATH, 'utf8');
+}
+
+function extractWritingGuideSection(guide, heading) {
+  const escapedHeading = heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const pattern = new RegExp(`## ${escapedHeading}[\\s\\S]*?(?=\\n## |$)`, 'm');
+  const match = String(guide || '').match(pattern);
+  return match ? match[0].trim() : '';
+}
+
+function buildTranslationStyleGuideContext() {
+  const guide = loadProjectWritingStyleGuide();
+  if (!guide) return '';
+
+  return [
+    extractWritingGuideSection(guide, '2. 文章骨架'),
+    extractWritingGuideSection(guide, '3. 开头概括规范'),
+    extractWritingGuideSection(guide, '6. 通用写作标准'),
+    extractWritingGuideSection(guide, '7. 翻译稿规则')
+  ].filter(Boolean).join('\n\n');
+}
+
+function formatTranslationNoteTimestamp(value = new Date()) {
+  return `${formatDate(value)} CST`;
+}
+
+function buildTranslationNote(modelUsed, translatedAt) {
+  return `> Translation note: This English version was translated by ${modelUsed} on ${translatedAt}. The source text is the corresponding Chinese post in this repository.`;
+}
+
+function removeExistingTranslationNote(body) {
+  const text = String(body || '').trim();
+  if (!text) return '';
+
+  return text.replace(
+    /(^|\n{2,})> Translation note: This English version was translated by .*? The source text is the corresponding Chinese post in this repository\.\s*/g,
+    '\n\n'
+  ).trim();
+}
+
+function upsertTranslationNote(body, modelUsed, translatedAt) {
+  const note = buildTranslationNote(modelUsed, translatedAt);
+  const sanitized = removeExistingTranslationNote(body);
+  const moreMarker = '<!-- more -->';
+
+  if (sanitized.includes(moreMarker)) {
+    return sanitized.replace(
+      moreMarker,
+      `${moreMarker}\n\n${note}`
+    ).trim();
+  }
+
+  return `${moreMarker}\n\n${note}\n\n${sanitized}`.trim();
+}
+
 function normalizeLlmSettingsInput(payload) {
   const llm = payload && payload.llm && typeof payload.llm === 'object' ? payload.llm : payload || {};
   return {
@@ -2321,7 +2405,8 @@ function normalizeLlmSettingsInput(payload) {
     apiKey: String(llm.apiKey || '').trim(),
     model: String(llm.model || '').trim(),
     temperature: Number(llm.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
-    prompt: String(llm.prompt || '').trim()
+    prompt: String(llm.prompt || '').trim(),
+    translationPrompt: String(llm.translationPrompt || '').trim()
   };
 }
 
@@ -2613,6 +2698,15 @@ function parseJsonFromLlmText(content) {
   try {
     return JSON.parse(candidate);
   } catch (error) {
+    const start = candidate.indexOf('{');
+    const end = candidate.lastIndexOf('}');
+    if (start >= 0 && end > start) {
+      try {
+        return JSON.parse(candidate.slice(start, end + 1));
+      } catch (nestedError) {
+        throw new Error(`LLM 返回的 JSON 无法解析：${nestedError.message}`);
+      }
+    }
     throw new Error(`LLM 返回的 JSON 无法解析：${error.message}`);
   }
 }
@@ -2713,6 +2807,82 @@ async function translateGalleryAlbumToEnglish(payload) {
         caption: String(translated.caption || '').trim()
       };
     })
+  };
+}
+
+async function translateChineseDraftToEnglish(payload) {
+  const settings = ensureLlmSettingsReady();
+  const zhTitle = String(payload.zhTitle || '').trim();
+  const zhBody = String(payload.zhBody || '').trim();
+
+  if (!zhTitle && !zhBody) {
+    throw new Error('中文标题和正文至少要有一项，才能生成英文稿。');
+  }
+
+  const writingGuideContext = buildTranslationStyleGuideContext();
+  const content = await requestLlmChat([
+    { role: 'system', content: settings.translationPrompt || DEFAULT_LLM_SETTINGS.translationPrompt },
+    {
+      role: 'system',
+      content: writingGuideContext
+        ? [
+          '请严格遵守当前项目的英文写作规范，尤其注意：',
+          '- 英文标题尽量使用 sentence case。',
+          '- 一句话概括要短、直接、有信息量。',
+          '- 如果正文里已有 `<!-- more -->`，请保留它。',
+          '- 不要自行添加 front matter。',
+          '- 不要自行编造翻译说明，我会在后处理中统一插入。',
+          '',
+          '下面是从项目文档实时读取的写作规范：',
+          writingGuideContext
+        ].join('\n')
+        : [
+          '请严格遵守当前项目的英文写作规范。',
+          '英文标题尽量使用 sentence case。',
+          '一句话概括要短、直接、有信息量。',
+          '如果正文里已有 `<!-- more -->`，请保留它。',
+          '不要自行添加 front matter 或翻译说明。'
+        ].join('\n')
+    },
+    {
+      role: 'user',
+      content: JSON.stringify({
+        zhTitle,
+        zhDescription: String(payload.zhDescription || '').trim(),
+        zhTags: normalizeStringList(payload.zhTags),
+        zhBody,
+        existingEnDraft: {
+          title: String(payload.existingEnTitle || '').trim(),
+          description: String(payload.existingEnDescription || '').trim(),
+          tags: normalizeStringList(payload.existingEnTags),
+          body: String(payload.existingEnBody || '').trim()
+        }
+      }, null, 2)
+    }
+  ]);
+
+  const translated = parseJsonFromLlmText(content);
+  const title = String(translated.title || '').trim();
+  const description = String(translated.description || '').trim();
+  const tags = normalizeTranslatedTags(translated.tags);
+  const modelUsed = settings.model;
+  const translatedAt = formatTranslationNoteTimestamp(new Date());
+  const body = upsertTranslationNote(String(translated.body || '').trim(), modelUsed, translatedAt);
+
+  if (!title) {
+    throw new Error('LLM 返回的英文标题为空。');
+  }
+  if (!body) {
+    throw new Error('LLM 返回的英文正文为空。');
+  }
+
+  return {
+    title,
+    description,
+    tags,
+    body,
+    modelUsed,
+    translatedAt
   };
 }
 
@@ -3797,6 +3967,13 @@ const server = http.createServer(async (req, res) => {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
       jsonResponse(res, 200, await translateGalleryAlbumToEnglish(payload));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/translate/en') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, await translateChineseDraftToEnglish(payload));
       return;
     }
 

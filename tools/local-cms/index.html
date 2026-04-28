@@ -144,6 +144,10 @@
               <span>排版 Prompt</span>
               <textarea id="llm-prompt" rows="6"></textarea>
             </label>
+            <label>
+              <span>中译英 Prompt</span>
+              <textarea id="llm-translation-prompt" rows="6"></textarea>
+            </label>
             <p class="field-hint">已支持 OpenAI / Anthropic / Xiaomi MiMo / DeepSeek / Doubao 等主流供应商的自动适配。Xiaomi MiMo 建议使用 `https://api.xiaomimimo.com/v1` 或兼容网关地址，模型名使用文档里的小写格式，如 `mimo-v2.5-pro`。</p>
           </div>
         </section>
@@ -281,8 +285,19 @@
 
             <section class="editor-card">
               <div class="card-heading">
-                <h3>English Draft</h3>
-                <span id="post-en-file" class="meta-pill"></span>
+                <div class="card-heading-copy">
+                  <h3>English Draft</h3>
+                  <span id="post-en-file" class="meta-pill"></span>
+                </div>
+                <div class="format-toolbar">
+                  <div id="translate-progress" class="format-progress" hidden>
+                    <div class="format-progress-bar">
+                      <span id="translate-progress-fill" class="format-progress-fill"></span>
+                    </div>
+                    <span id="translate-progress-text">准备翻译…</span>
+                  </div>
+                  <button id="translate-en-button" class="ghost-button" type="button">一键翻译</button>
+                </div>
               </div>
               <label>
                 <span>Title</span>
