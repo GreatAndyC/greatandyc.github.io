@@ -2,12 +2,19 @@
   'use strict';
 
   var cache = new Map();
+  var imagePreloadCache = new Map();
+  var PAGE_SIZE = 10;
+  var THUMB_WINDOW = 4;
   var state = {
     album: null,
     trigger: null,
     index: 0,
     scrollY: 0,
-    bodyStyles: null
+    bodyStyles: null,
+    thumbButtons: [],
+    activeThumbIndex: -1,
+    filterKey: '',
+    page: 1
   };
 
   function $(selector, root) {
@@ -38,6 +45,24 @@
       }));
     }
     return cache.get(url);
+  }
+
+  function preloadImage(src) {
+    if (!src) return null;
+    if (!imagePreloadCache.has(src)) {
+      imagePreloadCache.set(src, new Promise(function(resolve) {
+        var image = new Image();
+        image.decoding = 'async';
+        image.onload = function() {
+          resolve(src);
+        };
+        image.onerror = function() {
+          resolve(src);
+        };
+        image.src = src;
+      }));
+    }
+    return imagePreloadCache.get(src);
   }
 
   function setHidden(viewer, hidden) {
@@ -82,7 +107,7 @@
   }
 
   function albumMetaFromTrigger(trigger) {
-    return [trigger.dataset.galleryLocation, trigger.dataset.galleryCamera].filter(Boolean).join(' 路 ');
+    return [trigger.dataset.galleryLocation, trigger.dataset.galleryCamera].filter(Boolean).join(' · ');
   }
 
   function showStatus(viewer, message) {
@@ -91,7 +116,7 @@
   }
 
   function photoCaption(photo) {
-    return [photo.title, photo.caption, photo.location, photo.time, photo.meta].filter(Boolean).join(' 路 ');
+    return [photo.title, photo.caption, photo.location, photo.time, photo.meta].filter(Boolean).join(' · ');
   }
 
   function normalizeCategoryList(value) {
@@ -100,27 +125,69 @@
     }).filter(Boolean);
   }
 
-  function applyGalleryFilter(filterKey) {
-    var cards = $all('.gallery-album-card');
-    var chips = $all('[data-gallery-filter]');
-    var emptyState = $('[data-gallery-filter-empty-state]');
-    var visibleCount = 0;
-
-    cards.forEach(function(card) {
+  function getFilteredCards(filterKey) {
+    return $all('.gallery-album-card').filter(function(card) {
       var trigger = $('[data-gallery-open]', card);
       var categories = normalizeCategoryList(trigger && trigger.dataset.galleryCategories);
-      var matches = !filterKey || categories.indexOf(filterKey) !== -1;
-      card.hidden = !matches;
-      if (matches) visibleCount += 1;
+      return !filterKey || categories.indexOf(filterKey) !== -1;
     });
+  }
 
-    chips.forEach(function(chip) {
+  function updateFilterChips(filterKey) {
+    $all('[data-gallery-filter]').forEach(function(chip) {
       var isActive = (chip.dataset.galleryFilter || '') === filterKey;
       chip.classList.toggle('is-active', isActive);
       chip.setAttribute('aria-pressed', isActive ? 'true' : 'false');
     });
+  }
 
-    if (emptyState) emptyState.hidden = visibleCount !== 0;
+  function renderPagination(cards) {
+    var container = $('[data-gallery-pagination]');
+    if (!container) return;
+
+    var totalPages = Math.max(1, Math.ceil(cards.length / PAGE_SIZE));
+    var prevText = container.dataset.prevText || 'Previous';
+    var nextText = container.dataset.nextText || 'Next';
+
+    if (cards.length <= PAGE_SIZE) {
+      container.hidden = true;
+      container.innerHTML = '';
+      return;
+    }
+
+    container.hidden = false;
+    container.innerHTML = [
+      '<button class="gallery-page-button" type="button" data-gallery-page="' + (state.page - 1) + '" ' + (state.page <= 1 ? 'disabled' : '') + '>' + escapeHTML(prevText) + '</button>',
+      Array.from({ length: totalPages }, function(_, index) {
+        var page = index + 1;
+        var className = 'gallery-page-button' + (page === state.page ? ' is-active' : '');
+        return '<button class="' + className + '" type="button" data-gallery-page="' + page + '" aria-current="' + (page === state.page ? 'page' : 'false') + '">' + page + '</button>';
+      }).join(''),
+      '<button class="gallery-page-button" type="button" data-gallery-page="' + (state.page + 1) + '" ' + (state.page >= totalPages ? 'disabled' : '') + '>' + escapeHTML(nextText) + '</button>'
+    ].join('');
+  }
+
+  function applyGalleryFilter(filterKey, requestedPage) {
+    var emptyState = $('[data-gallery-filter-empty-state]');
+    var cards = getFilteredCards(filterKey);
+    var totalPages = Math.max(1, Math.ceil(cards.length / PAGE_SIZE));
+    var nextPage = requestedPage || 1;
+
+    state.filterKey = filterKey;
+    state.page = Math.min(Math.max(nextPage, 1), totalPages);
+
+    $all('.gallery-album-card').forEach(function(card) {
+      card.hidden = true;
+    });
+
+    cards.slice((state.page - 1) * PAGE_SIZE, state.page * PAGE_SIZE).forEach(function(card) {
+      card.hidden = false;
+    });
+
+    updateFilterChips(filterKey);
+    renderPagination(cards);
+
+    if (emptyState) emptyState.hidden = cards.length !== 0;
   }
 
   function openZoomViewer() {
@@ -144,6 +211,49 @@
     }, state.index);
   }
 
+  function ensureThumbImageLoaded(index) {
+    var button = state.thumbButtons[index];
+    if (!button || button.dataset.thumbLoaded === 'true') return;
+
+    var image = $('img', button);
+    if (!image) return;
+
+    image.src = image.dataset.src || '';
+    button.dataset.thumbLoaded = 'true';
+  }
+
+  function hydrateThumbWindow(index) {
+    var start = Math.max(0, index - THUMB_WINDOW);
+    var end = Math.min(state.thumbButtons.length - 1, index + THUMB_WINDOW);
+
+    for (var pointer = start; pointer <= end; pointer += 1) {
+      ensureThumbImageLoaded(pointer);
+    }
+  }
+
+  function setActiveThumb(viewer, index) {
+    var previousButton = state.thumbButtons[state.activeThumbIndex];
+    var nextButton = state.thumbButtons[index];
+
+    if (previousButton) previousButton.classList.remove('is-active');
+    if (nextButton) {
+      nextButton.classList.add('is-active');
+      nextButton.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
+    }
+
+    state.activeThumbIndex = index;
+  }
+
+  function preloadAdjacentPhotos() {
+    if (!state.album || !state.album.photos.length) return;
+
+    [-2, -1, 1, 2].forEach(function(offset) {
+      var nextIndex = state.index + offset;
+      if (nextIndex < 0 || nextIndex >= state.album.photos.length) return;
+      preloadImage(state.album.photos[nextIndex].src);
+    });
+  }
+
   function renderThumbs(viewer) {
     var thumbs = $('[data-gallery-viewer-thumbs]', viewer);
     if (!thumbs || !state.album) return;
@@ -151,10 +261,14 @@
     thumbs.innerHTML = state.album.photos.map(function(photo, index) {
       return [
         '<button class="gallery-viewer-thumb" type="button" data-gallery-jump="' + index + '" aria-label="' + escapeHTML(photo.title || String(index + 1)) + '">',
-        '<img src="' + escapeHTML(photo.src) + '" alt="">',
+        '<img data-src="' + escapeHTML(photo.src) + '" alt="" loading="lazy" decoding="async" fetchpriority="low">',
         '</button>'
       ].join('');
     }).join('');
+
+    state.thumbButtons = $all('[data-gallery-jump]', thumbs);
+    state.activeThumbIndex = -1;
+    hydrateThumbWindow(state.index);
   }
 
   function renderCurrentPhoto(viewer) {
@@ -171,23 +285,22 @@
     var prev = $('[data-gallery-prev]', viewer);
     var next = $('[data-gallery-next]', viewer);
 
+    image.decoding = 'async';
     image.src = photo.src;
     image.alt = photo.title || state.album.title || '';
     if (imageLink) imageLink.href = photo.src;
     title.textContent = photo.title || '';
     caption.textContent = photo.caption || '';
-    meta.textContent = [photo.location, photo.time, photo.meta].filter(Boolean).join(' 路 ');
+    meta.textContent = [photo.location, photo.time, photo.meta].filter(Boolean).join(' · ');
     status.textContent = String(state.index + 1) + ' / ' + String(photos.length);
 
     if (prev) prev.disabled = photos.length < 2;
     if (next) next.disabled = photos.length < 2;
 
-    $all('[data-gallery-jump]', viewer).forEach(function(button) {
-      button.classList.toggle('is-active', Number(button.dataset.galleryJump) === state.index);
-      if (Number(button.dataset.galleryJump) === state.index) {
-        button.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-      }
-    });
+    hydrateThumbWindow(state.index);
+    setActiveThumb(viewer, state.index);
+    preloadImage(photo.src);
+    preloadAdjacentPhotos();
   }
 
   function move(viewer, step) {
@@ -202,6 +315,8 @@
     unlockPageScroll();
     state.album = null;
     state.index = 0;
+    state.thumbButtons = [];
+    state.activeThumbIndex = -1;
     if (state.trigger) state.trigger.focus();
   }
 
@@ -209,6 +324,8 @@
     state.trigger = trigger;
     state.album = null;
     state.index = 0;
+    state.thumbButtons = [];
+    state.activeThumbIndex = -1;
 
     $('[data-gallery-viewer-title]', viewer).textContent = trigger.dataset.galleryTitle || '';
     $('[data-gallery-viewer-period]', viewer).textContent = trigger.dataset.galleryPeriod || '';
@@ -245,9 +362,18 @@
       filterBar.addEventListener('click', function(event) {
         var button = event.target.closest('[data-gallery-filter]');
         if (!button) return;
-        applyGalleryFilter(button.dataset.galleryFilter || '');
+        applyGalleryFilter(button.dataset.galleryFilter || '', 1);
       });
-      applyGalleryFilter('');
+      applyGalleryFilter('', 1);
+    }
+
+    var pagination = $('[data-gallery-pagination]');
+    if (pagination) {
+      pagination.addEventListener('click', function(event) {
+        var button = event.target.closest('[data-gallery-page]');
+        if (!button || button.disabled) return;
+        applyGalleryFilter(state.filterKey, Number(button.dataset.galleryPage || 1));
+      });
     }
 
     $all('[data-gallery-open]').forEach(function(trigger) {

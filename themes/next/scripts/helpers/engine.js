@@ -608,6 +608,13 @@ hexo.extend.helper.register('render_gallery', function (language = getCurrentLan
       <div class="gallery-card-deck">
         ${albumCards}
       </div>
+      <div
+        class="gallery-pagination"
+        data-gallery-pagination
+        data-prev-text="${escapeHTML(previousText)}"
+        data-next-text="${escapeHTML(nextText)}"
+        hidden
+      ></div>
       <div class="gallery-filter-empty" data-gallery-filter-empty-state hidden>${escapeHTML(emptyFilterText)}</div>
     </div>
     <div class="gallery-viewer" data-gallery-viewer hidden aria-hidden="true">
