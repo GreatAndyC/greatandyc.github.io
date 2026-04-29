@@ -12,6 +12,7 @@ camera_zh: NIKON D5600
 camera_en: NIKON D5600
 description_zh: 无数次漫步在校园里，既熟悉又陌生
 description_en: Strangely Familiar Campus
+category: architecture
 tags_zh: 蓝调时刻,校园,城市
 tags_en: Blue Hour,Campus,City
 ---

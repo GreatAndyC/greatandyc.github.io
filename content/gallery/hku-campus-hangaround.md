@@ -12,6 +12,7 @@ camera_zh: NIKON D5600
 camera_en: NIKON D5600
 description_zh: 正式开学前的乱逛，放松又期待
 description_en: Campus Before Classes
+category: documentary
 tags_zh: 校园,日常,港大
 tags_en: Campus,Everyday,HKU
 ---

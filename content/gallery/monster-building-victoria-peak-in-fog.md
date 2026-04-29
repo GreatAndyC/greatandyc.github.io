@@ -12,6 +12,7 @@ camera_zh: NIKON D5600 / X-T30 II
 camera_en: NIKON D5600 / X-T30 II
 description_zh: 云雾缭绕的下午和晚上
 description_en: Misty Afternoon, Quiet Night
+category: cityscape
 tags_zh: 城市,雾,建筑
 tags_en: City,Fog,Architecture
 ---

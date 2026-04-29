@@ -12,6 +12,7 @@ camera_zh: Nikon D5600 · AF-S DX NIKKOR 18-140mm
 camera_en: Nikon D5600 · AF-S DX NIKKOR 18-140mm
 description_zh: 青春与活力
 description_en: Young and beautiful
+category: event
 tags_zh: 舞台,演出,活动摄影
 tags_en: Stage,Performance,Event Photography
 ---

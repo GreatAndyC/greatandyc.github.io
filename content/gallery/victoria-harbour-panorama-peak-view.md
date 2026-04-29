@@ -12,6 +12,7 @@ camera_zh: NIKON D5600
 camera_en: NIKON D5600
 description_zh: 繁华又梦幻
 description_en: City of Stars, are you shining just for me?
+category: cityscape
 tags_zh: 全景,维港,夜景
 tags_en: Panorama,Victoria Harbour,Night View
 ---

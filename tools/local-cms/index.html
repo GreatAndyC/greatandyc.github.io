@@ -365,6 +365,7 @@
               <div class="card-heading-actions">
                 <button id="refresh-gallery-button" class="ghost-button" type="button">刷新相册</button>
                 <button id="new-gallery-album-button" class="ghost-button" type="button">新建相册</button>
+                <button id="translate-gallery-button" class="ghost-button" type="button">一键翻译英文</button>
                 <button id="save-gallery-button" class="primary-button" type="button">保存相册</button>
               </div>
             </div>
@@ -393,6 +394,115 @@
                       </label>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              <div class="editor-card gallery-inner-card">
+                <div class="card-heading">
+                  <div class="card-heading-copy">
+                    <h3>相册信息</h3>
+                    <span class="field-hint">先完成标题、时期、地点、器材和分类，再继续整理图片，编辑顺序会更顺手。</span>
+                  </div>
+                </div>
+
+                <div class="language-grid gallery-language-grid">
+                  <section class="gallery-language-column">
+                    <div class="card-heading">
+                      <div class="card-heading-copy">
+                        <h3>相册主分类</h3>
+                        <span class="field-hint">每个相册只保留一个主分类，用于前台筛选。建议使用摄影里通用、稳定的作品类型。</span>
+                      </div>
+                    </div>
+
+                    <div id="gallery-categories" class="gallery-filter-grid"></div>
+
+                    <div class="gallery-filter-preset-card">
+                      <div class="card-heading">
+                        <div class="card-heading-copy">
+                          <h3>主分类预设管理</h3>
+                          <span class="field-hint">`key` 用于数据匹配，建议只用英文小写和连字符。</span>
+                        </div>
+                        <div class="card-heading-actions">
+                          <button id="save-gallery-filter-button" class="ghost-button" type="button">保存分类</button>
+                          <button id="delete-gallery-filter-button" class="ghost-button danger-button" type="button">删除分类</button>
+                        </div>
+                      </div>
+
+                      <div class="gallery-filter-form-grid">
+                        <label>
+                          <span>Key</span>
+                          <input id="gallery-filter-key" type="text" placeholder="portrait">
+                        </label>
+                        <label>
+                          <span>中文名</span>
+                          <input id="gallery-filter-label-zh" type="text" placeholder="人像">
+                        </label>
+                        <label>
+                          <span>English Label</span>
+                          <input id="gallery-filter-label-en" type="text" placeholder="Portrait">
+                        </label>
+                      </div>
+                    </div>
+                  </section>
+                  <section class="gallery-language-column">
+                    <div class="card-heading">
+                      <h3>中文信息</h3>
+                    </div>
+                    <label>
+                      <span>标题</span>
+                      <input id="gallery-title-zh" type="text">
+                    </label>
+                    <label>
+                      <span>时期 / 活动说明</span>
+                      <input id="gallery-period-zh" type="text">
+                    </label>
+                    <label>
+                      <span>地点</span>
+                      <input id="gallery-location-zh" type="text">
+                    </label>
+                    <label>
+                      <span>器材</span>
+                      <input id="gallery-camera-zh" type="text">
+                    </label>
+                    <label>
+                      <span>标签（逗号分隔）</span>
+                      <input id="gallery-tags-zh" type="text" placeholder="舞台, 演出, 活动摄影">
+                    </label>
+                    <label>
+                      <span>简介</span>
+                      <textarea id="gallery-description-zh" rows="5"></textarea>
+                    </label>
+                  </section>
+
+                  <section class="gallery-language-column">
+                    <div class="card-heading">
+                      <h3>English Info</h3>
+                    </div>
+                    <label>
+                      <span>Title</span>
+                      <input id="gallery-title-en" type="text">
+                    </label>
+                    <label>
+                      <span>Period / Event</span>
+                      <input id="gallery-period-en" type="text">
+                    </label>
+                    <label>
+                      <span>Location</span>
+                      <input id="gallery-location-en" type="text">
+                    </label>
+                    <label>
+                      <span>Camera</span>
+                      <input id="gallery-camera-en" type="text">
+                    </label>
+                    <label>
+                      <span>Tags (comma separated)</span>
+                      <input id="gallery-tags-en" type="text" placeholder="Stage, Performance, Event Photography">
+                    </label>
+                    <label>
+                      <span>Description</span>
+                      <textarea id="gallery-description-en" rows="5"></textarea>
+                    </label>
+                  </section>
                 </div>
               </div>
 
@@ -455,70 +565,6 @@
                 </div>
 
                 <div id="gallery-photo-list" class="gallery-photo-list"></div>
-              </div>
-
-              <div class="editor-card gallery-inner-card">
-                <div class="language-grid gallery-language-grid">
-                  <section class="gallery-language-column">
-                    <div class="card-heading">
-                      <h3>中文信息</h3>
-                    </div>
-                    <label>
-                      <span>标题</span>
-                      <input id="gallery-title-zh" type="text">
-                    </label>
-                    <label>
-                      <span>时期 / 活动说明</span>
-                      <input id="gallery-period-zh" type="text">
-                    </label>
-                    <label>
-                      <span>地点</span>
-                      <input id="gallery-location-zh" type="text">
-                    </label>
-                    <label>
-                      <span>器材</span>
-                      <input id="gallery-camera-zh" type="text">
-                    </label>
-                    <label>
-                      <span>标签（逗号分隔）</span>
-                      <input id="gallery-tags-zh" type="text" placeholder="舞台, 演出, 活动摄影">
-                    </label>
-                    <label>
-                      <span>简介</span>
-                      <textarea id="gallery-description-zh" rows="5"></textarea>
-                    </label>
-                  </section>
-
-                  <section class="gallery-language-column">
-                    <div class="card-heading">
-                      <h3>English Info</h3>
-                    </div>
-                    <label>
-                      <span>Title</span>
-                      <input id="gallery-title-en" type="text">
-                    </label>
-                    <label>
-                      <span>Period / Event</span>
-                      <input id="gallery-period-en" type="text">
-                    </label>
-                    <label>
-                      <span>Location</span>
-                      <input id="gallery-location-en" type="text">
-                    </label>
-                    <label>
-                      <span>Camera</span>
-                      <input id="gallery-camera-en" type="text">
-                    </label>
-                    <label>
-                      <span>Tags (comma separated)</span>
-                      <input id="gallery-tags-en" type="text" placeholder="Stage, Performance, Event Photography">
-                    </label>
-                    <label>
-                      <span>Description</span>
-                      <textarea id="gallery-description-en" rows="5"></textarea>
-                    </label>
-                  </section>
-                </div>
               </div>
             </div>
           </div>

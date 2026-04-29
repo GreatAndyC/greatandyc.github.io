@@ -82,7 +82,7 @@
   }
 
   function albumMetaFromTrigger(trigger) {
-    return [trigger.dataset.galleryLocation, trigger.dataset.galleryCamera].filter(Boolean).join(' · ');
+    return [trigger.dataset.galleryLocation, trigger.dataset.galleryCamera].filter(Boolean).join(' 路 ');
   }
 
   function showStatus(viewer, message) {
@@ -91,7 +91,36 @@
   }
 
   function photoCaption(photo) {
-    return [photo.title, photo.caption, photo.location, photo.time, photo.meta].filter(Boolean).join(' · ');
+    return [photo.title, photo.caption, photo.location, photo.time, photo.meta].filter(Boolean).join(' 路 ');
+  }
+
+  function normalizeCategoryList(value) {
+    return String(value || '').split(',').map(function(item) {
+      return item.trim();
+    }).filter(Boolean);
+  }
+
+  function applyGalleryFilter(filterKey) {
+    var cards = $all('.gallery-album-card');
+    var chips = $all('[data-gallery-filter]');
+    var emptyState = $('[data-gallery-filter-empty-state]');
+    var visibleCount = 0;
+
+    cards.forEach(function(card) {
+      var trigger = $('[data-gallery-open]', card);
+      var categories = normalizeCategoryList(trigger && trigger.dataset.galleryCategories);
+      var matches = !filterKey || categories.indexOf(filterKey) !== -1;
+      card.hidden = !matches;
+      if (matches) visibleCount += 1;
+    });
+
+    chips.forEach(function(chip) {
+      var isActive = (chip.dataset.galleryFilter || '') === filterKey;
+      chip.classList.toggle('is-active', isActive);
+      chip.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+
+    if (emptyState) emptyState.hidden = visibleCount !== 0;
   }
 
   function openZoomViewer() {
@@ -147,7 +176,7 @@
     if (imageLink) imageLink.href = photo.src;
     title.textContent = photo.title || '';
     caption.textContent = photo.caption || '';
-    meta.textContent = [photo.location, photo.time, photo.meta].filter(Boolean).join(' · ');
+    meta.textContent = [photo.location, photo.time, photo.meta].filter(Boolean).join(' 路 ');
     status.textContent = String(state.index + 1) + ' / ' + String(photos.length);
 
     if (prev) prev.disabled = photos.length < 2;
@@ -210,6 +239,16 @@
     var viewer = $('[data-gallery-viewer]');
     if (!viewer) return;
     if (viewer.parentNode !== document.body) document.body.appendChild(viewer);
+
+    var filterBar = $('[data-gallery-filters]');
+    if (filterBar) {
+      filterBar.addEventListener('click', function(event) {
+        var button = event.target.closest('[data-gallery-filter]');
+        if (!button) return;
+        applyGalleryFilter(button.dataset.galleryFilter || '');
+      });
+      applyGalleryFilter('');
+    }
 
     $all('[data-gallery-open]').forEach(function(trigger) {
       trigger.addEventListener('click', function() {

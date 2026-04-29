@@ -12,6 +12,7 @@ camera_zh: NIKON D5600
 camera_en: NIKON D5600
 description_zh: 误入高端场所
 description_en: A Casual Entry into Luxury
+category: event
 tags_zh: 晚宴,室内,活动
 tags_en: Dinner,Indoor,Event
 ---

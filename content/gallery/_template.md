@@ -14,6 +14,7 @@ description_zh: 中文描述
 description_en: English description
 tags_zh: 标签1,标签2
 tags_en: Tag1,Tag2
+category: architecture
 ---
 
 | src | title_zh | title_en | caption_zh | caption_en | meta |

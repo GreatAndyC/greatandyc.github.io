@@ -9,7 +9,6 @@ const path = require('path');
 const { URL } = require('url');
 const { spawn } = require('child_process');
 const yaml = require('js-yaml');
-const frontMatter = require('hexo-front-matter');
 const {
   isImageFileName,
   sanitizeImageFilename,
@@ -138,10 +137,10 @@ function ensureInsideRoot(filePath) {
 
 function parseMarkdownFile(filePath) {
   const raw = fs.readFileSync(filePath, 'utf8');
-  const parsed = frontMatter.parse(raw);
+  const parsed = parseDelimitedFrontMatter(raw, filePath);
   return {
-    data: parsed,
-    body: parsed._content || ''
+    data: parsed.data || {},
+    body: parsed.body || ''
   };
 }
 
@@ -572,6 +571,18 @@ function normalizeGalleryLanguages(value) {
   return unique.length ? unique : ['zh-CN', 'en'];
 }
 
+function normalizeGalleryCategoryKey(value) {
+  const raw = Array.isArray(value)
+    ? value
+    : String(value || '')
+      .split(',')
+      .map(item => item.trim())
+      .filter(Boolean);
+
+  const first = raw.find(Boolean);
+  return first ? normalizeGallerySlug(first) : '';
+}
+
 function splitMarkdownTableRow(line) {
   const row = String(line || '').trim();
   const content = row.replace(/^\|/, '').replace(/\|$/, '');
@@ -668,6 +679,33 @@ function loadGalleryEmptyState() {
   };
 }
 
+function loadGalleryFilterOptions() {
+  if (!fs.existsSync(GALLERY_DATA_PATH)) {
+    return [];
+  }
+
+  const existing = yaml.load(fs.readFileSync(GALLERY_DATA_PATH, 'utf8')) || {};
+  const filters = Array.isArray(existing.filters) ? existing.filters : [];
+
+  return filters
+    .map(filter => {
+      const key = normalizeGallerySlug(filter && filter.key);
+      const label = filter && typeof filter.label === 'object' ? filter.label : {};
+      const zh = String(label['zh-CN'] || '').trim();
+      const en = String(label.en || '').trim();
+      if (!key || !zh || !en) return null;
+
+      return {
+        key,
+        label: {
+          'zh-CN': zh,
+          en
+        }
+      };
+    })
+    .filter(Boolean);
+}
+
 function buildGalleryAlbumRecord(filePath) {
   const parsed = parseDelimitedFrontMatter(fs.readFileSync(filePath, 'utf8'), filePath);
   const data = parsed.data || {};
@@ -719,6 +757,11 @@ function buildGalleryAlbumRecord(filePath) {
       'zh-CN': String(data.description_zh || ''),
       en: String(data.description_en || '')
     },
+    category: normalizeGalleryCategoryKey(data.category || data.categories || data.category_keys),
+    categories: (() => {
+      const category = normalizeGalleryCategoryKey(data.category || data.categories || data.category_keys);
+      return category ? [category] : [];
+    })(),
     tags: {
       'zh-CN': normalizeStringList(data.tags_zh),
       en: normalizeStringList(data.tags_en)
@@ -753,6 +796,8 @@ function listGalleryAlbums() {
     periodEn: album.period.en,
     locationZh: album.location['zh-CN'],
     locationEn: album.location.en,
+    category: album.category,
+    categories: album.categories,
     photoCount: album.photos.length,
     cover: album.photos[0] ? album.photos[0].src : ''
   }));
@@ -789,6 +834,7 @@ function buildGalleryMarkdownTable(photos) {
 }
 
 function serializeGalleryAlbum(record) {
+  const category = normalizeGalleryCategoryKey(record.category || record.categories);
   const frontMatterData = {
     slug: record.slug,
     image_folder: normalizeFolderPath(record.imageFolder || inferGalleryImageFolder(record.photos)),
@@ -803,6 +849,7 @@ function serializeGalleryAlbum(record) {
     camera_en: record.camera.en,
     description_zh: record.description['zh-CN'],
     description_en: record.description.en,
+    category,
     tags_zh: record.tags['zh-CN'].join(','),
     tags_en: record.tags.en.join(',')
   };
@@ -811,6 +858,7 @@ function serializeGalleryAlbum(record) {
 }
 
 function syncGalleryDataFile() {
+  const filters = loadGalleryFilterOptions();
   const albums = listGalleryAlbumsDetailed().map(album => ({
     slug: album.slug,
     imageFolder: album.imageFolder,
@@ -820,6 +868,8 @@ function syncGalleryDataFile() {
     location: album.location,
     camera: album.camera,
     description: album.description,
+    category: album.category,
+    categories: album.categories,
     tags: album.tags,
     photos: album.photos.map(photo => {
       const next = {
@@ -836,6 +886,7 @@ function syncGalleryDataFile() {
 
   const output = yaml.dump({
     empty: loadGalleryEmptyState(),
+    filters,
     albums
   }, {
     lineWidth: -1,
@@ -885,6 +936,15 @@ function writeGalleryAlbum(payload) {
       'zh-CN': String(payload.description && payload.description['zh-CN'] || '').trim(),
       en: String(payload.description && payload.description.en || '').trim()
     },
+    category: normalizeGalleryCategoryKey((payload && Object.prototype.hasOwnProperty.call(payload, 'category'))
+      ? payload.category
+      : (payload && payload.categories)),
+    categories: (() => {
+      const category = normalizeGalleryCategoryKey((payload && Object.prototype.hasOwnProperty.call(payload, 'category'))
+        ? payload.category
+        : (payload && payload.categories));
+      return category ? [category] : [];
+    })(),
     tags: {
       'zh-CN': normalizeStringList(payload.tags && payload.tags['zh-CN']),
       en: normalizeStringList(payload.tags && payload.tags.en)
@@ -939,6 +999,193 @@ function writeGalleryAlbum(payload) {
 
   syncGalleryDataFile();
   return readGalleryAlbumBySlug(slug);
+}
+
+function normalizeGalleryFilterPayload(payload) {
+  const key = normalizeGallerySlug(payload && payload.key);
+  const zh = String(payload && payload.label && payload.label['zh-CN'] || '').trim();
+  const en = String(payload && payload.label && payload.label.en || '').trim();
+
+  if (!key || !zh || !en) {
+    throw new Error('画廊分类需要完整的 key、中文名和英文名。');
+  }
+
+  return {
+    key,
+    label: {
+      'zh-CN': zh,
+      en
+    }
+  };
+}
+
+function addGalleryFilterOption(payload) {
+  const next = normalizeGalleryFilterPayload(payload);
+  const existing = loadGalleryFilterOptions();
+
+  if (existing.some(item => item.key === next.key)) {
+    throw new Error(`画廊分类已存在：${next.key}`);
+  }
+
+  const output = yaml.dump({
+    empty: loadGalleryEmptyState(),
+    filters: existing.concat(next),
+    albums: listGalleryAlbumsDetailed().map(album => ({
+      slug: album.slug,
+      imageFolder: album.imageFolder,
+      languages: album.languages,
+      title: album.title,
+      period: album.period,
+      location: album.location,
+      camera: album.camera,
+      description: album.description,
+      categories: album.categories,
+      tags: album.tags,
+      photos: album.photos.map(photo => {
+        const item = {
+          src: photo.src,
+          title: photo.title,
+          caption: photo.caption
+        };
+        if (photo.meta) item.meta = photo.meta;
+        return item;
+      })
+    }))
+  }, {
+    lineWidth: -1,
+    noRefs: true,
+    sortKeys: false
+  });
+
+  fs.writeFileSync(GALLERY_DATA_PATH, output, 'utf8');
+  return {
+    filter: next,
+    filters: loadGalleryFilterOptions()
+  };
+}
+
+function updateGalleryFilterOption(key, payload) {
+  const currentKey = normalizeGallerySlug(key);
+  const existing = loadGalleryFilterOptions();
+  const target = existing.find(item => item.key === currentKey);
+
+  if (!target) {
+    throw new Error(`找不到画廊分类：${currentKey}`);
+  }
+
+  const next = normalizeGalleryFilterPayload(payload);
+  if (next.key !== currentKey && existing.some(item => item.key === next.key)) {
+    throw new Error(`画廊分类已存在：${next.key}`);
+  }
+
+  const albums = listGalleryAlbumsDetailed().map(album => ({
+    ...album,
+    category: album.category === currentKey ? next.key : album.category,
+    categories: album.category === currentKey
+      ? [next.key]
+      : (album.category ? [album.category] : [])
+  }));
+
+  const output = yaml.dump({
+    empty: loadGalleryEmptyState(),
+    filters: existing.map(item => item.key === currentKey ? next : item),
+    albums: albums.map(album => ({
+      slug: album.slug,
+      imageFolder: album.imageFolder,
+      languages: album.languages,
+      title: album.title,
+      period: album.period,
+      location: album.location,
+      camera: album.camera,
+      description: album.description,
+      category: album.category,
+      categories: album.categories,
+      tags: album.tags,
+      photos: album.photos.map(photo => {
+        const item = {
+          src: photo.src,
+          title: photo.title,
+          caption: photo.caption
+        };
+        if (photo.meta) item.meta = photo.meta;
+        return item;
+      })
+    }))
+  }, {
+    lineWidth: -1,
+    noRefs: true,
+    sortKeys: false
+  });
+
+  fs.writeFileSync(GALLERY_DATA_PATH, output, 'utf8');
+
+  albums.forEach(album => {
+    fs.writeFileSync(galleryDocPathFromSlug(album.slug), serializeGalleryAlbum(album), 'utf8');
+  });
+
+  return {
+    filter: next,
+    filters: loadGalleryFilterOptions()
+  };
+}
+
+function deleteGalleryFilterOption(key) {
+  const currentKey = normalizeGallerySlug(key);
+  const existing = loadGalleryFilterOptions();
+  const target = existing.find(item => item.key === currentKey);
+
+  if (!target) {
+    throw new Error(`找不到画廊分类：${currentKey}`);
+  }
+
+  const albums = listGalleryAlbumsDetailed().map(album => ({
+    ...album,
+    category: album.category === currentKey ? '' : album.category,
+    categories: album.category === currentKey
+      ? []
+      : (album.category ? [album.category] : [])
+  }));
+
+  const output = yaml.dump({
+    empty: loadGalleryEmptyState(),
+    filters: existing.filter(item => item.key !== currentKey),
+    albums: albums.map(album => ({
+      slug: album.slug,
+      imageFolder: album.imageFolder,
+      languages: album.languages,
+      title: album.title,
+      period: album.period,
+      location: album.location,
+      camera: album.camera,
+      description: album.description,
+      category: album.category,
+      categories: album.categories,
+      tags: album.tags,
+      photos: album.photos.map(photo => {
+        const item = {
+          src: photo.src,
+          title: photo.title,
+          caption: photo.caption
+        };
+        if (photo.meta) item.meta = photo.meta;
+        return item;
+      })
+    }))
+  }, {
+    lineWidth: -1,
+    noRefs: true,
+    sortKeys: false
+  });
+
+  fs.writeFileSync(GALLERY_DATA_PATH, output, 'utf8');
+
+  albums.forEach(album => {
+    fs.writeFileSync(galleryDocPathFromSlug(album.slug), serializeGalleryAlbum(album), 'utf8');
+  });
+
+  return {
+    filters: loadGalleryFilterOptions()
+  };
 }
 
 function parseDotEnv(content = '') {
@@ -1787,18 +2034,18 @@ function parseLlmResponseContent(payload) {
   return '';
 }
 
-async function formatChineseDraftWithLlm(payload) {
+function ensureLlmSettingsReady() {
   const settings = getLlmSettingsPayload().llm;
 
   if (!settings.endpoint || !settings.apiKey || !settings.model) {
     throw new Error('请先在 LLM 配置里填写 endpoint、API Key 和 model。');
   }
 
-  const body = String(payload.body || '').trim();
-  if (!body) {
-    throw new Error('中文正文为空，无法排版。');
-  }
+  return settings;
+}
 
+async function requestLlmChat(messages, options = {}) {
+  const settings = ensureLlmSettingsReady();
   const response = await fetch(settings.endpoint, {
     method: 'POST',
     headers: {
@@ -1807,22 +2054,8 @@ async function formatChineseDraftWithLlm(payload) {
     },
     body: JSON.stringify({
       model: settings.model,
-      temperature: Number(settings.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
-      messages: [
-        { role: 'system', content: settings.prompt || DEFAULT_LLM_SETTINGS.prompt },
-        {
-          role: 'user',
-          content: [
-            '请整理下面这篇中文博客草稿，只返回排版后的 Markdown 正文。',
-            '',
-            `标题：${String(payload.title || '').trim()}`,
-            `一句话概括：${String(payload.description || '').trim()}`,
-            '',
-            '正文：',
-            body
-          ].join('\n')
-        }
-      ]
+      temperature: Number(options.temperature ?? settings.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
+      messages
     })
   });
 
@@ -1832,14 +2065,127 @@ async function formatChineseDraftWithLlm(payload) {
   }
 
   const data = await response.json();
-  const formatted = parseLlmResponseContent(data);
+  const content = parseLlmResponseContent(data);
 
-  if (!formatted) {
+  if (!content) {
     throw new Error('LLM 没有返回可用内容。');
   }
 
+  return content;
+}
+
+function parseJsonFromLlmText(content) {
+  const raw = String(content || '').trim();
+  if (!raw) {
+    throw new Error('LLM 没有返回可解析的 JSON。');
+  }
+
+  const fencedMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  const candidate = fencedMatch ? fencedMatch[1].trim() : raw;
+
+  try {
+    return JSON.parse(candidate);
+  } catch (error) {
+    throw new Error(`LLM 返回的 JSON 无法解析：${error.message}`);
+  }
+}
+
+async function formatChineseDraftWithLlm(payload) {
+  const body = String(payload.body || '').trim();
+  if (!body) {
+    throw new Error('中文正文为空，无法排版。');
+  }
+
+  const settings = ensureLlmSettingsReady();
+  const formatted = await requestLlmChat([
+    { role: 'system', content: settings.prompt || DEFAULT_LLM_SETTINGS.prompt },
+    {
+      role: 'user',
+      content: [
+        '请整理下面这篇中文博客草稿，只返回排版后的 Markdown 正文。',
+        '',
+        `标题：${String(payload.title || '').trim()}`,
+        `一句话概括：${String(payload.description || '').trim()}`,
+        '',
+        '正文：',
+        body
+      ].join('\n')
+    }
+  ]);
+
   return {
     content: formatted
+  };
+}
+
+async function translateGalleryAlbumToEnglish(payload) {
+  const album = payload && typeof payload === 'object' ? payload : {};
+  const photos = Array.isArray(album.photos) ? album.photos : [];
+  const hasAlbumText = [
+    album.title,
+    album.period,
+    album.location,
+    album.camera,
+    album.description
+  ].some(value => String(value || '').trim());
+  const hasPhotoText = photos.some(photo => String(photo && (photo.title || photo.caption) || '').trim());
+
+  if (!hasAlbumText && !hasPhotoText) {
+    throw new Error('请先填写中文相册信息或图片中文说明，再执行一键翻译。');
+  }
+
+  const prompt = [
+    '你是一个严谨的中英摄影内容翻译助手。',
+    '请把输入的中文画廊信息翻译成自然、简洁、适合作品集展示的英文。',
+    '保留专有名词、品牌、镜头型号、地点名、日期、数字和摄影参数。',
+    '不要扩写，不要添加原文没有的信息。',
+    '如果某个中文字段为空，对应英文字段返回空字符串。',
+    '标签翻译成简洁的英文词组数组。',
+    '只返回 JSON，不要输出解释或 Markdown 代码块。',
+    'JSON 结构必须是：{"title":"","period":"","location":"","camera":"","description":"","tags":[],"photos":[{"src":"","title":"","caption":""}]}',
+    'photos 数组顺序和输入保持一致，src 原样返回。'
+  ].join('\n');
+
+  const content = await requestLlmChat([
+    { role: 'system', content: prompt },
+    {
+      role: 'user',
+      content: JSON.stringify({
+        title: String(album.title || '').trim(),
+        period: String(album.period || '').trim(),
+        location: String(album.location || '').trim(),
+        camera: String(album.camera || '').trim(),
+        description: String(album.description || '').trim(),
+        tags: Array.isArray(album.tags) ? album.tags.map(item => String(item || '').trim()).filter(Boolean) : [],
+        photos: photos.map(photo => ({
+          src: String(photo && photo.src || '').trim(),
+          title: String(photo && photo.title || '').trim(),
+          caption: String(photo && photo.caption || '').trim()
+        }))
+      }, null, 2)
+    }
+  ], { temperature: 0.1 });
+
+  const parsed = parseJsonFromLlmText(content);
+  const translatedPhotos = Array.isArray(parsed.photos) ? parsed.photos : [];
+  const photosBySrc = new Map(translatedPhotos.map(photo => [String(photo && photo.src || '').trim(), photo]));
+
+  return {
+    title: String(parsed.title || '').trim(),
+    period: String(parsed.period || '').trim(),
+    location: String(parsed.location || '').trim(),
+    camera: String(parsed.camera || '').trim(),
+    description: String(parsed.description || '').trim(),
+    tags: Array.isArray(parsed.tags) ? parsed.tags.map(item => String(item || '').trim()).filter(Boolean) : [],
+    photos: photos.map(photo => {
+      const src = String(photo && photo.src || '').trim();
+      const translated = photosBySrc.get(src) || {};
+      return {
+        src,
+        title: String(translated.title || '').trim(),
+        caption: String(translated.caption || '').trim()
+      };
+    })
   };
 }
 
@@ -2548,14 +2894,17 @@ function serveProjectImage(res, pathname) {
 
 function collectBody(req) {
   return new Promise((resolve, reject) => {
-    let buffer = '';
+    const chunks = [];
+    let totalLength = 0;
     req.on('data', chunk => {
-      buffer += chunk;
-      if (buffer.length > 60 * 1024 * 1024) {
+      const nextChunk = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+      chunks.push(nextChunk);
+      totalLength += nextChunk.length;
+      if (totalLength > 60 * 1024 * 1024) {
         reject(new Error('请求体过大。'));
       }
     });
-    req.on('end', () => resolve(buffer));
+    req.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
     req.on('error', reject);
   });
 }
@@ -2569,6 +2918,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET' && pathname === '/api/meta') {
       jsonResponse(res, 200, {
         categories: categoryOptions,
+        galleryFilters: loadGalleryFilterOptions(),
         pages: listPages()
       });
       return;
@@ -2618,6 +2968,27 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && pathname.startsWith('/api/categories/') && pathname.endsWith('/delete')) {
       const id = decodeURIComponent(pathname.replace('/api/categories/', '').replace(/\/delete$/, ''));
       jsonResponse(res, 200, deleteCategoryOption(id));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/gallery-filters') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, addGalleryFilterOption(payload));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname.startsWith('/api/gallery-filters/') && pathname.endsWith('/update')) {
+      const key = decodeURIComponent(pathname.replace('/api/gallery-filters/', '').replace(/\/update$/, ''));
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, updateGalleryFilterOption(key, payload));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname.startsWith('/api/gallery-filters/') && pathname.endsWith('/delete')) {
+      const key = decodeURIComponent(pathname.replace('/api/gallery-filters/', '').replace(/\/delete$/, ''));
+      jsonResponse(res, 200, deleteGalleryFilterOption(key));
       return;
     }
 
@@ -2861,6 +3232,13 @@ const server = http.createServer(async (req, res) => {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
       jsonResponse(res, 200, await formatChineseDraftWithLlm(payload));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/gallery/translate-en') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, await translateGalleryAlbumToEnglish(payload));
       return;
     }
 

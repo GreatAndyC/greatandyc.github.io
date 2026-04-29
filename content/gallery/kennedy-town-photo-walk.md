@@ -12,6 +12,7 @@ camera_zh: NIKON D5600
 camera_en: NIKON D5600
 description_zh: 夜晚、居民、朦胧的感情
 description_en: Blurred Feelings at Night
+category: street
 tags_zh: 扫街,街头,坚尼地城
 tags_en: Photo Walk,Street,Kennedy Town
 ---

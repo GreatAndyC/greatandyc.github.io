@@ -12,6 +12,7 @@ camera_zh: Nikon D5600 · AF-S DX NIKKOR 18-140mm
 camera_en: Nikon D5600 · AF-S DX NIKKOR 18-140mm
 description_zh: 坚尼地城经典的打卡照，港岛最“港岛”的地方
 description_en: A classic photo spot in Kennedy Town — the most Hong Kong Island vibe on Hong Kong Island
+category: cityscape
 tags_zh: 夜景，打卡
 tags_en: Night view,Photo spot
 ---

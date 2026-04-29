@@ -504,6 +504,10 @@ hexo.extend.helper.register('localized_list_categories', function (options = {})
 
 hexo.extend.helper.register('render_gallery', function (language = getCurrentLanguage(this)) {
   const galleryData = this.site.data.gallery || {};
+  const galleryFilters = (galleryData.filters || []).map(filter => ({
+    key: String(filter && filter.key || '').trim(),
+    label: getLocalizedValue(filter && filter.label, language)
+  })).filter(filter => filter.key && filter.label);
   const albums = sortGalleryAlbums((galleryData.albums || []).filter(album => {
     return !album.languages || album.languages.includes(language);
   }));
@@ -519,6 +523,8 @@ hexo.extend.helper.register('render_gallery', function (language = getCurrentLan
     const location = escapeHTML(getLocalizedValue(album.location, language));
     const period = escapeHTML(getLocalizedValue(album.period, language));
     const camera = escapeHTML(getLocalizedValue(album.camera, language));
+    const category = String(album.category || (Array.isArray(album.categories) ? album.categories[0] : '') || '').trim();
+    const categories = category ? [category] : [];
     const tags = getLocalizedValue(album.tags, language) || [];
     const photoList = album.photos || [];
     const coverPhoto = photoList[0] || {};
@@ -538,6 +544,7 @@ hexo.extend.helper.register('render_gallery', function (language = getCurrentLan
           data-gallery-period="${period}"
           data-gallery-location="${location}"
           data-gallery-camera="${camera}"
+          data-gallery-categories="${escapeHTML(categories.join(','))}"
           data-gallery-url="${escapeHTML(dataUrl)}"
         >
           <span class="gallery-album-cover">
@@ -559,6 +566,23 @@ hexo.extend.helper.register('render_gallery', function (language = getCurrentLan
       </article>`;
   }).join('');
 
+  const allText = String(language).toLowerCase().startsWith('zh') ? '全部' : 'All';
+  const emptyFilterText = String(language).toLowerCase().startsWith('zh')
+    ? '当前分类下还没有相册。'
+    : 'No albums in this category yet.';
+  const filterButtons = [{
+    key: '',
+    label: allText,
+    count: albums.length
+  }].concat(galleryFilters.map(filter => ({
+    key: filter.key,
+    label: filter.label,
+    count: albums.filter(album => {
+      const category = String(album.category || (Array.isArray(album.categories) ? album.categories[0] : '') || '').trim();
+      return category === filter.key;
+    }).length
+  })));
+
   const closeText = String(language).toLowerCase().startsWith('zh') ? '关闭' : 'Close';
   const previousText = String(language).toLowerCase().startsWith('zh') ? '上一张' : 'Previous';
   const nextText = String(language).toLowerCase().startsWith('zh') ? '下一张' : 'Next';
@@ -566,9 +590,25 @@ hexo.extend.helper.register('render_gallery', function (language = getCurrentLan
   const errorText = String(language).toLowerCase().startsWith('zh') ? '相册加载失败，请稍后重试。' : 'Could not load this album. Please try again later.';
   return `
     <div class="gallery-page">
+      ${filterButtons.length > 1 ? `
+        <div class="gallery-filter-bar" data-gallery-filters>
+          ${filterButtons.map((filter, index) => `
+            <button
+              class="gallery-filter-chip${index === 0 ? ' is-active' : ''}${filter.count === 0 && filter.key ? ' is-empty' : ''}"
+              type="button"
+              data-gallery-filter="${escapeHTML(filter.key)}"
+              aria-pressed="${index === 0 ? 'true' : 'false'}"
+            >
+              <span>${escapeHTML(String(filter.label))}</span>
+              <span class="gallery-filter-chip-count">${filter.count}</span>
+            </button>
+          `).join('')}
+        </div>
+      ` : ''}
       <div class="gallery-card-deck">
         ${albumCards}
       </div>
+      <div class="gallery-filter-empty" data-gallery-filter-empty-state hidden>${escapeHTML(emptyFilterText)}</div>
     </div>
     <div class="gallery-viewer" data-gallery-viewer hidden aria-hidden="true">
       <div class="gallery-viewer-backdrop" data-gallery-close></div>

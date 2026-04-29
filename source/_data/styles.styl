@@ -668,6 +668,59 @@ html
   flex-direction: column
   gap: 28px
 
+.gallery-filter-bar
+  display: flex
+  flex-wrap: wrap
+  gap: 10px
+  align-items: center
+
+.gallery-filter-chip
+  display: inline-flex
+  align-items: center
+  gap: 10px
+  padding: 9px 14px
+  border: 1px solid rgba(17, 24, 32, 0.12)
+  background: rgba(255, 255, 255, 0.7)
+  color: rgba(17, 24, 32, 0.76)
+  font-size: 0.86rem
+  line-height: 1
+  cursor: pointer
+  transition: transform .18s ease, border-color .18s ease, background .18s ease, color .18s ease
+
+.gallery-filter-chip:hover
+  transform: translateY(-1px)
+  border-color: rgba(17, 24, 32, 0.22)
+  color: #111820
+
+.gallery-filter-chip.is-active
+  border-color: #111820
+  background: #111820
+  color: #fff
+
+.gallery-filter-chip.is-empty
+  opacity: .5
+
+.gallery-filter-chip-count
+  display: inline-flex
+  align-items: center
+  justify-content: center
+  min-width: 20px
+  height: 20px
+  padding: 0 6px
+  background: rgba(17, 24, 32, 0.08)
+  font-size: 0.72rem
+
+.gallery-filter-chip.is-active .gallery-filter-chip-count
+  background: rgba(255, 255, 255, 0.14)
+
+.gallery-filter-empty
+  padding: 18px 20px
+  border: 1px dashed rgba(17, 24, 32, 0.18)
+  color: rgba(17, 24, 32, 0.58)
+  font-size: 0.92rem
+  line-height: 1.6
+  background: rgba(255, 255, 255, 0.5)
+
 .gallery-nav
   display: flex
   flex-wrap: wrap
@@ -1219,6 +1272,13 @@ html
     gap: 10px
 
 @media (max-width: 767px)
+  .gallery-filter-bar
+    gap: 8px
+
+  .gallery-filter-chip
+    padding: 8px 12px
+    font-size: 0.82rem
+
   .gallery-card-deck
     grid-template-columns: 1fr
 

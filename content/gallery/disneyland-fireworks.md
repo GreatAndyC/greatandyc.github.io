@@ -12,6 +12,7 @@ camera_zh: NIKON D5600
 camera_en: NIKON D5600
 description_zh: 迪士尼烟花表演，绚烂又短暂
 description_en: Bright for a Moment
+category: event
 tags_zh: 烟花,夜景,乐园
 tags_en: Fireworks,Night,Theme Park
 ---

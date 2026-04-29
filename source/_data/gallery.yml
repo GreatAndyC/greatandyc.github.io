@@ -1,6 +1,35 @@
 empty:
   zh-CN: 画廊还没有内容，后续会逐步补充更多作品。
   en: The gallery is empty for now. More work will be added over time.
+filters:
+  - key: portrait
+    label:
+      zh-CN: 人像
+      en: Portrait
+  - key: street
+    label:
+      zh-CN: 街头
+      en: Street
+  - key: architecture
+    label:
+      zh-CN: 建筑
+      en: Architecture
+  - key: cityscape
+    label:
+      zh-CN: 城市风光
+      en: Cityscape
+  - key: landscape
+    label:
+      zh-CN: 自然风光
+      en: Landscape
+  - key: event
+    label:
+      zh-CN: 活动摄影
+      en: Event
+  - key: documentary
+    label:
+      zh-CN: 纪实
+      en: Documentary
 albums:
   - slug: blue-hour-sysu
     imageFolder: gallery/Blue_Hour_SYSU
@@ -22,6 +51,9 @@ albums:
     description:
       zh-CN: 无数次漫步在校园里，既熟悉又陌生
       en: Strangely Familiar Campus
+    category: architecture
+    categories:
+      - architecture
     tags:
       zh-CN:
         - 蓝调时刻
@@ -116,6 +148,9 @@ albums:
     description:
       zh-CN: 迪士尼烟花表演，绚烂又短暂
       en: Bright for a Moment
+    category: event
+    categories:
+      - event
     tags:
       zh-CN:
         - 烟花
@@ -218,6 +253,9 @@ albums:
     description:
       zh-CN: 青春与活力
       en: Young and beautiful
+    category: event
+    categories:
+      - event
     tags:
       zh-CN:
         - 舞台
@@ -288,6 +326,9 @@ albums:
     description:
       zh-CN: 正式开学前的乱逛，放松又期待
       en: Campus Before Classes
+    category: documentary
+    categories:
+      - documentary
     tags:
       zh-CN:
         - 校园
@@ -398,6 +439,9 @@ albums:
     description:
       zh-CN: 坚尼地城经典的打卡照，港岛最“港岛”的地方
       en: A classic photo spot in Kennedy Town — the most Hong Kong Island vibe on Hong Kong Island
+    category: cityscape
+    categories:
+      - cityscape
     tags:
       zh-CN:
         - 夜景，打卡
@@ -449,6 +493,9 @@ albums:
     description:
       zh-CN: 夜晚、居民、朦胧的感情
       en: Blurred Feelings at Night
+    category: street
+    categories:
+      - street
     tags:
       zh-CN:
         - 扫街
@@ -639,6 +686,9 @@ albums:
     description:
       zh-CN: 夜晚的主图和饭堂
       en: Main Hall and Cafeteria at Night
+    category: documentary
+    categories:
+      - documentary
     tags:
       zh-CN:
         - 校园
@@ -741,6 +791,9 @@ albums:
     description:
       zh-CN: 半夜独自在学校游荡
       en: Night View of HKU Building
+    category: architecture
+    categories:
+      - architecture
     tags:
       zh-CN:
         - 风光
@@ -833,6 +886,9 @@ albums:
     description:
       zh-CN: 云雾缭绕的下午和晚上
       en: Misty Afternoon, Quiet Night
+    category: cityscape
+    categories:
+      - cityscape
     tags:
       zh-CN:
         - 城市
@@ -895,6 +951,9 @@ albums:
     description:
       zh-CN: 误入高端场所
       en: A Casual Entry into Luxury
+    category: event
+    categories:
+      - event
     tags:
       zh-CN:
         - 晚宴
@@ -985,6 +1044,69 @@ albums:
           zh-CN: ''
           en: ''
         meta: 51mm · 1/100s · f/4.5 · ISO 1250
+  - slug: sun-set-kennedy-town-waterfront
+    imageFolder: gallery/kennedy-town-waterfront-sunset
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: 坚尼地城海滨日落
+      en: Kennedy Town waterfront sunset
+    period:
+      zh-CN: '2024-03-12'
+      en: '2024-03-12'
+    location:
+      zh-CN: 坚尼地城海滨
+      en: Kennedy Town Waterfront
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: 下午的坚尼地城海滨日落，舒缓又阳光
+      en: Kennedy Town Afternoon sunset, cozy and sunny
+    category: landscape
+    categories:
+      - landscape
+    tags:
+      zh-CN:
+        - 日落
+        - 自然风光
+      en:
+        - Sunset
+        - Landscape
+    photos:
+      - src: /images/gallery/kennedy-town-waterfront-sunset/20240312-_DSC0294-Pano-1.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 78mm · 1/160s · f/8 · ISO 100
+      - src: /images/gallery/kennedy-town-waterfront-sunset/20240312-_DSC0295-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 210mm · 1/160s · f/8 · ISO 100
+      - src: /images/gallery/kennedy-town-waterfront-sunset/20240312-_DSC0302-HDR-4.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 67mm · 1/640s · f/5.6 · ISO 100
+      - src: /images/gallery/kennedy-town-waterfront-sunset/20240312-_DSC0301-3.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 72mm · 1/160s · f/5.6 · ISO 100
   - slug: victoria-harbour-panorama-peak-view
     imageFolder: gallery/Victoria_Harbour_Panorama_Peak_View
     languages:
@@ -1005,6 +1127,9 @@ albums:
     description:
       zh-CN: 繁华又梦幻
       en: City of Stars, are you shining just for me?
+    category: cityscape
+    categories:
+      - cityscape
     tags:
       zh-CN:
         - 全景

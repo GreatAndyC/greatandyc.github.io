@@ -12,6 +12,7 @@ camera_zh: NIKON D5600
 camera_en: NIKON D5600
 description_zh: 夜晚的主图和饭堂
 description_en: Main Hall and Cafeteria at Night
+category: documentary
 tags_zh: 校园,扫街,建筑
 tags_en: Campus,Photo Walk,Architecture
 ---

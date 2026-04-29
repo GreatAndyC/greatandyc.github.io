@@ -12,6 +12,7 @@ camera_zh: Nikon D5600 · AF-S DX NIKKOR 18-140mm
 camera_en: Nikon D5600 · AF-S DX NIKKOR 18-140mm
 description_zh: 半夜独自在学校游荡
 description_en: Night View of HKU Building
+category: architecture
 tags_zh: 风光,建筑
 tags_en: Landscape,Architecture
 ---

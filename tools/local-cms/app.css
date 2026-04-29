@@ -967,6 +967,64 @@ select:focus {
   gap: 14px;
 }
 
+.gallery-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.gallery-filter-checkbox {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  grid-template-areas:
+    "input title"
+    "input subtitle";
+  column-gap: 10px;
+  row-gap: 4px;
+  align-items: center;
+  min-height: 74px;
+  padding: 12px 14px;
+}
+
+.gallery-filter-checkbox input {
+  grid-area: input;
+  align-self: start;
+  margin-top: 2px;
+}
+
+.gallery-filter-checkbox span {
+  grid-area: title;
+  min-width: 0;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.gallery-filter-checkbox small {
+  grid-area: subtitle;
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.gallery-filter-preset-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.gallery-filter-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
 .gallery-section-header {
   display: flex;
   justify-content: space-between;
@@ -1248,6 +1306,7 @@ select:focus {
   .folder-action-grid,
   .gallery-meta-grid,
   .gallery-photo-grid,
+  .gallery-filter-form-grid,
   .audit-log-toolbar {
     grid-template-columns: 1fr;
   }

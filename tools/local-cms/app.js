@@ -5,7 +5,7 @@ const GALLERY_PAGE_IDS = new Set(['gallery-zh', 'gallery-en']);
 
 const state = {
   mode: 'posts',
-  meta: { categories: [], pages: [] },
+  meta: { categories: [], galleryFilters: [], pages: [] },
   posts: [],
   pages: [],
   sidebarCollapsed: false,
@@ -13,7 +13,8 @@ const state = {
     items: [],
     selectedSlug: '',
     currentAlbum: null,
-    folderItems: []
+    folderItems: [],
+    selectedFilterKey: ''
   },
   images: {
     selectedFolder: '',
@@ -106,6 +107,7 @@ const elements = {
   refreshButton: document.querySelector('#refresh-button'),
   newPostButton: document.querySelector('#new-post-button'),
   newGalleryButton: document.querySelector('#new-gallery-button'),
+  translateGalleryButton: document.querySelector('#translate-gallery-button'),
   saveLlmButton: document.querySelector('#save-llm-button'),
   formatZhButton: document.querySelector('#format-zh-button'),
   uploadImageButton: document.querySelector('#upload-image-button'),
@@ -209,6 +211,12 @@ const elements = {
     locationEn: document.querySelector('#gallery-location-en'),
     cameraZh: document.querySelector('#gallery-camera-zh'),
     cameraEn: document.querySelector('#gallery-camera-en'),
+    categories: document.querySelector('#gallery-categories'),
+    filterKey: document.querySelector('#gallery-filter-key'),
+    filterLabelZh: document.querySelector('#gallery-filter-label-zh'),
+    filterLabelEn: document.querySelector('#gallery-filter-label-en'),
+    saveFilterButton: document.querySelector('#save-gallery-filter-button'),
+    deleteFilterButton: document.querySelector('#delete-gallery-filter-button'),
     tagsZh: document.querySelector('#gallery-tags-zh'),
     tagsEn: document.querySelector('#gallery-tags-en'),
     descriptionZh: document.querySelector('#gallery-description-zh'),
@@ -729,6 +737,7 @@ function createEmptyGalleryAlbum() {
     location: { 'zh-CN': '', en: '' },
     camera: { 'zh-CN': '', en: '' },
     description: { 'zh-CN': '', en: '' },
+    categories: [],
     tags: { 'zh-CN': [], en: [] },
     photos: []
   };
@@ -743,6 +752,56 @@ function renderCategoryOptions() {
 
   elements.post.category.innerHTML = options.join('');
   syncCategoryPresetButtonState();
+}
+
+function getGalleryAlbumCategoryKey(item) {
+  if (!item) return '';
+  const direct = String(item.category || '').trim();
+  if (direct) return direct;
+  return String((item.categories || [])[0] || '').trim();
+}
+
+function renderGalleryFilterOptions() {
+  const selectedKey = getGalleryAlbumCategoryKey(state.gallery.currentAlbum);
+  const filters = state.meta.galleryFilters || [];
+
+  if (!filters.length) {
+    elements.gallery.categories.innerHTML = '<div class="gallery-empty-state">还没有画廊分类预设。先在下方新增一个主分类，再分配给当前相册。</div>';
+    syncGalleryFilterPresetButtonState();
+    return;
+  }
+
+  elements.gallery.categories.innerHTML = filters.map(filter => {
+    const checked = selectedKey === filter.key ? ' checked' : '';
+    return `
+      <label class="compact-checkbox gallery-filter-checkbox">
+        <input type="radio" name="gallery-category" data-gallery-category="${escapeHtml(filter.key)}"${checked}>
+        <span>${escapeHtml(filter.label['zh-CN'])}</span>
+        <small>${escapeHtml(filter.label.en)}</small>
+      </label>
+    `;
+  }).join('');
+
+  syncGalleryFilterPresetButtonState();
+}
+
+function fillGalleryFilterPresetForm(filter) {
+  const next = filter || null;
+  state.gallery.selectedFilterKey = next ? next.key : '';
+  elements.gallery.filterKey.value = next ? next.key : '';
+  elements.gallery.filterLabelZh.value = next ? next.label['zh-CN'] : '';
+  elements.gallery.filterLabelEn.value = next ? next.label.en : '';
+  syncGalleryFilterPresetButtonState();
+}
+
+function syncGalleryFilterPresetButtonState() {
+  const hasRequired = Boolean(
+    elements.gallery.filterKey.value.trim() &&
+    elements.gallery.filterLabelZh.value.trim() &&
+    elements.gallery.filterLabelEn.value.trim()
+  );
+  elements.gallery.saveFilterButton.disabled = !hasRequired;
+  elements.gallery.deleteFilterButton.disabled = !state.gallery.selectedFilterKey;
 }
 
 function getGalleryManagedFolders() {
@@ -1234,7 +1293,10 @@ function formatGalleryAlbumTitle(item) {
 }
 
 function formatGalleryAlbumSubtitle(item) {
-  const parts = [item.titleEn, item.periodZh || item.periodEn, item.locationZh || item.locationEn]
+  const categoryKey = getGalleryAlbumCategoryKey(item);
+  const filter = state.meta.galleryFilters.find(option => option.key === categoryKey);
+  const filterLabel = filter ? filter.label['zh-CN'] : categoryKey;
+  const parts = [item.titleEn, item.periodZh || item.periodEn, item.locationZh || item.locationEn, filterLabel]
     .filter(Boolean);
   return parts.join(' · ');
 }
@@ -1503,6 +1565,8 @@ function fillGalleryEditor(album) {
   elements.gallery.locationEn.value = nextAlbum.location.en || '';
   elements.gallery.cameraZh.value = nextAlbum.camera['zh-CN'] || '';
   elements.gallery.cameraEn.value = nextAlbum.camera.en || '';
+  renderGalleryFilterOptions();
+  fillGalleryFilterPresetForm();
   elements.gallery.tagsZh.value = (nextAlbum.tags['zh-CN'] || []).join(', ');
   elements.gallery.tagsEn.value = (nextAlbum.tags.en || []).join(', ');
   elements.gallery.descriptionZh.value = nextAlbum.description['zh-CN'] || '';
@@ -1642,6 +1706,11 @@ function syncGalleryDraftFromForm() {
       'zh-CN': elements.gallery.descriptionZh.value.trim(),
       en: elements.gallery.descriptionEn.value.trim()
     },
+    category: elements.gallery.categories.querySelector('[data-gallery-category]:checked')?.dataset.galleryCategory || '',
+    categories: (() => {
+      const category = elements.gallery.categories.querySelector('[data-gallery-category]:checked')?.dataset.galleryCategory || '';
+      return category ? [category] : [];
+    })(),
     tags: {
       'zh-CN': normalizeCommaList(elements.gallery.tagsZh.value),
       en: normalizeCommaList(elements.gallery.tagsEn.value)
@@ -1686,6 +1755,7 @@ async function loadMeta() {
   state.meta = await request('/api/meta');
   state.pages = state.meta.pages;
   renderCategoryOptions();
+  renderGalleryFilterOptions();
 }
 
 async function loadSettings() {
@@ -1899,6 +1969,7 @@ function buildGalleryPayload() {
     location: album.location,
     camera: album.camera,
     description: album.description,
+    categories: album.categories,
     tags: album.tags,
     photos: album.photos
   };
@@ -1914,6 +1985,86 @@ function buildLlmPayload() {
       prompt: elements.llm.prompt.value
     }
   };
+}
+
+function buildGalleryTranslationPayload() {
+  const draft = syncGalleryDraftFromForm() || createEmptyGalleryAlbum();
+  return {
+    title: draft.title['zh-CN'] || '',
+    period: draft.period['zh-CN'] || '',
+    location: draft.location['zh-CN'] || '',
+    camera: draft.camera['zh-CN'] || '',
+    description: draft.description['zh-CN'] || '',
+    tags: draft.tags['zh-CN'] || [],
+    photos: (draft.photos || []).map(photo => ({
+      src: photo.src || '',
+      title: photo.title['zh-CN'] || '',
+      caption: photo.caption['zh-CN'] || ''
+    }))
+  };
+}
+
+function applyGalleryTranslationResult(payload) {
+  if (!state.gallery.currentAlbum) {
+    state.gallery.currentAlbum = createEmptyGalleryAlbum();
+  }
+
+  const currentPhotos = state.gallery.currentAlbum.photos || [];
+  const translatedPhotos = Array.isArray(payload.photos) ? payload.photos : [];
+  const translatedBySrc = new Map(translatedPhotos.map(photo => [String(photo && photo.src || '').trim(), photo]));
+  const nextPhotos = currentPhotos.map(photo => {
+    const src = String(photo && photo.src || '').trim();
+    const translated = translatedBySrc.get(src) || {};
+    return {
+      ...photo,
+      title: {
+        'zh-CN': photo.title['zh-CN'] || '',
+        en: String(translated.title || '').trim()
+      },
+      caption: {
+        'zh-CN': photo.caption['zh-CN'] || '',
+        en: String(translated.caption || '').trim()
+      }
+    };
+  });
+
+  state.gallery.currentAlbum = {
+    ...state.gallery.currentAlbum,
+    title: {
+      'zh-CN': state.gallery.currentAlbum.title['zh-CN'] || '',
+      en: String(payload.title || '').trim()
+    },
+    period: {
+      'zh-CN': state.gallery.currentAlbum.period['zh-CN'] || '',
+      en: String(payload.period || '').trim()
+    },
+    location: {
+      'zh-CN': state.gallery.currentAlbum.location['zh-CN'] || '',
+      en: String(payload.location || '').trim()
+    },
+    camera: {
+      'zh-CN': state.gallery.currentAlbum.camera['zh-CN'] || '',
+      en: String(payload.camera || '').trim()
+    },
+    description: {
+      'zh-CN': state.gallery.currentAlbum.description['zh-CN'] || '',
+      en: String(payload.description || '').trim()
+    },
+    tags: {
+      'zh-CN': state.gallery.currentAlbum.tags['zh-CN'] || [],
+      en: Array.isArray(payload.tags) ? payload.tags.map(item => String(item || '').trim()).filter(Boolean) : []
+    },
+    photos: nextPhotos
+  };
+
+  elements.gallery.titleEn.value = state.gallery.currentAlbum.title.en;
+  elements.gallery.periodEn.value = state.gallery.currentAlbum.period.en;
+  elements.gallery.locationEn.value = state.gallery.currentAlbum.location.en;
+  elements.gallery.cameraEn.value = state.gallery.currentAlbum.camera.en;
+  elements.gallery.descriptionEn.value = state.gallery.currentAlbum.description.en;
+  elements.gallery.tagsEn.value = (state.gallery.currentAlbum.tags.en || []).join(', ');
+  renderGalleryPhotoList();
+  renderList();
 }
 
 function fileToBase64(file) {
@@ -2722,6 +2873,91 @@ async function handleSaveGalleryAlbum() {
   }
 }
 
+async function handleTranslateGalleryToEnglish() {
+  try {
+    setStatus('正在调用 LLM 翻译画廊英文信息...');
+    const payload = await request('/api/gallery/translate-en', {
+      method: 'POST',
+      body: JSON.stringify(buildGalleryTranslationPayload())
+    });
+    applyGalleryTranslationResult(payload);
+    setStatus('英文相册信息已补全到编辑区，确认后保存即可写回文件。', 'success');
+    showToast('翻译完成', '英文相册信息和图片英文说明已写入当前编辑区。');
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
+async function handleSaveGalleryFilterPreset() {
+  try {
+    const payload = {
+      key: elements.gallery.filterKey.value.trim(),
+      label: {
+        'zh-CN': elements.gallery.filterLabelZh.value.trim(),
+        en: elements.gallery.filterLabelEn.value.trim()
+      }
+    };
+    const isUpdate = Boolean(state.gallery.selectedFilterKey);
+    setStatus(isUpdate ? '正在更新画廊分类...' : '正在保存画廊分类...');
+    const response = await request(
+      isUpdate
+        ? `/api/gallery-filters/${encodeURIComponent(state.gallery.selectedFilterKey)}/update`
+        : '/api/gallery-filters',
+      {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      }
+    );
+
+    const previousKey = state.gallery.selectedFilterKey;
+    state.meta.galleryFilters = response.filters || [];
+    if (state.gallery.currentAlbum) {
+      const currentCategory = getGalleryAlbumCategoryKey(state.gallery.currentAlbum);
+      const nextCategory = currentCategory === previousKey ? response.filter.key : currentCategory;
+      state.gallery.currentAlbum = {
+        ...state.gallery.currentAlbum,
+        category: nextCategory,
+        categories: nextCategory ? [nextCategory] : []
+      };
+    }
+    await loadGallery(false, state.gallery.selectedSlug || (state.gallery.currentAlbum && state.gallery.currentAlbum.slug) || '');
+    fillGalleryFilterPresetForm(response.filter);
+    setStatus(isUpdate ? '画廊分类已更新。' : '画廊分类已保存。', 'success');
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
+async function handleDeleteGalleryFilterPreset() {
+  if (!state.gallery.selectedFilterKey) {
+    setStatus('请先选择一个画廊分类。', 'error');
+    return;
+  }
+
+  try {
+    const key = state.gallery.selectedFilterKey;
+    setStatus('正在删除画廊分类...');
+    const response = await request(`/api/gallery-filters/${encodeURIComponent(key)}/delete`, {
+      method: 'POST'
+    });
+
+    state.meta.galleryFilters = response.filters || [];
+    if (state.gallery.currentAlbum) {
+      const nextCategory = getGalleryAlbumCategoryKey(state.gallery.currentAlbum) === key ? '' : getGalleryAlbumCategoryKey(state.gallery.currentAlbum);
+      state.gallery.currentAlbum = {
+        ...state.gallery.currentAlbum,
+        category: nextCategory,
+        categories: nextCategory ? [nextCategory] : []
+      };
+    }
+    await loadGallery(false, state.gallery.selectedSlug || (state.gallery.currentAlbum && state.gallery.currentAlbum.slug) || '');
+    fillGalleryFilterPresetForm();
+    setStatus('画廊分类已删除。', 'success');
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
 async function handleSave() {
   if (!state.currentRecord && !['posts', 'gallery'].includes(state.mode)) {
     setStatus('请先选择一个页面。', 'error');
@@ -2992,6 +3228,7 @@ elements.searchInput.addEventListener('input', () => {
 });
 elements.saveButton.addEventListener('click', handleSave);
 elements.deleteButton.addEventListener('click', handleDeletePost);
+elements.translateGalleryButton.addEventListener('click', handleTranslateGalleryToEnglish);
 elements.saveLlmButton.addEventListener('click', handleSaveLlmSettings);
 elements.formatZhButton.addEventListener('click', handleFormatZh);
 elements.createImageFolderButton.addEventListener('click', handleCreateImageFolder);
@@ -3000,6 +3237,8 @@ elements.deleteImageFolderButton.addEventListener('click', handleDeleteImageFold
 elements.saveCategoryPresetButton.addEventListener('click', handleSaveCategoryPreset);
 elements.deleteCategoryPresetButton.addEventListener('click', handleDeleteCategoryPreset);
 elements.gallery.saveButton.addEventListener('click', handleSaveGalleryAlbum);
+elements.gallery.saveFilterButton.addEventListener('click', handleSaveGalleryFilterPreset);
+elements.gallery.deleteFilterButton.addEventListener('click', handleDeleteGalleryFilterPreset);
 elements.gallery.refreshButton.addEventListener('click', async () => {
   try {
     await loadGallery(true);
@@ -3192,6 +3431,34 @@ elements.gallery.candidateList.addEventListener('click', event => {
   if (button.dataset.galleryCandidateAction === 'add') {
     addGalleryCandidatesToAlbum([button.dataset.galleryCandidatePath || '']);
   }
+});
+elements.gallery.categories.addEventListener('change', event => {
+  const target = event.target;
+  if (!(target instanceof HTMLInputElement)) return;
+  if (!target.matches('[data-gallery-category]')) return;
+  syncGalleryDraftFromForm();
+  renderList();
+});
+elements.gallery.categories.addEventListener('click', event => {
+  const label = event.target.closest('.gallery-filter-checkbox');
+  if (!label) return;
+  const input = label.querySelector('[data-gallery-category]');
+  if (!(input instanceof HTMLInputElement)) return;
+  const key = input.dataset.galleryCategory || '';
+  const filter = state.meta.galleryFilters.find(item => item.key === key);
+  if (filter) {
+    fillGalleryFilterPresetForm(filter);
+  }
+});
+['input', 'change'].forEach(eventName => {
+  elements.gallery.filterKey.addEventListener(eventName, () => {
+    if (state.gallery.selectedFilterKey && elements.gallery.filterKey.value.trim() !== state.gallery.selectedFilterKey) {
+      state.gallery.selectedFilterKey = '';
+    }
+    syncGalleryFilterPresetButtonState();
+  });
+  elements.gallery.filterLabelZh.addEventListener(eventName, syncGalleryFilterPresetButtonState);
+  elements.gallery.filterLabelEn.addEventListener(eventName, syncGalleryFilterPresetButtonState);
 });
 elements.library.refreshButton.addEventListener('click', async () => {
   try {
