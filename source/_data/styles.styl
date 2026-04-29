@@ -674,6 +674,8 @@ html
   max-width: 980px
   margin-left: auto
   margin-right: auto
+  transform: translateZ(0)
+  backface-visibility: hidden
 
 .post-block.page-type-gallery .post-body
   max-width: none
@@ -818,8 +820,6 @@ html
 .gallery-album-card
   margin: 0
   min-height: 360px
-  content-visibility: auto
-  contain-intrinsic-size: 360px
 
 .gallery-album-trigger
   position: relative
@@ -1099,7 +1099,6 @@ html
   gap: 10px
   overflow-x: auto
   padding-bottom: 2px
-  content-visibility: auto
 
 .gallery-viewer-thumb
   flex: 0 0 74px

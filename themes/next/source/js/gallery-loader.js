@@ -151,11 +151,13 @@
 
     if (cards.length <= PAGE_SIZE) {
       container.hidden = true;
+      container.setAttribute('hidden', '');
       container.innerHTML = '';
       return;
     }
 
     container.hidden = false;
+    container.removeAttribute('hidden');
     container.innerHTML = [
       '<button class="gallery-page-button" type="button" data-gallery-page="' + (state.page - 1) + '" ' + (state.page <= 1 ? 'disabled' : '') + '>' + escapeHTML(prevText) + '</button>',
       Array.from({ length: totalPages }, function(_, index) {
@@ -364,8 +366,9 @@
         if (!button) return;
         applyGalleryFilter(button.dataset.galleryFilter || '', 1);
       });
-      applyGalleryFilter('', 1);
     }
+
+    applyGalleryFilter('', 1);
 
     var pagination = $('[data-gallery-pagination]');
     if (pagination) {

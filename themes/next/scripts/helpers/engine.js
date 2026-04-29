@@ -570,6 +570,9 @@ hexo.extend.helper.register('render_gallery', function (language = getCurrentLan
   const emptyFilterText = String(language).toLowerCase().startsWith('zh')
     ? '当前分类下还没有相册。'
     : 'No albums in this category yet.';
+  const pagePrevText = String(language).toLowerCase().startsWith('zh') ? '上一页' : 'Previous';
+  const pageNextText = String(language).toLowerCase().startsWith('zh') ? '下一页' : 'Next';
+  const initialPageCount = Math.ceil(albums.length / 10);
   const filterButtons = [{
     key: '',
     label: allText,
@@ -611,10 +614,15 @@ hexo.extend.helper.register('render_gallery', function (language = getCurrentLan
       <div
         class="gallery-pagination"
         data-gallery-pagination
-        data-prev-text="${escapeHTML(previousText)}"
-        data-next-text="${escapeHTML(nextText)}"
-        hidden
-      ></div>
+        data-prev-text="${escapeHTML(pagePrevText)}"
+        data-next-text="${escapeHTML(pageNextText)}"
+        ${initialPageCount > 1 ? '' : 'hidden'}
+      >${initialPageCount > 1 ? `
+        <button class="gallery-page-button" type="button" data-gallery-page="0" disabled>${escapeHTML(pagePrevText)}</button>
+        <button class="gallery-page-button is-active" type="button" data-gallery-page="1" aria-current="page">1</button>
+        ${Array.from({ length: Math.max(initialPageCount - 1, 0) }, (_, index) => `<button class="gallery-page-button" type="button" data-gallery-page="${index + 2}" aria-current="false">${index + 2}</button>`).join('')}
+        <button class="gallery-page-button" type="button" data-gallery-page="2">${escapeHTML(pageNextText)}</button>
+      ` : ''}</div>
       <div class="gallery-filter-empty" data-gallery-filter-empty-state hidden>${escapeHTML(emptyFilterText)}</div>
     </div>
     <div class="gallery-viewer" data-gallery-viewer hidden aria-hidden="true">
