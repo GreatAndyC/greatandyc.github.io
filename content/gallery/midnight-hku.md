@@ -19,11 +19,11 @@ tags_en: Landscape,Architecture
 
 | src | title_zh | title_en | caption_zh | caption_en | meta |
 | --- | --- | --- | --- | --- | --- |
-| /images/gallery/midnight-hku/DSC0030-1-5.jpg |  |  |  |  | 15mm · 10s · f/13 · ISO 100 |
-| /images/gallery/midnight-hku/I_Love_HKU-6.jpg |  |  |  |  | 28mm · 20s · f/20 · ISO 100 |
-| /images/gallery/midnight-hku/20240128-_DSC0008-1.jpg |  |  |  |  | 27mm · 10s · f/14 · ISO 100 |
-| /images/gallery/midnight-hku/20240128-_DSC0017-2.jpg |  |  |  |  | 63mm · 3s · f/18 · ISO 100 |
-| /images/gallery/midnight-hku/20240128-_DSC0019-3.jpg |  |  |  |  | 51mm · 5s · f/18 · ISO 100 |
-| /images/gallery/midnight-hku/20240128-_DSC0022-4.jpg |  |  |  |  | 15mm · 6s · f/16 · ISO 100 |
-| /images/gallery/midnight-hku/20240128-_DSC0049-7.jpg |  |  |  |  | 15mm · 20s · f/16 · ISO 100 |
-| /images/gallery/midnight-hku/20240129-_DSC0062-8.jpg |  |  |  |  | 90mm · 10s · f/18 · ISO 100 |
+| /images/gallery/midnight-hku/midnight-hku-01-2.jpg |  |  |  |  | 15mm · 10s · f/13 · ISO 100 |
+| /images/gallery/midnight-hku/midnight-hku-02-2.jpg |  |  |  |  | 28mm · 20s · f/20 · ISO 100 |
+| /images/gallery/midnight-hku/midnight-hku-03-2.jpg |  |  |  |  | 27mm · 10s · f/14 · ISO 100 |
+| /images/gallery/midnight-hku/midnight-hku-04-2.jpg |  |  |  |  | 63mm · 3s · f/18 · ISO 100 |
+| /images/gallery/midnight-hku/midnight-hku-05-2.jpg |  |  |  |  | 51mm · 5s · f/18 · ISO 100 |
+| /images/gallery/midnight-hku/midnight-hku-06-2.jpg |  |  |  |  | 15mm · 6s · f/16 · ISO 100 |
+| /images/gallery/midnight-hku/midnight-hku-07-2.jpg |  |  |  |  | 15mm · 20s · f/16 · ISO 100 |
+| /images/gallery/midnight-hku/midnight-hku-08-2.jpg |  |  |  |  | 90mm · 10s · f/18 · ISO 100 |

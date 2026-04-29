@@ -19,7 +19,7 @@ tags_en: City,Fog,Architecture
 
 | src | title_zh | title_en | caption_zh | caption_en | meta |
 | --- | --- | --- | --- | --- | --- |
-| /images/gallery/Monster_Building&Victoria_Peak_in_Fog/20240331-_DSC0017-HDR-1.jpg |  |  |  |  | 27mm · 1/250s · f/3.5 · ISO 500 |
-| /images/gallery/Monster_Building&Victoria_Peak_in_Fog/20240331-_DSC0030-3.jpg |  |  |  |  | 27mm · 1/60s · f/3.5 · ISO 400 |
-| /images/gallery/Monster_Building&Victoria_Peak_in_Fog/20240331-DSCF0404-编辑-2.jpg |  |  |  |  | 31mm · 1/60s · f/3.6 · ISO 1000 |
-| /images/gallery/Monster_Building&Victoria_Peak_in_Fog/20240331-DSCF0429-4.jpg |  |  |  |  | 36mm · 1/100s · f/3.2 · ISO 2500 |
+| /images/gallery/Monster_Building&Victoria_Peak_in_Fog/monster-building-victoria-peak-in-fog-01-2.jpg |  |  |  |  | 27mm · 1/250s · f/3.5 · ISO 500 |
+| /images/gallery/Monster_Building&Victoria_Peak_in_Fog/monster-building-victoria-peak-in-fog-02-2.jpg |  |  |  |  | 27mm · 1/60s · f/3.5 · ISO 400 |
+| /images/gallery/Monster_Building&Victoria_Peak_in_Fog/monster-building-victoria-peak-in-fog-03-2.jpg |  |  |  |  | 31mm · 1/60s · f/3.6 · ISO 1000 |
+| /images/gallery/Monster_Building&Victoria_Peak_in_Fog/monster-building-victoria-peak-in-fog-04-2.jpg |  |  |  |  | 36mm · 1/100s · f/3.2 · ISO 2500 |

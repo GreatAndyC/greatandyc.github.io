@@ -2,6 +2,9 @@
 
 const CUSTOM_CATEGORY_VALUE = '__custom__';
 const GALLERY_PAGE_IDS = new Set(['gallery-zh', 'gallery-en']);
+const CMS_SESSION_ID = `cms-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+const CMS_SESSION_HEARTBEAT_MS = 10000;
+let cmsSessionHeartbeatTimer = null;
 
 const state = {
   mode: 'posts',
@@ -108,6 +111,7 @@ const elements = {
   newPostButton: document.querySelector('#new-post-button'),
   newGalleryButton: document.querySelector('#new-gallery-button'),
   translateGalleryButton: document.querySelector('#translate-gallery-button'),
+  testLlmButton: document.querySelector('#test-llm-button'),
   saveLlmButton: document.querySelector('#save-llm-button'),
   formatZhButton: document.querySelector('#format-zh-button'),
   uploadImageButton: document.querySelector('#upload-image-button'),
@@ -1437,25 +1441,31 @@ function buildGalleryFolderMeta(folder, count = 0) {
   return count > 0 ? `${label} · 共 ${count} 张` : label;
 }
 
-function mergeGalleryPhotosFromLibrary(existingPhotos, items) {
-  const existingMap = new Map((Array.isArray(existingPhotos) ? existingPhotos : []).map(photo => [photo.src, photo]));
-  return (Array.isArray(items) ? items : []).map(item => {
-    const current = existingMap.get(item.path);
+function applyGalleryPhotoRenames(existingPhotos, renameEntries, libraryItems) {
+  const sourcePhotos = Array.isArray(existingPhotos) ? existingPhotos : [];
+  const renameMap = new Map(
+    (Array.isArray(renameEntries) ? renameEntries : [])
+      .filter(item => item && item.from && item.to)
+      .map(item => [item.from, item.to])
+  );
+  const libraryMap = new Map(
+    (Array.isArray(libraryItems) ? libraryItems : [])
+      .filter(item => item && item.path)
+      .map(item => [item.path, item])
+  );
+
+  return sourcePhotos.map(photo => {
+    const nextSrc = renameMap.get(photo.src) || photo.src;
+    const libraryItem = libraryMap.get(nextSrc) || null;
     return {
-      src: item.path,
-      title: {
-        'zh-CN': current && current.title ? current.title['zh-CN'] || '' : '',
-        en: current && current.title ? current.title.en || '' : ''
-      },
-      caption: {
-        'zh-CN': current && current.caption ? current.caption['zh-CN'] || '' : '',
-        en: current && current.caption ? current.caption.en || '' : ''
-      },
-      meta: (current && current.meta) || item.captureMeta || '',
-      dimensions: item.dimensions || '',
-      camera: item.camera || '',
-      captureMeta: item.captureMeta || '',
-      fileMeta: item.meta || ''
+      ...photo,
+      src: nextSrc,
+      meta: photo.meta || (libraryItem && libraryItem.captureMeta) || '',
+      dimensions: (libraryItem && libraryItem.dimensions) || photo.dimensions || '',
+      camera: (libraryItem && libraryItem.camera) || photo.camera || '',
+      captureTime: (libraryItem && libraryItem.captureTime) || photo.captureTime || '',
+      captureMeta: (libraryItem && libraryItem.captureMeta) || photo.captureMeta || '',
+      fileMeta: (libraryItem && libraryItem.meta) || photo.fileMeta || ''
     };
   });
 }
@@ -1524,7 +1534,9 @@ async function handleGalleryNormalizeFilenames() {
 
   try {
     setStatus(`正在规范化 images/${folder} 的图片文件名...`);
-    const payload = await normalizeImageFilenames(folder);
+    const payload = await normalizeImageFilenames(folder, {
+      mode: 'gallery-sequence'
+    });
     state.imageFolders = payload.folders || state.imageFolders;
     renderImageFolders();
     elements.gallery.imageFolderSelect.value = payload.folder || folder;
@@ -1615,7 +1627,7 @@ function renderImageLibrary() {
       <div class="library-card-body">
         <strong>${escapeHtml(item.name)}</strong>
         <span>${escapeHtml(item.path)}</span>
-        <span>${escapeHtml(item.meta)}</span>
+        <span>${escapeHtml([item.dimensions || '', item.camera || '', item.captureMeta || '', item.meta || ''].filter(Boolean).join(' · '))}</span>
       </div>
       <div class="library-card-actions">
         <button class="ghost-button" type="button" data-library-action="copy" data-library-path="${escapeHtml(item.path)}">复制路径</button>
@@ -1673,6 +1685,7 @@ function syncGalleryDraftFromForm() {
       meta: elements.gallery.photoList.querySelector(`[data-gallery-field="meta"][data-photo-index="${index}"]`)?.value.trim() || '',
       dimensions: existing.dimensions || folderItem.dimensions || '',
       camera: existing.camera || folderItem.camera || '',
+      captureTime: existing.captureTime || folderItem.captureTime || '',
       captureMeta: existing.captureMeta || folderItem.captureMeta || '',
       fileMeta: existing.fileMeta || folderItem.meta || ''
     };
@@ -1830,11 +1843,83 @@ async function loadImageReferences({ path = '', folder = '' } = {}) {
   return request(`/api/images/references?${params.toString()}`);
 }
 
-async function normalizeImageFilenames(folder = '') {
+async function normalizeImageFilenames(folder = '', options = {}) {
   return request('/api/images/normalize-filenames', {
     method: 'POST',
-    body: JSON.stringify({ folder })
+    body: JSON.stringify({
+      folder,
+      mode: options.mode || 'sanitize',
+      baseName: options.baseName || ''
+    })
   });
+}
+
+async function postCmsSessionState(path, options = {}) {
+  return request(path, {
+    method: 'POST',
+    keepalive: Boolean(options.keepalive),
+    body: JSON.stringify({ sessionId: CMS_SESSION_ID })
+  });
+}
+
+async function openCmsSession() {
+  await postCmsSessionState('/api/session/open');
+  if (cmsSessionHeartbeatTimer) {
+    clearInterval(cmsSessionHeartbeatTimer);
+  }
+  cmsSessionHeartbeatTimer = window.setInterval(() => {
+    postCmsSessionState('/api/session/heartbeat').catch(() => {});
+  }, CMS_SESSION_HEARTBEAT_MS);
+}
+
+function closeCmsSession() {
+  const payload = JSON.stringify({ sessionId: CMS_SESSION_ID });
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon('/api/session/close', new Blob([payload], { type: 'application/json' }));
+    return;
+  }
+
+  fetch('/api/session/close', {
+    method: 'POST',
+    keepalive: true,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: payload
+  }).catch(() => {});
+}
+
+async function normalizeGalleryImageFilenamesBeforeSave() {
+  const folder = normalizeGalleryManagedFolder(elements.gallery.imageFolderSelect.value, elements.gallery.slug.value.trim());
+  if (!folder || !folder.startsWith('gallery/')) {
+    return null;
+  }
+
+  const normalizedPayload = await normalizeImageFilenames(folder, {
+    mode: 'gallery-sequence'
+  });
+  state.imageFolders = normalizedPayload.folders || state.imageFolders;
+  renderImageFolders();
+  elements.gallery.imageFolderSelect.value = normalizedPayload.folder || folder;
+
+  const libraryPayload = await request(`/api/images/library?folder=${encodeURIComponent(normalizedPayload.folder || folder)}`);
+  state.gallery.folderItems = libraryPayload.items || [];
+  state.gallery.currentAlbum = {
+    ...(state.gallery.currentAlbum || createEmptyGalleryAlbum()),
+    imageFolder: libraryPayload.folder || normalizedPayload.folder || folder,
+    photos: applyGalleryPhotoRenames(
+      ((state.gallery.currentAlbum || createEmptyGalleryAlbum()).photos || []),
+      normalizedPayload.renamed || [],
+      libraryPayload.items || []
+    )
+  };
+  renderGalleryPhotoList();
+  renderGalleryCandidateList();
+  elements.gallery.folderMeta.textContent = buildGalleryFolderMeta(
+    libraryPayload.folder || normalizedPayload.folder || folder,
+    (libraryPayload.items || []).length
+  );
+  return normalizedPayload;
 }
 
 function formatNormalizeResult(payload) {
@@ -2133,6 +2218,22 @@ async function handleSaveLlmSettings() {
   }
 }
 
+async function handleTestLlmConnection() {
+  try {
+    setStatus('正在测试 LLM 连接...');
+    const payload = buildLlmPayload();
+    const result = await request('/api/settings/test-llm', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    const summary = `${result.provider} · ${result.model}${result.preview ? ` · ${result.preview}` : ''}`;
+    setStatus(`LLM 连接测试通过：${summary}`, 'success');
+    showToast('LLM 连接正常', summary);
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
 async function handleCreateImageFolder() {
   try {
     const folder = normalizePostManagedFolder(
@@ -2280,6 +2381,7 @@ function appendGalleryPhotos(paths) {
       path,
       dimensions: '',
       camera: '',
+      captureTime: '',
       captureMeta: '',
       meta: ''
     }))
@@ -2316,6 +2418,7 @@ function addGalleryCandidatesToAlbum(paths) {
       meta: item.captureMeta || '',
       dimensions: item.dimensions || '',
       camera: item.camera || '',
+      captureTime: item.captureTime || '',
       captureMeta: item.captureMeta || '',
       fileMeta: item.meta || ''
     });
@@ -2858,6 +2961,10 @@ async function handleFormatZh() {
 async function handleSaveGalleryAlbum() {
   try {
     setStatus('正在保存画廊相册...');
+    const normalized = await normalizeGalleryImageFilenamesBeforeSave();
+    if (normalized && normalized.renamedCount) {
+      setStatus(`已先规范化 ${normalized.renamedCount} 张图片文件名，正在保存画廊相册...`);
+    }
     const payload = buildGalleryPayload();
     const saved = await request('/api/gallery', {
       method: 'POST',
@@ -3150,6 +3257,7 @@ function createEmptyPost() {
 
 async function bootstrap() {
   try {
+    await openCmsSession();
     applyMode('posts');
     renderSidebarState();
     renderPanelVisibility();
@@ -3230,6 +3338,7 @@ elements.saveButton.addEventListener('click', handleSave);
 elements.deleteButton.addEventListener('click', handleDeletePost);
 elements.translateGalleryButton.addEventListener('click', handleTranslateGalleryToEnglish);
 elements.saveLlmButton.addEventListener('click', handleSaveLlmSettings);
+elements.testLlmButton.addEventListener('click', handleTestLlmConnection);
 elements.formatZhButton.addEventListener('click', handleFormatZh);
 elements.createImageFolderButton.addEventListener('click', handleCreateImageFolder);
 elements.renameImageFolderButton.addEventListener('click', handleRenameImageFolder);
@@ -3574,6 +3683,9 @@ elements.refreshButton.addEventListener('click', async () => {
   }
 });
 elements.newPostButton.addEventListener('click', createEmptyPost);
+
+window.addEventListener('pagehide', closeCmsSession);
+window.addEventListener('beforeunload', closeCmsSession);
 
 bootstrap();
 window.setInterval(() => {

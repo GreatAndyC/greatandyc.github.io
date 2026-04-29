@@ -19,4 +19,4 @@ tags_en: Panorama,Victoria Harbour,Night View
 
 | src | title_zh | title_en | caption_zh | caption_en | meta |
 | --- | --- | --- | --- | --- | --- |
-| /images/gallery/Victoria_Harbour_Panorama_Peak_View/20240529-_DSC0276-Pano-1.jpg |  |  |  |  | 27mm · 1/15s · f/3.5 · ISO 2500 |
+| /images/gallery/Victoria_Harbour_Panorama_Peak_View/victoria-harbour-panorama-peak-view-01-2.jpg |  |  |  |  | 27mm · 1/15s · f/3.5 · ISO 2500 |

@@ -19,12 +19,12 @@ tags_en: Fireworks,Night,Theme Park
 
 | src | title_zh | title_en | caption_zh | caption_en | meta |
 | --- | --- | --- | --- | --- | --- |
-| /images/gallery/DisneyLand_Fireworks/20240517-_DSC0204-1.jpg |  |  |  |  | 34mm · 6s · f/11 · ISO 100 |
-| /images/gallery/DisneyLand_Fireworks/20240517-_DSC0208-2.jpg |  |  |  |  | 27mm · 6s · f/11 · ISO 100 |
-| /images/gallery/DisneyLand_Fireworks/20240517-_DSC0209-3.jpg |  |  |  |  | 27mm · 6s · f/11 · ISO 100 |
-| /images/gallery/DisneyLand_Fireworks/20240517-_DSC0210-4.jpg |  |  |  |  | 27mm · 6s · f/11 · ISO 100 |
-| /images/gallery/DisneyLand_Fireworks/20240517-_DSC0212-5.jpg |  |  |  |  | 27mm · 10s · f/14 · ISO 100 |
-| /images/gallery/DisneyLand_Fireworks/20240517-_DSC0215-6.jpg |  |  |  |  | 27mm · 10s · f/14 · ISO 100 |
-| /images/gallery/DisneyLand_Fireworks/20240517-_DSC0222-7.jpg |  |  |  |  | 27mm · 10s · f/11 · ISO 100 |
-| /images/gallery/DisneyLand_Fireworks/20240517-_DSC0231-8.jpg |  |  |  |  | 27mm · 15s · f/14 · ISO 100 |
-| /images/gallery/DisneyLand_Fireworks/20240517-_DSC0232-9.jpg |  |  |  |  | 27mm · 15s · f/14 · ISO 100 |
+| /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-01-2.jpg |  |  |  |  | 34mm · 6s · f/11 · ISO 100 |
+| /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-02-2.jpg |  |  |  |  | 27mm · 6s · f/11 · ISO 100 |
+| /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-03-2.jpg |  |  |  |  | 27mm · 6s · f/11 · ISO 100 |
+| /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-04-2.jpg |  |  |  |  | 27mm · 6s · f/11 · ISO 100 |
+| /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-05-2.jpg |  |  |  |  | 27mm · 10s · f/14 · ISO 100 |
+| /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-06-2.jpg |  |  |  |  | 27mm · 10s · f/14 · ISO 100 |
+| /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-07-2.jpg |  |  |  |  | 27mm · 10s · f/11 · ISO 100 |
+| /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-08-2.jpg |  |  |  |  | 27mm · 15s · f/14 · ISO 100 |
+| /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-09-2.jpg |  |  |  |  | 27mm · 15s · f/14 · ISO 100 |

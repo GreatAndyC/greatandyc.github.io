@@ -1,0 +1,41 @@
+---
+slug: cat
+image_folder: gallery/cat
+languages: zh-CN,en
+title_zh: 猫
+title_en: Cat
+period_zh: ""
+period_en: ""
+location_zh: 中山大学等
+location_en: Sun Yat-sen University, etc.
+camera_zh: NIKON D5600
+camera_en: NIKON D5600
+description_zh: 可爱又凶猛的掠食动物
+description_en: Cute yet fierce predator
+category: street
+tags_zh: 猫
+tags_en: Cat
+---
+
+| src | title_zh | title_en | caption_zh | caption_en | meta |
+| --- | --- | --- | --- | --- | --- |
+| /images/gallery/cat/cat-01-2.jpg |  |  |  |  | 2018-04-12 19:18:08 · 120mm · 1/60s · f/4 · ISO 10000 |
+| /images/gallery/cat/cat-02-2.jpg |  |  |  |  | 2018-07-29 16:18:59 · 75mm · 1/320s · f/1.8 · ISO 100 |
+| /images/gallery/cat/cat-03-2.jpg |  |  |  |  | 2018-07-29 16:21:25 · 75mm · 1/320s · f/1.8 · ISO 100 |
+| /images/gallery/cat/cat-04-2.jpg |  |  |  |  | 2018-07-29 16:24:25 · 75mm · 1/160s · f/1.8 · ISO 100 |
+| /images/gallery/cat/cat-05-2.jpg |  |  |  |  | 2018-10-02 17:15:21 · 210mm · 1/125s · f/5.6 · ISO 640 |
+| /images/gallery/cat/cat-06-2.jpg |  |  |  |  | 2018-10-02 17:15:40 · 210mm · 1/125s · f/5.6 · ISO 640 |
+| /images/gallery/cat/cat-07-2.jpg |  |  |  |  | 2018-10-02 17:17:00 · 210mm · 1/125s · f/5.6 · ISO 640 |
+| /images/gallery/cat/cat-08-2.jpg |  |  |  |  | 2018-10-02 17:17:25 · 112mm · 1/125s · f/5 · ISO 640 |
+| /images/gallery/cat/cat-09-2.jpg |  |  |  |  | 2018-10-02 17:26:06 · 195mm · 1/125s · f/5.6 · ISO 640 |
+| /images/gallery/cat/cat-10-2.jpg |  |  |  |  | 2018-10-02 17:27:48 · 210mm · 1/100s · f/5.6 · ISO 640 |
+| /images/gallery/cat/cat-11-2.jpg |  |  |  |  | 2018-10-02 17:28:31 · 210mm · 1/100s · f/5.6 · ISO 640 |
+| /images/gallery/cat/cat-12-2.jpg |  |  |  |  | 2018-10-02 17:29:20 · 210mm · 1/100s · f/5.6 · ISO 640 |
+| /images/gallery/cat/cat-13-2.jpg |  |  |  |  | 2018-10-02 17:37:58 · 210mm · 1/100s · f/5.6 · ISO 640 |
+| /images/gallery/cat/cat-14-2.jpg |  |  |  |  | 2018-10-02 17:42:23 · 210mm · 1/100s · f/5.6 · ISO 640 |
+| /images/gallery/cat/cat-15-2.jpg |  |  |  |  | 2018-10-02 17:43:07 · 210mm · 1/60s · f/5.6 · ISO 800 |
+| /images/gallery/cat/cat-16-2.jpg |  |  |  |  | 2019-04-30 17:03:09 · 15mm · 1/80s · f/3.5 · ISO 200 |
+| /images/gallery/cat/cat-17-2.jpg |  |  |  |  | 2025-03-21 13:41:51 · 210mm · 1/500s · f/8 · ISO 400 |
+| /images/gallery/cat/cat-18-2.jpg |  |  |  |  | 2025-03-21 13:45:59 · 210mm · 1/500s · f/8 · ISO 400 |
+| /images/gallery/cat/cat-19-2.jpg |  |  |  |  | 2025-03-21 14:04:14 · 195mm · 1/400s · f/8 · ISO 250 |
+| /images/gallery/cat/cat-20-2.jpg |  |  |  |  | 2025-03-21 14:07:32 · 93mm · 1/250s · f/6.3 · ISO 400 |

@@ -19,12 +19,12 @@ tags_en: Campus,Photo Walk,Architecture
 
 | src | title_zh | title_en | caption_zh | caption_en | meta |
 | --- | --- | --- | --- | --- | --- |
-| /images/gallery/Main_Campus_Photo_Walk/DSC0120-1-1.jpg |  |  |  |  | 52mm · 1/60s · f/2 · ISO 250 |
-| /images/gallery/Main_Campus_Photo_Walk/DSC0123-2-2.jpg |  |  |  |  | 52mm · 1/60s · f/2 · ISO 160 |
-| /images/gallery/Main_Campus_Photo_Walk/DSC0126-3-3.jpg |  |  |  |  | 52mm · 1/80s · f/2 · ISO 100 |
-| /images/gallery/Main_Campus_Photo_Walk/DSC0130-4-4.jpg |  |  |  |  | 52mm · 1/50s · f/2 · ISO 320 |
-| /images/gallery/Main_Campus_Photo_Walk/DSC0132-5-5.jpg |  |  |  |  | 52mm · 1/50s · f/2 · ISO 400 |
-| /images/gallery/Main_Campus_Photo_Walk/DSC0135-6-6.jpg |  |  |  |  | 52mm · 1/60s · f/2 · ISO 400 |
-| /images/gallery/Main_Campus_Photo_Walk/DSC0136-7-7.jpg |  |  |  |  | 52mm · 1/60s · f/2 · ISO 500 |
-| /images/gallery/Main_Campus_Photo_Walk/DSC0141-9-8.jpg |  |  |  |  | 52mm · 1/80s · f/2 · ISO 800 |
-| /images/gallery/Main_Campus_Photo_Walk/DSC0147-10-9.jpg |  |  |  |  | 52mm · 1/100s · f/2 · ISO 200 |
+| /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-01-2.jpg |  |  |  |  | 52mm · 1/60s · f/2 · ISO 250 |
+| /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-02-2.jpg |  |  |  |  | 52mm · 1/60s · f/2 · ISO 160 |
+| /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-03-2.jpg |  |  |  |  | 52mm · 1/80s · f/2 · ISO 100 |
+| /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-04-2.jpg |  |  |  |  | 52mm · 1/50s · f/2 · ISO 320 |
+| /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-05-2.jpg |  |  |  |  | 52mm · 1/50s · f/2 · ISO 400 |
+| /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-06-2.jpg |  |  |  |  | 52mm · 1/60s · f/2 · ISO 400 |
+| /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-07-2.jpg |  |  |  |  | 52mm · 1/60s · f/2 · ISO 500 |
+| /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-08-2.jpg |  |  |  |  | 52mm · 1/80s · f/2 · ISO 800 |
+| /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-09-2.jpg |  |  |  |  | 52mm · 1/100s · f/2 · ISO 200 |

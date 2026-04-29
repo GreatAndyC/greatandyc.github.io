@@ -39,6 +39,8 @@ const LLM_ENV_KEYS = {
   temperature: 'LOCAL_CMS_LLM_TEMPERATURE',
   prompt: 'LOCAL_CMS_LLM_PROMPT'
 };
+const CMS_SESSION_TTL_MS = 30000;
+const CMS_SHUTDOWN_GRACE_MS = 5000;
 
 const PAGE_DEFINITIONS = [
   { id: 'about-zh', label: 'About 中文', file: path.join(ROOT, 'source', 'about', 'index.md') },
@@ -107,6 +109,9 @@ const commandState = {
     log: ''
   }
 };
+const cmsSessions = new Map();
+let cmsShutdownTimer = null;
+let hasSeenCmsSession = false;
 
 function jsonResponse(res, statusCode, payload) {
   res.writeHead(statusCode, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -1525,10 +1530,16 @@ function parseExifTiffBuffer(buffer) {
   const firstIfdOffset = readUInt32(4);
   const ifd0 = readIfd(firstIfdOffset);
   const exifIfd = ifd0[0x8769] ? readIfd(ifd0[0x8769]) : {};
+  const dateTimeOriginal = String(exifIfd[0x9003] || '').trim();
+  const dateTimeDigitized = String(exifIfd[0x9004] || '').trim();
+  const dateTime = String(ifd0[0x0132] || '').trim();
 
   return {
     make: String(ifd0[0x010F] || '').trim(),
     model: String(ifd0[0x0110] || '').trim(),
+    dateTimeOriginal: dateTimeOriginal || '',
+    dateTimeDigitized: dateTimeDigitized || '',
+    dateTime: dateTime || '',
     exposureTime: exifIfd[0x829A] || null,
     fNumber: exifIfd[0x829D] || null,
     iso: exifIfd[0x8827] || null,
@@ -1554,11 +1565,100 @@ function formatExposureTime(value) {
   return denominator > 0 ? `1/${denominator}s` : '';
 }
 
+function pruneCmsSessions() {
+  const now = Date.now();
+  for (const [sessionId, expiresAt] of cmsSessions.entries()) {
+    if (expiresAt <= now) {
+      cmsSessions.delete(sessionId);
+    }
+  }
+}
+
+function scheduleCmsAutoShutdown() {
+  if (cmsShutdownTimer) {
+    clearTimeout(cmsShutdownTimer);
+    cmsShutdownTimer = null;
+  }
+
+  if (!hasSeenCmsSession) return;
+  pruneCmsSessions();
+  if (cmsSessions.size > 0) return;
+
+  cmsShutdownTimer = setTimeout(() => {
+    pruneCmsSessions();
+    if (cmsSessions.size > 0) return;
+    cleanupChildren();
+    server.close(() => process.exit(0));
+  }, CMS_SHUTDOWN_GRACE_MS);
+}
+
+function markCmsSessionAlive(sessionId) {
+  const normalized = String(sessionId || '').trim();
+  if (!normalized) {
+    throw new Error('会话标识不能为空。');
+  }
+
+  cmsSessions.set(normalized, Date.now() + CMS_SESSION_TTL_MS);
+  hasSeenCmsSession = true;
+  if (cmsShutdownTimer) {
+    clearTimeout(cmsShutdownTimer);
+    cmsShutdownTimer = null;
+  }
+
+  return {
+    sessionId: normalized,
+    expiresInMs: CMS_SESSION_TTL_MS
+  };
+}
+
+function closeCmsSession(sessionId) {
+  const normalized = String(sessionId || '').trim();
+  if (!normalized) {
+    throw new Error('会话标识不能为空。');
+  }
+
+  cmsSessions.delete(normalized);
+  scheduleCmsAutoShutdown();
+  return {
+    sessionId: normalized,
+    remainingSessions: cmsSessions.size
+  };
+}
+
+const cmsSessionWatchdog = setInterval(() => {
+  pruneCmsSessions();
+  if (cmsSessions.size === 0) {
+    scheduleCmsAutoShutdown();
+  }
+}, 5000);
+
+if (typeof cmsSessionWatchdog.unref === 'function') {
+  cmsSessionWatchdog.unref();
+}
+
+function formatExifDateTime(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+
+  const match = raw.match(/^(\d{4}):(\d{2}):(\d{2})(?:\s+(\d{2}):(\d{2})(?::(\d{2}))?)?$/);
+  if (!match) return raw;
+
+  const [, year, month, day, hour = '00', minute = '00', second = '00'] = match;
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+}
+
 function buildImageTechnicalMeta(filePath) {
   const dimensions = parseImageDimensions(filePath);
   const exif = parseExifFromJpeg(filePath);
   const camera = [exif && exif.make, exif && exif.model].filter(Boolean).join(' · ');
+  const captureTime = formatExifDateTime(
+    exif && (exif.dateTimeOriginal || exif.dateTimeDigitized || exif.dateTime)
+  );
   const parts = [];
+
+  if (captureTime) {
+    parts.push(captureTime);
+  }
 
   if (exif && exif.focalLength35mm) {
     parts.push(`${Math.round(Number(exif.focalLength35mm))}mm`);
@@ -1583,6 +1683,7 @@ function buildImageTechnicalMeta(filePath) {
     width: dimensions && dimensions.width ? dimensions.width : (exif && exif.pixelWidth ? Number(exif.pixelWidth) : null),
     height: dimensions && dimensions.height ? dimensions.height : (exif && exif.pixelHeight ? Number(exif.pixelHeight) : null),
     camera,
+    captureTime,
     captureMeta: parts.join(' · ')
   };
 }
@@ -1611,6 +1712,7 @@ function listImageLibrary(folder = '') {
         height: technical.height || null,
         dimensions: technical.width && technical.height ? `${technical.width} × ${technical.height}` : '',
         camera: technical.camera || '',
+        captureTime: technical.captureTime || '',
         captureMeta: technical.captureMeta || ''
       };
     })
@@ -1641,15 +1743,79 @@ function listImageFilesRecursive(currentPath, result = []) {
   return result;
 }
 
-function normalizeImageFilenamesInFolder(folder = '') {
-  const { normalized, absolute } = resolveImageFolder(folder);
-  fs.mkdirSync(absolute, { recursive: true });
+function buildSequentialImageBaseName(folder = '', fallback = 'image') {
+  const normalized = String(folder || '').replace(/^\/+|\/+$/g, '');
+  const leaf = normalized.split('/').filter(Boolean).pop() || fallback;
+  return slugifyFileSegment(leaf);
+}
 
+function buildSequentialImageFilename(baseName, index, total, extension) {
+  const digits = Math.max(2, String(Math.max(1, total)).length);
+  return `${baseName}-${String(index + 1).padStart(digits, '0')}${extension}`;
+}
+
+function buildImageRenamePlan(files, options = {}) {
+  const mode = String(options.mode || 'sanitize').trim();
   const reservedByDir = new Map();
   const plan = [];
-  const files = listImageFilesRecursive(absolute).sort((left, right) => left.localeCompare(right));
+  const sortedFiles = (Array.isArray(files) ? files.slice() : []).sort((left, right) => left.localeCompare(right));
 
-  files.forEach(filePath => {
+  if (mode === 'gallery-sequence') {
+    const filesByDir = new Map();
+    sortedFiles.forEach(filePath => {
+      const directory = path.dirname(filePath);
+      if (!filesByDir.has(directory)) {
+        filesByDir.set(directory, []);
+      }
+      filesByDir.get(directory).push(filePath);
+    });
+
+    filesByDir.forEach((directoryFiles, directory) => {
+      const relativeDir = toPosixPath(path.relative(IMAGES_DIR, directory));
+      const baseName = slugifyFileSegment(options.baseName || buildSequentialImageBaseName(relativeDir));
+      const orderedFiles = directoryFiles
+        .map(filePath => ({
+          filePath,
+          captureTime: buildImageTechnicalMeta(filePath).captureTime || '',
+          name: path.basename(filePath)
+        }))
+        .sort((left, right) => {
+          if (left.captureTime && right.captureTime && left.captureTime !== right.captureTime) {
+            return left.captureTime.localeCompare(right.captureTime);
+          }
+          if (left.captureTime && !right.captureTime) return -1;
+          if (!left.captureTime && right.captureTime) return 1;
+          return left.name.localeCompare(right.name, 'zh-Hans-CN', { numeric: true });
+        });
+      const total = orderedFiles.length;
+      const reservedNames = new Set();
+
+      orderedFiles.forEach(({ filePath }, index) => {
+        const currentName = path.basename(filePath);
+        const extension = path.extname(currentName).toLowerCase();
+        const preferredName = buildSequentialImageFilename(baseName, index, total, extension);
+        const nextName = getUniqueFilename(directory, preferredName, reservedNames);
+        if (nextName === currentName) return;
+
+        const nextPath = path.join(directory, nextName);
+        const oldRelative = toPosixPath(path.relative(IMAGES_DIR, filePath));
+        const nextRelative = toPosixPath(path.relative(IMAGES_DIR, nextPath));
+
+        plan.push({
+          oldPath: filePath,
+          nextPath,
+          oldName: currentName,
+          nextName,
+          oldPublicPath: `/images/${oldRelative}`,
+          nextPublicPath: `/images/${nextRelative}`
+        });
+      });
+    });
+
+    return plan;
+  }
+
+  sortedFiles.forEach(filePath => {
     const directory = path.dirname(filePath);
     const currentName = path.basename(filePath);
     const safeName = sanitizeImageFilename(currentName, 'image');
@@ -1674,25 +1840,103 @@ function normalizeImageFilenamesInFolder(folder = '') {
     });
   });
 
-  const updatedFiles = new Set();
+  return plan;
+}
+
+function replaceManyTextInProjectFiles(replacements = [], excludedFiles = []) {
+  const normalizedReplacements = (Array.isArray(replacements) ? replacements : [])
+    .filter(item => item && item.from && item.from !== item.to)
+    .map(item => ({ from: String(item.from), to: String(item.to) }));
+
+  if (!normalizedReplacements.length) {
+    return {
+      updatedFiles: [],
+      replacementCount: 0
+    };
+  }
+
+  const excluded = new Set(excludedFiles.map(filePath => ensureInsideRoot(filePath)));
+  const files = listSearchableProjectFiles(ROOT);
+  const updatedFiles = [];
   let replacementCount = 0;
-  plan.forEach(item => {
-    fs.renameSync(item.oldPath, item.nextPath);
-    const replaceResult = replaceTextInProjectFiles(item.oldPublicPath, item.nextPublicPath);
-    replaceResult.updatedFiles.forEach(filePath => updatedFiles.add(filePath));
-    replacementCount += replaceResult.replacementCount;
+
+  files.forEach(filePath => {
+    if (excluded.has(filePath)) return;
+
+    const content = fs.readFileSync(filePath, 'utf8');
+    let nextContent = content;
+    let fileReplacementCount = 0;
+    const placeholders = normalizedReplacements.map((item, index) => ({
+      token: `__LOCAL_CMS_RENAME_${index}_${Date.now()}__`,
+      to: item.to
+    }));
+
+    normalizedReplacements.forEach((item, index) => {
+      const count = countSubstringOccurrences(nextContent, item.from);
+      if (!count) return;
+      nextContent = nextContent.split(item.from).join(placeholders[index].token);
+      fileReplacementCount += count;
+    });
+
+    if (!fileReplacementCount) return;
+
+    placeholders.forEach(item => {
+      nextContent = nextContent.split(item.token).join(item.to);
+    });
+
+    if (nextContent === content) return;
+
+    fs.writeFileSync(filePath, nextContent, 'utf8');
+    updatedFiles.push(toPosixPath(filePath));
+    replacementCount += fileReplacementCount;
   });
 
   return {
+    updatedFiles,
+    replacementCount
+  };
+}
+
+function normalizeImageFilenamesInFolder(folder = '', options = {}) {
+  const { normalized, absolute } = resolveImageFolder(folder);
+  fs.mkdirSync(absolute, { recursive: true });
+
+  const plan = buildImageRenamePlan(listImageFilesRecursive(absolute), options);
+
+  const updatedFiles = new Set();
+  const tempPlan = [];
+
+  plan.forEach((item, index) => {
+    const tempPath = path.join(path.dirname(item.oldPath), `.__local_cms_rename_${Date.now()}_${index}${path.extname(item.oldPath).toLowerCase()}`);
+    fs.renameSync(item.oldPath, tempPath);
+    tempPlan.push({
+      ...item,
+      tempPath
+    });
+  });
+
+  tempPlan.forEach(item => {
+    fs.renameSync(item.tempPath, item.nextPath);
+  });
+
+  const replaceResult = replaceManyTextInProjectFiles(
+    tempPlan.map(item => ({
+      from: item.oldPublicPath,
+      to: item.nextPublicPath
+    }))
+  );
+  replaceResult.updatedFiles.forEach(filePath => updatedFiles.add(filePath));
+
+  return {
     folder: normalized,
-    renamed: plan.map(item => ({
+    renamed: tempPlan.map(item => ({
       from: item.oldPublicPath,
       to: item.nextPublicPath,
       oldName: item.oldName,
       nextName: item.nextName
     })),
-    renamedCount: plan.length,
-    replacementCount,
+    renamedCount: tempPlan.length,
+    replacementCount: replaceResult.replacementCount,
     updatedFiles: Array.from(updatedFiles),
     folders: listImageFolders()
   };
@@ -2019,6 +2263,32 @@ function uploadImageFiles(folder, files) {
 }
 
 function parseLlmResponseContent(payload) {
+  if (payload && typeof payload.output_text === 'string' && payload.output_text.trim()) {
+    return payload.output_text.trim();
+  }
+
+  if (payload && Array.isArray(payload.output)) {
+    const outputText = payload.output.map(item => {
+      if (!item || !Array.isArray(item.content)) return '';
+      return item.content.map(contentItem => {
+        if (contentItem && typeof contentItem.text === 'string') return contentItem.text;
+        return '';
+      }).join('');
+    }).join('').trim();
+
+    if (outputText) return outputText;
+  }
+
+  if (payload && Array.isArray(payload.content)) {
+    const anthropicText = payload.content.map(item => {
+      if (typeof item === 'string') return item;
+      if (item && typeof item.text === 'string') return item.text;
+      return '';
+    }).join('').trim();
+
+    if (anthropicText) return anthropicText;
+  }
+
   const choice = payload && Array.isArray(payload.choices) ? payload.choices[0] : null;
   const content = choice && choice.message ? choice.message.content : '';
 
@@ -2044,19 +2314,248 @@ function ensureLlmSettingsReady() {
   return settings;
 }
 
+function normalizeLlmSettingsInput(payload) {
+  const llm = payload && payload.llm && typeof payload.llm === 'object' ? payload.llm : payload || {};
+  return {
+    endpoint: String(llm.endpoint || '').trim(),
+    apiKey: String(llm.apiKey || '').trim(),
+    model: String(llm.model || '').trim(),
+    temperature: Number(llm.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
+    prompt: String(llm.prompt || '').trim()
+  };
+}
+
+function ensureLlmSettingsObject(settings) {
+  const normalized = normalizeLlmSettingsInput(settings);
+  if (!normalized.endpoint || !normalized.apiKey || !normalized.model) {
+    throw new Error('请先在 LLM 配置里填写 endpoint、API Key 和 model。');
+  }
+  return normalized;
+}
+
+function normalizeLlmEndpoint(endpoint) {
+  const raw = String(endpoint || '').trim();
+  if (!raw) return '';
+
+  let parsed;
+  try {
+    parsed = new URL(raw);
+  } catch (error) {
+    return raw;
+  }
+
+  const lowerHost = String(parsed.hostname || '').toLowerCase();
+  const pathname = parsed.pathname.replace(/\/+$/g, '');
+  const isAnthropic = lowerHost.includes('anthropic.com');
+  const isXiaomiAnthropic = lowerHost.includes('xiaomimimo.com') && pathname.includes('/anthropic');
+
+  if (isAnthropic || isXiaomiAnthropic) {
+    if (pathname.endsWith('/messages')) {
+      return parsed.toString();
+    }
+
+    if (isXiaomiAnthropic) {
+      if (pathname.endsWith('/v1')) {
+        parsed.pathname = `${pathname}/messages`;
+        return parsed.toString();
+      }
+
+      if (pathname.endsWith('/anthropic')) {
+        parsed.pathname = `${pathname}/v1/messages`;
+        return parsed.toString();
+      }
+
+      parsed.pathname = `${pathname}/messages`;
+      return parsed.toString();
+    }
+
+    if (!pathname || pathname === '/') {
+      parsed.pathname = '/v1/messages';
+      return parsed.toString();
+    }
+
+    if (pathname.endsWith('/v1')) {
+      parsed.pathname = `${pathname}/messages`;
+      return parsed.toString();
+    }
+
+    parsed.pathname = `${pathname}/messages`;
+    return parsed.toString();
+  }
+
+  if (
+    pathname.endsWith('/chat/completions') ||
+    pathname.endsWith('/responses') ||
+    pathname.endsWith('/completions')
+  ) {
+    return parsed.toString();
+  }
+
+  if (!pathname || pathname === '/') {
+    parsed.pathname = '/v1/chat/completions';
+    return parsed.toString();
+  }
+
+  if (pathname.endsWith('/v1')) {
+    parsed.pathname = `${pathname}/chat/completions`;
+    return parsed.toString();
+  }
+
+  parsed.pathname = `${pathname}/chat/completions`;
+  return parsed.toString();
+}
+
+function detectLlmProvider(endpoint) {
+  const raw = String(endpoint || '').trim().toLowerCase();
+  if (!raw) return 'openai-compatible';
+
+  if (raw.includes('xiaomimimo.com')) {
+    return raw.includes('/anthropic') || raw.includes('/v1/messages')
+      ? 'xiaomi-anthropic'
+      : 'xiaomi-openai';
+  }
+
+  if (raw.includes('anthropic.com') || raw.includes('/v1/messages')) {
+    return 'anthropic';
+  }
+
+  if (raw.endsWith('/responses') || raw.includes('/v1/responses')) {
+    return 'openai-responses';
+  }
+
+  return 'openai-compatible';
+}
+
+function normalizeLlmMessages(messages = []) {
+  return (Array.isArray(messages) ? messages : []).map(message => ({
+    role: String(message && message.role || 'user').trim() || 'user',
+    content: message && typeof message.content === 'string'
+      ? message.content
+      : String(message && message.content || '')
+  }));
+}
+
+function buildAnthropicMessagesPayload(messages, settings, options = {}) {
+  const normalizedMessages = normalizeLlmMessages(messages);
+  const system = normalizedMessages
+    .filter(message => message.role === 'system')
+    .map(message => message.content)
+    .filter(Boolean)
+    .join('\n\n');
+
+  const conversation = normalizedMessages
+    .filter(message => message.role !== 'system')
+    .map(message => ({
+      role: message.role === 'assistant' ? 'assistant' : 'user',
+      content: message.content
+    }));
+
+  return {
+    model: settings.model,
+    temperature: Number(options.temperature ?? settings.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
+    max_tokens: Number(options.maxTokens || 4096),
+    ...(system ? { system } : {}),
+    messages: conversation
+  };
+}
+
+function buildOpenAiResponsesPayload(messages, settings, options = {}) {
+  const normalizedMessages = normalizeLlmMessages(messages);
+  const input = normalizedMessages.map(message => ({
+    role: message.role === 'assistant' ? 'assistant' : (message.role === 'system' ? 'system' : 'user'),
+    content: [
+      {
+        type: 'input_text',
+        text: message.content
+      }
+    ]
+  }));
+
+  return {
+    model: settings.model,
+    temperature: Number(options.temperature ?? settings.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
+    input
+  };
+}
+
+function buildOpenAiChatPayload(messages, settings, options = {}) {
+  return {
+    model: String(settings.model || '').trim(),
+    temperature: Number(options.temperature ?? settings.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
+    ...(options.maxCompletionTokens ? { max_completion_tokens: Number(options.maxCompletionTokens) } : {}),
+    messages: normalizeLlmMessages(messages)
+  };
+}
+
+function normalizeProviderModel(provider, model) {
+  const raw = String(model || '').trim();
+  if (!raw) return raw;
+
+  if (provider === 'xiaomi-openai' || provider === 'xiaomi-anthropic') {
+    return raw.toLowerCase();
+  }
+
+  return raw;
+}
+
+function buildLlmRequestConfig(settings, messages, options = {}) {
+  const endpoint = normalizeLlmEndpoint(settings.endpoint);
+  const provider = detectLlmProvider(endpoint);
+  const providerSettings = {
+    ...settings,
+    model: normalizeProviderModel(provider, settings.model)
+  };
+  const headers = {
+    'Content-Type': 'application/json'
+  };
+
+  if (provider === 'anthropic' || provider === 'xiaomi-anthropic') {
+    if (provider === 'xiaomi-anthropic') {
+      headers['api-key'] = providerSettings.apiKey;
+    } else {
+      headers['x-api-key'] = providerSettings.apiKey;
+    }
+    headers['anthropic-version'] = '2023-06-01';
+    return {
+      endpoint,
+      provider,
+      headers,
+      body: buildAnthropicMessagesPayload(messages, providerSettings, options)
+    };
+  }
+
+  if (provider === 'xiaomi-openai') {
+    headers['api-key'] = providerSettings.apiKey;
+  } else {
+    headers.Authorization = `Bearer ${providerSettings.apiKey}`;
+  }
+
+  if (provider === 'openai-responses') {
+    return {
+      endpoint,
+      provider,
+      headers,
+      body: buildOpenAiResponsesPayload(messages, providerSettings, options)
+    };
+  }
+
+  return {
+    endpoint,
+    provider,
+    headers,
+    body: buildOpenAiChatPayload(messages, providerSettings, options)
+  };
+}
+
 async function requestLlmChat(messages, options = {}) {
-  const settings = ensureLlmSettingsReady();
-  const response = await fetch(settings.endpoint, {
+  const settings = options.settings
+    ? ensureLlmSettingsObject(options.settings)
+    : ensureLlmSettingsReady();
+  const requestConfig = buildLlmRequestConfig(settings, messages, options);
+  const response = await fetch(requestConfig.endpoint, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${settings.apiKey}`
-    },
-    body: JSON.stringify({
-      model: settings.model,
-      temperature: Number(options.temperature ?? settings.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
-      messages
-    })
+    headers: requestConfig.headers,
+    body: JSON.stringify(requestConfig.body)
   });
 
   if (!response.ok) {
@@ -2072,6 +2571,34 @@ async function requestLlmChat(messages, options = {}) {
   }
 
   return content;
+}
+
+async function testLlmConnection(payload) {
+  const settings = ensureLlmSettingsObject(payload);
+  const content = await requestLlmChat([
+    {
+      role: 'system',
+      content: 'Return a short plain-text acknowledgment.'
+    },
+    {
+      role: 'user',
+      content: 'Reply with exactly: connection ok'
+    }
+  ], {
+    settings,
+    temperature: 0,
+    maxCompletionTokens: 32
+  });
+
+  const endpoint = normalizeLlmEndpoint(settings.endpoint);
+  const provider = detectLlmProvider(endpoint);
+  return {
+    ok: true,
+    provider,
+    endpoint,
+    model: normalizeProviderModel(provider, settings.model),
+    preview: String(content || '').trim().slice(0, 120)
+  };
 }
 
 function parseJsonFromLlmText(content) {
@@ -2924,6 +3451,27 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === 'POST' && pathname === '/api/session/open') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, markCmsSessionAlive(payload.sessionId || ''));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/session/heartbeat') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, markCmsSessionAlive(payload.sessionId || ''));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/session/close') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, closeCmsSession(payload.sessionId || ''));
+      return;
+    }
+
     if (req.method === 'GET' && pathname === '/api/settings') {
       jsonResponse(res, 200, getLlmSettingsPayload());
       return;
@@ -2933,6 +3481,13 @@ const server = http.createServer(async (req, res) => {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
       jsonResponse(res, 200, saveLocalSettings(payload));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/settings/test-llm') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, await testLlmConnection(payload));
       return;
     }
 
@@ -3168,7 +3723,10 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && pathname === '/api/images/normalize-filenames') {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
-      const result = normalizeImageFilenamesInFolder(payload.folder || '');
+      const result = normalizeImageFilenamesInFolder(payload.folder || '', {
+        mode: payload.mode || 'sanitize',
+        baseName: payload.baseName || ''
+      });
       appendAuditLog(req, {
         entityType: 'image',
         action: 'update',

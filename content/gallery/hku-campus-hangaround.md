@@ -19,13 +19,13 @@ tags_en: Campus,Everyday,HKU
 
 | src | title_zh | title_en | caption_zh | caption_en | meta |
 | --- | --- | --- | --- | --- | --- |
-| /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0141-1.jpg |  |  |  |  | 75mm · 1/60s · f/1.8 · ISO 800 |
-| /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0142-2.jpg |  |  |  |  | 75mm · 1/80s · f/1.8 · ISO 400 |
-| /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0143-3.jpg |  |  |  |  | 75mm · 1/80s · f/1.8 · ISO 400 |
-| /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0149-4.jpg |  |  |  |  | 75mm · 1/60s · f/1.8 · ISO 100 |
-| /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0150-5.jpg |  |  |  |  | 75mm · 1/50s · f/1.8 · ISO 400 |
-| /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0154-6.jpg |  |  |  |  | 75mm · 1/50s · f/1.8 · ISO 1000 |
-| /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0155-7.jpg |  |  |  |  | 75mm · 1/30s · f/1.8 · ISO 400 |
-| /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0157-8.jpg |  |  |  |  | 75mm · 1/40s · f/1.8 · ISO 320 |
-| /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0159-9.jpg |  |  |  |  | 75mm · 1/60s · f/1.8 · ISO 250 |
-| /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0160-10.jpg |  |  |  |  | 75mm · 1/60s · f/1.8 · ISO 160 |
+| /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-01-2.jpg |  |  |  |  | 75mm · 1/60s · f/1.8 · ISO 800 |
+| /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-02-2.jpg |  |  |  |  | 75mm · 1/80s · f/1.8 · ISO 400 |
+| /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-03-2.jpg |  |  |  |  | 75mm · 1/80s · f/1.8 · ISO 400 |
+| /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-04-2.jpg |  |  |  |  | 75mm · 1/60s · f/1.8 · ISO 100 |
+| /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-05-2.jpg |  |  |  |  | 75mm · 1/50s · f/1.8 · ISO 400 |
+| /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-06-2.jpg |  |  |  |  | 75mm · 1/50s · f/1.8 · ISO 1000 |
+| /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-07-2.jpg |  |  |  |  | 75mm · 1/30s · f/1.8 · ISO 400 |
+| /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-08-2.jpg |  |  |  |  | 75mm · 1/40s · f/1.8 · ISO 320 |
+| /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-09-2.jpg |  |  |  |  | 75mm · 1/60s · f/1.8 · ISO 250 |
+| /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-10-2.jpg |  |  |  |  | 75mm · 1/60s · f/1.8 · ISO 160 |

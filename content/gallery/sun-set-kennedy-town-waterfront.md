@@ -19,7 +19,7 @@ tags_en: Sunset,Landscape
 
 | src | title_zh | title_en | caption_zh | caption_en | meta |
 | --- | --- | --- | --- | --- | --- |
-| /images/gallery/kennedy-town-waterfront-sunset/20240312-_DSC0294-Pano-1.jpg |  |  |  |  | 78mm · 1/160s · f/8 · ISO 100 |
-| /images/gallery/kennedy-town-waterfront-sunset/20240312-_DSC0295-2.jpg |  |  |  |  | 210mm · 1/160s · f/8 · ISO 100 |
-| /images/gallery/kennedy-town-waterfront-sunset/20240312-_DSC0302-HDR-4.jpg |  |  |  |  | 67mm · 1/640s · f/5.6 · ISO 100 |
-| /images/gallery/kennedy-town-waterfront-sunset/20240312-_DSC0301-3.jpg |  |  |  |  | 72mm · 1/160s · f/5.6 · ISO 100 |
+| /images/gallery/kennedy-town-waterfront-sunset/kennedy-town-waterfront-sunset-01-2.jpg |  |  |  |  | 78mm · 1/160s · f/8 · ISO 100 |
+| /images/gallery/kennedy-town-waterfront-sunset/kennedy-town-waterfront-sunset-02-2.jpg |  |  |  |  | 210mm · 1/160s · f/8 · ISO 100 |
+| /images/gallery/kennedy-town-waterfront-sunset/kennedy-town-waterfront-sunset-03-2.jpg |  |  |  |  | 67mm · 1/640s · f/5.6 · ISO 100 |
+| /images/gallery/kennedy-town-waterfront-sunset/kennedy-town-waterfront-sunset-04-2.jpg |  |  |  |  | 72mm · 1/160s · f/5.6 · ISO 100 |

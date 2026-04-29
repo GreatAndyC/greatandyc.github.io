@@ -6,7 +6,7 @@ slug: Self-Cultivation-Of-Photographer
 permalink: 2026/03/14/Self-Cultivation-Of-Photographer/
 description: 回顾一次活动摄影师的拍摄经历和现场感受。
 photos:
-  - /images/gallery/heartbeat-pi-2026/3.16_封面图.jpg
+  - /images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-03-2.jpg
 tags:
   - 摄影
   - 回顾
@@ -14,7 +14,7 @@ categories:
   - 随笔
 ---
 
-<img src="/images/gallery/heartbeat-pi-2026/3.16_封面图.jpg"
+<img src="/images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-03-2.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 
 
@@ -57,7 +57,7 @@ categories:
 
 给任务留出冗余的时间，能够更从容地应对突发状况，包括在彩排期间发现存储卡不足以支撑全场拍摄(和其他同学借到了更大容量的SD卡)、电池可能不够用、灯光效果不理想等等，之后拍摄才心里有底，可以对整场拍摄有一个整体的判断和策略。
 
-<img src="/images/gallery/heartbeat-pi-2026/3.16_Prepare.jpg"
+<img src="/images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-11-2.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 <div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
     从其他同学那里借来的SD卡
@@ -75,7 +75,7 @@ categories:
 1. 开场和结束时，灯光通常较好、动作会保持若干秒的定格，是必须拍摄的“保底时刻”
 2. **不患寡而患不均**：如果要拍摄单人特写，尽量确保每个舞者都有至少一张照片，而不是都给C位或者镜头感好的舞者，否则很容易被其他舞者“家长”私信————“老师我们家子涵怎么没有照片？” or “老师你好下头，怎么一直盯着我们家子涵拍？”（~~当然，如果没有利益关系，那就是，爱咋咋拍，尽情表现自己的艺术审美~~）
 
-<img src="/images/gallery/heartbeat-pi-2026/3.16_Kpop.jpg"
+<img src="/images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-07-2.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 <div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
     Kpop群舞
@@ -89,13 +89,13 @@ categories:
 > 2. **接受不完美**：拍到>废片>>>没拍到  
 > 3. **能在前期解决的问题不要留到后期**：前期曝光正常>后期拉高曝光，也让需要快速出图的场景不至于因为后期处理而延误交差。
 
-<img src="/images/gallery/heartbeat-pi-2026/3.16_对比img1.jpg"
+<img src="/images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-01-2.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 <div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
     测试照1:这是一张准备阶段的曝光偏暗的测试照
 </div>
 
-<img src="/images/gallery/heartbeat-pi-2026/3.16_对比img2.jpg"
+<img src="/images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-02-2.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 <div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
     测试照2:这是后期拉高曝光后的效果
@@ -108,7 +108,7 @@ categories:
 
 ***或许这种需要迅速决策、灵活应变的能力，也是AI时代的不可或缺所在吧***
 
-<img src="/images/gallery/heartbeat-pi-2026/3.16_FirstView.jpg"
+<img src="/images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-05-2.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 <div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
     轻便的D5600
@@ -116,7 +116,7 @@ categories:
 
 部分观众离开后，摄影师可以移动的空间也越多了，这个时候发现，歌曲节目如果拍摄正面，演出者的面部会被话筒挡住，影响效果，所以果断移动到侧面拍摄。
 
-<img src="/images/gallery/heartbeat-pi-2026/3.16_Singer1.jpg"
+<img src="/images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-12-2.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 <div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
     侧面的歌手视角，虽然话筒的投影依然影响效果，不过比起整个面部被遮挡，已经非常不错了
@@ -125,7 +125,7 @@ categories:
 这里引入第四个原则：
 > 4. **保持角色的自我认知**：要记住自己的身份是 ***摄影师aka高权限工作人员***————拿着相机的时候实际上你拥有“隐形人”的特权，观众会下意识忽略或者习惯你的存在，所以大胆地移动，寻找最佳的拍摄角度，而不是畏手畏脚担心打扰到别人，这是很多新手包括笔者本人在早期活动摄影中非常欠缺的意识（当然，请勿做出发出巨大声响、不必要的肢体接触、暴躁地使用闪光灯等行为）
 
-<img src="/images/gallery/heartbeat-pi-2026/3.16_梯子.jpg"
+<img src="/images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-04-2.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 <div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
     据说只要你穿着工装、带着梯子，迈出自信的步伐，你可以出入任何场所，包括罗浮宫
@@ -157,7 +157,7 @@ categories:
 
 有类似的机会的话，一定要主动争取，慢慢地就会发现Leadership也上去了。
 
-<img src="/images/gallery/heartbeat-pi-2026/3.16_GroupPhotos.jpg"
+<img src="/images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-06-2.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 <div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
     每个人都会发的合照。摄影师在哪呢？摄影师在照片后面举着相机XD
@@ -217,7 +217,7 @@ Social环节类似于结束后的饭局，是演出者、工作人员以及观�
 
 第一张是最开始乐队的全景合成，因为当时光影非常稳定，而且吉他手即将毕业，是一个非常值得纪念的瞬间，比起广角裁切，全景合成能够更好地保留清晰度和透视关系，所以快速地拍摄了三张照片进行全景合成。
 
-<img src="/images/gallery/heartbeat-pi-2026/3.16_LongPic.jpg"
+<img src="/images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-10-2.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 <div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
     乐队表演：安和桥&莉莉安 
@@ -225,13 +225,13 @@ Social环节类似于结束后的饭局，是演出者、工作人员以及观�
 
 第二张是Kpop舞蹈的合影，因为拍摄时机和构图的原因，舞者的最佳动作和构图没能在一张图下拍摄下来，而刚好有两张照片各自包含了最佳的动作和构图，所以就进行了拼接。
 
-<img src="/images/gallery/heartbeat-pi-2026/3.16_Kpop1.jpg"
+<img src="/images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-08-2.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 <div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
     Expectation期待 cover. Girls' Days -Pic1 动作到位，构图大问题
 </div>
 
-<img src="/images/gallery/heartbeat-pi-2026/3.16_Kpop2.jpg"
+<img src="/images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-09-2.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 <div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
     Expectation期待 cover. Girls' Days -Pic2 构图到位，动作不统一
@@ -239,7 +239,7 @@ Social环节类似于结束后的饭局，是演出者、工作人员以及观�
 
 所以，使用了Photoshop进行拼接。
 
-<img src="/images/gallery/heartbeat-pi-2026/3.16_Kpop.jpg"
+<img src="/images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-07-2.jpg"
      style="width:500px; border:2px solid #ccc; box-shadow:2px 2px 8px rgba(0,0,0,0.3); display:block; margin:auto;">
 <div style="font-size: 12px; color: gray; text-align: center; margin-top: -10px; margin-bottom: 20px;">
     如果仔细看的话，会发现其实舞者的光影会有一些诡异的地方。

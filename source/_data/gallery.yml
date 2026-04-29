@@ -64,7 +64,7 @@ albums:
         - Campus
         - City
     photos:
-      - src: /images/gallery/Blue_Hour_SYSU/20240212-_DSC0070-1.jpg
+      - src: /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-01-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -72,7 +72,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 52mm · 1/125s · f/2 · ISO 500
-      - src: /images/gallery/Blue_Hour_SYSU/20240212-_DSC0073-2.jpg
+      - src: /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-02-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -80,7 +80,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 52mm · 1/80s · f/2 · ISO 800
-      - src: /images/gallery/Blue_Hour_SYSU/20240212-_DSC0075-Pano-3.jpg
+      - src: /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-03-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -88,7 +88,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 52mm · 1/80s · f/2 · ISO 500
-      - src: /images/gallery/Blue_Hour_SYSU/20240212-_DSC0079-4.jpg
+      - src: /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-04-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -96,7 +96,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 52mm · 1/100s · f/2 · ISO 100
-      - src: /images/gallery/Blue_Hour_SYSU/20240212-_DSC0084-HDR-5.jpg
+      - src: /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-05-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -104,7 +104,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 52mm · 1/125s · f/2 · ISO 640
-      - src: /images/gallery/Blue_Hour_SYSU/20240212-_DSC0094-6.jpg
+      - src: /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-06-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -112,7 +112,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 52mm · 2s · f/2 · ISO 100
-      - src: /images/gallery/Blue_Hour_SYSU/20240212-_DSC0096-7.jpg
+      - src: /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-07-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -120,7 +120,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 27mm · 15s · f/8 · ISO 100
-      - src: /images/gallery/Blue_Hour_SYSU/20240212-_DSC0097-8.jpg
+      - src: /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-08-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -128,6 +128,359 @@ albums:
           zh-CN: ''
           en: ''
         meta: 27mm · 15s · f/8 · ISO 100
+  - slug: canton-tower
+    imageFolder: gallery/canton-tower
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: 广州塔
+      en: Canton Tower
+    period:
+      zh-CN: ''
+      en: ''
+    location:
+      zh-CN: 中山大学南校园
+      en: Sun Yat-sen University South Campus
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: 我拍摄的广州塔
+      en: Photograph of Canton Tower
+    category: architecture
+    categories:
+      - architecture
+    tags:
+      zh-CN:
+        - 建筑
+        - 风光
+      en:
+        - Architecture
+        - Landscape
+    photos:
+      - src: /images/gallery/canton-tower/canton-tower-01-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-07-10 17:41:58 · 210mm · 1/320s · f/11 · ISO 100
+      - src: /images/gallery/canton-tower/canton-tower-02-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-10-27 17:35:52 · 75mm · 1/500s · f/1.8 · ISO 100
+      - src: /images/gallery/canton-tower/canton-tower-03-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2019-01-21 13:43:51 · 210mm · 1/500s · f/5.6 · ISO 100
+      - src: /images/gallery/canton-tower/canton-tower-04-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2019-05-08 07:39:37 · 210mm · 1/200s · f/7.1 · ISO 100
+  - slug: cat
+    imageFolder: gallery/cat
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: 猫
+      en: Cat
+    period:
+      zh-CN: ''
+      en: ''
+    location:
+      zh-CN: 中山大学等
+      en: Sun Yat-sen University, etc.
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: 可爱又凶猛的掠食动物
+      en: Cute yet fierce predator
+    category: street
+    categories:
+      - street
+    tags:
+      zh-CN:
+        - 猫
+      en:
+        - Cat
+    photos:
+      - src: /images/gallery/cat/cat-01-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-04-12 19:18:08 · 120mm · 1/60s · f/4 · ISO 10000
+      - src: /images/gallery/cat/cat-02-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-07-29 16:18:59 · 75mm · 1/320s · f/1.8 · ISO 100
+      - src: /images/gallery/cat/cat-03-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-07-29 16:21:25 · 75mm · 1/320s · f/1.8 · ISO 100
+      - src: /images/gallery/cat/cat-04-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-07-29 16:24:25 · 75mm · 1/160s · f/1.8 · ISO 100
+      - src: /images/gallery/cat/cat-05-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-10-02 17:15:21 · 210mm · 1/125s · f/5.6 · ISO 640
+      - src: /images/gallery/cat/cat-06-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-10-02 17:15:40 · 210mm · 1/125s · f/5.6 · ISO 640
+      - src: /images/gallery/cat/cat-07-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-10-02 17:17:00 · 210mm · 1/125s · f/5.6 · ISO 640
+      - src: /images/gallery/cat/cat-08-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-10-02 17:17:25 · 112mm · 1/125s · f/5 · ISO 640
+      - src: /images/gallery/cat/cat-09-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-10-02 17:26:06 · 195mm · 1/125s · f/5.6 · ISO 640
+      - src: /images/gallery/cat/cat-10-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-10-02 17:27:48 · 210mm · 1/100s · f/5.6 · ISO 640
+      - src: /images/gallery/cat/cat-11-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-10-02 17:28:31 · 210mm · 1/100s · f/5.6 · ISO 640
+      - src: /images/gallery/cat/cat-12-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-10-02 17:29:20 · 210mm · 1/100s · f/5.6 · ISO 640
+      - src: /images/gallery/cat/cat-13-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-10-02 17:37:58 · 210mm · 1/100s · f/5.6 · ISO 640
+      - src: /images/gallery/cat/cat-14-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-10-02 17:42:23 · 210mm · 1/100s · f/5.6 · ISO 640
+      - src: /images/gallery/cat/cat-15-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-10-02 17:43:07 · 210mm · 1/60s · f/5.6 · ISO 800
+      - src: /images/gallery/cat/cat-16-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2019-04-30 17:03:09 · 15mm · 1/80s · f/3.5 · ISO 200
+      - src: /images/gallery/cat/cat-17-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2025-03-21 13:41:51 · 210mm · 1/500s · f/8 · ISO 400
+      - src: /images/gallery/cat/cat-18-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2025-03-21 13:45:59 · 210mm · 1/500s · f/8 · ISO 400
+      - src: /images/gallery/cat/cat-19-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2025-03-21 14:04:14 · 195mm · 1/400s · f/8 · ISO 250
+      - src: /images/gallery/cat/cat-20-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2025-03-21 14:07:32 · 93mm · 1/250s · f/6.3 · ISO 400
+  - slug: clara-zhang
+    imageFolder: gallery/clara-zhang
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: Clara-Zhang
+      en: Clara-Zhang
+    period:
+      zh-CN: ''
+      en: ''
+    location:
+      zh-CN: 香港大学, 海洋公园
+      en: The University of Hong Kong, Ocean Park
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: 主持人/记者/舞蹈家/青年企业家Clara
+      en: Host/Reporter/Dancer/Young Entrepreneur Clara
+    category: portrait
+    categories:
+      - portrait
+    tags:
+      zh-CN:
+        - 人像
+      en:
+        - portrait
+    photos:
+      - src: /images/gallery/clara-zhang/clara-zhang-01-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-11-19 14:47:27 · 75mm · 1/160s · f/1.8 · ISO 640
+      - src: /images/gallery/clara-zhang/clara-zhang-02-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-04-07 11:28:46 · 33mm · 1/30s · f/3.5 · ISO 4000
+      - src: /images/gallery/clara-zhang/clara-zhang-03-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-04-07 13:30:28 · 60mm · 1/320s · f/5 · ISO 100
+      - src: /images/gallery/clara-zhang/clara-zhang-04-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-04-07 13:31:16 · 57mm · 1/320s · f/5 · ISO 100
+      - src: /images/gallery/clara-zhang/clara-zhang-05-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-04-07 13:33:17 · 90mm · 1/320s · f/5 · ISO 100
+      - src: /images/gallery/clara-zhang/clara-zhang-06-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-04-07 13:35:58 · 27mm · 1/200s · f/5 · ISO 100
+      - src: /images/gallery/clara-zhang/clara-zhang-07-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-12-03 19:55:55 · 42mm · 1/160s · f/2.8 · ISO 5000
+      - src: /images/gallery/clara-zhang/clara-zhang-08-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2025-09-20 20:48:17 · 157mm · 1/200s · f/5.6 · ISO 3200
+      - src: /images/gallery/clara-zhang/clara-zhang-09-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2025-09-20 20:59:01 · 150mm · 1/160s · f/5.6 · ISO 3200
   - slug: disneyland-fireworks
     imageFolder: gallery/DisneyLand_Fireworks
     languages:
@@ -161,7 +514,7 @@ albums:
         - Night
         - Theme Park
     photos:
-      - src: /images/gallery/DisneyLand_Fireworks/20240517-_DSC0204-1.jpg
+      - src: /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-01-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -169,7 +522,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 34mm · 6s · f/11 · ISO 100
-      - src: /images/gallery/DisneyLand_Fireworks/20240517-_DSC0208-2.jpg
+      - src: /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-02-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -177,7 +530,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 27mm · 6s · f/11 · ISO 100
-      - src: /images/gallery/DisneyLand_Fireworks/20240517-_DSC0209-3.jpg
+      - src: /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-03-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -185,7 +538,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 27mm · 6s · f/11 · ISO 100
-      - src: /images/gallery/DisneyLand_Fireworks/20240517-_DSC0210-4.jpg
+      - src: /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-04-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -193,7 +546,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 27mm · 6s · f/11 · ISO 100
-      - src: /images/gallery/DisneyLand_Fireworks/20240517-_DSC0212-5.jpg
+      - src: /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-05-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -201,7 +554,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 27mm · 10s · f/14 · ISO 100
-      - src: /images/gallery/DisneyLand_Fireworks/20240517-_DSC0215-6.jpg
+      - src: /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-06-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -209,7 +562,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 27mm · 10s · f/14 · ISO 100
-      - src: /images/gallery/DisneyLand_Fireworks/20240517-_DSC0222-7.jpg
+      - src: /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-07-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -217,7 +570,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 27mm · 10s · f/11 · ISO 100
-      - src: /images/gallery/DisneyLand_Fireworks/20240517-_DSC0231-8.jpg
+      - src: /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-08-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -225,7 +578,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 27mm · 15s · f/14 · ISO 100
-      - src: /images/gallery/DisneyLand_Fireworks/20240517-_DSC0232-9.jpg
+      - src: /images/gallery/DisneyLand_Fireworks/disneyland-fireworks-09-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -233,6 +586,83 @@ albums:
           zh-CN: ''
           en: ''
         meta: 27mm · 15s · f/14 · ISO 100
+  - slug: draxler
+    imageFolder: gallery/Draxler
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: Draxler
+      en: Draxler
+    period:
+      zh-CN: ''
+      en: ''
+    location:
+      zh-CN: 香港大学, 迪士尼, 太平山等
+      en: The University of Hong Kong, Disney, Victoria Peak, etc.
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: 帅小伙
+      en: handsome young man
+    category: portrait
+    categories:
+      - portrait
+    tags:
+      zh-CN:
+        - 人像
+      en:
+        - portrait
+    photos:
+      - src: /images/gallery/Draxler/draxler-01.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-04-14 21:59:19 · 210mm · 1/250s · f/5.6 · ISO 4000
+      - src: /images/gallery/Draxler/draxler-02.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-05-17 10:20:25 · 84mm · 1/2000s · f/4.8 · ISO 320
+      - src: /images/gallery/Draxler/draxler-03.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-05-17 10:42:29 · 90mm · 1/1000s · f/5 · ISO 100
+      - src: /images/gallery/Draxler/draxler-04.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-05-17 19:33:23 · 39mm · 1/10s · f/3.8 · ISO 640
+      - src: /images/gallery/Draxler/draxler-05.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-05-29 21:37:41 · 36mm · 1/20s · f/3.8 · ISO 3200
+      - src: /images/gallery/Draxler/draxler-06.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-05-29 21:49:23 · 60mm · 1/50s · f/4.5 · ISO 1600
   - slug: heartbeat-pi-2026
     imageFolder: gallery/heartbeat-pi-2026
     languages:
@@ -266,46 +696,41 @@ albums:
         - Performance
         - Event Photography
     photos:
-      - src: /images/gallery/heartbeat-pi-2026/3.16_封面图.jpg
+      - src: /images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-03-2.jpg
         title:
-          zh-CN: 封面瞬间
-          en: Opening Frame
+          zh-CN: ''
+          en: ''
         caption:
-          zh-CN: 作为整组照片的入口画面，重点是灯光和舞台氛围。
-          en: A scene-setting frame that introduces the light and atmosphere of the show.
-        meta: 18mm · 1/160s · f/3.5 · ISO 8000
-      - src: /images/gallery/heartbeat-pi-2026/3.16_GroupPhotos.jpg
+          zh-CN: ''
+          en: ''
+      - src: /images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-06-2.jpg
         title:
-          zh-CN: 合照时刻
-          en: Group Portrait
+          zh-CN: ''
+          en: ''
         caption:
-          zh-CN: 演出结束后的集体合照，也是活动摄影的最后一个重要节点。
-          en: The closing group portrait, often the final key frame of an event assignment.
-        meta: 24mm · 1/100s · f/4.0 · ISO 3200
-      - src: /images/gallery/heartbeat-pi-2026/3.16_Kpop.jpg
+          zh-CN: ''
+          en: ''
+      - src: /images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-07-2.jpg
         title:
-          zh-CN: 群舞定格
-          en: Dance Formation
+          zh-CN: ''
+          en: ''
         caption:
-          zh-CN: 节奏最快的一组表演里，最重要的是抓住动作统一的瞬间。
-          en: In the fastest performance, the key is to catch the instant when motion lines up.
-        meta: 35mm · 1/200s · f/4.5 · ISO 8000
-      - src: /images/gallery/heartbeat-pi-2026/3.16_LongPic.jpg
+          zh-CN: ''
+          en: ''
+      - src: /images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-10-2.jpg
         title:
-          zh-CN: 乐队全景
-          en: Band Panorama
+          zh-CN: ''
+          en: ''
         caption:
-          zh-CN: 一张偏“作品感”的横向全景，更强调氛围和空间关系。
-          en: A wider panoramic frame that leans more toward a finished photographic piece.
-        meta: Panorama Stitch · Multi-shot
-      - src: /images/gallery/heartbeat-pi-2026/3.16_Singer1.jpg
+          zh-CN: ''
+          en: ''
+      - src: /images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-12-2.jpg
         title:
-          zh-CN: 歌手侧面
-          en: Singer from the Side
+          zh-CN: ''
+          en: ''
         caption:
-          zh-CN: 侧拍比正面更容易避开话筒遮挡。
-          en: A side angle keeps the microphone from blocking the expression.
-        meta: 70mm · 1/160s · f/5.0 · ISO 5000
+          zh-CN: ''
+          en: ''
   - slug: hku-campus-hangaround
     imageFolder: gallery/HKU_Campus_Hangaround
     languages:
@@ -339,7 +764,7 @@ albums:
         - Everyday
         - HKU
     photos:
-      - src: /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0141-1.jpg
+      - src: /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-01-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -347,7 +772,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/60s · f/1.8 · ISO 800
-      - src: /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0142-2.jpg
+      - src: /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-02-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -355,7 +780,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/80s · f/1.8 · ISO 400
-      - src: /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0143-3.jpg
+      - src: /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-03-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -363,7 +788,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/80s · f/1.8 · ISO 400
-      - src: /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0149-4.jpg
+      - src: /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-04-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -371,7 +796,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/60s · f/1.8 · ISO 100
-      - src: /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0150-5.jpg
+      - src: /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-05-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -379,7 +804,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/50s · f/1.8 · ISO 400
-      - src: /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0154-6.jpg
+      - src: /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-06-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -387,7 +812,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/50s · f/1.8 · ISO 1000
-      - src: /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0155-7.jpg
+      - src: /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-07-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -395,7 +820,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/30s · f/1.8 · ISO 400
-      - src: /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0157-8.jpg
+      - src: /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-08-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -403,7 +828,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/40s · f/1.8 · ISO 320
-      - src: /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0159-9.jpg
+      - src: /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-09-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -411,7 +836,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/60s · f/1.8 · ISO 250
-      - src: /images/gallery/HKU_Campus_Hangaround/20230830-_DSC0160-10.jpg
+      - src: /images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-10-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -419,6 +844,130 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/60s · f/1.8 · ISO 160
+  - slug: hku-main-building
+    imageFolder: gallery/hku-main-building
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: 港大主楼
+      en: HKU Main Building
+    period:
+      zh-CN: '2024-12-03'
+      en: '2024-12-03'
+    location:
+      zh-CN: 香港大学
+      en: Hong Kong University
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: 港大标志性建筑之主楼
+      en: HKU's iconic main building
+    category: architecture
+    categories:
+      - architecture
+    tags:
+      zh-CN:
+        - 建筑
+        - 风光
+      en:
+        - architecture
+        - landscape
+    photos:
+      - src: /images/gallery/hku-main-building/hku-main-building-01-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-12-03 15:30:18 · 27mm · 1/500s · f/2.8 · ISO 100
+  - slug: jarvis
+    imageFolder: gallery/Jarvis
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: Jarvis
+      en: Jarvis
+    period:
+      zh-CN: ''
+      en: ''
+    location:
+      zh-CN: 香港大学,鹤咀等
+      en: The University of Hong Kong, Hok Tsui, etc.
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: 教育家, 魔术师 Jarvis
+      en: Educator, Magician Jarvis
+    category: portrait
+    categories:
+      - portrait
+    tags:
+      zh-CN:
+        - 人像
+      en:
+        - portrait
+    photos:
+      - src: /images/gallery/Jarvis/jarvis-01.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-03-03 15:15:45 · 52mm · 1/500s · f/2 · ISO 100
+      - src: /images/gallery/Jarvis/jarvis-02.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-03-23 20:17:39 · 27mm · 1/160s · f/3.5 · ISO 5000
+      - src: /images/gallery/Jarvis/jarvis-03.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-03-31 17:40:27 · 30mm · 1/125s · f/3.5 · ISO 800
+      - src: /images/gallery/Jarvis/jarvis-04.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2024-03-31 18:18:50 · 63mm · 1/60s · f/4.5 · ISO 1250
+      - src: /images/gallery/Jarvis/jarvis-05.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2025-09-20 21:21:51 · 135mm · 1/160s · f/5.3 · ISO 2500
+      - src: /images/gallery/Jarvis/jarvis-06.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2026-03-14 19:59:20 · 57mm · 1/160s · f/4.2 · ISO 8000
+      - src: /images/gallery/Jarvis/jarvis-07.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2026-03-14 20:02:01 · 135mm · 1/160s · f/5.3 · ISO 8000
   - slug: kennedy-town-night
     imageFolder: gallery/Kennedy_Town_Night
     languages:
@@ -449,7 +998,7 @@ albums:
         - Night view
         - Photo spot
     photos:
-      - src: /images/gallery/Kennedy_Town_Night/DSC0003-1-1.jpg
+      - src: /images/gallery/Kennedy_Town_Night/kennedy-town-night-01-2.jpg
         title:
           zh-CN: 经典打卡机位
           en: Classic photo spot
@@ -457,7 +1006,7 @@ albums:
           zh-CN: 小红书爆火的打卡机位，不知道现在有没有围起来呢
           en: A very classic photo spot for traveler
         meta: 90mm · 2.5s · f/11 · ISO 100
-      - src: /images/gallery/Kennedy_Town_Night/DSC0015-1-2.jpg
+      - src: /images/gallery/Kennedy_Town_Night/kennedy-town-night-02-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -465,7 +1014,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 112mm · 2.5s · f/13 · ISO 125
-      - src: /images/gallery/Kennedy_Town_Night/DSC0020-Pano-1-3.jpg
+      - src: /images/gallery/Kennedy_Town_Night/kennedy-town-night-03-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -506,7 +1055,7 @@ albums:
         - Street
         - Kennedy Town
     photos:
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0166-1.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-01-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -514,7 +1063,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/125s · f/1.8 · ISO 100
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0170-2.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-02-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -522,7 +1071,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/1600s · f/1.8 · ISO 100
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0172-3.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-03-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -530,7 +1079,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/160s · f/1.8 · ISO 100
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0179-4.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-04-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -538,7 +1087,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/80s · f/1.8 · ISO 500
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0185-5.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-05-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -546,7 +1095,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 6s · f/5 · ISO 100
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0188-6.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-06-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -554,7 +1103,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/100s · f/1.8 · ISO 100
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0193-7.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-07-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -562,7 +1111,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/100s · f/1.8 · ISO 400
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0200-8.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-08-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -570,7 +1119,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/25s · f/1.8 · ISO 1000
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0202-9.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-09-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -578,7 +1127,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/60s · f/1.8 · ISO 320
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0205-10.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-10-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -586,7 +1135,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/50s · f/1.8 · ISO 1600
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0209-11.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-11-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -594,7 +1143,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/100s · f/1.8 · ISO 250
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0211-12.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-12-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -602,7 +1151,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/320s · f/1.8 · ISO 100
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0216-13.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-13-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -610,7 +1159,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/125s · f/1.8 · ISO 100
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0217-14.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-14-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -618,7 +1167,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/100s · f/1.8 · ISO 320
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0221-15.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-15-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -626,7 +1175,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/80s · f/1.8 · ISO 160
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0222-16.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-16-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -634,7 +1183,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/80s · f/1.8 · ISO 160
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0223-17.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-17-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -642,7 +1191,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/80s · f/1.8 · ISO 100
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0224-18.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-18-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -650,7 +1199,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/200s · f/1.8 · ISO 100
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0226-19.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-19-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -658,7 +1207,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/80s · f/1.8 · ISO 160
-      - src: /images/gallery/Kennedy_Town_Photo_Walk/20230914-_DSC0227-20.jpg
+      - src: /images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-20-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -699,7 +1248,7 @@ albums:
         - Photo Walk
         - Architecture
     photos:
-      - src: /images/gallery/Main_Campus_Photo_Walk/DSC0120-1-1.jpg
+      - src: /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-01-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -707,7 +1256,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 52mm · 1/60s · f/2 · ISO 250
-      - src: /images/gallery/Main_Campus_Photo_Walk/DSC0123-2-2.jpg
+      - src: /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-02-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -715,7 +1264,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 52mm · 1/60s · f/2 · ISO 160
-      - src: /images/gallery/Main_Campus_Photo_Walk/DSC0126-3-3.jpg
+      - src: /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-03-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -723,7 +1272,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 52mm · 1/80s · f/2 · ISO 100
-      - src: /images/gallery/Main_Campus_Photo_Walk/DSC0130-4-4.jpg
+      - src: /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-04-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -731,7 +1280,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 52mm · 1/50s · f/2 · ISO 320
-      - src: /images/gallery/Main_Campus_Photo_Walk/DSC0132-5-5.jpg
+      - src: /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-05-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -739,7 +1288,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 52mm · 1/50s · f/2 · ISO 400
-      - src: /images/gallery/Main_Campus_Photo_Walk/DSC0135-6-6.jpg
+      - src: /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-06-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -747,7 +1296,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 52mm · 1/60s · f/2 · ISO 400
-      - src: /images/gallery/Main_Campus_Photo_Walk/DSC0136-7-7.jpg
+      - src: /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-07-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -755,7 +1304,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 52mm · 1/60s · f/2 · ISO 500
-      - src: /images/gallery/Main_Campus_Photo_Walk/DSC0141-9-8.jpg
+      - src: /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-08-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -763,7 +1312,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 52mm · 1/80s · f/2 · ISO 800
-      - src: /images/gallery/Main_Campus_Photo_Walk/DSC0147-10-9.jpg
+      - src: /images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-09-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -802,7 +1351,7 @@ albums:
         - Landscape
         - Architecture
     photos:
-      - src: /images/gallery/midnight-hku/DSC0030-1-5.jpg
+      - src: /images/gallery/midnight-hku/midnight-hku-01-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -810,7 +1359,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 15mm · 10s · f/13 · ISO 100
-      - src: /images/gallery/midnight-hku/I_Love_HKU-6.jpg
+      - src: /images/gallery/midnight-hku/midnight-hku-02-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -818,7 +1367,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 28mm · 20s · f/20 · ISO 100
-      - src: /images/gallery/midnight-hku/20240128-_DSC0008-1.jpg
+      - src: /images/gallery/midnight-hku/midnight-hku-03-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -826,7 +1375,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 27mm · 10s · f/14 · ISO 100
-      - src: /images/gallery/midnight-hku/20240128-_DSC0017-2.jpg
+      - src: /images/gallery/midnight-hku/midnight-hku-04-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -834,7 +1383,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 63mm · 3s · f/18 · ISO 100
-      - src: /images/gallery/midnight-hku/20240128-_DSC0019-3.jpg
+      - src: /images/gallery/midnight-hku/midnight-hku-05-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -842,7 +1391,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 51mm · 5s · f/18 · ISO 100
-      - src: /images/gallery/midnight-hku/20240128-_DSC0022-4.jpg
+      - src: /images/gallery/midnight-hku/midnight-hku-06-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -850,7 +1399,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 15mm · 6s · f/16 · ISO 100
-      - src: /images/gallery/midnight-hku/20240128-_DSC0049-7.jpg
+      - src: /images/gallery/midnight-hku/midnight-hku-07-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -858,7 +1407,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 15mm · 20s · f/16 · ISO 100
-      - src: /images/gallery/midnight-hku/20240129-_DSC0062-8.jpg
+      - src: /images/gallery/midnight-hku/midnight-hku-08-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -899,7 +1448,7 @@ albums:
         - Fog
         - Architecture
     photos:
-      - src: /images/gallery/Monster_Building&Victoria_Peak_in_Fog/20240331-_DSC0017-HDR-1.jpg
+      - src: /images/gallery/Monster_Building&Victoria_Peak_in_Fog/monster-building-victoria-peak-in-fog-01-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -907,7 +1456,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 27mm · 1/250s · f/3.5 · ISO 500
-      - src: /images/gallery/Monster_Building&Victoria_Peak_in_Fog/20240331-_DSC0030-3.jpg
+      - src: /images/gallery/Monster_Building&Victoria_Peak_in_Fog/monster-building-victoria-peak-in-fog-02-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -915,7 +1464,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 27mm · 1/60s · f/3.5 · ISO 400
-      - src: /images/gallery/Monster_Building&Victoria_Peak_in_Fog/20240331-DSCF0404-编辑-2.jpg
+      - src: /images/gallery/Monster_Building&Victoria_Peak_in_Fog/monster-building-victoria-peak-in-fog-03-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -923,7 +1472,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 31mm · 1/60s · f/3.6 · ISO 1000
-      - src: /images/gallery/Monster_Building&Victoria_Peak_in_Fog/20240331-DSCF0429-4.jpg
+      - src: /images/gallery/Monster_Building&Victoria_Peak_in_Fog/monster-building-victoria-peak-in-fog-04-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -931,6 +1480,278 @@ albums:
           zh-CN: ''
           en: ''
         meta: 36mm · 1/100s · f/3.2 · ISO 2500
+  - slug: mouse
+    imageFolder: gallery/mouse
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: 隔壁宿舍的鼠鼠
+      en: The Mouse from the Next Dorm
+    period:
+      zh-CN: ''
+      en: ''
+    location:
+      zh-CN: 中山大学南校园
+      en: Sun Yat-sen University, South Campus
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: 隔壁宿舍养的鼠鼠，某一天越狱成功
+      en: The mouse raised in the next dorm escaped one day.
+    category: documentary
+    categories:
+      - documentary
+    tags:
+      zh-CN:
+        - 鼠
+      en:
+        - mouse
+    photos:
+      - src: /images/gallery/mouse/mouse-01-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-11-02 13:01:00 · 75mm · 1/200s · f/1.8 · ISO 640
+      - src: /images/gallery/mouse/mouse-02-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-11-02 13:01:11 · 75mm · 1/250s · f/1.8 · ISO 640
+      - src: /images/gallery/mouse/mouse-03-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-11-24 14:53:33 · 75mm · 1/500s · f/2.2 · ISO 100
+  - slug: night-bus-ride-in-hong-kong
+    imageFolder: gallery/Night-Bus-Ride-in-Hong-Kong
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: 巴士夜游
+      en: Night Bus Ride in Hong Kong
+    period:
+      zh-CN: '2023-09-17'
+      en: '2023-09-17'
+    location:
+      zh-CN: 香港
+      en: Hong Kong
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: PGSA的巴士夜游活动
+      en: Bus Ride Activity Hold By HKU PGSA
+    category: ''
+    categories: []
+    tags:
+      zh-CN:
+        - 夜景
+        - 城游
+      en:
+        - Night View
+        - City Stroll
+    photos:
+      - src: /images/gallery/Night-Bus-Ride-in-Hong-Kong/night-bus-ride-in-hong-kong-01.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-09-17 17:16:00 · 75mm · 1/1600s · f/1.8 · ISO 100
+      - src: /images/gallery/Night-Bus-Ride-in-Hong-Kong/night-bus-ride-in-hong-kong-02.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-09-17 18:28:16 · 75mm · 1/100s · f/1.8 · ISO 250
+      - src: /images/gallery/Night-Bus-Ride-in-Hong-Kong/night-bus-ride-in-hong-kong-03.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-09-17 18:35:36 · 75mm · 1/160s · f/1.8 · ISO 250
+      - src: /images/gallery/Night-Bus-Ride-in-Hong-Kong/night-bus-ride-in-hong-kong-04.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-09-17 18:40:02 · 75mm · 1/160s · f/1.8 · ISO 400
+      - src: /images/gallery/Night-Bus-Ride-in-Hong-Kong/night-bus-ride-in-hong-kong-05.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-09-17 18:40:11 · 75mm · 1/160s · f/1.8 · ISO 400
+      - src: /images/gallery/Night-Bus-Ride-in-Hong-Kong/night-bus-ride-in-hong-kong-06.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-09-17 19:02:28 · 75mm · 1/100s · f/1.8 · ISO 400
+      - src: /images/gallery/Night-Bus-Ride-in-Hong-Kong/night-bus-ride-in-hong-kong-07.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-09-17 19:02:46 · 75mm · 1/100s · f/1.8 · ISO 400
+      - src: /images/gallery/Night-Bus-Ride-in-Hong-Kong/night-bus-ride-in-hong-kong-08.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-09-17 19:15:31 · 75mm · 1/80s · f/1.8 · ISO 100
+      - src: /images/gallery/Night-Bus-Ride-in-Hong-Kong/night-bus-ride-in-hong-kong-09.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-09-17 19:30:02 · 75mm · 1/200s · f/1.8 · ISO 100
+      - src: /images/gallery/Night-Bus-Ride-in-Hong-Kong/night-bus-ride-in-hong-kong-10.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-09-17 19:32:59 · 75mm · 1/320s · f/1.8 · ISO 100
+      - src: /images/gallery/Night-Bus-Ride-in-Hong-Kong/night-bus-ride-in-hong-kong-11.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-09-17 20:15:56 · 75mm · 1/100s · f/1.8 · ISO 800
+      - src: /images/gallery/Night-Bus-Ride-in-Hong-Kong/night-bus-ride-in-hong-kong-12.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-09-17 20:23:07 · 75mm · 1/100s · f/1.8 · ISO 500
+      - src: /images/gallery/Night-Bus-Ride-in-Hong-Kong/night-bus-ride-in-hong-kong-13.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-09-17 21:59:54 · 75mm · 1/160s · f/1.8 · ISO 640
+  - slug: selfie
+    imageFolder: gallery/selfie
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: 自拍
+      en: Self-Portrait
+    period:
+      zh-CN: ''
+      en: ''
+    location:
+      zh-CN: 中山大学, 香港大学等
+      en: Sun Yat-sen University, The University of Hong Kong, etc.
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: 一些自拍照
+      en: Some self-portraits
+    category: portrait
+    categories:
+      - portrait
+    tags:
+      zh-CN:
+        - 人像
+      en:
+        - Portrait
+    photos:
+      - src: /images/gallery/selfie/selfie-01-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-07-25 09:43:24 · 75mm · 1/100s · f/1.8 · ISO 100
+      - src: /images/gallery/selfie/selfie-02-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-11-17 12:02:17 · 75mm · 1/100s · f/1.8 · ISO 400
+      - src: /images/gallery/selfie/selfie-03-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2020-07-02 16:17:40 · 75mm · 1/125s · f/1.8 · ISO 320
+      - src: /images/gallery/selfie/selfie-05-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2020-07-11 15:23:02 · 90mm · 1/320s · f/5 · ISO 100
+      - src: /images/gallery/selfie/selfie-06-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2020-07-11 16:02:10 · 75mm · 1/400s · f/1.8 · ISO 100
+      - src: /images/gallery/selfie/selfie-07-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-12-20 20:51:35 · 52mm · 1/60s · f/2 · ISO 800
+      - src: /images/gallery/selfie/selfie-08-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: '2026-04-30 00:57:15'
   - slug: sjc-high-table
     imageFolder: gallery/SJC_High_Table
     languages:
@@ -964,7 +1785,7 @@ albums:
         - Indoor
         - Event
     photos:
-      - src: /images/gallery/SJC_High_Table/20231013-_DSC0618-1.jpg
+      - src: /images/gallery/SJC_High_Table/sjc-high-table-01-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -972,7 +1793,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/100s · f/1.8 · ISO 640
-      - src: /images/gallery/SJC_High_Table/20231013-_DSC0627-2.jpg
+      - src: /images/gallery/SJC_High_Table/sjc-high-table-02-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -980,7 +1801,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/100s · f/1.8 · ISO 640
-      - src: /images/gallery/SJC_High_Table/20231013-_DSC0629-3.jpg
+      - src: /images/gallery/SJC_High_Table/sjc-high-table-03-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -988,7 +1809,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/100s · f/1.8 · ISO 500
-      - src: /images/gallery/SJC_High_Table/20231013-_DSC0630-4.jpg
+      - src: /images/gallery/SJC_High_Table/sjc-high-table-04-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -996,7 +1817,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/100s · f/1.8 · ISO 500
-      - src: /images/gallery/SJC_High_Table/20231013-_DSC0632-5.jpg
+      - src: /images/gallery/SJC_High_Table/sjc-high-table-05-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -1004,7 +1825,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/100s · f/1.8 · ISO 500
-      - src: /images/gallery/SJC_High_Table/20231013-_DSC0633-6.jpg
+      - src: /images/gallery/SJC_High_Table/sjc-high-table-06-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -1012,7 +1833,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/100s · f/1.8 · ISO 500
-      - src: /images/gallery/SJC_High_Table/20231013-_DSC0635-7.jpg
+      - src: /images/gallery/SJC_High_Table/sjc-high-table-07-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -1020,7 +1841,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/100s · f/1.8 · ISO 400
-      - src: /images/gallery/SJC_High_Table/20231013-_DSC0642-8.jpg
+      - src: /images/gallery/SJC_High_Table/sjc-high-table-08-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -1028,7 +1849,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 75mm · 1/80s · f/1.8 · ISO 500
-      - src: /images/gallery/SJC_High_Table/20231013-_DSC0664-9.jpg
+      - src: /images/gallery/SJC_High_Table/sjc-high-table-09-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -1036,7 +1857,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 112mm · 1/100s · f/5 · ISO 1250
-      - src: /images/gallery/SJC_High_Table/20231013-_DSC0665-10.jpg
+      - src: /images/gallery/SJC_High_Table/sjc-high-table-10-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -1044,6 +1865,53 @@ albums:
           zh-CN: ''
           en: ''
         meta: 51mm · 1/100s · f/4.5 · ISO 1250
+  - slug: sun-rise
+    imageFolder: gallery/sunrise-sysu
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: 中山大学日出
+      en: Sunrise at Sun Yat-sen University
+    period:
+      zh-CN: ''
+      en: ''
+    location:
+      zh-CN: 中山大学南校园
+      en: South Campus of Sun Yat-sen University
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: 一些中山大学的日出时刻，是通宵还是早期？忘了
+      en: Some sunrise moments at Sun Yat-sen University, was it an all-nighter or early morning? Forgot.
+    category: landscape
+    categories:
+      - landscape
+    tags:
+      zh-CN:
+        - 日出
+        - 风光
+      en:
+        - sunrise
+        - landscape
+    photos:
+      - src: /images/gallery/sunrise-sysu/sunrise-sysu-01-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-07-17 05:30:57 · 75mm · 1/40s · f/5.6 · ISO 640
+      - src: /images/gallery/sunrise-sysu/sunrise-sysu-02-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-07-17 06:23:22 · 57mm · 1/1250s · f/8 · ISO 100
   - slug: sun-set-kennedy-town-waterfront
     imageFolder: gallery/kennedy-town-waterfront-sunset
     languages:
@@ -1075,7 +1943,7 @@ albums:
         - Sunset
         - Landscape
     photos:
-      - src: /images/gallery/kennedy-town-waterfront-sunset/20240312-_DSC0294-Pano-1.jpg
+      - src: /images/gallery/kennedy-town-waterfront-sunset/kennedy-town-waterfront-sunset-01-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -1083,7 +1951,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 78mm · 1/160s · f/8 · ISO 100
-      - src: /images/gallery/kennedy-town-waterfront-sunset/20240312-_DSC0295-2.jpg
+      - src: /images/gallery/kennedy-town-waterfront-sunset/kennedy-town-waterfront-sunset-02-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -1091,7 +1959,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 210mm · 1/160s · f/8 · ISO 100
-      - src: /images/gallery/kennedy-town-waterfront-sunset/20240312-_DSC0302-HDR-4.jpg
+      - src: /images/gallery/kennedy-town-waterfront-sunset/kennedy-town-waterfront-sunset-03-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -1099,7 +1967,7 @@ albums:
           zh-CN: ''
           en: ''
         meta: 67mm · 1/640s · f/5.6 · ISO 100
-      - src: /images/gallery/kennedy-town-waterfront-sunset/20240312-_DSC0301-3.jpg
+      - src: /images/gallery/kennedy-town-waterfront-sunset/kennedy-town-waterfront-sunset-04-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -1107,6 +1975,376 @@ albums:
           zh-CN: ''
           en: ''
         meta: 72mm · 1/160s · f/5.6 · ISO 100
+  - slug: sunset-sysu
+    imageFolder: gallery/sunset-sysu
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: 中大日落
+      en: Sunset at Sun Yat-sen University
+    period:
+      zh-CN: ''
+      en: ''
+    location:
+      zh-CN: 中山大学南校园
+      en: Sun Yat-sen University South Campus
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: 一些中山大学的日落时刻
+      en: Some sunset moments at Sun Yat-sen University
+    category: landscape
+    categories:
+      - landscape
+    tags:
+      zh-CN:
+        - 风光
+      en:
+        - landscape
+    photos:
+      - src: /images/gallery/sunset-sysu/sunset-sysu-01-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-05-06 18:38:44 · 210mm · 1/640s · f/8 · ISO 100
+      - src: /images/gallery/sunset-sysu/sunset-sysu-02-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-05-15 18:40:02 · 210mm · 1/250s · f/8 · ISO 100
+  - slug: sysu-campus
+    imageFolder: gallery/sysu-south-campus
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: 中山大学南校园
+      en: Sun Yat-sen University South Campus
+    period:
+      zh-CN: ''
+      en: ''
+    location:
+      zh-CN: 中山大学
+      en: Sun Yat-sen University
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: 中山大学南校园的一些建筑
+      en: Some buildings at Sun Yat-sen University South Campus
+    category: architecture
+    categories:
+      - architecture
+    tags:
+      zh-CN:
+        - 建筑
+        - 风光
+      en:
+        - Architecture
+        - Landscape
+    photos:
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-01-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-07-10 17:49:23 · 135mm · 1/250s · f/11 · ISO 100
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-02-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-07-10 18:46:53 · 99mm · 1/125s · f/9 · ISO 500
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-03-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-08-28 17:47:32 · 75mm · 1/80s · f/1.8 · ISO 400
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-04-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-08-28 17:56:21 · 75mm · 1/50s · f/1.8 · ISO 800
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-05-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-08-28 17:59:08 · 75mm · 1/80s · f/1.8 · ISO 500
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-06-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-12 19:00:45 · 27mm · 4s · f/8 · ISO 160
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-07-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-12 19:17:27 · 27mm · 4s · f/8 · ISO 160
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-08-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-12 19:35:25 · 27mm · 6s · f/8 · ISO 100
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-09-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-12 19:41:18 · 142mm · 4s · f/8 · ISO 100
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-10-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-15 17:48:47 · 57mm · 1/1000s · f/10 · ISO 100
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-11-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-15 17:54:44 · 60mm · 1/50s · f/11 · ISO 100
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-12-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-15 18:01:24 · 84mm · 1/80s · f/7.1 · ISO 800
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-13-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-18 23:28:05 · 27mm · 13s · f/3.5 · ISO 100
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-14-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-18 23:45:41 · 27mm · 10s · f/3.5 · ISO 100
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-15-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-19 00:50:39 · 27mm · 15s · f/8 · ISO 100
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-16-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-19 01:02:36 · 27mm · 15s · f/3.5 · ISO 160
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-17-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-19 01:08:40 · 27mm · 13s · f/8 · ISO 100
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-18-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-19 01:26:29 · 27mm · 13s · f/3.5 · ISO 100
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-19-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-19 01:38:21 · 27mm · 6s · f/8 · ISO 100
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-20-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-19 01:44:27 · 27mm · 13s · f/3.5 · ISO 100
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-21-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-09-19 02:22:41 · 27mm · 13s · f/3.5 · ISO 100
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-22-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-11-12 19:59:36 · 15mm · 30s · f/8 · ISO 100
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-23-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-11-12 20:10:52 · 15mm · 25s · f/8 · ISO 100
+      - src: /images/gallery/sysu-south-campus/sysu-south-campus-24-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2018-11-23 16:04:57 · 72mm · 1/160s · f/4.5 · ISO 100
+  - slug: sysu-long-exposure-study
+    imageFolder: gallery/sysu-long-exposure-study
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: 长曝光练习
+      en: Sysu Long Exposure Study
+    period:
+      zh-CN: '2017-12-09'
+      en: '2017-12-09'
+    location:
+      zh-CN: 中山大学南校园
+      en: SYSU South Campus
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: Hope Studio的考核任务，选择长曝光作为任务的目标
+      en: For Hope Studio's assessment task, I chose long exposure photography as my focus.
+    category: documentary
+    categories:
+      - documentary
+    tags:
+      zh-CN:
+        - 长曝光
+        - 夜景
+        - 练习
+      en:
+        - Long Exposure
+        - Night View
+        - Practice
+    photos:
+      - src: /images/gallery/sysu-long-exposure-study/sysu-long-exposure-study-01-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2017-12-09 15:29:10 · 24mm · 3s · f/8 · ISO 100
+      - src: /images/gallery/sysu-long-exposure-study/sysu-long-exposure-study-02-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2017-12-09 20:11:12 · 70mm · 1.3s · f/8 · ISO 100
+      - src: /images/gallery/sysu-long-exposure-study/sysu-long-exposure-study-03-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2017-12-09 20:20:31 · 70mm · 1/2s · f/8 · ISO 100
+      - src: /images/gallery/sysu-long-exposure-study/sysu-long-exposure-study-04-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2017-12-09 21:06:13 · 32mm · 18s · f/8 · ISO 100
+  - slug: tang-zi-han
+    imageFolder: gallery/tang-zi-han
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: Tang Hum Hum
+      en: Tang Hum Hum
+    period:
+      zh-CN: '2023-09-30'
+      en: '2023-09-30'
+    location:
+      zh-CN: 香港大学庄月明楼
+      en: The University of Hong Kong, Chong Yuet Ming Building
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: 原创歌手Tang Hum Hum
+      en: Original singer Tang Hum Hum
+    category: portrait
+    categories:
+      - portrait
+    tags:
+      zh-CN:
+        - 人像
+      en:
+        - portrait
+    photos:
+      - src: /images/gallery/tang-zi-han/tang-zi-han-01-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2023-09-30 17:48:09 · 75mm · 1/160s · f/1.8 · ISO 500
   - slug: victoria-harbour-panorama-peak-view
     imageFolder: gallery/Victoria_Harbour_Panorama_Peak_View
     languages:
@@ -1140,7 +2378,7 @@ albums:
         - Victoria Harbour
         - Night View
     photos:
-      - src: /images/gallery/Victoria_Harbour_Panorama_Peak_View/20240529-_DSC0276-Pano-1.jpg
+      - src: /images/gallery/Victoria_Harbour_Panorama_Peak_View/victoria-harbour-panorama-peak-view-01-2.jpg
         title:
           zh-CN: ''
           en: ''
@@ -1148,3 +2386,88 @@ albums:
           zh-CN: ''
           en: ''
         meta: 27mm · 1/15s · f/3.5 · ISO 2500
+  - slug: yu-hao-xuan
+    imageFolder: gallery/yu-hao-xuan
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: Xuan
+      en: Xuan
+    period:
+      zh-CN: ''
+      en: ''
+    location:
+      zh-CN: 中山大学南校园
+      en: Sun Yat-sen University South Campus
+    camera:
+      zh-CN: NIKON D5600
+      en: NIKON D5600
+    description:
+      zh-CN: 同门学姐 Xuan
+      en: Senior schoolmate Xuan
+    category: portrait
+    categories:
+      - portrait
+    tags:
+      zh-CN:
+        - 人像
+      en:
+        - portrait
+    photos:
+      - src: /images/gallery/yu-hao-xuan/yu-hao-xuan-01-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2020-06-29 13:40:30 · 51mm · 1/320s · f/4.2 · ISO 100
+      - src: /images/gallery/yu-hao-xuan/yu-hao-xuan-02-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2020-06-29 13:49:17 · 52mm · 1/320s · f/5.6 · ISO 100
+      - src: /images/gallery/yu-hao-xuan/yu-hao-xuan-03-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2020-06-29 13:49:43 · 142mm · 1/320s · f/5.6 · ISO 100
+      - src: /images/gallery/yu-hao-xuan/yu-hao-xuan-04-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2020-06-29 14:06:48 · 75mm · 1/200s · f/1.8 · ISO 100
+      - src: /images/gallery/yu-hao-xuan/yu-hao-xuan-05-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2020-06-29 14:09:51 · 75mm · 1/200s · f/1.8 · ISO 100
+      - src: /images/gallery/yu-hao-xuan/yu-hao-xuan-06-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2020-06-29 14:11:59 · 75mm · 1/200s · f/1.8 · ISO 100
+      - src: /images/gallery/yu-hao-xuan/yu-hao-xuan-07-2.jpg
+        title:
+          zh-CN: ''
+          en: ''
+        caption:
+          zh-CN: ''
+          en: ''
+        meta: 2020-06-29 14:48:59 · 75mm · 1/2000s · f/1.8 · ISO 100

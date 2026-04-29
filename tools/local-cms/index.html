@@ -114,6 +114,7 @@
               <h3>一键排版配置</h3>
             </div>
             <div class="card-heading-actions">
+              <button id="test-llm-button" class="ghost-button" type="button">测试连接</button>
               <button id="save-llm-button" class="ghost-button" type="button">保存配置</button>
               <button id="toggle-llm-panel" class="ghost-button" type="button" aria-expanded="true">隐藏</button>
             </div>
@@ -143,7 +144,7 @@
               <span>排版 Prompt</span>
               <textarea id="llm-prompt" rows="6"></textarea>
             </label>
-            <p class="field-hint">当前实现按 OpenAI 兼容的 Chat Completions 接口发送请求。你可以切换不同供应商的 endpoint 和 model。</p>
+            <p class="field-hint">已支持 OpenAI / Anthropic / Xiaomi MiMo / DeepSeek / Doubao 等主流供应商的自动适配。Xiaomi MiMo 建议使用 `https://api.xiaomimimo.com/v1` 或兼容网关地址，模型名使用文档里的小写格式，如 `mimo-v2.5-pro`。</p>
           </div>
         </section>
 

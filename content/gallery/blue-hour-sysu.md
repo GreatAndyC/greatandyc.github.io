@@ -19,11 +19,11 @@ tags_en: Blue Hour,Campus,City
 
 | src | title_zh | title_en | caption_zh | caption_en | meta |
 | --- | --- | --- | --- | --- | --- |
-| /images/gallery/Blue_Hour_SYSU/20240212-_DSC0070-1.jpg |  |  |  |  | 52mm · 1/125s · f/2 · ISO 500 |
-| /images/gallery/Blue_Hour_SYSU/20240212-_DSC0073-2.jpg |  |  |  |  | 52mm · 1/80s · f/2 · ISO 800 |
-| /images/gallery/Blue_Hour_SYSU/20240212-_DSC0075-Pano-3.jpg |  |  |  |  | 52mm · 1/80s · f/2 · ISO 500 |
-| /images/gallery/Blue_Hour_SYSU/20240212-_DSC0079-4.jpg |  |  |  |  | 52mm · 1/100s · f/2 · ISO 100 |
-| /images/gallery/Blue_Hour_SYSU/20240212-_DSC0084-HDR-5.jpg |  |  |  |  | 52mm · 1/125s · f/2 · ISO 640 |
-| /images/gallery/Blue_Hour_SYSU/20240212-_DSC0094-6.jpg |  |  |  |  | 52mm · 2s · f/2 · ISO 100 |
-| /images/gallery/Blue_Hour_SYSU/20240212-_DSC0096-7.jpg |  |  |  |  | 27mm · 15s · f/8 · ISO 100 |
-| /images/gallery/Blue_Hour_SYSU/20240212-_DSC0097-8.jpg |  |  |  |  | 27mm · 15s · f/8 · ISO 100 |
+| /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-01-2.jpg |  |  |  |  | 52mm · 1/125s · f/2 · ISO 500 |
+| /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-02-2.jpg |  |  |  |  | 52mm · 1/80s · f/2 · ISO 800 |
+| /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-03-2.jpg |  |  |  |  | 52mm · 1/80s · f/2 · ISO 500 |
+| /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-04-2.jpg |  |  |  |  | 52mm · 1/100s · f/2 · ISO 100 |
+| /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-05-2.jpg |  |  |  |  | 52mm · 1/125s · f/2 · ISO 640 |
+| /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-06-2.jpg |  |  |  |  | 52mm · 2s · f/2 · ISO 100 |
+| /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-07-2.jpg |  |  |  |  | 27mm · 15s · f/8 · ISO 100 |
+| /images/gallery/Blue_Hour_SYSU/blue-hour-sysu-08-2.jpg |  |  |  |  | 27mm · 15s · f/8 · ISO 100 |
