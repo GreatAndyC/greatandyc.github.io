@@ -26,6 +26,10 @@ const state = {
     items: [],
     selectedPaths: []
   },
+  postImages: {
+    folder: '',
+    items: []
+  },
   imageFolders: [],
   settings: {
     llm: {
@@ -94,7 +98,8 @@ const state = {
   },
   autosave: {
     timer: null,
-    suspend: false
+    suspend: false,
+    postDraftAliases: []
   },
   toastTimer: null,
   commandAlerts: {
@@ -128,6 +133,7 @@ const elements = {
   createImageFolderButton: document.querySelector('#create-image-folder-button'),
   renameImageFolderButton: document.querySelector('#rename-image-folder-button'),
   deleteImageFolderButton: document.querySelector('#delete-image-folder-button'),
+  normalizeImageFilenamesButton: document.querySelector('#normalize-image-filenames-button'),
   saveCategoryPresetButton: document.querySelector('#save-category-preset-button'),
   deleteCategoryPresetButton: document.querySelector('#delete-category-preset-button'),
   statusBar: document.querySelector('#status-bar'),
@@ -186,6 +192,8 @@ const elements = {
     imageDropzoneMeta: document.querySelector('#image-dropzone-meta'),
     imageFileInput: document.querySelector('#image-file-input'),
     photoPreview: document.querySelector('#post-photo-preview'),
+    imageLibrarySummary: document.querySelector('#post-image-library-summary'),
+    imageLibraryGrid: document.querySelector('#post-image-library-grid'),
     zhFile: document.querySelector('#post-zh-file'),
     zhTitle: document.querySelector('#post-zh-title'),
     zhDescription: document.querySelector('#post-zh-description'),
@@ -315,6 +323,36 @@ function writeStoredDraftMap(storageKey, map) {
   window.localStorage.setItem(storageKey, JSON.stringify(map));
 }
 
+function getPostDraftStorageIds(payload = null) {
+  const source = payload || buildPostPayload();
+  const ids = [
+    state.currentRecord && state.currentRecord.key ? state.currentRecord.key : '',
+    source && source.common && source.common.fileKey ? String(source.common.fileKey).trim() : '',
+    source && source.common && source.common.slug ? String(source.common.slug).trim() : ''
+  ].filter(Boolean);
+
+  if (!(state.currentRecord && state.currentRecord.key)) {
+    ids.push('__new__');
+  }
+
+  return Array.from(new Set(ids));
+}
+
+function pickLatestDraftEntry(entries) {
+  return (entries || []).reduce((latest, entry) => {
+    if (!entry || !entry.payload) return latest;
+    if (!latest) return entry;
+
+    const latestTime = Date.parse(latest.savedAt || '');
+    const currentTime = Date.parse(entry.savedAt || '');
+    if (Number.isNaN(currentTime)) return latest;
+    if (Number.isNaN(latestTime) || currentTime >= latestTime) {
+      return entry;
+    }
+    return latest;
+  }, null);
+}
+
 function getCurrentPostDraftId() {
   if (!state.currentRecord) return '';
   return state.currentRecord.key
@@ -328,21 +366,42 @@ function getCurrentPageDraftId() {
 }
 
 function savePostDraftToStorage() {
-  const draftId = getCurrentPostDraftId();
-  if (!draftId) return;
+  const payload = buildPostPayload();
+  const draftIds = getPostDraftStorageIds(payload);
+  if (!draftIds.length) return;
 
   const drafts = readStoredDraftMap(POST_DRAFT_STORAGE_KEY);
-  drafts[draftId] = {
-    savedAt: new Date().toISOString(),
-    payload: buildPostPayload()
-  };
+  const previousAliases = Array.isArray(state.autosave.postDraftAliases)
+    ? state.autosave.postDraftAliases
+    : [];
+  previousAliases
+    .filter(draftId => draftId && !draftIds.includes(draftId))
+    .forEach(draftId => {
+      delete drafts[draftId];
+    });
+
+  const savedAt = new Date().toISOString();
+  draftIds.forEach(draftId => {
+    drafts[draftId] = {
+      savedAt,
+      payload
+    };
+  });
   writeStoredDraftMap(POST_DRAFT_STORAGE_KEY, drafts);
+  state.autosave.postDraftAliases = draftIds;
 }
 
 function loadPostDraftFromStorage(draftId) {
   if (!draftId) return null;
   const drafts = readStoredDraftMap(POST_DRAFT_STORAGE_KEY);
   return drafts[draftId] || null;
+}
+
+function loadLatestPostDraftFromStorage(draftIds) {
+  const ids = Array.isArray(draftIds) ? draftIds.filter(Boolean) : [];
+  if (!ids.length) return null;
+  const drafts = readStoredDraftMap(POST_DRAFT_STORAGE_KEY);
+  return pickLatestDraftEntry(ids.map(draftId => drafts[draftId] || null));
 }
 
 function clearPostDraftFromStorage(draftId) {
@@ -436,8 +495,7 @@ function applyPageDraftPayload(payload) {
 }
 
 function maybeRestorePostDraft() {
-  const draftId = getCurrentPostDraftId();
-  const draft = loadPostDraftFromStorage(draftId);
+  const draft = loadLatestPostDraftFromStorage(getPostDraftStorageIds());
   if (!draft || !draft.payload) return;
 
   const restore = window.confirm(`检测到这篇文章有一份本地草稿，保存时间为 ${formatTimestamp(draft.savedAt)}。要恢复到编辑器吗？`);
@@ -1350,6 +1408,53 @@ function renderPostPhotoPreview() {
   `).join('');
 }
 
+function renderPostImageLibrary() {
+  const folder = state.postImages.folder || '';
+  const items = state.postImages.items || [];
+  const selected = new Set(
+    elements.post.photos.value
+      .split(/\r?\n/)
+      .map(item => item.trim())
+      .filter(Boolean)
+  );
+
+  if (!folder) {
+    elements.post.imageLibrarySummary.textContent = '先选择一个文章图片目录，再在这里管理图片。';
+    elements.post.imageLibraryGrid.innerHTML = '<div class="gallery-empty-state">当前还没有绑定文章图片目录。</div>';
+    return;
+  }
+
+  elements.post.imageLibrarySummary.textContent = `images/${folder} 下共 ${items.length} 个文件。可直接加入当前文章、查看引用、重命名或删除。`;
+
+  if (!items.length) {
+    elements.post.imageLibraryGrid.innerHTML = '<div class="gallery-empty-state">当前目录还没有图片。可先上传图片，或把已有图片移动到这个目录。</div>';
+    return;
+  }
+
+  elements.post.imageLibraryGrid.innerHTML = items.map(item => {
+    const included = selected.has(item.path);
+    return `
+      <article class="library-card${included ? ' is-selected' : ''}">
+        <button class="library-preview" type="button" data-post-image-action="copy" data-post-image-path="${escapeHtml(item.path)}" title="点击复制路径">
+          <img src="${escapeHtml(item.path)}" alt="${escapeHtml(item.name)}">
+        </button>
+        <div class="library-card-body">
+          <strong>${escapeHtml(item.name)}</strong>
+          <span>${escapeHtml(item.path)}</span>
+          <span>${escapeHtml([item.dimensions || '', item.camera || '', item.captureMeta || '', item.meta || ''].filter(Boolean).join(' · '))}</span>
+        </div>
+        <div class="library-card-actions">
+          <button class="ghost-button" type="button" data-post-image-action="toggle" data-post-image-path="${escapeHtml(item.path)}">${included ? '移出当前文章' : '加入当前文章'}</button>
+          <button class="ghost-button" type="button" data-post-image-action="copy" data-post-image-path="${escapeHtml(item.path)}">复制路径</button>
+          <button class="ghost-button" type="button" data-post-image-action="references" data-post-image-path="${escapeHtml(item.path)}">查看引用</button>
+          <button class="ghost-button" type="button" data-post-image-action="move" data-post-image-path="${escapeHtml(item.path)}">重命名/移动</button>
+          <button class="ghost-button danger-button" type="button" data-post-image-action="delete" data-post-image-path="${escapeHtml(item.path)}">删除图片</button>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
 async function renderZhPreview() {
   const markdown = elements.post.zhBody.value.trim();
   const token = state.preview.zhRequestToken + 1;
@@ -1458,9 +1563,17 @@ function fillPostEditor(record) {
     elements.post.imageFolderSelect.value = '';
   }
 
+  state.postImages.folder = '';
+  state.postImages.items = [];
   renderPostPhotoPreview();
+  renderPostImageLibrary();
   scheduleZhPreviewRender(0);
   state.autosave.suspend = false;
+  loadPostImageLibrary(elements.post.imageFolderSelect.value).catch(() => {
+    state.postImages.folder = '';
+    state.postImages.items = [];
+    renderPostImageLibrary();
+  });
   maybeRestorePostDraft();
 }
 
@@ -1990,6 +2103,55 @@ function appendPhotoPaths(paths) {
   elements.post.photos.value = next.join('\n');
 }
 
+function removePhotoPaths(paths) {
+  const removed = new Set((paths || []).filter(Boolean));
+  if (!removed.size) return;
+
+  const next = elements.post.photos.value
+    .split(/\r?\n/)
+    .map(item => item.trim())
+    .filter(item => item && !removed.has(item));
+
+  elements.post.photos.value = next.join('\n');
+}
+
+function rewritePostPhotoPaths(renameEntries) {
+  const renameMap = new Map(
+    (Array.isArray(renameEntries) ? renameEntries : [])
+      .filter(item => item && item.from && item.to)
+      .map(item => [item.from, item.to])
+  );
+  if (!renameMap.size) return;
+
+  const next = elements.post.photos.value
+    .split(/\r?\n/)
+    .map(item => item.trim())
+    .filter(Boolean)
+    .map(item => renameMap.get(item) || item);
+
+  elements.post.photos.value = next.join('\n');
+}
+
+function rewritePostPhotoFolderPaths(currentFolder, nextFolder) {
+  const fromPrefix = `/images/${currentFolder}/`;
+  const toPrefix = `/images/${nextFolder}/`;
+  const next = elements.post.photos.value
+    .split(/\r?\n/)
+    .map(item => item.trim())
+    .filter(Boolean)
+    .map(item => (item.startsWith(fromPrefix) ? item.replace(fromPrefix, toPrefix) : item));
+
+  elements.post.photos.value = next.join('\n');
+}
+
+function getPostImageBaseName(folder = '') {
+  const preferred = elements.post.slug.value.trim() || elements.post.fileKey.value.trim();
+  if (preferred) return preferred;
+  const normalizedFolder = String(folder || '').trim().replace(/^\/+|\/+$/g, '');
+  const segments = normalizedFolder.split('/').filter(Boolean);
+  return segments.length ? segments[segments.length - 1] : 'post-image';
+}
+
 async function loadMeta() {
   state.meta = await request('/api/meta');
   state.pages = state.meta.pages;
@@ -2060,6 +2222,21 @@ async function loadImageLibrary(folder = '', options = {}) {
     fillImageLibraryWorkspace();
   }
   refreshAuditLogsSilently();
+}
+
+async function loadPostImageLibrary(folder = '') {
+  const targetFolder = typeof folder === 'string' ? folder : '';
+  if (!targetFolder) {
+    state.postImages.folder = '';
+    state.postImages.items = [];
+    renderPostImageLibrary();
+    return;
+  }
+
+  const payload = await request(`/api/images/library?folder=${encodeURIComponent(targetFolder)}`);
+  state.postImages.folder = payload.folder || '';
+  state.postImages.items = payload.items || [];
+  renderPostImageLibrary();
 }
 
 async function loadImageReferences({ path = '', folder = '' } = {}) {
@@ -2495,6 +2672,7 @@ async function handleCreateImageFolder() {
     renderImageFolders();
     elements.post.imageFolderSelect.value = payload.folder || '';
     elements.post.imageNewFolder.value = '';
+    await loadPostImageLibrary(payload.folder || '');
     setStatus(`已创建目录：images/${payload.folder}`, 'success');
     showToast('目录已创建', `已创建 images/${payload.folder}`);
     refreshAuditLogsSilently();
@@ -2505,17 +2683,21 @@ async function handleCreateImageFolder() {
 
 async function handleRenameImageFolder() {
   try {
+    const currentFolder = normalizePostManagedFolder(elements.post.imageFolderSelect.value);
     const nextFolder = normalizePostManagedFolder(
       elements.post.imageNewFolder.value.trim(),
       elements.post.fileKey.value.trim() || elements.post.slug.value.trim()
     );
+    if (!currentFolder || !currentFolder.startsWith('posts/')) {
+      throw new Error('请先选择一个 images/posts/ 下的目录。');
+    }
     if (!nextFolder || !nextFolder.startsWith('posts/')) {
       throw new Error('文章目录必须重命名到 images/posts/ 下。');
     }
     const payload = await request('/api/images/folders/rename', {
       method: 'POST',
       body: JSON.stringify({
-        currentFolder: elements.post.imageFolderSelect.value,
+        currentFolder,
         nextFolder
       })
     });
@@ -2523,6 +2705,9 @@ async function handleRenameImageFolder() {
     renderImageFolders();
     elements.post.imageFolderSelect.value = payload.folder || '';
     elements.post.imageNewFolder.value = '';
+    rewritePostPhotoFolderPaths(currentFolder, payload.folder || '');
+    renderPostPhotoPreview();
+    await loadPostImageLibrary(payload.folder || '');
     setStatus(`已重命名目录：images/${payload.folder}`, 'success');
     showToast('目录已重命名', `当前目录：images/${payload.folder}`);
     refreshAuditLogsSilently();
@@ -2555,8 +2740,57 @@ async function handleDeleteImageFolder() {
     state.imageFolders = payload.folders || [''];
     renderImageFolders();
     elements.post.imageFolderSelect.value = '';
+    removePhotoPaths(
+      elements.post.photos.value
+        .split(/\r?\n/)
+        .map(item => item.trim())
+        .filter(item => item.startsWith(`/images/${folder}/`))
+    );
+    renderPostPhotoPreview();
+    await loadPostImageLibrary('');
     setStatus(`已删除目录：images/${payload.deleted}`, 'success');
     showToast('目录已删除', `已删除 images/${payload.deleted}`);
+    refreshAuditLogsSilently();
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+}
+
+async function handlePostNormalizeFilenames() {
+  const folder = normalizePostManagedFolder(
+    elements.post.imageFolderSelect.value,
+    elements.post.fileKey.value.trim() || elements.post.slug.value.trim()
+  );
+  if (!folder || !folder.startsWith('posts/')) {
+    setStatus('请先选择一个 images/posts/ 下的文章图片目录。', 'error');
+    return;
+  }
+
+  try {
+    const references = await loadImageReferences({ folder });
+    if (references.referenceCount > 0) {
+      const confirmed = window.confirm(
+        `目录 images/${folder} 当前被 ${references.referenceCount} 个文件引用。继续规范化会自动同步这些已保存的引用。\n\n${formatReferenceSummary(references, 6)}\n\n确认继续吗？`
+      );
+      if (!confirmed) return;
+    }
+
+    setStatus(`正在规范化 images/${folder} 的图片文件名...`);
+    const payload = await normalizeImageFilenames(folder, {
+      mode: 'gallery-sequence',
+      baseName: getPostImageBaseName(folder)
+    });
+    state.imageFolders = payload.folders || state.imageFolders;
+    renderImageFolders();
+    elements.post.imageFolderSelect.value = payload.folder || folder;
+    rewritePostPhotoPaths(payload.renamed || []);
+    renderPostPhotoPreview();
+    await loadPostImageLibrary(payload.folder || folder);
+    elements.post.imageDropzoneMeta.textContent = payload.renamedCount
+      ? `已规范化 ${(payload.renamed || []).length} 张图片文件名，并同步当前文章中的图片路径。`
+      : `images/${payload.folder || folder} 目录下当前没有需要规范化的图片文件名。`;
+    setStatus(formatNormalizeResult(payload), payload.renamedCount ? 'success' : '');
+    showToast('文件名规范化完成', formatNormalizeResult(payload));
     refreshAuditLogsSilently();
   } catch (error) {
     setStatus(error.message, 'error');
@@ -2592,6 +2826,7 @@ async function uploadSelectedImages(fileList) {
     elements.post.imageDropzoneMeta.textContent = (payload.uploaded || []).map(item => item.path).join('  ');
     elements.post.imageFileInput.value = '';
     renderPostPhotoPreview();
+    await loadPostImageLibrary(payload.folder || folder);
     setStatus(`已上传 ${(payload.uploaded || []).length} 个文件。`, 'success');
     refreshAuditLogsSilently();
   } catch (error) {
@@ -2612,6 +2847,7 @@ async function savePostRecord(payload, options = {}) {
   });
 
   draftIds.forEach(clearPostDraftFromStorage);
+  state.autosave.postDraftAliases = [];
 
   state.currentRecord = saved;
   state.selectedId = saved.key;
@@ -3017,6 +3253,103 @@ async function handleLibraryShowReferences(imagePath) {
 
   window.alert(`${title}\n\n${formatReferenceSummary(payload, 12)}`);
   setStatus(title, 'success');
+}
+
+function togglePostImageSelection(imagePath) {
+  const current = new Set(
+    elements.post.photos.value
+      .split(/\r?\n/)
+      .map(item => item.trim())
+      .filter(Boolean)
+  );
+
+  if (current.has(imagePath)) {
+    current.delete(imagePath);
+  } else {
+    current.add(imagePath);
+  }
+
+  elements.post.photos.value = Array.from(current).join('\n');
+  renderPostPhotoPreview();
+  renderPostImageLibrary();
+}
+
+async function handlePostImageShowReferences(imagePath) {
+  const payload = await loadImageReferences({ path: imagePath });
+  const title = payload.referenceCount > 0
+    ? `${imagePath} 当前被 ${payload.referenceCount} 个文件引用，共 ${payload.matchCount} 处。`
+    : `${imagePath} 当前没有被项目内容引用。`;
+
+  window.alert(`${title}\n\n${formatReferenceSummary(payload, 12)}`);
+  setStatus(title, 'success');
+}
+
+async function handlePostMoveImage(imagePath) {
+  const currentFolder = getImagePathFolder(imagePath);
+  const currentName = getImageFileName(imagePath);
+  const nextNameInput = window.prompt('输入新的文件名。直接回车表示只移动目录。', currentName);
+  if (nextNameInput === null) return;
+  const nextFolderInput = window.prompt('输入目标目录。留空表示仍保留在当前目录。', currentFolder);
+  if (nextFolderInput === null) return;
+
+  const nextName = nextNameInput.trim();
+  const nextFolder = nextFolderInput.trim() || currentFolder;
+  const targetPath = nextFolder ? `/images/${nextFolder}/${nextName || currentName}` : `/images/${nextName || currentName}`;
+  const references = await loadImageReferences({ path: imagePath });
+  const confirmed = window.confirm(
+    references.referenceCount > 0
+      ? `图片当前被 ${references.referenceCount} 个文件引用。继续后会自动同步这些引用。\n\n${formatReferenceSummary(references, 6)}\n\n确认更新为 ${targetPath} 吗？`
+      : `确认将图片更新为 ${targetPath} 吗？`
+  );
+  if (!confirmed) return;
+
+  const payload = await request('/api/images/move', {
+    method: 'POST',
+    body: JSON.stringify({
+      path: imagePath,
+      folder: nextFolder,
+      name: nextName
+    })
+  });
+
+  state.imageFolders = payload.folders || state.imageFolders;
+  renderImageFolders();
+  if (elements.post.photos.value.includes(imagePath)) {
+    rewritePostPhotoPaths([{ from: imagePath, to: payload.path }]);
+    renderPostPhotoPreview();
+  }
+  elements.post.imageFolderSelect.value = payload.folder || nextFolder || '';
+  await loadPostImageLibrary(elements.post.imageFolderSelect.value);
+  setStatus(`已更新图片路径：${payload.path}，同步 ${payload.replacementCount || 0} 处引用。`, 'success');
+  showToast('图片已更新', payload.path);
+}
+
+async function handlePostDeleteImage(imagePath) {
+  try {
+    const references = await loadImageReferences({ path: imagePath });
+    let force = false;
+
+    if (references.referenceCount > 0) {
+      force = window.confirm(
+        `图片 ${imagePath} 当前仍被 ${references.referenceCount} 个文件引用。继续删除会造成坏链。\n\n${formatReferenceSummary(references, 6)}\n\n确认强制删除吗？`
+      );
+      if (!force) return;
+    } else if (!window.confirm(`确认删除图片 ${imagePath} 吗？`)) {
+      return;
+    }
+
+    const payload = await request('/api/images/delete', {
+      method: 'POST',
+      body: JSON.stringify({ path: imagePath, force })
+    });
+    removePhotoPaths([imagePath]);
+    renderPostPhotoPreview();
+    await loadPostImageLibrary(payload.folder || state.postImages.folder || '');
+    setStatus(`已删除图片：${payload.deleted}`, 'success');
+    showToast('图片已删除', payload.deleted);
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
 }
 
 async function handleLibraryMoveImage(imagePath) {
@@ -3763,6 +4096,7 @@ elements.gallery.addPhotoButton.addEventListener('click', () => {
 elements.gallery.addAllCandidatesButton.addEventListener('click', () => {
   addGalleryCandidatesToAlbum(getGalleryCandidateItems().map(item => item.path));
 });
+elements.normalizeImageFilenamesButton.addEventListener('click', handlePostNormalizeFilenames);
 elements.gallery.createImageFolderButton.addEventListener('click', handleGalleryCreateImageFolder);
 elements.gallery.renameImageFolderButton.addEventListener('click', handleGalleryRenameImageFolder);
 elements.gallery.deleteImageFolderButton.addEventListener('click', handleGalleryDeleteImageFolder);
@@ -3794,6 +4128,14 @@ elements.post.category.addEventListener('change', updateCategoryCustomPanel);
 elements.post.categoryCustomZh.addEventListener('input', syncCategoryPresetButtonState);
 elements.post.categoryCustomEn.addEventListener('input', syncCategoryPresetButtonState);
 elements.post.photos.addEventListener('input', renderPostPhotoPreview);
+elements.post.photos.addEventListener('input', renderPostImageLibrary);
+elements.post.imageFolderSelect.addEventListener('change', async () => {
+  try {
+    await loadPostImageLibrary(elements.post.imageFolderSelect.value);
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+});
 elements.post.zhBody.addEventListener('input', () => {
   scheduleZhPreviewRender();
 });
@@ -3806,6 +4148,37 @@ elements.uploadImageButton.addEventListener('click', () => {
 });
 elements.post.imageFileInput.addEventListener('change', event => {
   uploadSelectedImages(event.target.files);
+});
+elements.post.imageLibraryGrid.addEventListener('click', async event => {
+  const button = event.target.closest('[data-post-image-action]');
+  if (!button) return;
+  const imagePath = button.dataset.postImagePath || '';
+  if (!imagePath) return;
+
+  try {
+    if (button.dataset.postImageAction === 'toggle') {
+      togglePostImageSelection(imagePath);
+      return;
+    }
+    if (button.dataset.postImageAction === 'copy') {
+      await copyText(imagePath);
+      setStatus(`已复制图片路径：${imagePath}`, 'success');
+      return;
+    }
+    if (button.dataset.postImageAction === 'references') {
+      await handlePostImageShowReferences(imagePath);
+      return;
+    }
+    if (button.dataset.postImageAction === 'move') {
+      await handlePostMoveImage(imagePath);
+      return;
+    }
+    if (button.dataset.postImageAction === 'delete') {
+      await handlePostDeleteImage(imagePath);
+    }
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
 });
 elements.gallery.imageFileInput.addEventListener('change', event => {
   uploadGalleryImages(event.target.files);

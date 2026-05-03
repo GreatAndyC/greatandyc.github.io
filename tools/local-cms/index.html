@@ -225,6 +225,7 @@
                   <button id="create-image-folder-button" class="ghost-button" type="button">创建</button>
                   <button id="rename-image-folder-button" class="ghost-button" type="button">重命名当前目录</button>
                   <button id="delete-image-folder-button" class="ghost-button danger-button" type="button">删除当前目录</button>
+                  <button id="normalize-image-filenames-button" class="ghost-button" type="button">规范化文件名</button>
                 </div>
               </label>
             </div>
@@ -240,6 +241,15 @@
             <div>
               <span class="field-label">封面图预览</span>
               <div id="post-photo-preview" class="post-photo-preview"></div>
+            </div>
+            <div>
+              <div class="card-heading">
+                <div class="card-heading-copy">
+                  <h3>当前目录图片</h3>
+                  <span id="post-image-library-summary" class="field-hint">先选择一个文章图片目录，再在这里管理图片。</span>
+                </div>
+              </div>
+              <div id="post-image-library-grid" class="library-grid"></div>
             </div>
           </div>
 
