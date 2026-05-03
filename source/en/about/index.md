@@ -1,8 +1,9 @@
 ---
 title: Profile
-date: 2026-04-19 20:30:00
+date: "2026-05-03 20:21:05"
 lang: en
 comments: false
+toc: false
 ---
 
 <div class="profile-hero">
@@ -43,6 +44,14 @@ I am currently interested in full-time opportunities in AI product, technical so
 - Role: independent developer
 - Scope: research, product design, frontend and backend implementation, testing, launch preparation
 - Stack: Swift / SwiftUI, Supabase, AI food recognition APIs, UI/UX design
+
+### Master's Research: Fatigue Recognition in Robot-Assisted Squat Training
+
+- Role: master's research designer
+- Context: investigated how to recognize fatigue during robot-assisted squat training
+- Focus: combined subjective fatigue ratings (RPE), surface EMG signals, and platform-recorded kinematic data to compare how different indicators reflect fatigue
+- Why it matters: the work connects to rehabilitation training, intelligent exercise systems, and safer human-robot interaction, while also reflecting hands-on experience in experiment design, data collection, signal analysis, and research writing
+- Research post: [Master's Research: Fatigue Recognition in Robot-Assisted Squat Training](/en/2026/05/03/msc-thesis-fatigue-recognition/)
 
 ### AI × IoT Experiments
 
@@ -114,11 +123,5 @@ If you want to jump from the profile into the matching posts, start here:
 
 ## Outside Work
 
-- Photography: landscape and event photography, with ongoing updates in the gallery
+- [Photography](/en/gallery/): with a focus on landscape and event photography
 - Sports: swimming, running, gym training, basketball, hiking
-
-## Where to Explore Next
-
-- For writing: visit the homepage, archives, and tag pages
-- For photography: go to [Gallery](/en/gallery/)
-- For longer-term project direction: start here, then move to future project pages
