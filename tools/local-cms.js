@@ -39,7 +39,8 @@ const LLM_ENV_KEYS = {
   model: 'LOCAL_CMS_LLM_MODEL',
   temperature: 'LOCAL_CMS_LLM_TEMPERATURE',
   prompt: 'LOCAL_CMS_LLM_PROMPT',
-  translationPrompt: 'LOCAL_CMS_TRANSLATION_PROMPT'
+  translationPrompt: 'LOCAL_CMS_TRANSLATION_PROMPT',
+  rewritePrompt: 'LOCAL_CMS_REWRITE_PROMPT'
 };
 const CMS_SESSION_TTL_MS = 30000;
 const CMS_SHUTDOWN_GRACE_MS = 5000;
@@ -102,6 +103,15 @@ const DEFAULT_LLM_SETTINGS = {
     '需要同时输出英文标题、英文一句话概括、英文标签数组和英文 Markdown 正文。',
     '保留原文事实、链接、图片地址、代码块、项目名和专有名词，不要捏造信息。',
     '输出必须是 JSON 对象，结构为 {"title":"","description":"","tags":[""],"body":""}。',
+    '不要输出 JSON 以外的任何解释文字。'
+  ].join('\n'),
+  rewritePrompt: [
+    '你是一个严谨的双语博客总编辑。',
+    '请根据用户提供的中文原稿、现有英文稿和项目写作规范，重度整理整篇双语文章。',
+    '你需要同时重写并统一中文标题、中文一句话概括、中文标签、中文 Markdown 正文，以及英文标题、英文一句话概括、英文标签、英文 Markdown 正文。',
+    '目标是让中英文两版在结构、信息层级、段落组织、标题颗粒度和开头概括上保持一致，但不要逐字硬译。',
+    '保留事实、时间、地点、图片地址、链接、代码块、项目名和专有名词，不要捏造信息，不要输出 front matter。',
+    '输出必须是 JSON 对象，结构为 {"zh":{"title":"","description":"","tags":[""],"body":""},"en":{"title":"","description":"","tags":[""],"body":""}}。',
     '不要输出 JSON 以外的任何解释文字。'
   ].join('\n')
 };
@@ -1256,7 +1266,8 @@ function loadEnvSettings() {
       model: env[LLM_ENV_KEYS.model] || '',
       temperature: Number(env[LLM_ENV_KEYS.temperature] || DEFAULT_LLM_SETTINGS.temperature),
       prompt: env[LLM_ENV_KEYS.prompt] || DEFAULT_LLM_SETTINGS.prompt,
-      translationPrompt: env[LLM_ENV_KEYS.translationPrompt] || DEFAULT_LLM_SETTINGS.translationPrompt
+      translationPrompt: env[LLM_ENV_KEYS.translationPrompt] || DEFAULT_LLM_SETTINGS.translationPrompt,
+      rewritePrompt: env[LLM_ENV_KEYS.rewritePrompt] || DEFAULT_LLM_SETTINGS.rewritePrompt
     }
   };
 }
@@ -1321,7 +1332,8 @@ function saveLocalSettings(payload) {
     [LLM_ENV_KEYS.model]: next.llm.model || '',
     [LLM_ENV_KEYS.temperature]: String(Number(next.llm.temperature ?? DEFAULT_LLM_SETTINGS.temperature)),
     [LLM_ENV_KEYS.prompt]: next.llm.prompt || DEFAULT_LLM_SETTINGS.prompt,
-    [LLM_ENV_KEYS.translationPrompt]: next.llm.translationPrompt || DEFAULT_LLM_SETTINGS.translationPrompt
+    [LLM_ENV_KEYS.translationPrompt]: next.llm.translationPrompt || DEFAULT_LLM_SETTINGS.translationPrompt,
+    [LLM_ENV_KEYS.rewritePrompt]: next.llm.rewritePrompt || DEFAULT_LLM_SETTINGS.rewritePrompt
   });
   return {
     ...next,
@@ -1339,7 +1351,8 @@ function getLlmSettingsPayload() {
       model: settings.llm.model || '',
       temperature: Number(settings.llm.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
       prompt: settings.llm.prompt || DEFAULT_LLM_SETTINGS.prompt,
-      translationPrompt: settings.llm.translationPrompt || DEFAULT_LLM_SETTINGS.translationPrompt
+      translationPrompt: settings.llm.translationPrompt || DEFAULT_LLM_SETTINGS.translationPrompt,
+      rewritePrompt: settings.llm.rewritePrompt || DEFAULT_LLM_SETTINGS.rewritePrompt
     }
   };
 }
@@ -2443,8 +2456,27 @@ function normalizeLlmSettingsInput(payload) {
     model: String(llm.model || '').trim(),
     temperature: Number(llm.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
     prompt: String(llm.prompt || '').trim(),
-    translationPrompt: String(llm.translationPrompt || '').trim()
+    translationPrompt: String(llm.translationPrompt || '').trim(),
+    rewritePrompt: String(llm.rewritePrompt || '').trim()
   };
+}
+
+function preserveMoreMarker(sourceBody, nextBody) {
+  const moreMarker = '<!-- more -->';
+  const source = String(sourceBody || '').trim();
+  const content = String(nextBody || '').trim();
+
+  if (!content) return '';
+  if (!source.includes(moreMarker) || content.includes(moreMarker)) {
+    return content;
+  }
+
+  const paragraphs = content.split(/\n\s*\n/).filter(Boolean);
+  if (paragraphs.length <= 1) {
+    return `${content}\n\n${moreMarker}`.trim();
+  }
+
+  return [paragraphs[0], moreMarker].concat(paragraphs.slice(1)).join('\n\n').trim();
 }
 
 function ensureLlmSettingsObject(settings) {
@@ -2962,6 +2994,186 @@ async function translateChineseDraftToEnglish(payload) {
     description,
     tags,
     body,
+    modelUsed,
+    translatedAt
+  };
+}
+
+function normalizeRewrittenSection(section, fallback = {}) {
+  const source = section && typeof section === 'object' ? section : {};
+  return {
+    title: String(source.title || fallback.title || '').trim(),
+    description: String(source.description || fallback.description || '').trim(),
+    tags: normalizeTranslatedTags(
+      Object.prototype.hasOwnProperty.call(source, 'tags') ? source.tags : fallback.tags
+    ),
+    body: String(source.body || fallback.body || '').trim()
+  };
+}
+
+function buildRewriteStyleGuideContext() {
+  const guide = loadProjectWritingStyleGuide();
+  if (!guide) return '';
+
+  return [
+    compactWritingGuideSection(extractWritingGuideSection(guide, '2. 文章骨架'), 8),
+    compactWritingGuideSection(extractWritingGuideSection(guide, '3. 开头概括规范'), 8),
+    compactWritingGuideSection(extractWritingGuideSection(guide, '5. 图片与图注'), 6),
+    compactWritingGuideSection(extractWritingGuideSection(guide, '6. 通用写作标准'), 8),
+    compactWritingGuideSection(extractWritingGuideSection(guide, '7. 翻译稿规则'), 8),
+    compactWritingGuideSection(extractWritingGuideSection(guide, '9. 给 agent 的排版要求'), 6)
+  ].filter(Boolean).join('\n\n');
+}
+
+async function rewriteBilingualPostWithLlm(payload) {
+  const settings = getLlmSettingsPayload().llm;
+
+  if (!settings.endpoint || !settings.apiKey || !settings.model) {
+    throw new Error('请先在 LLM 配置里填写 endpoint、API Key 和 model。');
+  }
+
+  const zhBody = String(payload.zhBody || '').trim();
+  if (!zhBody) {
+    throw new Error('中文正文为空，无法执行重度整理。');
+  }
+
+  const rewriteGuideContext = buildRewriteStyleGuideContext();
+  const existingEnBody = removeExistingTranslationNote(String(payload.existingEnBody || '').trim());
+
+  let response;
+  try {
+    response = await fetch(settings.endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${settings.apiKey}`
+      },
+      body: JSON.stringify({
+        model: settings.model,
+        temperature: Number(settings.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
+        messages: [
+          { role: 'system', content: settings.rewritePrompt || DEFAULT_LLM_SETTINGS.rewritePrompt },
+          {
+            role: 'system',
+            content: rewriteGuideContext
+              ? [
+                '请严格遵守当前项目的双语写作规范，尤其注意：',
+                '- 中英文两版要共享同一套信息结构与段落逻辑。',
+                '- 中文和英文的一句话概括都要短、直接、有信息量。',
+                '- 英文标题尽量使用 sentence case。',
+                '- 保留并正确放置 `<!-- more -->`。',
+                '- 不要输出 front matter。',
+                '- 不要自行添加翻译说明，我会在后处理中统一插入。',
+                '',
+                '下面是从项目文档实时读取的写作规范：',
+                rewriteGuideContext
+              ].join('\n')
+              : [
+                '请严格遵守当前项目的双语写作规范。',
+                '中英文两版要共享同一套信息结构与段落逻辑。',
+                '英文标题尽量使用 sentence case。',
+                '保留并正确放置 `<!-- more -->`。',
+                '不要输出 front matter 或翻译说明。'
+              ].join('\n')
+          },
+          {
+            role: 'user',
+            content: JSON.stringify({
+              task: 'Heavily reorganize this bilingual blog post and return a full polished zh/en result.',
+              outputSchema: {
+                zh: {
+                  title: 'Chinese title',
+                  description: 'Chinese one-line summary',
+                  tags: ['Chinese tags'],
+                  body: 'Chinese Markdown body'
+                },
+                en: {
+                  title: 'English title',
+                  description: 'English one-line summary',
+                  tags: ['English tags'],
+                  body: 'English Markdown body'
+                }
+              },
+              constraints: [
+                'Keep all factual details consistent with the source.',
+                'Do not invent information.',
+                'Keep image paths, links, blockquotes, and code blocks intact when they exist.',
+                'Do not output front matter.',
+                'Return JSON only.'
+              ],
+              currentMetadata: {
+                slug: String(payload.slug || '').trim(),
+                categoryZh: String(payload.categoryZh || '').trim(),
+                categoryEn: String(payload.categoryEn || '').trim(),
+                toc: Boolean(payload.toc)
+              },
+              sourceDraft: {
+                zh: {
+                  title: String(payload.zhTitle || '').trim(),
+                  description: String(payload.zhDescription || '').trim(),
+                  tags: normalizeStringList(payload.zhTags),
+                  body: zhBody
+                },
+                en: {
+                  title: String(payload.existingEnTitle || '').trim(),
+                  description: String(payload.existingEnDescription || '').trim(),
+                  tags: normalizeStringList(payload.existingEnTags),
+                  body: existingEnBody
+                }
+              }
+            }, null, 2)
+          }
+        ]
+      })
+    });
+  } catch (error) {
+    throw new Error(formatFetchErrorMessage(error, settings.endpoint, settings.model));
+  }
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`LLM 请求失败：${response.status} ${text.slice(0, 300)}`);
+  }
+
+  const data = await response.json();
+  const rewritten = extractJsonObjectFromText(parseLlmResponseContent(data));
+  const fallbackZh = {
+    title: payload.zhTitle,
+    description: payload.zhDescription,
+    tags: payload.zhTags,
+    body: zhBody
+  };
+  const fallbackEn = {
+    title: payload.existingEnTitle,
+    description: payload.existingEnDescription,
+    tags: payload.existingEnTags,
+    body: existingEnBody
+  };
+  const normalizedZh = normalizeRewrittenSection(rewritten.zh, fallbackZh);
+  const normalizedEn = normalizeRewrittenSection(rewritten.en, fallbackEn);
+  const modelUsed = settings.model;
+  const translatedAt = formatTranslationNoteTimestamp(new Date());
+
+  normalizedZh.body = preserveMoreMarker(zhBody, normalizedZh.body);
+  normalizedEn.body = preserveMoreMarker(existingEnBody || zhBody, normalizedEn.body);
+  normalizedEn.body = upsertTranslationNote(normalizedEn.body, modelUsed, translatedAt);
+
+  if (!normalizedZh.title) {
+    throw new Error('LLM 返回的中文标题为空。');
+  }
+  if (!normalizedZh.body) {
+    throw new Error('LLM 返回的中文正文为空。');
+  }
+  if (!normalizedEn.title) {
+    throw new Error('LLM 返回的英文标题为空。');
+  }
+  if (!normalizedEn.body) {
+    throw new Error('LLM 返回的英文正文为空。');
+  }
+
+  return {
+    zh: normalizedZh,
+    en: normalizedEn,
     modelUsed,
     translatedAt
   };
@@ -4055,6 +4267,13 @@ const server = http.createServer(async (req, res) => {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
       jsonResponse(res, 200, await translateChineseDraftToEnglish(payload));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/rewrite/post') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, await rewriteBilingualPostWithLlm(payload));
       return;
     }
 

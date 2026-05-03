@@ -34,3 +34,6 @@ tmp/
 _backup/
 images_backup/
 source/images_backup/
+
+# planning docs (local only)
+future-expansion-plan/

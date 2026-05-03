@@ -768,6 +768,21 @@ select:focus {
   background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(248, 248, 248, 0.98));
 }
 
+.tool-action-button-strong {
+  background: linear-gradient(180deg, rgba(17, 17, 17, 0.98), rgba(58, 58, 58, 0.96));
+  border-color: rgba(17, 17, 17, 0.88);
+}
+
+.tool-action-button-strong .tool-action-title,
+.tool-action-button-strong .tool-action-meta {
+  color: #ffffff;
+}
+
+.tool-action-button-strong:hover {
+  background: linear-gradient(180deg, rgba(17, 17, 17, 1), rgba(40, 40, 40, 0.98));
+  border-color: rgba(17, 17, 17, 1);
+}
+
 .tool-action-title {
   font-weight: 700;
   color: var(--text);

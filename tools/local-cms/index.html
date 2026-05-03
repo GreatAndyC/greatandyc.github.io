@@ -148,6 +148,10 @@
               <span>中译英 Prompt</span>
               <textarea id="llm-translation-prompt" rows="6"></textarea>
             </label>
+            <label>
+              <span>重度整理 Prompt</span>
+              <textarea id="llm-rewrite-prompt" rows="7"></textarea>
+            </label>
             <p class="field-hint">已支持 OpenAI / Anthropic / Xiaomi MiMo / DeepSeek / Doubao 等主流供应商的自动适配。Xiaomi MiMo 建议使用 `https://api.xiaomimimo.com/v1` 或兼容网关地址，模型名使用文档里的小写格式，如 `mimo-v2.5-pro`。</p>
           </div>
         </section>
@@ -256,6 +260,10 @@
                   <button id="format-zh-button" class="ghost-button tool-action-button" type="button">
                     <span class="tool-action-title">一键排版</span>
                     <span class="tool-action-meta">整理中文正文结构</span>
+                  </button>
+                  <button id="rewrite-post-button" class="ghost-button tool-action-button tool-action-button-strong" type="button">
+                    <span class="tool-action-title">重度整理</span>
+                    <span class="tool-action-meta">同时重写中英文结构</span>
                   </button>
                 </div>
               </div>

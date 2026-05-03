@@ -34,7 +34,8 @@ const state = {
       model: '',
       temperature: 0.2,
       prompt: '',
-      translationPrompt: ''
+      translationPrompt: '',
+      rewritePrompt: ''
     }
   },
   selectedId: '',
@@ -121,6 +122,7 @@ const elements = {
   testLlmButton: document.querySelector('#test-llm-button'),
   saveLlmButton: document.querySelector('#save-llm-button'),
   formatZhButton: document.querySelector('#format-zh-button'),
+  rewritePostButton: document.querySelector('#rewrite-post-button'),
   translateEnButton: document.querySelector('#translate-en-button'),
   uploadImageButton: document.querySelector('#upload-image-button'),
   createImageFolderButton: document.querySelector('#create-image-folder-button'),
@@ -155,7 +157,8 @@ const elements = {
     model: document.querySelector('#llm-model'),
     temperature: document.querySelector('#llm-temperature'),
     prompt: document.querySelector('#llm-prompt'),
-    translationPrompt: document.querySelector('#llm-translation-prompt')
+    translationPrompt: document.querySelector('#llm-translation-prompt'),
+    rewritePrompt: document.querySelector('#llm-rewrite-prompt')
   },
   workspaceKicker: document.querySelector('#workspace-kicker'),
   workspaceTitle: document.querySelector('#workspace-title'),
@@ -1098,6 +1101,7 @@ function fillLlmSettings() {
   elements.llm.temperature.value = String(llm.temperature ?? 0.2);
   elements.llm.prompt.value = llm.prompt || '';
   elements.llm.translationPrompt.value = llm.translationPrompt || '';
+  elements.llm.rewritePrompt.value = llm.rewritePrompt || '';
 }
 
 function formatPostListTitle(item) {
@@ -2290,7 +2294,8 @@ function buildLlmPayload() {
       model: elements.llm.model.value.trim(),
       temperature: Number(elements.llm.temperature.value || 0.2),
       prompt: elements.llm.prompt.value,
-      translationPrompt: elements.llm.translationPrompt.value
+      translationPrompt: elements.llm.translationPrompt.value,
+      rewritePrompt: elements.llm.rewritePrompt.value
     }
   };
 }
@@ -2373,6 +2378,22 @@ function applyGalleryTranslationResult(payload) {
   elements.gallery.tagsEn.value = (state.gallery.currentAlbum.tags.en || []).join(', ');
   renderGalleryPhotoList();
   renderList();
+}
+
+function getCurrentCategoryForLlm() {
+  const isCustomCategory = elements.post.category.value === CUSTOM_CATEGORY_VALUE;
+  if (isCustomCategory) {
+    return {
+      zh: elements.post.categoryCustomZh.value.trim(),
+      en: elements.post.categoryCustomEn.value.trim()
+    };
+  }
+
+  const matched = (state.meta.categories || []).find(option => option.id === elements.post.category.value);
+  return {
+    zh: matched ? matched.zh : '',
+    en: matched ? matched.en : ''
+  };
 }
 
 function fileToBase64(file) {
@@ -3249,6 +3270,67 @@ async function handleTranslateEn() {
   }
 }
 
+async function handleRewritePost() {
+  try {
+    const category = getCurrentCategoryForLlm();
+    setFormatProgress(10, '正在整理整篇双语稿件…', true);
+    setStatus('正在调用 LLM 重度整理中英文结构...');
+    const payload = await request('/api/rewrite/post', {
+      method: 'POST',
+      body: JSON.stringify({
+        slug: elements.post.slug.value.trim(),
+        toc: elements.post.toc.checked,
+        categoryZh: category.zh,
+        categoryEn: category.en,
+        zhTitle: elements.post.zhTitle.value,
+        zhDescription: elements.post.zhDescription.value,
+        zhTags: elements.post.zhTags.value,
+        zhBody: elements.post.zhBody.value,
+        existingEnTitle: elements.post.enTitle.value,
+        existingEnDescription: elements.post.enDescription.value,
+        existingEnTags: elements.post.enTags.value,
+        existingEnBody: elements.post.enBody.value
+      })
+    });
+
+    setFormatProgress(76, '模型已返回双语结果，正在写入编辑区…');
+    elements.post.zhTitle.value = payload.zh && payload.zh.title ? payload.zh.title : '';
+    elements.post.zhDescription.value = payload.zh && payload.zh.description ? payload.zh.description : '';
+    elements.post.zhTags.value = payload.zh && Array.isArray(payload.zh.tags) ? payload.zh.tags.join(', ') : ((payload.zh && payload.zh.tags) || '');
+    elements.post.zhBody.value = payload.zh && payload.zh.body ? payload.zh.body : '';
+    elements.post.enTitle.value = payload.en && payload.en.title ? payload.en.title : '';
+    elements.post.enDescription.value = payload.en && payload.en.description ? payload.en.description : '';
+    elements.post.enTags.value = payload.en && Array.isArray(payload.en.tags) ? payload.en.tags.join(', ') : ((payload.en && payload.en.tags) || '');
+    elements.post.enBody.value = payload.en && payload.en.body ? payload.en.body : '';
+    scheduleZhPreviewRender(0);
+
+    const canAutoSave = Boolean(
+      elements.post.slug.value.trim() &&
+      elements.post.zhTitle.value.trim() &&
+      elements.post.enTitle.value.trim()
+    );
+
+    if (canAutoSave) {
+      await savePostRecord(buildPostPayload(), {
+        silent: true
+      });
+      setFormatProgress(100, '重度整理结果已写入双语正文与 Markdown 文件。');
+      setStatus(`中英文结构已重度整理，并已自动写入 Markdown 文件。当前模型：${payload.modelUsed || '未返回'}`, 'success');
+      showToast('重度整理完成', `中英文标题、摘要、标签和正文都已更新并保存。模型：${payload.modelUsed || '未返回'}`);
+    } else {
+      setFormatProgress(100, '重度整理结果已写入编辑区，等待手动保存。');
+      setStatus(`中英文结构已重度整理，但当前文章信息不完整，暂未自动保存到文件。当前模型：${payload.modelUsed || '未返回'}`, 'success');
+      showToast('重度整理完成', `双语内容已写入编辑区；补齐 slug 后保存，即可写回 Markdown 文件。模型：${payload.modelUsed || '未返回'}`);
+    }
+
+    clearFormatProgress();
+  } catch (error) {
+    setFormatProgress(100, `重度整理失败：${error.message}`);
+    clearFormatProgress(1800);
+    setStatus(error.message, 'error');
+  }
+}
+
 async function handleSaveGalleryAlbum() {
   try {
     setStatus('正在保存画廊相册...');
@@ -3633,6 +3715,7 @@ elements.translateGalleryButton.addEventListener('click', handleTranslateGallery
 elements.saveLlmButton.addEventListener('click', handleSaveLlmSettings);
 elements.testLlmButton.addEventListener('click', handleTestLlmConnection);
 elements.formatZhButton.addEventListener('click', handleFormatZh);
+elements.rewritePostButton.addEventListener('click', handleRewritePost);
 elements.translateEnButton.addEventListener('click', handleTranslateEn);
 elements.createImageFolderButton.addEventListener('click', handleCreateImageFolder);
 elements.renameImageFolderButton.addEventListener('click', handleRenameImageFolder);
