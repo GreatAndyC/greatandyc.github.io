@@ -232,11 +232,12 @@
             <div id="image-dropzone" class="image-dropzone" tabindex="0">
               <input id="image-file-input" type="file" accept="image/*" multiple hidden>
               <p>拖动图片到这里，或点击选择本地文件</p>
-              <span id="image-dropzone-meta">上传后会自动写入 `source/images/posts/` 下的所选目录，并把路径追加到封面图列表。</span>
+              <span id="image-dropzone-meta">上传后会自动写入 `source/images/posts/` 下的所选目录；封面请在下方目录图片区单独指定。</span>
             </div>
             <label>
-              <span>封面图路径列表</span>
-              <textarea id="post-photos" rows="3" placeholder="/images/posts/ios-vol4/cover.png&#10;/images/posts/ios-vol4/detail.png"></textarea>
+              <span>封面图路径</span>
+              <textarea id="post-photos" rows="2" placeholder="/images/posts/ios-vol4/cover.png"></textarea>
+              <small class="field-hint">这里只保留 1 张封面图。正文插图请通过下方图片卡片直接插入到中文稿。</small>
             </label>
             <div>
               <span class="field-label">封面图预览</span>

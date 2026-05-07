@@ -6,6 +6,7 @@
 {% block class %}index posts-expand feed-page{% endblock %}
 
 {% block content %}
+  {%- set show_home_sort = true %}
   {% include '_partials/home/category-panel.swig' %}
 
   <div class="feed-posts-container">

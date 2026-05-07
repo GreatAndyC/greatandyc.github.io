@@ -1390,33 +1390,67 @@ function renderDeleteButton() {
 }
 
 function renderPostPhotoPreview() {
-  const photos = elements.post.photos.value
-    .split(/\r?\n/)
-    .map(item => item.trim())
-    .filter(Boolean);
+  const coverPath = getPostCoverPath();
 
-  if (!photos.length) {
+  if (!coverPath) {
     elements.post.photoPreview.innerHTML = '<div class="gallery-empty-state">还没有封面图。上传图片或手动填写路径后，这里会显示预览。</div>';
     return;
   }
 
-  elements.post.photoPreview.innerHTML = photos.map((src, index) => `
-    <figure class="post-photo-card${index === 0 ? ' is-primary' : ''}">
-      <img src="${escapeHtml(src)}" alt="${escapeHtml(`cover-${index + 1}`)}">
-      <figcaption>${escapeHtml(src)}</figcaption>
+  elements.post.photoPreview.innerHTML = `
+    <figure class="post-photo-card is-primary">
+      <img src="${escapeHtml(coverPath)}" alt="post-cover">
+      <figcaption>当前封面 · ${escapeHtml(coverPath)}</figcaption>
     </figure>
-  `).join('');
+  `;
+}
+
+function buildPostImageMarkdown(imagePath) {
+  return `![](${imagePath})`;
+}
+
+function insertTextIntoTextarea(textarea, snippet) {
+  const start = typeof textarea.selectionStart === 'number' ? textarea.selectionStart : textarea.value.length;
+  const end = typeof textarea.selectionEnd === 'number' ? textarea.selectionEnd : textarea.value.length;
+  const before = textarea.value.slice(0, start);
+  const after = textarea.value.slice(end);
+  const leading = before && !before.endsWith('\n\n') ? (before.endsWith('\n') ? '\n' : '\n\n') : '';
+  const trailing = after && !after.startsWith('\n\n') ? (after.startsWith('\n') ? '\n' : '\n\n') : '';
+  const nextValue = `${before}${leading}${snippet}${trailing}${after}`;
+  const caret = (before + leading + snippet).length;
+
+  textarea.value = nextValue;
+  textarea.focus();
+  if (typeof textarea.setSelectionRange === 'function') {
+    textarea.setSelectionRange(caret, caret);
+  }
+}
+
+function insertMarkdownIntoZhBody(imagePath) {
+  insertTextIntoTextarea(elements.post.zhBody, buildPostImageMarkdown(imagePath));
+  scheduleZhPreviewRender(0);
+  scheduleAutosave();
+}
+
+function setPostCoverImage(imagePath) {
+  setPostCoverPath(imagePath);
+  renderPostPhotoPreview();
+  renderPostImageLibrary();
+  scheduleAutosave();
+}
+
+function normalizePostCoverInput() {
+  const coverPath = getPostCoverPath();
+  if (elements.post.photos.value !== coverPath) {
+    elements.post.photos.value = coverPath;
+  }
 }
 
 function renderPostImageLibrary() {
   const folder = state.postImages.folder || '';
   const items = state.postImages.items || [];
-  const selected = new Set(
-    elements.post.photos.value
-      .split(/\r?\n/)
-      .map(item => item.trim())
-      .filter(Boolean)
-  );
+  const currentCover = getPostCoverPath();
+  const zhBody = elements.post.zhBody.value;
 
   if (!folder) {
     elements.post.imageLibrarySummary.textContent = '先选择一个文章图片目录，再在这里管理图片。';
@@ -1424,7 +1458,7 @@ function renderPostImageLibrary() {
     return;
   }
 
-  elements.post.imageLibrarySummary.textContent = `images/${folder} 下共 ${items.length} 个文件。可直接加入当前文章、查看引用、重命名或删除。`;
+  elements.post.imageLibrarySummary.textContent = `images/${folder} 下共 ${items.length} 个文件。支持一键插入中文稿、设为封面、查引用、移动和删除。`;
 
   if (!items.length) {
     elements.post.imageLibraryGrid.innerHTML = '<div class="gallery-empty-state">当前目录还没有图片。可先上传图片，或把已有图片移动到这个目录。</div>';
@@ -1432,23 +1466,32 @@ function renderPostImageLibrary() {
   }
 
   elements.post.imageLibraryGrid.innerHTML = items.map(item => {
-    const included = selected.has(item.path);
+    const isCover = currentCover === item.path;
+    const inserted = zhBody.includes(buildPostImageMarkdown(item.path)) || zhBody.includes(`src="${item.path}"`);
+    const metaLine = [item.dimensions || '', item.camera || '', item.captureMeta || '', item.meta || ''].filter(Boolean).join(' · ');
     return `
-      <article class="library-card${included ? ' is-selected' : ''}">
+      <article class="library-card${isCover ? ' is-selected' : ''}">
         <button class="library-preview" type="button" data-post-image-action="copy" data-post-image-path="${escapeHtml(item.path)}" title="点击复制路径">
           <img src="${escapeHtml(item.path)}" alt="${escapeHtml(item.name)}">
         </button>
         <div class="library-card-body">
-          <strong>${escapeHtml(item.name)}</strong>
+          <div class="library-card-topline">
+            <strong>${escapeHtml(item.name)}</strong>
+            <div class="library-card-badges">
+              ${isCover ? '<span class="library-badge is-solid">封面</span>' : ''}
+              ${inserted ? '<span class="library-badge">已插入正文</span>' : ''}
+            </div>
+          </div>
           <span>${escapeHtml(item.path)}</span>
-          <span>${escapeHtml([item.dimensions || '', item.camera || '', item.captureMeta || '', item.meta || ''].filter(Boolean).join(' · '))}</span>
+          <span>${escapeHtml(metaLine)}</span>
         </div>
         <div class="library-card-actions">
-          <button class="ghost-button" type="button" data-post-image-action="toggle" data-post-image-path="${escapeHtml(item.path)}">${included ? '移出当前文章' : '加入当前文章'}</button>
+          <button class="ghost-button" type="button" data-post-image-action="insert-markdown" data-post-image-path="${escapeHtml(item.path)}">添加到当前文章</button>
+          <button class="ghost-button" type="button" data-post-image-action="set-cover" data-post-image-path="${escapeHtml(item.path)}">${isCover ? '当前封面' : '设为封面'}</button>
           <button class="ghost-button" type="button" data-post-image-action="copy" data-post-image-path="${escapeHtml(item.path)}">复制路径</button>
-          <button class="ghost-button" type="button" data-post-image-action="references" data-post-image-path="${escapeHtml(item.path)}">查看引用</button>
-          <button class="ghost-button" type="button" data-post-image-action="move" data-post-image-path="${escapeHtml(item.path)}">重命名/移动</button>
-          <button class="ghost-button danger-button" type="button" data-post-image-action="delete" data-post-image-path="${escapeHtml(item.path)}">删除图片</button>
+          <button class="ghost-button" type="button" data-post-image-action="references" data-post-image-path="${escapeHtml(item.path)}">引用</button>
+          <button class="ghost-button" type="button" data-post-image-action="move" data-post-image-path="${escapeHtml(item.path)}">移动</button>
+          <button class="ghost-button danger-button" type="button" data-post-image-action="delete" data-post-image-path="${escapeHtml(item.path)}">删除</button>
         </div>
       </article>
     `;
@@ -2074,10 +2117,7 @@ function syncGalleryDraftFromForm() {
 }
 
 function inferImageFolder(record) {
-  const firstPhoto = String(record && record.common && record.common.photos || '')
-    .split(/\r?\n/)
-    .map(item => item.trim())
-    .find(Boolean);
+  const firstPhoto = getPostCoverPath(record && record.common ? record.common.photos : '');
 
   if (firstPhoto && firstPhoto.startsWith('/images/')) {
     const rest = firstPhoto.replace(/^\/images\//, '');
@@ -2089,30 +2129,29 @@ function inferImageFolder(record) {
   return '';
 }
 
-function appendPhotoPaths(paths) {
-  const existing = elements.post.photos.value
+function getPostCoverPath(value = elements.post.photos.value) {
+  return String(value || '')
     .split(/\r?\n/)
     .map(item => item.trim())
-    .filter(Boolean);
-  const next = existing.slice();
+    .find(Boolean) || '';
+}
 
-  paths.forEach(item => {
-    if (!next.includes(item)) next.push(item);
-  });
+function setPostCoverPath(imagePath = '') {
+  elements.post.photos.value = String(imagePath || '').trim();
+}
 
-  elements.post.photos.value = next.join('\n');
+function appendPhotoPaths(paths) {
+  const nextPaths = Array.isArray(paths) ? paths.map(item => String(item || '').trim()).filter(Boolean) : [];
+  if (!nextPaths.length || getPostCoverPath()) return;
+  setPostCoverPath(nextPaths[0]);
 }
 
 function removePhotoPaths(paths) {
   const removed = new Set((paths || []).filter(Boolean));
   if (!removed.size) return;
-
-  const next = elements.post.photos.value
-    .split(/\r?\n/)
-    .map(item => item.trim())
-    .filter(item => item && !removed.has(item));
-
-  elements.post.photos.value = next.join('\n');
+  if (removed.has(getPostCoverPath())) {
+    setPostCoverPath('');
+  }
 }
 
 function rewritePostPhotoPaths(renameEntries) {
@@ -2122,26 +2161,14 @@ function rewritePostPhotoPaths(renameEntries) {
       .map(item => [item.from, item.to])
   );
   if (!renameMap.size) return;
-
-  const next = elements.post.photos.value
-    .split(/\r?\n/)
-    .map(item => item.trim())
-    .filter(Boolean)
-    .map(item => renameMap.get(item) || item);
-
-  elements.post.photos.value = next.join('\n');
+  setPostCoverPath(renameMap.get(getPostCoverPath()) || getPostCoverPath());
 }
 
 function rewritePostPhotoFolderPaths(currentFolder, nextFolder) {
   const fromPrefix = `/images/${currentFolder}/`;
   const toPrefix = `/images/${nextFolder}/`;
-  const next = elements.post.photos.value
-    .split(/\r?\n/)
-    .map(item => item.trim())
-    .filter(Boolean)
-    .map(item => (item.startsWith(fromPrefix) ? item.replace(fromPrefix, toPrefix) : item));
-
-  elements.post.photos.value = next.join('\n');
+  const coverPath = getPostCoverPath();
+  setPostCoverPath(coverPath.startsWith(fromPrefix) ? coverPath.replace(fromPrefix, toPrefix) : coverPath);
 }
 
 function getPostImageBaseName(folder = '') {
@@ -2413,7 +2440,7 @@ function buildPostPayload() {
       categoryId: isCustomCategory ? '' : elements.post.category.value,
       categoryCustomZh: isCustomCategory ? elements.post.categoryCustomZh.value.trim() : '',
       categoryCustomEn: isCustomCategory ? elements.post.categoryCustomEn.value.trim() : '',
-      photos: elements.post.photos.value
+      photos: getPostCoverPath()
     },
     zh: {
       title: elements.post.zhTitle.value,
@@ -2740,12 +2767,7 @@ async function handleDeleteImageFolder() {
     state.imageFolders = payload.folders || [''];
     renderImageFolders();
     elements.post.imageFolderSelect.value = '';
-    removePhotoPaths(
-      elements.post.photos.value
-        .split(/\r?\n/)
-        .map(item => item.trim())
-        .filter(item => item.startsWith(`/images/${folder}/`))
-    );
+    removePhotoPaths(getPostCoverPath().startsWith(`/images/${folder}/`) ? [getPostCoverPath()] : []);
     renderPostPhotoPreview();
     await loadPostImageLibrary('');
     setStatus(`已删除目录：images/${payload.deleted}`, 'success');
@@ -3255,25 +3277,6 @@ async function handleLibraryShowReferences(imagePath) {
   setStatus(title, 'success');
 }
 
-function togglePostImageSelection(imagePath) {
-  const current = new Set(
-    elements.post.photos.value
-      .split(/\r?\n/)
-      .map(item => item.trim())
-      .filter(Boolean)
-  );
-
-  if (current.has(imagePath)) {
-    current.delete(imagePath);
-  } else {
-    current.add(imagePath);
-  }
-
-  elements.post.photos.value = Array.from(current).join('\n');
-  renderPostPhotoPreview();
-  renderPostImageLibrary();
-}
-
 async function handlePostImageShowReferences(imagePath) {
   const payload = await loadImageReferences({ path: imagePath });
   const title = payload.referenceCount > 0
@@ -3314,7 +3317,7 @@ async function handlePostMoveImage(imagePath) {
 
   state.imageFolders = payload.folders || state.imageFolders;
   renderImageFolders();
-  if (elements.post.photos.value.includes(imagePath)) {
+  if (getPostCoverPath() === imagePath) {
     rewritePostPhotoPaths([{ from: imagePath, to: payload.path }]);
     renderPostPhotoPreview();
   }
@@ -4127,8 +4130,11 @@ elements.toggleLlmPanelButton.addEventListener('click', () => {
 elements.post.category.addEventListener('change', updateCategoryCustomPanel);
 elements.post.categoryCustomZh.addEventListener('input', syncCategoryPresetButtonState);
 elements.post.categoryCustomEn.addEventListener('input', syncCategoryPresetButtonState);
-elements.post.photos.addEventListener('input', renderPostPhotoPreview);
-elements.post.photos.addEventListener('input', renderPostImageLibrary);
+elements.post.photos.addEventListener('input', () => {
+  normalizePostCoverInput();
+  renderPostPhotoPreview();
+  renderPostImageLibrary();
+});
 elements.post.imageFolderSelect.addEventListener('change', async () => {
   try {
     await loadPostImageLibrary(elements.post.imageFolderSelect.value);
@@ -4138,6 +4144,7 @@ elements.post.imageFolderSelect.addEventListener('change', async () => {
 });
 elements.post.zhBody.addEventListener('input', () => {
   scheduleZhPreviewRender();
+  renderPostImageLibrary();
 });
 elements.postEditor.addEventListener('input', scheduleAutosave);
 elements.postEditor.addEventListener('change', scheduleAutosave);
@@ -4156,8 +4163,15 @@ elements.post.imageLibraryGrid.addEventListener('click', async event => {
   if (!imagePath) return;
 
   try {
-    if (button.dataset.postImageAction === 'toggle') {
-      togglePostImageSelection(imagePath);
+    if (button.dataset.postImageAction === 'insert-markdown') {
+      insertMarkdownIntoZhBody(imagePath);
+      renderPostImageLibrary();
+      setStatus(`已把图片 Markdown 插入中文稿：${imagePath}`, 'success');
+      return;
+    }
+    if (button.dataset.postImageAction === 'set-cover') {
+      setPostCoverImage(imagePath);
+      setStatus(`已设为文章封面：${imagePath}`, 'success');
       return;
     }
     if (button.dataset.postImageAction === 'copy') {

@@ -38,6 +38,27 @@
           <span class="home-category-search-label">{{ __('menu.search') }}</span>
         </button>
       {%- endif %}
+      {%- if show_home_sort %}
+        <div class="home-sort-dropdown" data-home-sort>
+          <button
+            class="home-sort-trigger"
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="{{ __('home.sort_label') }}"
+            data-home-sort-trigger
+          >
+            <span class="home-sort-trigger-label">{{ __('home.sort_label') }}</span>
+            <span class="home-sort-trigger-value" data-home-sort-current>{{ __('home.sort_published') }}</span>
+            <i class="fa fa-chevron-down home-sort-trigger-icon" aria-hidden="true"></i>
+          </button>
+          <div class="home-sort-menu" role="menu" aria-label="{{ __('home.sort_label') }}" hidden data-home-sort-menu>
+            <button class="home-sort-option is-active" type="button" role="menuitemradio" aria-checked="true" data-sort-mode="published">{{ __('home.sort_published') }}</button>
+            <button class="home-sort-option" type="button" role="menuitemradio" aria-checked="false" data-sort-mode="updated">{{ __('home.sort_updated') }}</button>
+            <button class="home-sort-option" type="button" role="menuitemradio" aria-checked="false" data-sort-mode="hot">{{ __('home.sort_hot') }}</button>
+          </div>
+        </div>
+      {%- endif %}
       <div class="home-view-toggle" role="group" aria-label="文章视图切换">
         <button class="home-view-button is-active" type="button" data-view-mode="card" aria-label="卡片视图"><i class="fa fa-th-large" aria-hidden="true"></i></button>
         <button class="home-view-button" type="button" data-view-mode="list" aria-label="列表视图"><i class="fa fa-list" aria-hidden="true"></i></button>

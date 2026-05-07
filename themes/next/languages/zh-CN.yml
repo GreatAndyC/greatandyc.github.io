@@ -57,6 +57,10 @@ counter:
 home:
   all: 全部
   more_categories: 全部分类
+  sort_label: 排序
+  sort_hot: 热度
+  sort_updated: 更新时间
+  sort_published: 发布时间
 
 state:
   posts: 日志

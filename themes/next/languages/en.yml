@@ -65,6 +65,10 @@ counter:
 home:
   all: All
   more_categories: All categories
+  sort_label: Sort
+  sort_hot: Popularity
+  sort_updated: Last updated
+  sort_published: Published
 
 state:
   posts: posts

@@ -675,7 +675,7 @@ select:focus {
 
 .post-photo-preview {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: minmax(0, 320px);
   gap: 14px;
 }
 
@@ -705,6 +705,10 @@ select:focus {
   font-size: 0.76rem;
   line-height: 1.5;
   word-break: break-all;
+}
+
+.post-photo-preview .gallery-empty-state {
+  max-width: 360px;
 }
 
 .format-toolbar {
@@ -1222,7 +1226,7 @@ select:focus {
 
 .library-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 16px;
 }
 
@@ -1230,15 +1234,20 @@ select:focus {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 14px;
+  padding: 12px;
   border: 1px solid var(--border);
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.95);
+  transition: border-color 0.14s ease, box-shadow 0.14s ease, transform 0.14s ease;
 }
 
 .library-card.is-selected {
   border-color: var(--accent);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow);
+}
+
+.library-card:hover {
+  transform: translateY(-1px);
 }
 
 .library-preview {
@@ -1251,7 +1260,7 @@ select:focus {
 .library-preview img {
   display: block;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1.45 / 1;
   object-fit: cover;
   border-radius: 14px;
   background: rgba(240, 240, 240, 0.95);
@@ -1261,6 +1270,21 @@ select:focus {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
+}
+
+.library-card-topline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.library-card-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .library-card-body strong,
@@ -1274,10 +1298,33 @@ select:focus {
   line-height: 1.45;
 }
 
+.library-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.08);
+  color: #111111;
+  font-size: 0.74rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.library-badge.is-solid {
+  background: #111111;
+  color: #ffffff;
+}
+
 .library-card-actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  flex-wrap: wrap;
+}
+
+.library-card-actions .ghost-button {
+  padding: 9px 12px;
+  white-space: nowrap;
 }
 
 .library-card-header {
@@ -1380,6 +1427,21 @@ select:focus {
 
   .mode-switch {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .library-card-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .library-grid,
+  .post-photo-preview {
+    grid-template-columns: 1fr;
+  }
+
+  .library-card-actions {
+    grid-template-columns: 1fr;
   }
 }
 
