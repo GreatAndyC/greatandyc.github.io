@@ -1,6 +1,6 @@
 ---
 title: "Master's Research: Fatigue Recognition in Robot-Assisted Squat Training"
-date: 2026-05-03 20:45:00
+date: "2026-05-04 04:45:00"
 lang: en
 slug: msc-thesis-fatigue-recognition
 permalink: en/2026/05/03/msc-thesis-fatigue-recognition/
@@ -16,6 +16,7 @@ tags:
 categories:
   - Research
 toc: true
+updated: "2026-05-14 20:47:13"
 ---
 
 ## Overview

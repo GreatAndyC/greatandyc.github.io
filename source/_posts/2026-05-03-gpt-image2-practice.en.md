@@ -15,12 +15,14 @@ tags:
 categories:
   - Tutorial
 toc: false
-updated: "2026-05-14 20:46:24"
+updated: "2026-05-14 20:49:57"
 ---
 
 <!-- more -->
 
 > Translation note: This English version was translated by deepseek-v4-flash on 2026-05-14 19:34:08 CST. The source text is the corresponding Chinese post in this repository.
+
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-15.png)
 
 On April 21, 2026, ChatGPT released a new image generation model: ChatGPT Image 2.0.
 
@@ -50,7 +52,7 @@ With Image 2, it was the perfect match. The author upgraded this image with mode
 
 > Using this face, generate an image of him receiving the Nobel Prize in Stockholm. He must be in a suit, photorealistic, with a clear frontal view. The award is the Nobel Prize in Chemistry. All details must conform to the real-world Nobel ceremony. 16:9, a masterwork.
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-11.png)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-27.png)
 
 Then the post-ceremony handshake with the King of Sweden:
 

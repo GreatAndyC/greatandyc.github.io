@@ -1,6 +1,6 @@
 ---
-title: "硕士研究：机器人辅助深蹲训练中的疲劳识别"
-date: 2026-05-03 20:45:00
+title: 硕士研究：机器人辅助深蹲训练中的疲劳识别
+date: "2026-05-04 04:45:00"
 lang: zh-CN
 slug: msc-thesis-fatigue-recognition
 permalink: zh-CN/2026/05/03/msc-thesis-fatigue-recognition/
@@ -16,6 +16,7 @@ tags:
 categories:
   - 研究
 toc: true
+updated: "2026-05-14 20:47:13"
 ---
 
 ## 概览
