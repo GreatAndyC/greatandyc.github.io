@@ -15,7 +15,7 @@ tags:
 categories:
   - 教程
 toc: false
-updated: "2026-05-14 19:51:35"
+updated: "2026-05-14 20:07:42"
 ---
 
 ![](/images/posts/post/gpt-image-2/gpt-image2-practice-17-2.png)
@@ -44,7 +44,7 @@ updated: "2026-05-14 19:51:35"
 ![](/images/posts/post/gpt-image-2/gpt-image2-practice-13-2.jpg)
 <p align="center"><em>制作于2018年1月13日生日推送，目前正在南洋做博后的🐷哥哥</em></p>
 
-Image 2 一出，如虎添翼。随即对这张图进行现代化优化——开启 GPT 的 Think 模式，传入 prompt：
+Image 2 一出，有如低山臭水遇知音、一拍即合如虎添翼。随即对这张图进行现代化优化——开启 GPT 的 Think 模式，传入 prompt：
 
 > 用这个人脸生成一个在斯德哥尔摩拿诺贝尔奖的图片，要求西装革履，以假乱真，清晰正脸，颁奖为诺贝尔化学奖，所有信息符合真实世界诺奖颁奖设定。16:9，大师作品。
 
