@@ -15,7 +15,7 @@ tags:
 categories:
   - 教程
 toc: false
-updated: "2026-05-14 20:33:41"
+updated: "2026-05-14 20:46:24"
 ---
 
 ![](/images/posts/post/gpt-image-2/gpt-image2-practice-15.png)
@@ -48,7 +48,6 @@ Image 2 一出，有如低山臭水遇知音、一拍即合如虎添翼。随即
 
 > 用这个人脸生成一个在斯德哥尔摩拿诺贝尔奖的图片，要求西装革履，以假乱真，清晰正脸，颁奖为诺贝尔化学奖，所有信息符合真实世界诺奖颁奖设定。16:9，大师作品。
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-11.png)
 
 接着生成与瑞典国王合影：
 

@@ -15,7 +15,7 @@ tags:
 categories:
   - Tutorial
 toc: false
-updated: "2026-05-14 20:33:41"
+updated: "2026-05-14 20:46:24"
 ---
 
 <!-- more -->
@@ -43,20 +43,20 @@ In one word: **unstoppable**.
 
 The author has long enjoyed creating fantasy-themed images.
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-13-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-25.jpg)
 *Made on January 13, 2018 for a birthday post — the pig brother is now a postdoc in Singapore.*
 
 With Image 2, it was the perfect match. The author upgraded this image with modern flair: enabled GPT's Think mode and fed it the following prompt:
 
 > Using this face, generate an image of him receiving the Nobel Prize in Stockholm. He must be in a suit, photorealistic, with a clear frontal view. The award is the Nobel Prize in Chemistry. All details must conform to the real-world Nobel ceremony. 16:9, a masterwork.
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-12-2.png)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-11.png)
 
 Then the post-ceremony handshake with the King of Sweden:
 
 > Same setting, one more hyperrealistic photo — this time a handshake with the King of Sweden. Keep the same outfit, focal length around 20mm, realistic perspective and lighting.
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-11.png)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-24.png)
 
 Apart from barely perceptible details in lighting or perspective, a simple structured prompt already achieves near-photorealistic results.
 
@@ -68,23 +68,23 @@ Having grown up in southern China, the author has always had a soft spot for sno
 
 Combining this with the theme of major Chinese universities, I tested pure text-to-image generation. The specific images and prompts are shown below (the order of universities reflects personal preference).
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-01-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-01.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-07-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-07.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-03-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-08.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-08-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-03.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-05-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-05.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-02-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-02.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-06-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-06.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-04-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-04.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-10-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-10.jpg)
 
 *Since the author is not very familiar with Nanjing University, there is no specific scene. My sincerest apologies to Nanjing University, which strives to offer the best undergraduate education in China.*
 
@@ -92,7 +92,7 @@ Combining this with the theme of major Chinese universities, I tested pure text-
 
 The author also tried direct text-to-image to recall memories of studying at the Zhihua Library at the University of Hong Kong. The prompt was:
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-25.png)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-23-2.png)
 
 But the generated image was clearly not the real interior.
 
@@ -102,7 +102,7 @@ Identify prompt intent → search online for target image → use model resource
 
 Step 2 failed to correctly identify "Zhihua Library" interior. Since the pipeline is a black box, I manually fixed it by uploading a real photo of Zhihua Library and asking GPT to remember it in the conversation.
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-09-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-09.jpg)
 *The author pulling an all-nighter at Zhihua Library*
 
 Then I fed the same prompt back to GPT:
@@ -111,7 +111,7 @@ Then I fed the same prompt back to GPT:
 
 Result: an impressively good image.
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-21-2.png)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-19.png)
 *This image received over 10,000 views on social media (applause 👏)*
 
 Summary of a simple image generation workflow:
