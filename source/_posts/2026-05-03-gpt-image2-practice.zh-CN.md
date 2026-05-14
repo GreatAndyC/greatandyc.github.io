@@ -58,7 +58,7 @@ Image 2 一出，如虎添翼。随即对这张图进行现代化优化——开
 
 ## 文生图实践
 
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=169185&auto=0&height=66"></iframe>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=5254815&auto=0&height=66"></iframe>
 
 笔者一直在南方生活，对雪情有独钟，但实际见雪次数屈指可数，因此用 AI 生成美丽雪景。
 

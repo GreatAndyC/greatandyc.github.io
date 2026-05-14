@@ -60,7 +60,7 @@ Then the post-ceremony handshake with the King of Sweden:
 
 Apart from barely perceptible details in lighting or perspective, a simple structured prompt already achieves near-photorealistic results.
 
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=169185&auto=0&height=66"></iframe>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=5254815&auto=0&height=66"></iframe>
 
 ## Text-to-image practice
 
