@@ -15,7 +15,7 @@ tags:
 categories:
   - 教程
 toc: false
-updated: "2026-05-14 20:26:15"
+updated: "2026-05-14 20:33:41"
 ---
 
 ![](/images/posts/post/gpt-image-2/gpt-image2-practice-15.png)
