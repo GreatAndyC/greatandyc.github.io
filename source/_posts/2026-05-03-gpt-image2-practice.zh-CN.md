@@ -6,7 +6,7 @@ slug: gpt-image2-practice
 permalink: 2026/05/03/gpt-image2-practice/
 description: 利用 GPT Image 2 模型进行文生图和图生图创意实践，展示逼真生成效果与操作套路。
 photos:
-  - /images/posts/post/gpt-image-2/gpt-image2-practice-17-2.png
+  - /images/posts/post/gpt-image-2/gpt-image2-practice-15.png
 tags:
   - AIGC
   - 高校
@@ -15,10 +15,10 @@ tags:
 categories:
   - 教程
 toc: false
-updated: "2026-05-14 20:07:42"
+updated: "2026-05-14 20:26:15"
 ---
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-17-2.png)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-15.png)
 
 2026年4月21日，ChatGPT 更新了新的生图模型 ChatGPT Image 2.0。
 
@@ -41,20 +41,20 @@ updated: "2026-05-14 20:07:42"
 
 笔者一直喜欢创作幻想题材图片。
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-13-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-25.jpg)
 <p align="center"><em>制作于2018年1月13日生日推送，目前正在南洋做博后的🐷哥哥</em></p>
 
 Image 2 一出，有如低山臭水遇知音、一拍即合如虎添翼。随即对这张图进行现代化优化——开启 GPT 的 Think 模式，传入 prompt：
 
 > 用这个人脸生成一个在斯德哥尔摩拿诺贝尔奖的图片，要求西装革履，以假乱真，清晰正脸，颁奖为诺贝尔化学奖，所有信息符合真实世界诺奖颁奖设定。16:9，大师作品。
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-12-2.png)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-11.png)
 
 接着生成与瑞典国王合影：
 
 > 同一环境，超写实照片，这次是与瑞典国王合影，服装一致，焦距约20mm，透视和光影真实。
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-11.png)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-24.png)
 
 除了极难察觉的光影或透视细节，简单结构化 prompt 已可达到以假乱真的效果。
 
@@ -66,25 +66,26 @@ Image 2 一出，有如低山臭水遇知音、一拍即合如虎添翼。随即
 
 结合中国各大高校主题，用文字生图测试效果。图片与文字见下（学校顺序依笔者偏好）。
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-01-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-01.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-07-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-07.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-03-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-08.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-08-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-03.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-05-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-05.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-02-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-02.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-06-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-06.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-04-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-04.jpg)
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-10-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-10.jpg)
 
-<p align="center"><em>笔者对南京大学并不了解，因此未安排场景，向致力于中国最好本科教育的南京大学致歉。</em></p>
+
+<p align="center"><em>笔者对其他实力强劲的高校并不了解，因此未安排场景。</em></p>
 
 [详细图片请查看画廊-AI绘图-雪中中国高校](/gallery/#gallery-aigc-university-cn)
 
@@ -92,7 +93,7 @@ Image 2 一出，有如低山臭水遇知音、一拍即合如虎添翼。随即
 
 笔者尝试用文生图回忆香港大学智华馆学习记忆，prompt 如下：
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-25.png)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-23-2.png)
 
 但生成的图片并非真正的智华馆内景。
 
@@ -102,7 +103,8 @@ Image 2 一出，有如低山臭水遇知音、一拍即合如虎添翼。随即
 
 显然第二步识别“智华馆”内景时出问题。由于链路对用户是黑盒，手动解决：上传真实智华馆图片，让 GPT 在对话中记住。
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-09-2.jpg)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-09.jpg)
+
 <p align="center"><em>笔者在智华馆熬夜赶作业的凌晨</em></p>
 
 再将上述 prompt 发给 GPT：
@@ -111,10 +113,11 @@ Image 2 一出，有如低山臭水遇知音、一拍即合如虎添翼。随即
 
 效果出色：
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-21-2.png)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-19.png)
+
 <p align="center"><em>该图在某社交媒体获1万阅读量（此处应有掌声👏）</em></p>
 
-总结简单生图实践套路：
+## 总结简单生图实践套路
 
 传入带正面提示词、负面提示词（可选）、参考图片（可选）的 prompt，开启 GPT Think 模式生成目标图片。后续通过反复对话和编辑调整细节。
 

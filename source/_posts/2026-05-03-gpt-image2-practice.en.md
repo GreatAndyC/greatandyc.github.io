@@ -6,7 +6,7 @@ slug: gpt-image2-practice
 permalink: en/2026/05/03/gpt-image2-practice/
 description: A creative practice with the GPT Image 2 model for text-to-image and image-to-image generation, demonstrating photorealistic results and a practical workflow.
 photos:
-  - /images/posts/post/gpt-image-2/gpt-image2-practice-17-2.png
+  - /images/posts/post/gpt-image-2/gpt-image2-practice-15.png
 tags:
   - AIGC
   - universities
@@ -15,7 +15,7 @@ tags:
 categories:
   - Tutorial
 toc: false
-updated: "2026-05-14 20:07:42"
+updated: "2026-05-14 20:26:15"
 ---
 
 <!-- more -->
