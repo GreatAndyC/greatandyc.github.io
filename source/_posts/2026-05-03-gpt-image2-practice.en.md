@@ -15,7 +15,7 @@ tags:
 categories:
   - Tutorial
 toc: false
-updated: "2026-05-14 20:49:57"
+updated: "2026-05-14 21:03:59"
 ---
 
 <!-- more -->
@@ -120,4 +120,4 @@ Summary of a simple image generation workflow:
 
 Provide a prompt with positive cues, negative cues (optional), and reference image (optional). Enable GPT's Think mode to generate the target image. Then you can fine-tune details through iterative conversation and editing.
 
-Of course, GPT has built-in sensitive content review and watermarking. Technically one could bypass them, but the cost of getting caught is usually greater than the benefit. Think carefully before you act.
+Of course, please do not use this tech in illegal situation. GPT has built-in sensitive content review and watermarking. Technically one could bypass them, but the cost of getting caught is usually greater than the benefit. Think carefully before you act.
