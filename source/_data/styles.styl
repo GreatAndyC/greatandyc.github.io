@@ -452,73 +452,35 @@ html
   line-height: 1
   letter-spacing: 0.01em
 
-.main .content.feed-page .home-sort-dropdown
-  position: relative
-
-.main .content.feed-page .home-sort-trigger
+.main .content.feed-page .home-sort-group
   display: inline-flex
   align-items: center
-  gap: 8px
+  gap: 0
   min-width: 0
-  height: 32px
-  padding: 0 12px
   border: 1px solid rgba(110, 110, 110, 0.18)
   border-radius: 0
   background: transparent
-  color: var(--text-color)
-  cursor: pointer
-  appearance: none
-  -webkit-appearance: none
-  font: inherit
-  text-align: left
-  transition: all .2s ease
+  overflow: hidden
 
-.main .content.feed-page .home-sort-trigger:hover
-  color: var(--link-hover-color)
-  border-color: rgba(80, 80, 80, 0.4)
-  background: rgba(120, 120, 120, 0.05)
-
-.main .content.feed-page .home-sort-trigger:focus
-  outline: none
-  color: var(--link-hover-color)
-  border-color: rgba(80, 80, 80, 0.34)
-  box-shadow: 0 0 0 3px rgba(120, 120, 120, 0.10), 0 3px 8px rgba(0, 0, 0, 0.07)
-
-.main .content.feed-page .home-sort-trigger-label
-  font-size: 0.84rem
-  line-height: 1
-  opacity: 0.82
-
-.main .content.feed-page .home-sort-trigger-value
+.main .content.feed-page .home-sort-label
+  display: inline-flex
+  align-items: center
+  height: 32px
+  padding: 0 10px
+  border-right: 1px solid rgba(110, 110, 110, 0.18)
+  background: rgba(120, 120, 120, 0.04)
+  color: rgba(90, 90, 90, 0.88)
   font-size: 0.84rem
   line-height: 1
   white-space: nowrap
 
-.main .content.feed-page .home-sort-trigger-icon
-  font-size: 0.72rem
-  opacity: 0.72
-  transition: transform .2s ease
-
-.main .content.feed-page .home-sort-dropdown.is-open .home-sort-trigger-icon
-  transform: rotate(180deg)
-
-.main .content.feed-page .home-sort-menu
-  position: absolute
-  top: calc(100% + 8px)
-  right: 0
-  z-index: $zindex-2
-  min-width: 150px
-  padding: 6px
-  border: 1px solid rgba(110, 110, 110, 0.18)
-  border-radius: 0
-  background: var(--content-bg-color, #fff)
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12)
-
 .main .content.feed-page .home-sort-option
-  display: flex
+  display: inline-flex
   align-items: center
-  width: 100%
-  padding: 8px 10px
+  justify-content: center
+  min-width: 0
+  height: 32px
+  padding: 0 12px
   border: 0
   border-radius: 0
   background: transparent
@@ -526,8 +488,11 @@ html
   cursor: pointer
   font: inherit
   font-size: 0.84rem
-  text-align: left
+  white-space: nowrap
   transition: all .2s ease
+
+.main .content.feed-page .home-sort-option + .home-sort-option
+  border-left: 1px solid rgba(110, 110, 110, 0.12)
 
 .main .content.feed-page .home-sort-option:hover
   color: var(--link-hover-color)
@@ -633,23 +598,16 @@ html
   .main .content.feed-page .home-category-search:focus
     box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08), 0 3px 8px rgba(0, 0, 0, 0.22)
 
-  .main .content.feed-page .home-sort-trigger
-    border-color: rgba(255, 255, 255, 0.17)
-    background: rgba(255, 255, 255, 0.05)
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12)
-
-  .main .content.feed-page .home-sort-trigger:hover
-    border-color: rgba(255, 255, 255, 0.27)
-    background: rgba(255, 255, 255, 0.10)
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.22)
-
-  .main .content.feed-page .home-sort-trigger:focus
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08), 0 3px 8px rgba(0, 0, 0, 0.22)
-
-  .main .content.feed-page .home-sort-menu
+  .main .content.feed-page .home-sort-group
     border-color: rgba(255, 255, 255, 0.14)
-    background: rgba(24, 24, 24, 0.98)
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.38)
+
+  .main .content.feed-page .home-sort-label
+    border-right-color: rgba(255, 255, 255, 0.12)
+    background: rgba(255, 255, 255, 0.05)
+    color: rgba(220, 224, 228, 0.72)
+
+  .main .content.feed-page .home-sort-option + .home-sort-option
+    border-left-color: rgba(255, 255, 255, 0.10)
 
   .main .content.feed-page .home-sort-option:hover
     background: rgba(255, 255, 255, 0.10)
@@ -730,17 +688,18 @@ html
     flex: 1 1 auto
     justify-content: center
 
-  .main .content.feed-page .home-sort-dropdown
-    flex: 1 1 auto
+  .main .content.feed-page .home-sort-group
+    flex: 1 1 100%
+    flex-wrap: wrap
 
-  .main .content.feed-page .home-sort-trigger
+  .main .content.feed-page .home-sort-label
     width: 100%
     justify-content: center
+    border-right: 0
+    border-bottom: 1px solid rgba(110, 110, 110, 0.12)
 
-  .main .content.feed-page .home-sort-menu
-    left: 0
-    right: 0
-    min-width: 0
+  .main .content.feed-page .home-sort-option
+    flex: 1 1 0
 
   .main .content.feed-page.posts-expand
     column-count: 1

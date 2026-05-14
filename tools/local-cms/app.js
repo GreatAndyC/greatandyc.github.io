@@ -1471,7 +1471,7 @@ function renderPostImageLibrary() {
     const metaLine = [item.dimensions || '', item.camera || '', item.captureMeta || '', item.meta || ''].filter(Boolean).join(' · ');
     return `
       <article class="library-card${isCover ? ' is-selected' : ''}">
-        <button class="library-preview" type="button" data-post-image-action="copy" data-post-image-path="${escapeHtml(item.path)}" title="点击复制路径">
+        <button class="library-preview" type="button" data-post-image-action="insert-markdown" data-post-image-path="${escapeHtml(item.path)}" title="插入到中文稿">
           <img src="${escapeHtml(item.path)}" alt="${escapeHtml(item.name)}">
         </button>
         <div class="library-card-body">
@@ -1485,13 +1485,20 @@ function renderPostImageLibrary() {
           <span>${escapeHtml(item.path)}</span>
           <span>${escapeHtml(metaLine)}</span>
         </div>
-        <div class="library-card-actions">
-          <button class="ghost-button" type="button" data-post-image-action="insert-markdown" data-post-image-path="${escapeHtml(item.path)}">添加到当前文章</button>
-          <button class="ghost-button" type="button" data-post-image-action="set-cover" data-post-image-path="${escapeHtml(item.path)}">${isCover ? '当前封面' : '设为封面'}</button>
-          <button class="ghost-button" type="button" data-post-image-action="copy" data-post-image-path="${escapeHtml(item.path)}">复制路径</button>
-          <button class="ghost-button" type="button" data-post-image-action="references" data-post-image-path="${escapeHtml(item.path)}">引用</button>
-          <button class="ghost-button" type="button" data-post-image-action="move" data-post-image-path="${escapeHtml(item.path)}">移动</button>
-          <button class="ghost-button danger-button" type="button" data-post-image-action="delete" data-post-image-path="${escapeHtml(item.path)}">删除</button>
+        <div class="library-card-toolbar">
+          <div class="library-card-primary-actions">
+            <button class="primary-button library-main-button" type="button" data-post-image-action="insert-markdown" data-post-image-path="${escapeHtml(item.path)}">插入中文稿</button>
+            <button class="ghost-button library-main-button${isCover ? ' is-current' : ''}" type="button" data-post-image-action="set-cover" data-post-image-path="${escapeHtml(item.path)}">${isCover ? '当前封面' : '设为封面'}</button>
+          </div>
+          <details class="library-card-more">
+            <summary class="ghost-button library-more-button">更多</summary>
+            <div class="library-card-menu">
+              <button class="ghost-button" type="button" data-post-image-action="copy" data-post-image-path="${escapeHtml(item.path)}">复制路径</button>
+              <button class="ghost-button" type="button" data-post-image-action="references" data-post-image-path="${escapeHtml(item.path)}">查看引用</button>
+              <button class="ghost-button" type="button" data-post-image-action="move" data-post-image-path="${escapeHtml(item.path)}">移动图片</button>
+              <button class="ghost-button danger-button" type="button" data-post-image-action="delete" data-post-image-path="${escapeHtml(item.path)}">删除图片</button>
+            </div>
+          </details>
         </div>
       </article>
     `;
