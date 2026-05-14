@@ -15,8 +15,10 @@ tags:
 categories:
   - 教程
 toc: false
-updated: "2026-05-14 19:39:41"
+updated: "2026-05-14 19:51:35"
 ---
+
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-17-2.png)
 
 2026年4月21日，ChatGPT 更新了新的生图模型 ChatGPT Image 2.0。
 

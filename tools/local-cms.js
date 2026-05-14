@@ -2809,6 +2809,163 @@ function parseJsonFromLlmText(content) {
   }
 }
 
+function extractNeteaseSongIdFromValue(value) {
+  const source = String(value || '').trim();
+  if (!source) return '';
+  if (/^\d+$/.test(source)) return source;
+
+  const idMatch = source.match(/(?:[?&#]|\/)id=(\d+)/i);
+  if (idMatch && idMatch[1]) return idMatch[1];
+
+  const outchainMatch = source.match(/outchain\/player.*?[?&]id=(\d+)/i);
+  if (outchainMatch && outchainMatch[1]) return outchainMatch[1];
+
+  return '';
+}
+
+function buildNeteasePlayerUrl(songId) {
+  return `https://music.163.com/outchain/player?type=2&id=${songId}&auto=0&height=66`;
+}
+
+function buildNeteaseSongPageUrl(songId) {
+  return `https://music.163.com/#/song?id=${songId}`;
+}
+
+async function fetchNeteaseSongDetail(songId) {
+  const url = `https://music.163.com/api/song/detail?ids=%5B${encodeURIComponent(songId)}%5D`;
+  const response = await fetch(url, {
+    headers: {
+      Referer: 'https://music.163.com/',
+      'User-Agent': 'Mozilla/5.0 Local CMS'
+    }
+  });
+  if (!response.ok) {
+    throw new Error(`歌曲详情接口返回 ${response.status}`);
+  }
+  return response.json();
+}
+
+async function fetchNeteasePlayerMarkup(songId) {
+  const response = await fetch(buildNeteasePlayerUrl(songId), {
+    headers: {
+      Referer: 'https://music.163.com/',
+      'User-Agent': 'Mozilla/5.0 Local CMS'
+    }
+  });
+  if (!response.ok) {
+    throw new Error(`外链播放器页面返回 ${response.status}`);
+  }
+  return response.text();
+}
+
+function inferNeteaseAvailability({ detailPayload, playerMarkup }) {
+  const songs = detailPayload && Array.isArray(detailPayload.songs) ? detailPayload.songs : [];
+  const privileges = detailPayload && Array.isArray(detailPayload.privileges) ? detailPayload.privileges : [];
+  const song = songs[0] || {};
+  const privilege = privileges[0] || {};
+  const artists = Array.isArray(song.artists) ? song.artists.map(item => String(item && item.name || '').trim()).filter(Boolean) : [];
+  const title = String(song.name || '').trim();
+  const markup = String(playerMarkup || '').toLowerCase();
+
+  const protectedByDetail = Boolean(song.noCopyrightRcmd)
+    || (typeof song.st === 'number' && song.st < 0)
+    || (typeof privilege.st === 'number' && privilege.st < 0)
+    || (typeof privilege.pl === 'number' && privilege.pl === 0 && typeof privilege.fee === 'number' && privilege.fee > 0);
+  const protectedByMarkup = [
+    '由于版权保护',
+    '因合作方要求',
+    '暂时无法播放',
+    '无法使用',
+    '下架',
+    '没有版权'
+  ].some(fragment => markup.includes(fragment.toLowerCase()));
+  const missingSong = !title && !artists.length;
+
+  if (protectedByDetail || protectedByMarkup) {
+    return {
+      availability: 'protected',
+      statusLabel: '疑似版权保护或外链受限',
+      title,
+      artist: artists.join(' / '),
+      note: '接口结果显示这首歌可能存在版权限制、外链限制或地区限制，建议换一首再插入。'
+    };
+  }
+
+  if (missingSong) {
+    return {
+      availability: 'unknown',
+      statusLabel: '未拿到有效歌曲信息',
+      title: '',
+      artist: '',
+      note: '当前没有从网易云返回里拿到稳定的歌曲元数据，可能是接口波动，也可能是链接本身有问题。'
+    };
+  }
+
+  return {
+    availability: 'playable',
+    statusLabel: '可尝试外链播放',
+    title,
+    artist: artists.join(' / '),
+    note: '歌曲详情和外链播放器都返回了正常内容，通常可以继续插入到文章里。'
+  };
+}
+
+async function validateNeteaseMusicInput(payload) {
+  const songId = extractNeteaseSongIdFromValue(
+    payload && (payload.songId || payload.value) ? payload.songId || payload.value : ''
+  );
+  if (!songId) {
+    throw new Error('没有识别到有效的网易云歌曲 ID。');
+  }
+
+  let detailPayload = null;
+  let playerMarkup = '';
+  let debugReason = '';
+
+  try {
+    [detailPayload, playerMarkup] = await Promise.all([
+      fetchNeteaseSongDetail(songId),
+      fetchNeteasePlayerMarkup(songId)
+    ]);
+  } catch (error) {
+    debugReason = error && error.message ? error.message : '未知错误';
+  }
+
+  if (!detailPayload && !playerMarkup) {
+    return {
+      songId,
+      title: '',
+      artist: '',
+      availability: 'unknown',
+      statusLabel: '未完成检测',
+      message: `暂时无法完成网易云外链检测：${debugReason || '网络请求失败'}。`,
+      note: '这通常是当前网络、网易云接口波动，或临时访问策略导致的；如果你确认歌曲没问题，可以手动继续插入。',
+      songUrl: buildNeteaseSongPageUrl(songId),
+      playerUrl: buildNeteasePlayerUrl(songId)
+    };
+  }
+
+  const inferred = inferNeteaseAvailability({
+    detailPayload,
+    playerMarkup
+  });
+  return {
+    songId,
+    title: inferred.title || '',
+    artist: inferred.artist || '',
+    availability: inferred.availability,
+    statusLabel: inferred.statusLabel,
+    message: inferred.availability === 'playable'
+      ? `检测通过：${inferred.title || `歌曲 ${songId}`} 看起来可以继续插入。`
+      : inferred.availability === 'protected'
+        ? `检测结果显示 ${inferred.title || `歌曲 ${songId}`} 疑似受版权保护或外链受限。`
+        : `已拿到部分检测结果，但目前仍无法确认歌曲 ${songId} 是否一定可外链播放。`,
+    note: inferred.note,
+    songUrl: buildNeteaseSongPageUrl(songId),
+    playerUrl: buildNeteasePlayerUrl(songId)
+  };
+}
+
 function extractBalancedJsonObject(text) {
   const source = String(text || '');
   const start = source.indexOf('{');
@@ -4383,6 +4540,13 @@ const server = http.createServer(async (req, res) => {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
       jsonResponse(res, 200, await rewriteBilingualPostWithLlm(payload));
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/music/netease/validate') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      jsonResponse(res, 200, await validateNeteaseMusicInput(payload));
       return;
     }
 

@@ -102,6 +102,10 @@ const state = {
     postDraftAliases: [],
     postDraftViewerOpen: false
   },
+  neteaseMusic: {
+    validation: null,
+    validating: false
+  },
   toastTimer: null,
   commandAlerts: {
     lastTaskFinishedAt: '',
@@ -131,8 +135,17 @@ const elements = {
   insertNeteaseMusicButton: document.querySelector('#insert-netease-music-button'),
   neteaseMusicPanel: document.querySelector('#netease-music-panel'),
   neteaseMusicInput: document.querySelector('#netease-music-input'),
+  neteaseMusicValidateButton: document.querySelector('#netease-music-validate-button'),
   neteaseMusicConfirmButton: document.querySelector('#netease-music-confirm-button'),
   neteaseMusicCancelButton: document.querySelector('#netease-music-cancel-button'),
+  neteaseMusicResult: document.querySelector('#netease-music-result'),
+  neteaseMusicBadge: document.querySelector('#netease-music-badge'),
+  neteaseMusicSummary: document.querySelector('#netease-music-summary'),
+  neteaseMusicSongId: document.querySelector('#netease-music-song-id'),
+  neteaseMusicSongTitle: document.querySelector('#netease-music-song-title'),
+  neteaseMusicSongArtist: document.querySelector('#netease-music-song-artist'),
+  neteaseMusicSongStatus: document.querySelector('#netease-music-song-status'),
+  neteaseMusicNote: document.querySelector('#netease-music-note'),
   formatZhButton: document.querySelector('#format-zh-button'),
   rewritePostButton: document.querySelector('#rewrite-post-button'),
   translateEnButton: document.querySelector('#translate-en-button'),
@@ -1587,6 +1600,89 @@ function buildNeteaseMusicEmbed(songId) {
   return `<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=${songId}&auto=0&height=66"></iframe>`;
 }
 
+function resetNeteaseMusicValidation() {
+  state.neteaseMusic.validation = null;
+  renderNeteaseMusicValidationResult();
+}
+
+function setNeteaseMusicValidationPending(isPending) {
+  state.neteaseMusic.validating = Boolean(isPending);
+  elements.neteaseMusicValidateButton.disabled = state.neteaseMusic.validating;
+  elements.neteaseMusicConfirmButton.disabled = state.neteaseMusic.validating;
+  elements.neteaseMusicInput.disabled = state.neteaseMusic.validating;
+}
+
+function renderNeteaseMusicValidationResult() {
+  const result = state.neteaseMusic.validation;
+
+  elements.neteaseMusicResult.className = 'music-insert-result';
+
+  if (!result) {
+    elements.neteaseMusicResult.classList.add('is-idle');
+    elements.neteaseMusicBadge.textContent = '待检测';
+    elements.neteaseMusicSummary.textContent = '输入链接后可以先检测，再插入到中文稿。';
+    elements.neteaseMusicSongId.textContent = '-';
+    elements.neteaseMusicSongTitle.textContent = '-';
+    elements.neteaseMusicSongArtist.textContent = '-';
+    elements.neteaseMusicSongStatus.textContent = '尚未检测';
+    elements.neteaseMusicNote.textContent = '检测结果仅用于降低踩坑概率；最终是否能在外链播放器正常播放，仍取决于网易云当下的版权与地区策略。';
+    return;
+  }
+
+  if (result.availability === 'playable') {
+    elements.neteaseMusicResult.classList.add('is-playable');
+    elements.neteaseMusicBadge.textContent = '可插入';
+  } else if (result.availability === 'protected') {
+    elements.neteaseMusicResult.classList.add('is-protected');
+    elements.neteaseMusicBadge.textContent = '疑似受限';
+  } else {
+    elements.neteaseMusicResult.classList.add('is-unknown');
+    elements.neteaseMusicBadge.textContent = '待确认';
+  }
+
+  elements.neteaseMusicSummary.textContent = String(result.message || '').trim() || '检测已完成。';
+  elements.neteaseMusicSongId.textContent = result.songId || '-';
+  elements.neteaseMusicSongTitle.textContent = result.title || '-';
+  elements.neteaseMusicSongArtist.textContent = result.artist || '-';
+  elements.neteaseMusicSongStatus.textContent = result.statusLabel || '待确认';
+  elements.neteaseMusicNote.textContent = result.note || '如果你仍想继续尝试，可以直接插入后在预览页再次验证。';
+}
+
+async function validateNeteaseMusicInput(rawValue, options = {}) {
+  const source = String(rawValue || '').trim();
+  if (!source) {
+    throw new Error('请先粘贴网易云链接或歌曲 ID。');
+  }
+
+  const songId = extractNeteaseSongId(source);
+  if (!songId) {
+    throw new Error('没有识别到有效的网易云歌曲 ID。请粘贴歌曲分享链接、外链播放器链接，或直接输入纯数字歌曲 ID。');
+  }
+
+  setNeteaseMusicValidationPending(true);
+  if (!options.silentStatus) {
+    setStatus(`正在检测网易云歌曲 ${songId} 的外链可用性...`);
+  }
+
+  try {
+    const payload = await request('/api/music/netease/validate', {
+      method: 'POST',
+      body: JSON.stringify({ value: source, songId })
+    });
+    state.neteaseMusic.validation = payload;
+    renderNeteaseMusicValidationResult();
+    if (!options.silentStatus) {
+      setStatus(
+        payload.message || `网易云歌曲 ${songId} 检测完成。`,
+        payload.availability === 'playable' ? 'success' : (payload.availability === 'protected' ? 'error' : '')
+      );
+    }
+    return payload;
+  } finally {
+    setNeteaseMusicValidationPending(false);
+  }
+}
+
 function toggleNeteaseMusicPanel(expanded) {
   const nextExpanded = Boolean(expanded);
   elements.neteaseMusicPanel.hidden = !nextExpanded;
@@ -1594,21 +1690,30 @@ function toggleNeteaseMusicPanel(expanded) {
   elements.insertNeteaseMusicButton.setAttribute('aria-pressed', nextExpanded ? 'true' : 'false');
   if (nextExpanded) {
     elements.neteaseMusicInput.focus();
+  } else {
+    resetNeteaseMusicValidation();
   }
 }
 
-function insertNeteaseMusicIntoZhBody(rawValue) {
-  const songId = extractNeteaseSongId(rawValue);
-  if (!songId) {
-    throw new Error('没有识别到有效的网易云歌曲 ID。请粘贴歌曲分享链接、外链播放器链接，或直接输入纯数字歌曲 ID。');
+async function insertNeteaseMusicIntoZhBody(rawValue) {
+  const result = await validateNeteaseMusicInput(rawValue, { silentStatus: true });
+
+  if (result.availability === 'protected') {
+    throw new Error(result.message || '这首歌疑似存在版权或外链限制，建议更换歌曲后再插入。');
+  }
+  if (result.availability === 'unknown') {
+    const shouldContinue = window.confirm(`${result.message || '当前无法确认这首歌是否可外链播放。'}\n\n要继续插入到中文稿里吗？`);
+    if (!shouldContinue) {
+      throw new Error('已取消插入，请先更换歌曲或再次检测。');
+    }
   }
 
-  insertTextIntoTextarea(elements.post.zhBody, buildNeteaseMusicEmbed(songId));
+  insertTextIntoTextarea(elements.post.zhBody, buildNeteaseMusicEmbed(result.songId));
   scheduleZhPreviewRender(0);
   scheduleAutosave();
   elements.neteaseMusicInput.value = '';
   toggleNeteaseMusicPanel(false);
-  return songId;
+  return result;
 }
 
 function setPostCoverImage(imagePath) {
@@ -4360,13 +4465,23 @@ elements.insertNeteaseMusicButton.addEventListener('click', () => {
 elements.neteaseMusicCancelButton.addEventListener('click', () => {
   toggleNeteaseMusicPanel(false);
 });
-elements.neteaseMusicConfirmButton.addEventListener('click', () => {
+elements.neteaseMusicValidateButton.addEventListener('click', async () => {
   try {
-    const songId = insertNeteaseMusicIntoZhBody(elements.neteaseMusicInput.value);
-    setStatus(`已把网易云音乐播放器插入中文稿：${songId}`, 'success');
+    await validateNeteaseMusicInput(elements.neteaseMusicInput.value);
   } catch (error) {
     setStatus(error.message, 'error');
   }
+});
+elements.neteaseMusicConfirmButton.addEventListener('click', async () => {
+  try {
+    const result = await insertNeteaseMusicIntoZhBody(elements.neteaseMusicInput.value);
+    setStatus(`已把网易云音乐播放器插入中文稿：${result.songId}${result.title ? ` · ${result.title}` : ''}`, 'success');
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+});
+elements.neteaseMusicInput.addEventListener('input', () => {
+  resetNeteaseMusicValidation();
 });
 elements.neteaseMusicInput.addEventListener('keydown', event => {
   if (event.key !== 'Enter') return;
