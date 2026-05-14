@@ -5,7 +5,14 @@
 hexo.extend.filter.register('after_post_render', data => {
   const { config } = hexo;
   const theme = hexo.theme.config;
-  if (!theme.exturl && !theme.lazyload) return;
+  const hasNeteaseEmbed = /src=["']\/\/music\.163\.com\/outchain\/player/iu.test(data.content || '');
+  if (!theme.exturl && !theme.lazyload && !hasNeteaseEmbed) return;
+  if (hasNeteaseEmbed) {
+    data.content = data.content.replace(
+      /src=(["'])\/\/music\.163\.com\/outchain\/player/giu,
+      'src=$1https://music.163.com/outchain/player'
+    );
+  }
   if (theme.lazyload) {
     data.content = data.content.replace(/(<img[^>]*) src=/img, '$1 data-src=');
   }

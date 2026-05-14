@@ -99,7 +99,8 @@ const state = {
   autosave: {
     timer: null,
     suspend: false,
-    postDraftAliases: []
+    postDraftAliases: [],
+    postDraftViewerOpen: false
   },
   toastTimer: null,
   commandAlerts: {
@@ -123,9 +124,15 @@ const elements = {
   refreshButton: document.querySelector('#refresh-button'),
   newPostButton: document.querySelector('#new-post-button'),
   newGalleryButton: document.querySelector('#new-gallery-button'),
+  postDraftToggleButton: document.querySelector('#post-draft-toggle-button'),
   translateGalleryButton: document.querySelector('#translate-gallery-button'),
   testLlmButton: document.querySelector('#test-llm-button'),
   saveLlmButton: document.querySelector('#save-llm-button'),
+  insertNeteaseMusicButton: document.querySelector('#insert-netease-music-button'),
+  neteaseMusicPanel: document.querySelector('#netease-music-panel'),
+  neteaseMusicInput: document.querySelector('#netease-music-input'),
+  neteaseMusicConfirmButton: document.querySelector('#netease-music-confirm-button'),
+  neteaseMusicCancelButton: document.querySelector('#netease-music-cancel-button'),
   formatZhButton: document.querySelector('#format-zh-button'),
   rewritePostButton: document.querySelector('#rewrite-post-button'),
   translateEnButton: document.querySelector('#translate-en-button'),
@@ -168,6 +175,8 @@ const elements = {
   },
   workspaceKicker: document.querySelector('#workspace-kicker'),
   workspaceTitle: document.querySelector('#workspace-title'),
+  postDraftViewer: document.querySelector('#post-draft-viewer'),
+  postDraftViewerContent: document.querySelector('#post-draft-viewer-content'),
   postEditor: document.querySelector('#post-editor'),
   pageEditor: document.querySelector('#page-editor'),
   galleryManager: document.querySelector('#gallery-manager'),
@@ -192,6 +201,9 @@ const elements = {
     imageDropzoneMeta: document.querySelector('#image-dropzone-meta'),
     imageFileInput: document.querySelector('#image-file-input'),
     photoPreview: document.querySelector('#post-photo-preview'),
+    draftMeta: document.querySelector('#post-draft-meta'),
+    draftRestoreButton: document.querySelector('#post-draft-restore-button'),
+    draftClearButton: document.querySelector('#post-draft-clear-button'),
     imageLibrarySummary: document.querySelector('#post-image-library-summary'),
     imageLibraryGrid: document.querySelector('#post-image-library-grid'),
     zhFile: document.querySelector('#post-zh-file'),
@@ -412,6 +424,23 @@ function clearPostDraftFromStorage(draftId) {
   writeStoredDraftMap(POST_DRAFT_STORAGE_KEY, drafts);
 }
 
+function clearPostDraftAliases(draftIds) {
+  const uniqueIds = Array.from(new Set((draftIds || []).filter(Boolean)));
+  if (!uniqueIds.length) return;
+
+  const drafts = readStoredDraftMap(POST_DRAFT_STORAGE_KEY);
+  let changed = false;
+  uniqueIds.forEach(draftId => {
+    if (!Object.prototype.hasOwnProperty.call(drafts, draftId)) return;
+    delete drafts[draftId];
+    changed = true;
+  });
+
+  if (changed) {
+    writeStoredDraftMap(POST_DRAFT_STORAGE_KEY, drafts);
+  }
+}
+
 function savePageDraftToStorage() {
   const draftId = getCurrentPageDraftId();
   if (!draftId) return;
@@ -476,6 +505,7 @@ function applyPostDraftPayload(payload) {
   }
 
   renderPostPhotoPreview();
+  renderPostDraftPanel();
   scheduleZhPreviewRender(0);
 }
 
@@ -494,15 +524,118 @@ function applyPageDraftPayload(payload) {
   }
 }
 
-function maybeRestorePostDraft() {
+function getCurrentPostDraftEntry() {
   const draft = loadLatestPostDraftFromStorage(getPostDraftStorageIds());
-  if (!draft || !draft.payload) return;
+  if (!draft || !draft.payload) return null;
 
-  const restore = window.confirm(`检测到这篇文章有一份本地草稿，保存时间为 ${formatTimestamp(draft.savedAt)}。要恢复到编辑器吗？`);
-  if (!restore) return;
+  return {
+    ...draft,
+    draftIds: getPostDraftStorageIds(draft.payload)
+  };
+}
 
-  applyPostDraftPayload(draft.payload);
-  setStatus(`已恢复本地草稿：${formatTimestamp(draft.savedAt)}`, 'success');
+function renderDraftReadonlyField(label, value, rows = 3) {
+  return `
+    <label class="draft-readonly-field">
+      <span>${escapeHtml(label)}</span>
+      <textarea rows="${rows}" readonly>${escapeHtml(value || '')}</textarea>
+    </label>
+  `;
+}
+
+function fillPostDraftWorkspace(record) {
+  renderWorkspaceSections();
+  elements.postDraftViewer.hidden = false;
+  elements.postEditor.hidden = true;
+  elements.pageEditor.hidden = true;
+  elements.galleryManager.hidden = true;
+  elements.imageLibrary.hidden = true;
+  elements.auditViewer.hidden = true;
+
+  const currentTitle = record
+    ? (record.zh.title || record.en.title || record.key || '未命名文章')
+    : '文章草稿箱';
+  elements.workspaceTitle.textContent = `${currentTitle} · 草稿箱`;
+  updatePrimarySaveButtonLabel();
+  renderPrimarySaveButton();
+  renderDeleteButton();
+
+  if (!record) {
+    elements.post.draftMeta.textContent = '先从左侧文章列表选择一篇文章，再查看它的本地草稿。';
+    elements.post.draftRestoreButton.disabled = true;
+    elements.post.draftClearButton.disabled = true;
+    elements.postDraftViewerContent.innerHTML = '<div class="gallery-empty-state">当前还没有选中目标文章。</div>';
+    return;
+  }
+
+  const draftEntry = getCurrentPostDraftEntry();
+  if (!draftEntry || !draftEntry.payload) {
+    elements.post.draftMeta.textContent = `当前文章《${currentTitle}》还没有本地草稿。后续自动暂存后，这里会显示具体内容和保存时间。`;
+    elements.post.draftRestoreButton.disabled = true;
+    elements.post.draftClearButton.disabled = true;
+    elements.postDraftViewerContent.innerHTML = '<div class="gallery-empty-state">当前文章没有可查看的本地草稿。</div>';
+    return;
+  }
+
+  const payload = draftEntry.payload;
+  const coverPath = getPostCoverPath(payload.common && payload.common.photos ? payload.common.photos : '');
+  const overviewItems = [
+    ['保存时间', formatTimestamp(draftEntry.savedAt)],
+    ['文件名', payload.common && payload.common.fileKey ? payload.common.fileKey : ''],
+    ['Slug', payload.common && payload.common.slug ? payload.common.slug : ''],
+    ['分类', payload.common && payload.common.categoryId ? payload.common.categoryId : (payload.common && payload.common.categoryCustomZh ? payload.common.categoryCustomZh : '')],
+    ['封面图', coverPath || '未设置']
+  ].filter(item => item[1]);
+
+  elements.post.draftMeta.textContent = `这份本地草稿保存于 ${formatTimestamp(draftEntry.savedAt)}。下面展示的是当时暂存在浏览器里的具体内容。`;
+  elements.post.draftRestoreButton.disabled = false;
+  elements.post.draftClearButton.disabled = false;
+  elements.postDraftViewerContent.innerHTML = `
+    <div class="draft-overview-grid">
+      ${overviewItems.map(item => `
+        <article class="draft-overview-item">
+          <span class="draft-overview-label">${escapeHtml(item[0])}</span>
+          <strong class="draft-overview-value">${escapeHtml(item[1])}</strong>
+        </article>
+      `).join('')}
+    </div>
+    <div class="draft-content-grid">
+      <section class="editor-card draft-language-card">
+        <div class="card-heading">
+          <div class="card-heading-copy">
+            <h3>中文草稿快照</h3>
+            <span class="field-hint">这里展示自动暂存时中文编辑器里的原始内容。</span>
+          </div>
+        </div>
+        ${renderDraftReadonlyField('标题', payload.zh && payload.zh.title ? payload.zh.title : '', 2)}
+        ${renderDraftReadonlyField('一句话概括', payload.zh && payload.zh.description ? payload.zh.description : '', 2)}
+        ${renderDraftReadonlyField('标签', payload.zh && payload.zh.tags ? payload.zh.tags : '', 2)}
+        ${renderDraftReadonlyField('正文 Markdown', payload.zh && payload.zh.body ? payload.zh.body : '', 18)}
+      </section>
+      <section class="editor-card draft-language-card">
+        <div class="card-heading">
+          <div class="card-heading-copy">
+            <h3>English Draft Snapshot</h3>
+            <span class="field-hint">这里展示自动暂存时英文编辑器里的原始内容。</span>
+          </div>
+        </div>
+        ${renderDraftReadonlyField('Title', payload.en && payload.en.title ? payload.en.title : '', 2)}
+        ${renderDraftReadonlyField('One-line summary', payload.en && payload.en.description ? payload.en.description : '', 2)}
+        ${renderDraftReadonlyField('Tags', payload.en && payload.en.tags ? payload.en.tags : '', 2)}
+        ${renderDraftReadonlyField('Markdown body', payload.en && payload.en.body ? payload.en.body : '', 18)}
+      </section>
+    </div>
+  `;
+}
+
+function renderPostDraftPanel() {
+  const draftEntry = getCurrentPostDraftEntry();
+  const hasDraft = Boolean(draftEntry);
+  const isPostsMode = state.mode === 'posts';
+  elements.postDraftToggleButton.hidden = !isPostsMode;
+  elements.postDraftToggleButton.classList.toggle('has-draft', hasDraft);
+  elements.postDraftToggleButton.classList.toggle('is-active', state.autosave.postDraftViewerOpen);
+  elements.postDraftToggleButton.setAttribute('aria-pressed', state.autosave.postDraftViewerOpen ? 'true' : 'false');
 }
 
 function maybeRestorePageDraft() {
@@ -529,6 +662,10 @@ function scheduleAutosave() {
     if (state.autosave.suspend) return;
     if (state.mode === 'posts') {
       savePostDraftToStorage();
+      renderPostDraftPanel();
+      if (state.autosave.postDraftViewerOpen) {
+        fillPostDraftWorkspace(state.currentRecord);
+      }
     } else if (state.mode === 'pages') {
       savePageDraftToStorage();
     }
@@ -953,7 +1090,7 @@ function renderSidebarState() {
 }
 
 function renderWorkspaceSections() {
-  elements.postCommandPanel.hidden = state.mode === 'settings';
+  elements.postCommandPanel.hidden = state.mode === 'settings' || state.autosave.postDraftViewerOpen;
   elements.postLlmPanel.hidden = state.mode !== 'settings';
 }
 
@@ -994,7 +1131,7 @@ function updatePrimarySaveButtonLabel() {
 }
 
 function renderPrimarySaveButton() {
-  elements.saveButton.hidden = state.mode === 'images' || state.mode === 'settings' || state.mode === 'logs';
+  elements.saveButton.hidden = state.mode === 'images' || state.mode === 'settings' || state.mode === 'logs' || state.autosave.postDraftViewerOpen;
 }
 
 function normalizeCommaList(value) {
@@ -1385,7 +1522,7 @@ function escapeHtml(value) {
 }
 
 function renderDeleteButton() {
-  const shouldShow = state.mode === 'posts' && Boolean(state.currentRecord && state.currentRecord.key);
+  const shouldShow = state.mode === 'posts' && !state.autosave.postDraftViewerOpen && Boolean(state.currentRecord && state.currentRecord.key);
   elements.deleteButton.hidden = !shouldShow;
 }
 
@@ -1430,6 +1567,48 @@ function insertMarkdownIntoZhBody(imagePath) {
   insertTextIntoTextarea(elements.post.zhBody, buildPostImageMarkdown(imagePath));
   scheduleZhPreviewRender(0);
   scheduleAutosave();
+}
+
+function extractNeteaseSongId(value) {
+  const source = String(value || '').trim();
+  if (!source) return '';
+  if (/^\d+$/.test(source)) return source;
+
+  const idMatch = source.match(/(?:[?&#]|\/)id=(\d+)/i);
+  if (idMatch && idMatch[1]) return idMatch[1];
+
+  const outchainMatch = source.match(/outchain\/player.*?[?&]id=(\d+)/i);
+  if (outchainMatch && outchainMatch[1]) return outchainMatch[1];
+
+  return '';
+}
+
+function buildNeteaseMusicEmbed(songId) {
+  return `<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=${songId}&auto=0&height=66"></iframe>`;
+}
+
+function toggleNeteaseMusicPanel(expanded) {
+  const nextExpanded = Boolean(expanded);
+  elements.neteaseMusicPanel.hidden = !nextExpanded;
+  elements.insertNeteaseMusicButton.classList.toggle('is-active', nextExpanded);
+  elements.insertNeteaseMusicButton.setAttribute('aria-pressed', nextExpanded ? 'true' : 'false');
+  if (nextExpanded) {
+    elements.neteaseMusicInput.focus();
+  }
+}
+
+function insertNeteaseMusicIntoZhBody(rawValue) {
+  const songId = extractNeteaseSongId(rawValue);
+  if (!songId) {
+    throw new Error('没有识别到有效的网易云歌曲 ID。请粘贴歌曲分享链接、外链播放器链接，或直接输入纯数字歌曲 ID。');
+  }
+
+  insertTextIntoTextarea(elements.post.zhBody, buildNeteaseMusicEmbed(songId));
+  scheduleZhPreviewRender(0);
+  scheduleAutosave();
+  elements.neteaseMusicInput.value = '';
+  toggleNeteaseMusicPanel(false);
+  return songId;
 }
 
 function setPostCoverImage(imagePath) {
@@ -1548,6 +1727,7 @@ function scheduleZhPreviewRender(delay = 240) {
 
 function applyMode(mode) {
   state.mode = mode;
+  state.autosave.postDraftViewerOpen = false;
   state.selectedId = '';
   state.currentRecord = null;
   state.gallery.selectedSlug = '';
@@ -1562,6 +1742,7 @@ function applyMode(mode) {
 
   elements.newPostButton.hidden = mode !== 'posts';
   elements.newGalleryButton.hidden = mode !== 'gallery';
+  elements.postDraftViewer.hidden = true;
   elements.postEditor.hidden = true;
   elements.pageEditor.hidden = true;
   elements.galleryManager.hidden = true;
@@ -1574,12 +1755,15 @@ function applyMode(mode) {
   renderDeleteButton();
   renderWorkspaceSections();
   renderSidebarContentVisibility();
+  renderPostDraftPanel();
   renderList();
 }
 
 function fillPostEditor(record) {
   state.autosave.suspend = true;
+  state.autosave.postDraftViewerOpen = false;
   renderWorkspaceSections();
+  elements.postDraftViewer.hidden = true;
   elements.postEditor.hidden = false;
   elements.pageEditor.hidden = true;
   elements.galleryManager.hidden = true;
@@ -1618,17 +1802,18 @@ function fillPostEditor(record) {
   renderPostPhotoPreview();
   renderPostImageLibrary();
   scheduleZhPreviewRender(0);
+  renderPostDraftPanel();
   state.autosave.suspend = false;
   loadPostImageLibrary(elements.post.imageFolderSelect.value).catch(() => {
     state.postImages.folder = '';
     state.postImages.items = [];
     renderPostImageLibrary();
   });
-  maybeRestorePostDraft();
 }
 
 function fillSettingsWorkspace() {
   renderWorkspaceSections();
+  elements.postDraftViewer.hidden = true;
   elements.postEditor.hidden = true;
   elements.pageEditor.hidden = true;
   elements.galleryManager.hidden = true;
@@ -1642,6 +1827,7 @@ function fillSettingsWorkspace() {
 
 function fillAuditWorkspace() {
   renderWorkspaceSections();
+  elements.postDraftViewer.hidden = true;
   elements.postEditor.hidden = true;
   elements.pageEditor.hidden = true;
   elements.galleryManager.hidden = true;
@@ -1659,6 +1845,7 @@ function fillAuditWorkspace() {
 function fillPageEditor(record) {
   state.autosave.suspend = true;
   renderWorkspaceSections();
+  elements.postDraftViewer.hidden = true;
   elements.pageEditor.hidden = false;
   elements.postEditor.hidden = true;
   elements.galleryManager.hidden = true;
@@ -2399,7 +2586,11 @@ async function selectItem(id) {
   if (state.mode === 'posts') {
     const record = await request(`/api/posts/${encodeURIComponent(id)}`);
     state.currentRecord = record;
-    fillPostEditor(record);
+    if (state.autosave.postDraftViewerOpen) {
+      fillPostDraftWorkspace(record);
+    } else {
+      fillPostEditor(record);
+    }
     refreshAuditLogsSilently();
     return;
   }
@@ -4163,6 +4354,25 @@ elements.uploadImageButton.addEventListener('click', () => {
 elements.post.imageFileInput.addEventListener('change', event => {
   uploadSelectedImages(event.target.files);
 });
+elements.insertNeteaseMusicButton.addEventListener('click', () => {
+  toggleNeteaseMusicPanel(elements.neteaseMusicPanel.hidden);
+});
+elements.neteaseMusicCancelButton.addEventListener('click', () => {
+  toggleNeteaseMusicPanel(false);
+});
+elements.neteaseMusicConfirmButton.addEventListener('click', () => {
+  try {
+    const songId = insertNeteaseMusicIntoZhBody(elements.neteaseMusicInput.value);
+    setStatus(`已把网易云音乐播放器插入中文稿：${songId}`, 'success');
+  } catch (error) {
+    setStatus(error.message, 'error');
+  }
+});
+elements.neteaseMusicInput.addEventListener('keydown', event => {
+  if (event.key !== 'Enter') return;
+  event.preventDefault();
+  elements.neteaseMusicConfirmButton.click();
+});
 elements.post.imageLibraryGrid.addEventListener('click', async event => {
   const button = event.target.closest('[data-post-image-action]');
   if (!button) return;
@@ -4200,6 +4410,49 @@ elements.post.imageLibraryGrid.addEventListener('click', async event => {
   } catch (error) {
     setStatus(error.message, 'error');
   }
+});
+elements.postDraftToggleButton.addEventListener('click', () => {
+  state.autosave.postDraftViewerOpen = !state.autosave.postDraftViewerOpen;
+  renderPostDraftPanel();
+
+  if (state.autosave.postDraftViewerOpen) {
+    fillPostDraftWorkspace(state.currentRecord);
+    return;
+  }
+
+  if (state.currentRecord) {
+    fillPostEditor(state.currentRecord);
+    return;
+  }
+
+  renderWorkspaceSections();
+  elements.postDraftViewer.hidden = true;
+  elements.postEditor.hidden = true;
+  elements.workspaceTitle.textContent = '请选择文章';
+  renderPrimarySaveButton();
+  renderDeleteButton();
+});
+elements.post.draftRestoreButton.addEventListener('click', () => {
+  const draftEntry = getCurrentPostDraftEntry();
+  if (!draftEntry || !draftEntry.payload) return;
+
+  if (!state.currentRecord) return;
+
+  state.autosave.postDraftViewerOpen = false;
+  fillPostEditor(state.currentRecord);
+  applyPostDraftPayload(draftEntry.payload);
+  renderPostDraftPanel();
+  setStatus(`已恢复本地草稿：${formatTimestamp(draftEntry.savedAt)}`, 'success');
+});
+elements.post.draftClearButton.addEventListener('click', () => {
+  const draftEntry = getCurrentPostDraftEntry();
+  if (!draftEntry) return;
+
+  clearPostDraftAliases(draftEntry.draftIds);
+  state.autosave.postDraftAliases = [];
+  fillPostDraftWorkspace(state.currentRecord);
+  renderPostDraftPanel();
+  setStatus('已删除这篇文章的本地草稿。', 'success');
 });
 elements.gallery.imageFileInput.addEventListener('change', event => {
   uploadGalleryImages(event.target.files);

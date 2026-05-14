@@ -27,6 +27,7 @@ const CONFIG_PATH = path.join(ROOT, '_config.yml');
 const ENV_PATH = path.join(ROOT, '.env');
 const LOCAL_SETTINGS_PATH = path.join(ROOT, '.local-cms.json');
 const AUDIT_LOG_PATH = path.join(ROOT, '.local-cms-audit.log');
+const LLM_DEBUG_LOG_PATH = path.join(ROOT, '.local-cms-llm-debug.log');
 const WRITING_STYLE_GUIDE_PATH = path.join(ROOT, 'docs', 'writing-style-guide.md');
 const GALLERY_PAGE_IDS = new Set(['gallery-zh', 'gallery-en']);
 const GALLERY_DEFAULT_EMPTY = {
@@ -2330,6 +2331,17 @@ function parseLlmResponseContent(payload) {
   return '';
 }
 
+function appendLlmDebugLog(entry) {
+  try {
+    fs.appendFileSync(LLM_DEBUG_LOG_PATH, `${JSON.stringify({
+      timestamp: new Date().toISOString(),
+      ...entry
+    })}\n`);
+  } catch (error) {
+    // Ignore debug log failures to avoid masking the original LLM error.
+  }
+}
+
 function ensureLlmSettingsReady() {
   const settings = getLlmSettingsPayload().llm;
 
@@ -2628,7 +2640,14 @@ function buildOpenAiResponsesPayload(messages, settings, options = {}) {
   return {
     model: settings.model,
     temperature: Number(options.temperature ?? settings.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
-    input
+    input,
+    ...(options.expectJson ? {
+      text: {
+        format: {
+          type: 'json_object'
+        }
+      }
+    } : {})
   };
 }
 
@@ -2637,6 +2656,11 @@ function buildOpenAiChatPayload(messages, settings, options = {}) {
     model: String(settings.model || '').trim(),
     temperature: Number(options.temperature ?? settings.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
     ...(options.maxCompletionTokens ? { max_completion_tokens: Number(options.maxCompletionTokens) } : {}),
+    ...(options.expectJson ? {
+      response_format: {
+        type: 'json_object'
+      }
+    } : {}),
     messages: normalizeLlmMessages(messages)
   };
 }
@@ -2769,19 +2793,129 @@ function parseJsonFromLlmText(content) {
   const fencedMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
   const candidate = fencedMatch ? fencedMatch[1].trim() : raw;
 
+  const balancedObject = extractBalancedJsonObject(candidate);
+
   try {
     return JSON.parse(candidate);
   } catch (error) {
-    const start = candidate.indexOf('{');
-    const end = candidate.lastIndexOf('}');
-    if (start >= 0 && end > start) {
+    if (balancedObject) {
       try {
-        return JSON.parse(candidate.slice(start, end + 1));
+        return JSON.parse(balancedObject);
       } catch (nestedError) {
         throw new Error(`LLM 返回的 JSON 无法解析：${nestedError.message}`);
       }
     }
     throw new Error(`LLM 返回的 JSON 无法解析：${error.message}`);
+  }
+}
+
+function extractBalancedJsonObject(text) {
+  const source = String(text || '');
+  const start = source.indexOf('{');
+  if (start < 0) return '';
+
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+
+  for (let index = start; index < source.length; index += 1) {
+    const char = source[index];
+
+    if (inString) {
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
+      if (char === '\\') {
+        escaped = true;
+        continue;
+      }
+      if (char === '"') {
+        inString = false;
+      }
+      continue;
+    }
+
+    if (char === '"') {
+      inString = true;
+      continue;
+    }
+    if (char === '{') {
+      depth += 1;
+      continue;
+    }
+    if (char === '}') {
+      depth -= 1;
+      if (depth === 0) {
+        return source.slice(start, index + 1);
+      }
+    }
+  }
+
+  return '';
+}
+
+async function parseJsonFromLlmTextWithRepair(content, settings, contextLabel = 'unknown') {
+  try {
+    return parseJsonFromLlmText(content);
+  } catch (error) {
+    appendLlmDebugLog({
+      type: 'parse-failure',
+      context: contextLabel,
+      endpoint: settings && settings.endpoint ? normalizeLlmEndpoint(settings.endpoint) : '',
+      model: settings && settings.model ? settings.model : '',
+      error: error.message,
+      rawContentPreview: String(content || '').slice(0, 12000)
+    });
+
+    const repairedContent = await requestLlmChat([
+      {
+        role: 'system',
+        content: [
+          'You repair malformed JSON returned by another model.',
+          'Return one valid JSON object only.',
+          'Preserve the original meaning and structure.',
+          'Do not add commentary or Markdown fences.'
+        ].join('\n')
+      },
+      {
+        role: 'user',
+        content: [
+          `Context: ${contextLabel}`,
+          'The following content was supposed to be a JSON object but failed to parse.',
+          'Fix escaping, commas, quotes, and truncated wrapper text when possible.',
+          'Return only the repaired JSON object.',
+          '',
+          String(content || '')
+        ].join('\n')
+      }
+    ], {
+      settings,
+      temperature: 0,
+      maxCompletionTokens: 12000,
+      expectJson: true
+    });
+
+    try {
+      const repaired = parseJsonFromLlmText(repairedContent);
+      appendLlmDebugLog({
+        type: 'parse-repair-success',
+        context: contextLabel,
+        endpoint: settings && settings.endpoint ? normalizeLlmEndpoint(settings.endpoint) : '',
+        model: settings && settings.model ? settings.model : ''
+      });
+      return repaired;
+    } catch (repairError) {
+      appendLlmDebugLog({
+        type: 'parse-repair-failure',
+        context: contextLabel,
+        endpoint: settings && settings.endpoint ? normalizeLlmEndpoint(settings.endpoint) : '',
+        model: settings && settings.model ? settings.model : '',
+        error: repairError.message,
+        repairedContentPreview: String(repairedContent || '').slice(0, 12000)
+      });
+      throw repairError;
+    }
   }
 }
 
@@ -2859,9 +2993,10 @@ async function translateGalleryAlbumToEnglish(payload) {
         }))
       }, null, 2)
     }
-  ], { temperature: 0.1 });
+  ], { temperature: 0.1, expectJson: true });
 
-  const parsed = parseJsonFromLlmText(content);
+  const settings = ensureLlmSettingsReady();
+  const parsed = await parseJsonFromLlmTextWithRepair(content, settings, 'gallery-translate-en');
   const translatedPhotos = Array.isArray(parsed.photos) ? parsed.photos : [];
   const photosBySrc = new Map(translatedPhotos.map(photo => [String(photo && photo.src || '').trim(), photo]));
 
@@ -2969,9 +3104,9 @@ async function translateChineseDraftToEnglish(payload) {
         }
       }, null, 2)
     }
-  ]);
+  ], { expectJson: true });
 
-  const translated = parseJsonFromLlmText(content);
+  const translated = await parseJsonFromLlmTextWithRepair(content, settings, 'post-translate-en');
   const title = needTitle ? String(translated.title || '').trim() : String(payload.existingEnTitle || '').trim();
   const description = needDescription ? String(translated.description || '').trim() : String(payload.existingEnDescription || '').trim();
   const tags = needTags ? normalizeTranslatedTags(translated.tags) : normalizeStringList(payload.existingEnTags);
@@ -3026,11 +3161,7 @@ function buildRewriteStyleGuideContext() {
 }
 
 async function rewriteBilingualPostWithLlm(payload) {
-  const settings = getLlmSettingsPayload().llm;
-
-  if (!settings.endpoint || !settings.apiKey || !settings.model) {
-    throw new Error('请先在 LLM 配置里填写 endpoint、API Key 和 model。');
-  }
+  const settings = ensureLlmSettingsReady();
 
   const zhBody = String(payload.zhBody || '').trim();
   if (!zhBody) {
@@ -3040,103 +3171,81 @@ async function rewriteBilingualPostWithLlm(payload) {
   const rewriteGuideContext = buildRewriteStyleGuideContext();
   const existingEnBody = removeExistingTranslationNote(String(payload.existingEnBody || '').trim());
 
-  let response;
-  try {
-    response = await fetch(settings.endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${settings.apiKey}`
-      },
-      body: JSON.stringify({
-        model: settings.model,
-        temperature: Number(settings.temperature ?? DEFAULT_LLM_SETTINGS.temperature),
-        messages: [
-          { role: 'system', content: settings.rewritePrompt || DEFAULT_LLM_SETTINGS.rewritePrompt },
-          {
-            role: 'system',
-            content: rewriteGuideContext
-              ? [
-                '请严格遵守当前项目的双语写作规范，尤其注意：',
-                '- 中英文两版要共享同一套信息结构与段落逻辑。',
-                '- 中文和英文的一句话概括都要短、直接、有信息量。',
-                '- 英文标题尽量使用 sentence case。',
-                '- 保留并正确放置 `<!-- more -->`。',
-                '- 不要输出 front matter。',
-                '- 不要自行添加翻译说明，我会在后处理中统一插入。',
-                '',
-                '下面是从项目文档实时读取的写作规范：',
-                rewriteGuideContext
-              ].join('\n')
-              : [
-                '请严格遵守当前项目的双语写作规范。',
-                '中英文两版要共享同一套信息结构与段落逻辑。',
-                '英文标题尽量使用 sentence case。',
-                '保留并正确放置 `<!-- more -->`。',
-                '不要输出 front matter 或翻译说明。'
-              ].join('\n')
+  const content = await requestLlmChat([
+    { role: 'system', content: settings.rewritePrompt || DEFAULT_LLM_SETTINGS.rewritePrompt },
+    {
+      role: 'system',
+      content: rewriteGuideContext
+        ? [
+          '请严格遵守当前项目的双语写作规范，尤其注意：',
+          '- 中英文两版要共享同一套信息结构与段落逻辑。',
+          '- 中文和英文的一句话概括都要短、直接、有信息量。',
+          '- 英文标题尽量使用 sentence case。',
+          '- 保留并正确放置 `<!-- more -->`。',
+          '- 不要输出 front matter。',
+          '- 不要自行添加翻译说明，我会在后处理中统一插入。',
+          '',
+          '下面是从项目文档实时读取的写作规范：',
+          rewriteGuideContext
+        ].join('\n')
+        : [
+          '请严格遵守当前项目的双语写作规范。',
+          '中英文两版要共享同一套信息结构与段落逻辑。',
+          '英文标题尽量使用 sentence case。',
+          '保留并正确放置 `<!-- more -->`。',
+          '不要输出 front matter 或翻译说明。'
+        ].join('\n')
+    },
+    {
+      role: 'user',
+      content: JSON.stringify({
+        task: 'Heavily reorganize this bilingual blog post and return a full polished zh/en result.',
+        outputSchema: {
+          zh: {
+            title: 'Chinese title',
+            description: 'Chinese one-line summary',
+            tags: ['Chinese tags'],
+            body: 'Chinese Markdown body'
           },
-          {
-            role: 'user',
-            content: JSON.stringify({
-              task: 'Heavily reorganize this bilingual blog post and return a full polished zh/en result.',
-              outputSchema: {
-                zh: {
-                  title: 'Chinese title',
-                  description: 'Chinese one-line summary',
-                  tags: ['Chinese tags'],
-                  body: 'Chinese Markdown body'
-                },
-                en: {
-                  title: 'English title',
-                  description: 'English one-line summary',
-                  tags: ['English tags'],
-                  body: 'English Markdown body'
-                }
-              },
-              constraints: [
-                'Keep all factual details consistent with the source.',
-                'Do not invent information.',
-                'Keep image paths, links, blockquotes, and code blocks intact when they exist.',
-                'Do not output front matter.',
-                'Return JSON only.'
-              ],
-              currentMetadata: {
-                slug: String(payload.slug || '').trim(),
-                categoryZh: String(payload.categoryZh || '').trim(),
-                categoryEn: String(payload.categoryEn || '').trim(),
-                toc: Boolean(payload.toc)
-              },
-              sourceDraft: {
-                zh: {
-                  title: String(payload.zhTitle || '').trim(),
-                  description: String(payload.zhDescription || '').trim(),
-                  tags: normalizeStringList(payload.zhTags),
-                  body: zhBody
-                },
-                en: {
-                  title: String(payload.existingEnTitle || '').trim(),
-                  description: String(payload.existingEnDescription || '').trim(),
-                  tags: normalizeStringList(payload.existingEnTags),
-                  body: existingEnBody
-                }
-              }
-            }, null, 2)
+          en: {
+            title: 'English title',
+            description: 'English one-line summary',
+            tags: ['English tags'],
+            body: 'English Markdown body'
           }
-        ]
-      })
-    });
-  } catch (error) {
-    throw new Error(formatFetchErrorMessage(error, settings.endpoint, settings.model));
-  }
+        },
+        constraints: [
+          'Keep all factual details consistent with the source.',
+          'Do not invent information.',
+          'Keep image paths, links, blockquotes, and code blocks intact when they exist.',
+          'Do not output front matter.',
+          'Return JSON only.'
+        ],
+        currentMetadata: {
+          slug: String(payload.slug || '').trim(),
+          categoryZh: String(payload.categoryZh || '').trim(),
+          categoryEn: String(payload.categoryEn || '').trim(),
+          toc: Boolean(payload.toc)
+        },
+        sourceDraft: {
+          zh: {
+            title: String(payload.zhTitle || '').trim(),
+            description: String(payload.zhDescription || '').trim(),
+            tags: normalizeStringList(payload.zhTags),
+            body: zhBody
+          },
+          en: {
+            title: String(payload.existingEnTitle || '').trim(),
+            description: String(payload.existingEnDescription || '').trim(),
+            tags: normalizeStringList(payload.existingEnTags),
+            body: existingEnBody
+          }
+        }
+      }, null, 2)
+    }
+  ], { expectJson: true });
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`LLM 请求失败：${response.status} ${text.slice(0, 300)}`);
-  }
-
-  const data = await response.json();
-  const rewritten = extractJsonObjectFromText(parseLlmResponseContent(data));
+  const rewritten = await parseJsonFromLlmTextWithRepair(content, settings, 'post-rewrite');
   const fallbackZh = {
     title: payload.zhTitle,
     description: payload.zhDescription,
