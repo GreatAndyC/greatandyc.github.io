@@ -30,7 +30,124 @@ filters:
     label:
       zh-CN: 纪实
       en: Documentary
+  - key: aigc
+    label:
+      zh-CN: AI绘图
+      en: AIGC
 albums:
+  - slug: aigc-university-cn
+    imageFolder: gallery/aigc-university-cn
+    languages:
+      - zh-CN
+      - en
+    title:
+      zh-CN: 雪中中国高校
+      en: Chinese Universities in Snow
+    period:
+      zh-CN: '2026-04-26'
+      en: '2026-04-26'
+    location:
+      zh-CN: 我的电脑
+      en: My Computer
+    camera:
+      zh-CN: ''
+      en: ''
+    description:
+      zh-CN: 雪景里的各大高校场景
+      en: Scenes of major Chinese universities in snowy landscapes
+    category: aigc
+    categories:
+      - aigc
+    tags:
+      zh-CN:
+        - 雪景
+      en:
+        - Snowy Scenery
+    photos:
+      - src: /images/gallery/aigc-university-cn/aigc-university-cn-04.png
+        title:
+          zh-CN: 北大未名
+          en: Peking University Weiming Lake
+        caption:
+          zh-CN: ''
+          en: ''
+      - src: /images/gallery/aigc-university-cn/aigc-university-cn-05.png
+        title:
+          zh-CN: 清华紫荆操场
+          en: Tsinghua University Zijing Playground
+        caption:
+          zh-CN: ''
+          en: ''
+      - src: /images/gallery/aigc-university-cn/aigc-university-cn-06.png
+        title:
+          zh-CN: 复旦大学
+          en: Fudan University
+        caption:
+          zh-CN: ''
+          en: ''
+      - src: /images/gallery/aigc-university-cn/aigc-university-cn-09.png
+        title:
+          zh-CN: 上海交通大学
+          en: Shanghai Jiao Tong University
+        caption:
+          zh-CN: ''
+          en: ''
+      - src: /images/gallery/aigc-university-cn/aigc-university-cn-02.png
+        title:
+          zh-CN: 浙江大学BBOC
+          en: Zhejiang University BBOC
+        caption:
+          zh-CN: ''
+          en: ''
+      - src: /images/gallery/aigc-university-cn/aigc-university-cn-11.png
+        title:
+          zh-CN: 浙江大学
+          en: Zhejiang University
+        caption:
+          zh-CN: ''
+          en: ''
+      - src: /images/gallery/aigc-university-cn/aigc-university-cn-03.png
+        title:
+          zh-CN: 中国科学技术大学-柯南
+          en: University of Science and Technology of China - Conan
+        caption:
+          zh-CN: ''
+          en: ''
+      - src: /images/gallery/aigc-university-cn/aigc-university-cn-12-2.png
+        title:
+          zh-CN: 南京大学
+          en: Nanjing University
+        caption:
+          zh-CN: ''
+          en: ''
+      - src: /images/gallery/aigc-university-cn/aigc-university-cn-01.png
+        title:
+          zh-CN: 中国人民大学
+          en: Renmin University of China
+        caption:
+          zh-CN: ''
+          en: ''
+      - src: /images/gallery/aigc-university-cn/aigc-university-cn-07.png
+        title:
+          zh-CN: 武汉大学
+          en: Wuhan University
+        caption:
+          zh-CN: ''
+          en: ''
+      - src: /images/gallery/aigc-university-cn/aigc-university-cn-10.png
+        title:
+          zh-CN: 中山大学
+          en: Sun Yat-sen University
+        caption:
+          zh-CN: ''
+          en: ''
+      - src: /images/gallery/aigc-university-cn/aigc-university-cn-08.png
+        title:
+          zh-CN: 香港大学智华馆
+          en: University of Hong Kong - Chi Wah Learning Commons
+        caption:
+          zh-CN: ''
+          en: ''
   - slug: blue-hour-sysu
     imageFolder: gallery/Blue_Hour_SYSU
     languages:

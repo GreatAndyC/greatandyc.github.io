@@ -36,9 +36,10 @@
           </label>
 
           <div id="sidebar-actions" class="sidebar-actions">
-            <button id="new-post-button" class="ghost-button" type="button">新建文章</button>
-            <button id="new-gallery-button" class="ghost-button" type="button" hidden>新建相册</button>
-            <button id="refresh-button" class="ghost-button" type="button">刷新列表</button>
+            <button id="new-post-button" class="ghost-button sidebar-action-button" type="button">新建文章</button>
+            <button id="refresh-button" class="ghost-button sidebar-action-button" type="button">刷新列表</button>
+            <button id="post-draft-toggle-button" class="ghost-button sidebar-action-button sidebar-draft-toggle" type="button">草稿箱</button>
+            <button id="new-gallery-button" class="ghost-button sidebar-action-button" type="button" hidden>新建相册</button>
           </div>
 
           <div id="list-panel" class="list-panel"></div>
@@ -156,6 +157,22 @@
           </div>
         </section>
 
+        <section id="post-draft-viewer" class="editor-panel" hidden>
+          <section class="editor-card draft-viewer-card">
+            <div class="card-heading">
+              <div class="card-heading-copy">
+                <h3>文章草稿箱</h3>
+                <span id="post-draft-meta" class="field-hint">这里会显示当前文章的本地草稿时间和具体内容。</span>
+              </div>
+              <div class="card-heading-actions">
+                <button id="post-draft-restore-button" class="primary-button" type="button">恢复到编辑器</button>
+                <button id="post-draft-clear-button" class="ghost-button danger-button" type="button">删除本地草稿</button>
+              </div>
+            </div>
+            <div id="post-draft-viewer-content" class="draft-viewer-content"></div>
+          </section>
+        </section>
+
         <section id="post-editor" class="editor-panel" hidden>
           <div class="editor-card compact-grid">
             <label>
@@ -268,6 +285,10 @@
                     </div>
                     <span id="format-progress-text">准备排版…</span>
                   </div>
+                  <button id="insert-netease-music-button" class="ghost-button tool-action-button" type="button">
+                    <span class="tool-action-title">插入音乐</span>
+                    <span class="tool-action-meta">支持网易云链接</span>
+                  </button>
                   <button id="format-zh-button" class="ghost-button tool-action-button" type="button">
                     <span class="tool-action-title">一键排版</span>
                     <span class="tool-action-meta">整理中文正文结构</span>
@@ -278,6 +299,22 @@
                   </button>
                 </div>
               </div>
+              <section id="netease-music-panel" class="music-insert-panel" hidden>
+                <div class="music-insert-panel-copy">
+                  <h4>插入网易云音乐</h4>
+                  <p>贴歌曲分享链接、外链播放器链接，或者直接填歌曲 ID。第一版仅支持单曲。</p>
+                </div>
+                <div class="music-insert-form">
+                  <label>
+                    <span>网易云链接或歌曲 ID</span>
+                    <input id="netease-music-input" type="text" placeholder="https://music.163.com/#/song?id=461544997 或 461544997">
+                  </label>
+                  <div class="music-insert-actions">
+                    <button id="netease-music-confirm-button" class="primary-button" type="button">插入到中文稿</button>
+                    <button id="netease-music-cancel-button" class="ghost-button" type="button">收起</button>
+                  </div>
+                </div>
+              </section>
               <label>
                 <span>标题</span>
                 <input id="post-zh-title" type="text">
