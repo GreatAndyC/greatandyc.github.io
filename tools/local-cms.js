@@ -1781,11 +1781,89 @@ function buildSequentialImageFilename(baseName, index, total, extension) {
   return `${baseName}-${String(index + 1).padStart(digits, '0')}${extension}`;
 }
 
+function escapeRegExp(value = '') {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function buildImageRenamePlan(files, options = {}) {
   const mode = String(options.mode || 'sanitize').trim();
   const reservedByDir = new Map();
   const plan = [];
   const sortedFiles = (Array.isArray(files) ? files.slice() : []).sort((left, right) => left.localeCompare(right));
+
+  if (mode === 'post-preserve-sequence') {
+    const filesByDir = new Map();
+    sortedFiles.forEach(filePath => {
+      const directory = path.dirname(filePath);
+      if (!filesByDir.has(directory)) {
+        filesByDir.set(directory, []);
+      }
+      filesByDir.get(directory).push(filePath);
+    });
+
+    filesByDir.forEach((directoryFiles, directory) => {
+      const relativeDir = toPosixPath(path.relative(IMAGES_DIR, directory));
+      const baseName = slugifyFileSegment(options.baseName || buildSequentialImageBaseName(relativeDir));
+      const orderedFiles = directoryFiles
+        .map(filePath => ({
+          filePath,
+          captureTime: buildImageTechnicalMeta(filePath).captureTime || '',
+          name: path.basename(filePath)
+        }))
+        .sort((left, right) => {
+          if (left.captureTime && right.captureTime && left.captureTime !== right.captureTime) {
+            return left.captureTime.localeCompare(right.captureTime);
+          }
+          if (left.captureTime && !right.captureTime) return -1;
+          if (!left.captureTime && right.captureTime) return 1;
+          return left.name.localeCompare(right.name, 'zh-Hans-CN', { numeric: true });
+        });
+
+      const sequencePattern = new RegExp(`^${escapeRegExp(baseName)}-(\\d+)\\.[^.]+$`, 'i');
+      const reservedNames = new Set();
+      let maxExistingIndex = 0;
+
+      orderedFiles.forEach(({ name }) => {
+        const match = name.match(sequencePattern);
+        if (!match) return;
+        reservedNames.add(name);
+        maxExistingIndex = Math.max(maxExistingIndex, Number(match[1] || 0));
+      });
+
+      const digits = Math.max(2, String(Math.max(1, orderedFiles.length, maxExistingIndex)).length);
+      let nextSequence = maxExistingIndex + 1;
+
+      orderedFiles.forEach(({ filePath, name }) => {
+        if (sequencePattern.test(name)) return;
+
+        const extension = path.extname(name).toLowerCase();
+        let preferredName = `${baseName}-${String(nextSequence).padStart(digits, '0')}${extension}`;
+        while (reservedNames.has(preferredName)) {
+          nextSequence += 1;
+          preferredName = `${baseName}-${String(nextSequence).padStart(digits, '0')}${extension}`;
+        }
+
+        const nextName = getUniqueFilename(directory, preferredName, reservedNames);
+        nextSequence += 1;
+        if (nextName === name) return;
+
+        const nextPath = path.join(directory, nextName);
+        const oldRelative = toPosixPath(path.relative(IMAGES_DIR, filePath));
+        const nextRelative = toPosixPath(path.relative(IMAGES_DIR, nextPath));
+
+        plan.push({
+          oldPath: filePath,
+          nextPath,
+          oldName: name,
+          nextName,
+          oldPublicPath: `/images/${oldRelative}`,
+          nextPublicPath: `/images/${nextRelative}`
+        });
+      });
+    });
+
+    return plan;
+  }
 
   if (mode === 'gallery-sequence') {
     const filesByDir = new Map();

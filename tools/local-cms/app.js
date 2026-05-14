@@ -3102,7 +3102,7 @@ async function handlePostNormalizeFilenames() {
 
     setStatus(`正在规范化 images/${folder} 的图片文件名...`);
     const payload = await normalizeImageFilenames(folder, {
-      mode: 'gallery-sequence',
+      mode: 'post-preserve-sequence',
       baseName: getPostImageBaseName(folder)
     });
     state.imageFolders = payload.folders || state.imageFolders;
@@ -3112,7 +3112,7 @@ async function handlePostNormalizeFilenames() {
     renderPostPhotoPreview();
     await loadPostImageLibrary(payload.folder || folder);
     elements.post.imageDropzoneMeta.textContent = payload.renamedCount
-      ? `已规范化 ${(payload.renamed || []).length} 张图片文件名，并同步当前文章中的图片路径。`
+      ? `已规范化 ${(payload.renamed || []).length} 张图片文件名，并同步当前文章中的图片路径。现有编号会保留，不会因为删除图片而整体重排。`
       : `images/${payload.folder || folder} 目录下当前没有需要规范化的图片文件名。`;
     setStatus(formatNormalizeResult(payload), payload.renamedCount ? 'success' : '');
     showToast('文件名规范化完成', formatNormalizeResult(payload));
