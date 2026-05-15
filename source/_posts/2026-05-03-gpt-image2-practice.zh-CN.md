@@ -15,7 +15,7 @@ tags:
 categories:
   - 教程
 toc: false
-updated: "2026-05-15 16:02:26"
+updated: "2026-05-15 20:37:23"
 ---
 
 ![](/images/posts/post/gpt-image-2/gpt-image2-practice-15.png)
@@ -43,6 +43,8 @@ updated: "2026-05-15 16:02:26"
 
 ![](/images/posts/post/gpt-image-2/gpt-image2-practice-25.jpg)
 <p align="center"><em>制作于2018年2月13日生日推送，目前正在南洋做博后的🐷哥哥</em></p>
+
+**对于图像的处理已获取图像本人许可**
 
 Image 2 一出，有如低山臭水遇知音、一拍即合如虎添翼。随即对这张图进行现代化优化——开启 GPT 的 Think 模式，传入 prompt：
 
