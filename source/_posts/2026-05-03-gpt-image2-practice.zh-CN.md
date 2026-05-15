@@ -15,7 +15,7 @@ tags:
 categories:
   - 教程
 toc: false
-updated: "2026-05-14 21:03:59"
+updated: "2026-05-15 16:00:50"
 ---
 
 ![](/images/posts/post/gpt-image-2/gpt-image2-practice-15.png)
@@ -93,7 +93,7 @@ Image 2 一出，有如低山臭水遇知音、一拍即合如虎添翼。随即
 
 笔者尝试用文生图回忆香港大学智华馆学习记忆，prompt 如下：
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-23-2.png)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-26.png)
 
 但生成的图片并非真正的智华馆内景。
 
