@@ -3530,6 +3530,7 @@ function renderMarkdownPreview(markdown, sourcePath = 'source/_posts/preview.zh-
   const fakeHexo = {
     config: {
       ...config,
+      root: typeof config.root === 'string' && config.root.trim() ? config.root : '/',
       source_dir: sourceDir,
       post_asset_folder: Boolean(config.post_asset_folder),
       marked: {
