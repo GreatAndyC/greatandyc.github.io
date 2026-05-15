@@ -14,7 +14,7 @@ tags:
 categories:
   - AI
 toc: false
-updated: "2026-05-15 19:36:06"
+updated: "2026-05-15 19:41:18"
 ---
 
 <!-- more -->
@@ -70,6 +70,8 @@ CS146S: The Modern Software Developer
 ![](/images/posts/2026-05-15-manus-trial/manus-04.png)
 
 ## Openclaw 和 Manus 的区别
+
+![](/images/posts/2026-05-15-manus-trial/manus-06.png)
 
 所以通过这个过程可以知道，Openclaw 和 Manus 的最大区别就在于，这两者的定位分别是“工程师的工具”和“成熟商用的产品”。
 
