@@ -6,7 +6,7 @@ slug: manus
 permalink: 2026/05/15/manus/
 description: 一篇关于试用 Manus 下载斯坦福课程资源的实践记录，并与 Openclaw 进行对比分析。
 photos:
-  - /images/posts/2026-05-15-manus-trial/manus-02.png
+  - /images/posts/2026-05-15-manus-trial/ChatGPT-Image-2026年5月15日-20_01_14.png
 tags:
   - AI
   - Manus
@@ -14,7 +14,7 @@ tags:
 categories:
   - AI
 toc: false
-updated: "2026-05-15 19:41:18"
+updated: "2026-05-15 20:01:44"
 ---
 
 <!-- more -->
