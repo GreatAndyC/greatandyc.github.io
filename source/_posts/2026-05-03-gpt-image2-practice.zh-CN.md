@@ -15,7 +15,7 @@ tags:
 categories:
   - 教程
 toc: false
-updated: "2026-05-15 16:00:50"
+updated: "2026-05-15 16:02:26"
 ---
 
 ![](/images/posts/post/gpt-image-2/gpt-image2-practice-15.png)
@@ -42,7 +42,7 @@ updated: "2026-05-15 16:00:50"
 笔者一直喜欢创作幻想题材图片。
 
 ![](/images/posts/post/gpt-image-2/gpt-image2-practice-25.jpg)
-<p align="center"><em>制作于2018年1月13日生日推送，目前正在南洋做博后的🐷哥哥</em></p>
+<p align="center"><em>制作于2018年2月13日生日推送，目前正在南洋做博后的🐷哥哥</em></p>
 
 Image 2 一出，有如低山臭水遇知音、一拍即合如虎添翼。随即对这张图进行现代化优化——开启 GPT 的 Think 模式，传入 prompt：
 
