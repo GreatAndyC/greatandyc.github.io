@@ -1492,3 +1492,561 @@ html
 .site-nav .menu .menu-item-language .lang-select-label .fas
   flex: 0 0 1.25em
   margin-right: 0
+
+/* =============================================
+   Work page v2 — monochrome editorial portfolio
+   ============================================= */
+
+.post-block.page-type-portfolio
+  box-sizing: border-box
+  width: 100%
+  max-width: 1080px
+  margin-right: auto
+  margin-left: auto
+
+.post-block.page-type-portfolio .post-header
+  display: none
+
+.post-block.page-type-portfolio .post-body
+  max-width: none
+  word-break: normal
+  overflow-wrap: anywhere
+
+.main-inner:has(.post-block.page-type-portfolio) .sidebar
+  display: none
+
+.work-page
+  --work-paper: #fff
+  --work-ink: #222
+  --work-muted: #666
+  --work-line: #d8d8d8
+  --work-strong-line: #222
+  --work-canvas: #f3f3f3
+  color: var(--work-ink)
+  font-family: inherit
+
+.work-page *,
+.work-page *::before,
+.work-page *::after
+  box-sizing: border-box
+
+.work-page h1,
+.work-page h2,
+.work-page p,
+.work-page figure,
+.work-page dl,
+.work-page dd
+  margin: 0
+
+.work-page h1,
+.work-page h2
+  color: var(--work-ink)
+  font-weight: 800
+  line-height: 1.02
+  letter-spacing: -0.045em
+
+.work-page a
+  border-bottom: 0
+  color: inherit
+
+.work-page a:focus-visible,
+.work-page button:focus-visible,
+.work-gallery:focus-visible
+  outline: 2px solid var(--work-ink)
+  outline-offset: 3px
+
+.work-page section[id],
+.work-contact[id]
+  scroll-margin-top: 24px
+
+.work-kicker,
+.work-project__number,
+.work-gallery__toolbar,
+.work-project__facts dt
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace
+  font-size: 0.7rem
+  font-weight: 700
+  letter-spacing: 0.1em
+  line-height: 1.4
+  text-transform: uppercase
+
+.work-intro
+  display: grid
+  grid-template-columns: minmax(0, 1fr) minmax(230px, 0.55fr)
+  gap: 38px 64px
+  padding: 28px 0 50px
+  border-bottom: 3px solid var(--work-strong-line)
+
+.work-intro .work-kicker,
+.work-intro h1
+  grid-column: 1 / -1
+
+.work-intro h1
+  max-width: 900px
+  font-size: clamp(3.5rem, 9vw, 7.2rem)
+
+.work-intro__lead
+  max-width: 690px
+  color: var(--work-ink)
+  font-size: clamp(1.05rem, 2vw, 1.35rem)
+  line-height: 1.7
+
+.work-intro__links
+  align-self: end
+  justify-content: flex-end
+
+.work-links
+  display: flex
+  flex-wrap: wrap
+  gap: 10px 24px
+  margin-top: 24px
+
+.work-links a
+  position: relative
+  padding: 4px 0
+  border-bottom: 1px solid var(--work-ink)
+  font-size: 0.84rem
+  font-weight: 650
+  line-height: 1.45
+
+.work-links a:hover
+  background: var(--work-ink)
+  color: var(--work-paper)
+
+.work-index
+  display: grid
+  grid-template-columns: repeat(6, minmax(0, 1fr))
+  margin: 0
+  border-bottom: 1px solid var(--work-strong-line)
+
+.work-index a
+  min-width: 0
+  padding: 18px 14px
+  border-right: 1px solid var(--work-line)
+  color: var(--work-muted)
+  font-size: 0.72rem
+  line-height: 1.35
+  text-align: center
+
+.work-index a:last-child
+  border-right: 0
+
+.work-index a:hover
+  background: var(--work-ink)
+  color: var(--work-paper)
+
+.work-index span
+  display: block
+  margin-bottom: 4px
+  color: inherit
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace
+  font-size: 0.62rem
+
+.work-project
+  padding: 84px 0 96px
+  border-bottom: 1px solid var(--work-strong-line)
+
+.work-project__header
+  display: grid
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.75fr)
+  gap: 16px 64px
+  align-items: end
+
+.work-project__number
+  grid-column: 1 / -1
+  color: var(--work-muted)
+
+.work-project__header h2
+  overflow-wrap: anywhere
+  font-size: clamp(2.5rem, 6vw, 5.2rem)
+
+.work-project__lead
+  padding-bottom: 7px
+  color: var(--work-muted)
+  font-size: 0.98rem
+  line-height: 1.75
+  text-align: left
+
+.work-project__facts
+  display: grid
+  grid-template-columns: repeat(3, minmax(0, 1fr))
+  margin-top: 42px
+  border-top: 1px solid var(--work-line)
+  border-bottom: 1px solid var(--work-line)
+
+.work-project__facts > div
+  min-width: 0
+  padding: 18px 20px 20px 0
+  border-right: 1px solid var(--work-line)
+
+.work-project__facts > div + div
+  padding-left: 20px
+
+.work-project__facts > div:last-child
+  border-right: 0
+
+.work-project__facts dt
+  margin-bottom: 6px
+  color: var(--work-muted)
+
+.work-project__facts dd
+  color: var(--work-ink)
+  font-size: 0.85rem
+  font-weight: 650
+  line-height: 1.5
+
+.work-gallery-shell
+  margin-top: 34px
+  overflow: hidden
+  border: 1px solid var(--work-strong-line)
+  background: var(--work-canvas)
+
+.work-gallery__toolbar
+  display: flex
+  min-height: 48px
+  align-items: center
+  justify-content: space-between
+  padding-left: 16px
+  border-bottom: 1px solid var(--work-strong-line)
+  background: var(--work-paper)
+  color: var(--work-ink)
+
+.work-gallery__controls
+  display: flex
+  align-self: stretch
+  align-items: center
+
+.work-gallery__controls output
+  min-width: 82px
+  padding: 0 14px
+  text-align: center
+
+.work-gallery__controls output b
+  font-weight: 800
+
+.work-gallery__controls button
+  width: 48px
+  min-height: 48px
+  padding: 0
+  border: 0
+  border-left: 1px solid var(--work-strong-line)
+  border-radius: 0
+  background: var(--work-paper)
+  color: var(--work-ink)
+  cursor: pointer
+  font: inherit
+  font-size: 1rem
+
+.work-gallery__controls button:hover
+  background: var(--work-ink)
+  color: var(--work-paper)
+
+.work-gallery__controls button:disabled
+  color: #aaa
+  cursor: default
+
+.work-gallery__controls button:disabled:hover
+  background: var(--work-paper)
+  color: #aaa
+
+.work-gallery
+  display: grid
+  grid-auto-columns: min(86%, 760px)
+  grid-auto-flow: column
+  gap: 1px
+  overflow-x: auto
+  overscroll-behavior-x: contain
+  padding-right: 12%
+  background: var(--work-strong-line)
+  scrollbar-color: var(--work-ink) var(--work-paper)
+  scrollbar-width: thin
+  scroll-snap-type: x mandatory
+  scroll-padding-inline: 0
+  -webkit-overflow-scrolling: touch
+
+.work-gallery::-webkit-scrollbar
+  height: 8px
+
+.work-gallery::-webkit-scrollbar-track
+  background: var(--work-paper)
+
+.work-gallery::-webkit-scrollbar-thumb
+  background: var(--work-ink)
+
+.work-gallery__slide
+  display: grid
+  grid-template-rows: minmax(0, 1fr) auto
+  height: 520px
+  min-width: 0
+  overflow: hidden
+  background: var(--work-canvas)
+  scroll-snap-align: start
+  scroll-snap-stop: always
+
+.work-gallery__slide > img,
+.work-gallery__slide > a.fancybox
+  align-self: stretch
+  justify-self: stretch
+  width: 100%
+  height: 100%
+  min-height: 0
+
+.work-gallery__slide img
+  display: block
+  width: 100%
+  height: 100%
+  max-width: 100%
+  margin: 0
+  padding: 24px
+  border: 0
+  object-fit: contain
+  object-position: center
+
+.work-gallery__slide--phone img
+  width: auto
+  max-width: min(100%, 300px)
+  margin: 0 auto
+
+.work-gallery__slide--icon img
+  width: min(48%, 260px)
+  height: auto
+  align-self: center
+  justify-self: center
+  padding: 0
+
+.work-gallery__slide figcaption
+  min-height: 52px
+  padding: 16px 18px
+  border-top: 1px solid var(--work-strong-line)
+  background: var(--work-paper)
+  color: var(--work-muted)
+  font-size: 0.72rem
+  line-height: 1.45
+
+.work-gallery__slide figcaption span
+  margin-right: 12px
+  color: var(--work-ink)
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace
+  font-weight: 700
+
+.work-gallery__slide--diagram
+  grid-template-rows: minmax(0, 1fr) auto
+
+.work-diagram
+  display: flex
+  min-height: 0
+  align-items: center
+  justify-content: center
+  gap: 14px
+  padding: 50px
+  background: var(--work-paper)
+
+.work-diagram span
+  display: flex
+  min-width: 108px
+  min-height: 76px
+  align-items: center
+  justify-content: center
+  padding: 14px
+  border: 1px solid var(--work-strong-line)
+  color: var(--work-ink)
+  font-size: 0.78rem
+  font-weight: 700
+  line-height: 1.4
+  text-align: center
+
+.work-diagram i
+  color: var(--work-muted)
+  font-style: normal
+
+.work-diagram--compact
+  gap: 8px
+  padding: 40px 22px
+
+.work-diagram--compact span
+  min-width: 86px
+  padding: 10px 8px
+
+.work-diagram--stack
+  display: grid
+  grid-template-columns: repeat(2, minmax(0, 1fr))
+  align-content: center
+
+.work-diagram--stack span
+  min-height: 88px
+
+.work-contact
+  padding: 90px 0 24px
+
+.work-contact h2
+  max-width: 860px
+  margin-top: 14px
+  font-size: clamp(2.2rem, 5vw, 4.8rem)
+
+/* NexT wraps content images in FancyBox anchors even on pages where images
+   are part of an interactive gallery. Keep the wrapper inert and structural. */
+.work-page a.fancybox
+  display: block
+  border: 0
+  color: inherit
+  cursor: default
+  pointer-events: none
+
+.work-page .image-caption
+  display: none
+
+@media (prefers-color-scheme: dark)
+  .work-page
+    --work-paper: #1b1b1b
+    --work-ink: #f2f2f2
+    --work-muted: #b8b8b8
+    --work-line: #424242
+    --work-strong-line: #e6e6e6
+    --work-canvas: #262626
+
+  .work-gallery__controls button:disabled,
+  .work-gallery__controls button:disabled:hover
+    color: #737373
+
+@media (max-width: 1100px)
+  .post-block.page-type-portfolio
+    width: auto
+    max-width: none
+
+  .work-intro
+    grid-template-columns: minmax(0, 1fr) minmax(190px, 0.4fr)
+    gap: 30px 36px
+
+  .work-project__header
+    grid-template-columns: minmax(0, 1.15fr) minmax(230px, 0.85fr)
+    gap: 16px 36px
+
+  .work-gallery
+    grid-auto-columns: 88%
+
+@media (max-width: 767px)
+  .work-intro
+    display: block
+    padding: 18px 0 34px
+
+  .work-intro h1
+    margin-top: 30px
+    font-size: clamp(3.3rem, 20vw, 5.2rem)
+
+  .work-intro__lead
+    margin-top: 28px
+    font-size: 1rem
+
+  .work-intro__links
+    justify-content: flex-start
+
+  .work-index
+    display: flex
+    overflow-x: auto
+    scrollbar-width: none
+
+  .work-index::-webkit-scrollbar
+    display: none
+
+  .work-index a
+    flex: 0 0 auto
+    min-width: 116px
+    padding: 15px 12px
+
+  .work-project
+    padding: 60px 0 70px
+
+  .work-project__header
+    display: block
+
+  .work-project__header h2
+    margin-top: 15px
+    font-size: clamp(2.35rem, 13vw, 3.6rem)
+
+  .work-project__lead
+    margin-top: 24px
+    padding-bottom: 0
+
+  .work-project__facts
+    grid-template-columns: 1fr
+    margin-top: 30px
+
+  .work-project__facts > div,
+  .work-project__facts > div + div
+    padding: 14px 0
+    border-right: 0
+    border-bottom: 1px solid var(--work-line)
+
+  .work-project__facts > div:last-child
+    border-bottom: 0
+
+  .work-links
+    gap: 8px 18px
+    margin-top: 20px
+
+  .work-gallery-shell
+    margin-top: 28px
+
+  .work-gallery__toolbar
+    padding-left: 12px
+
+  .work-gallery__toolbar > span
+    display: none
+
+  .work-gallery__controls
+    width: 100%
+    justify-content: flex-end
+
+  .work-gallery__controls output
+    margin-right: auto
+    text-align: left
+
+  .work-gallery
+    grid-auto-columns: 92%
+    padding-right: 8%
+
+  .work-gallery__slide
+    height: 390px
+
+  .work-gallery__slide img
+    padding: 14px
+
+  .work-gallery__slide--phone img
+    max-width: min(100%, 190px)
+
+  .work-gallery__slide--icon img
+    width: min(58%, 190px)
+    padding: 0
+
+  .work-diagram
+    flex-wrap: wrap
+    gap: 8px
+    align-content: center
+    padding: 24px 14px
+
+  .work-diagram span
+    min-width: calc(50% - 22px)
+    min-height: 58px
+    padding: 10px
+
+  .work-diagram i
+    width: 12px
+    text-align: center
+
+  .work-diagram--stack
+    display: grid
+    grid-template-columns: 1fr
+
+  .work-diagram--stack span
+    min-width: 0
+    min-height: 54px
+
+  .work-contact
+    padding-top: 64px
+
+  .work-contact h2
+    font-size: clamp(2rem, 11vw, 3.25rem)
+
+@media (prefers-reduced-motion: reduce)
+  .work-gallery
+    scroll-behavior: auto
