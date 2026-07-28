@@ -178,6 +178,48 @@ test('every local portfolio image referenced by either language exists in public
   });
 });
 
+test('Wujian gallery leads with the three real product screens in workflow order', () => {
+  const expectedScreens = [
+    '/images/work/wujian/capture-queue.webp',
+    '/images/work/wujian/inventory-view.webp',
+    '/images/work/wujian/model-settings.webp'
+  ];
+
+  workPages.forEach(({ file }) => {
+    const html = readPublic(file);
+    const wujianSection = html.match(
+      /<section class="work-project" id="wujian"[\s\S]*?<\/section>/
+    )?.[0];
+
+    assert.ok(wujianSection, `${file} is missing the Wujian section`);
+    assert.equal(
+      (wujianSection.match(/class="work-gallery__slide/g) || []).length,
+      6,
+      `${file} Wujian gallery must contain six slides`
+    );
+    assert.ok(
+      wujianSection.includes('data-gallery-total>06</span>'),
+      `${file} Wujian gallery counter must show six slides`
+    );
+
+    const screenPositions = expectedScreens.map(imagePath => {
+      const position = wujianSection.indexOf(imagePath);
+      assert.notEqual(position, -1, `${file} Wujian gallery is missing ${imagePath}`);
+      return position;
+    });
+
+    assert.deepEqual(
+      [...screenPositions].sort((a, b) => a - b),
+      screenPositions,
+      `${file} Wujian product screens are in the wrong order`
+    );
+    assert.ok(
+      screenPositions[2] < wujianSection.indexOf('work-gallery__slide--diagram'),
+      `${file} must show real Wujian screens before explanatory diagrams`
+    );
+  });
+});
+
 test('built CSS contains portfolio layout and mobile gallery rules', () => {
   const css = readPublic('css/main.css');
 

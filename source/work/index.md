@@ -95,29 +95,41 @@ fancybox: false
     </div>
     <div class="work-gallery-shell" data-work-gallery>
       <div class="work-gallery__toolbar">
-        <span>PRODUCT LOGIC</span>
+        <span>PRODUCT UI + LOGIC</span>
         <div class="work-gallery__controls">
-          <output aria-live="polite"><b data-gallery-current>01</b> / <span data-gallery-total>03</span></output>
+          <output aria-live="polite"><b data-gallery-current>01</b> / <span data-gallery-total>06</span></output>
           <button type="button" data-gallery-prev aria-label="上一张">←</button>
           <button type="button" data-gallery-next aria-label="下一张">→</button>
         </div>
       </div>
-      <div class="work-gallery" data-gallery-track tabindex="0" aria-label="物见产品逻辑，可左右滑动">
-        <figure class="work-gallery__slide work-gallery__slide--icon">
-          <img src="/images/work/wujian/app-icon.webp" alt="物见应用图标" width="512" height="512" loading="lazy">
-          <figcaption><span>01</span> 物见应用图标</figcaption>
+      <div class="work-gallery" data-gallery-track tabindex="0" aria-label="物见实际界面与产品逻辑，可左右滑动">
+        <figure class="work-gallery__slide work-gallery__slide--phone">
+          <img src="/images/work/wujian/capture-queue.webp" alt="物见首页的拍照入口、连续识别和待确认队列统计" width="1264" height="2499" loading="lazy">
+          <figcaption><span>01</span> 拍照入口、连续识别与待确认队列</figcaption>
+        </figure>
+        <figure class="work-gallery__slide work-gallery__slide--phone">
+          <img src="/images/work/wujian/inventory-view.webp" alt="物见视图页面的物品搜索、分类筛选、确认与导出功能" width="1264" height="2448" loading="lazy">
+          <figcaption><span>02</span> 已入库物品的搜索、筛选与导出</figcaption>
+        </figure>
+        <figure class="work-gallery__slide work-gallery__slide--phone">
+          <img src="/images/work/wujian/model-settings.webp" alt="物见设置页面的多模态模型配置、Token 和本地存储统计" width="1263" height="2459" loading="lazy">
+          <figcaption><span>03</span> 多模型配置与 Token / 本地存储统计</figcaption>
         </figure>
         <figure class="work-gallery__slide work-gallery__slide--diagram">
           <div class="work-diagram" aria-label="物见识别工作流">
             <span>拍照</span><i>→</i><span>AI 草稿</span><i>→</i><span>人工确认</span><i>→</i><span>本地保存</span>
           </div>
-          <figcaption><span>02</span> AI 提速，人保留最终决定</figcaption>
+          <figcaption><span>04</span> AI 提速，人保留最终决定</figcaption>
         </figure>
         <figure class="work-gallery__slide work-gallery__slide--diagram">
           <div class="work-diagram work-diagram--stack" aria-label="物见可靠性设计">
             <span>安全密钥</span><span>图片压缩与去重</span><span>原子保存与备份</span><span>PDF / Excel / Markdown 导出</span>
           </div>
-          <figcaption><span>03</span> 本地优先的数据可靠性设计</figcaption>
+          <figcaption><span>05</span> 本地优先的数据可靠性设计</figcaption>
+        </figure>
+        <figure class="work-gallery__slide work-gallery__slide--icon">
+          <img src="/images/work/wujian/app-icon.webp" alt="物见应用图标" width="512" height="512" loading="lazy">
+          <figcaption><span>06</span> 物见应用图标</figcaption>
         </figure>
       </div>
     </div>

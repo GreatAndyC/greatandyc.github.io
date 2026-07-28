@@ -95,29 +95,41 @@ fancybox: false
     </div>
     <div class="work-gallery-shell" data-work-gallery>
       <div class="work-gallery__toolbar">
-        <span>PRODUCT LOGIC</span>
+        <span>PRODUCT UI + LOGIC</span>
         <div class="work-gallery__controls">
-          <output aria-live="polite"><b data-gallery-current>01</b> / <span data-gallery-total>03</span></output>
+          <output aria-live="polite"><b data-gallery-current>01</b> / <span data-gallery-total>06</span></output>
           <button type="button" data-gallery-prev aria-label="Previous image">←</button>
           <button type="button" data-gallery-next aria-label="Next image">→</button>
         </div>
       </div>
-      <div class="work-gallery" data-gallery-track tabindex="0" aria-label="Wujian product logic; swipe horizontally">
-        <figure class="work-gallery__slide work-gallery__slide--icon">
-          <img src="/images/work/wujian/app-icon.webp" alt="Wujian app icon" width="512" height="512" loading="lazy">
-          <figcaption><span>01</span> Wujian app icon</figcaption>
+      <div class="work-gallery" data-gallery-track tabindex="0" aria-label="Wujian product UI and logic; swipe horizontally">
+        <figure class="work-gallery__slide work-gallery__slide--phone">
+          <img src="/images/work/wujian/capture-queue.webp" alt="Wujian home screen with capture actions and pending-review metrics" width="1264" height="2499" loading="lazy">
+          <figcaption><span>01</span> Capture entry, continuous recognition, and the pending-review queue</figcaption>
+        </figure>
+        <figure class="work-gallery__slide work-gallery__slide--phone">
+          <img src="/images/work/wujian/inventory-view.webp" alt="Wujian inventory view with search, filters, review state, and export" width="1264" height="2448" loading="lazy">
+          <figcaption><span>02</span> Search, filter, and export confirmed inventory</figcaption>
+        </figure>
+        <figure class="work-gallery__slide work-gallery__slide--phone">
+          <img src="/images/work/wujian/model-settings.webp" alt="Wujian settings with multimodal model, token, and local-storage controls" width="1263" height="2459" loading="lazy">
+          <figcaption><span>03</span> Multimodal model, token, and local-storage controls</figcaption>
         </figure>
         <figure class="work-gallery__slide work-gallery__slide--diagram">
           <div class="work-diagram" aria-label="Wujian recognition workflow">
             <span>Photo</span><i>→</i><span>AI draft</span><i>→</i><span>Human review</span><i>→</i><span>Local save</span>
           </div>
-          <figcaption><span>02</span> AI accelerates; the person decides</figcaption>
+          <figcaption><span>04</span> AI accelerates; the person decides</figcaption>
         </figure>
         <figure class="work-gallery__slide work-gallery__slide--diagram">
           <div class="work-diagram work-diagram--stack" aria-label="Wujian reliability design">
             <span>Secure credentials</span><span>Compression and deduplication</span><span>Atomic save and backup</span><span>PDF / Excel / Markdown export</span>
           </div>
-          <figcaption><span>03</span> Local-first reliability design</figcaption>
+          <figcaption><span>05</span> Local-first reliability design</figcaption>
+        </figure>
+        <figure class="work-gallery__slide work-gallery__slide--icon">
+          <img src="/images/work/wujian/app-icon.webp" alt="Wujian app icon" width="512" height="512" loading="lazy">
+          <figcaption><span>06</span> Product identity</figcaption>
         </figure>
       </div>
     </div>
