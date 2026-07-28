@@ -22,6 +22,10 @@ language:
   - zh-CN
 timezone: Asia/Hong_Kong
 
+# Bump this value whenever core CSS or page-specific JavaScript changes.
+# The query string prevents browsers and Cloudflare from mixing new HTML with cached assets.
+asset_version: "20260728-1"
+
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
 url: https://caoyueyang.org

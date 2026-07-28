@@ -35,6 +35,9 @@ jobs:
           npx hexo clean
           npx hexo generate
 
+      - name: Test generated site
+        run: npm test
+
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3
         with:

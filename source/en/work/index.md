@@ -6,7 +6,9 @@ layout: page
 lang: en
 description: Andy Cao's independent products, open-source software, and research projects.
 comments: false
-toc: false
+toc:
+  enable: false
+  number: false
 sidebar: false
 fancybox: false
 ---
@@ -298,5 +300,4 @@ fancybox: false
     </div>
   </footer>
 </main>
-<script src="/js/portfolio-gallery.js" defer></script>
 {% endraw %}

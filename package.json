@@ -5,6 +5,8 @@
   "scripts": {
     "build": "hexo generate",
     "clean": "hexo clean",
+    "test": "node --test test/*.test.js",
+    "test:site": "npm run clean && npm run build && npm test",
     "cms:local": "node tools/local-cms.js",
     "deploy": "hexo deploy",
     "server": "hexo server",

@@ -6,7 +6,9 @@ layout: page
 lang: zh-CN
 description: 曹越洋的独立产品、开源软件与研究型项目。
 comments: false
-toc: false
+toc:
+  enable: false
+  number: false
 sidebar: false
 fancybox: false
 ---
@@ -298,5 +300,4 @@ fancybox: false
     </div>
   </footer>
 </main>
-<script src="/js/portfolio-gallery.js" defer></script>
 {% endraw %}

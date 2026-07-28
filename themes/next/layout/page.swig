@@ -89,6 +89,9 @@
         {% else %}
           {{ page.content }}
         {%- endif %}
+        {%- if page.type === 'portfolio' %}
+          <script src="{{ url_for('/js/portfolio-gallery.js') }}?v={{ config.asset_version }}" defer></script>
+        {%- endif %}
       </div>
       {#####################}
       {### END PAGE BODY ###}
@@ -102,5 +105,7 @@
 {% endblock %}
 
 {% block sidebar %}
-  {{ sidebar_template.render(true) }}
+  {%- if page.sidebar !== false %}
+    {{ sidebar_template.render(true) }}
+  {%- endif %}
 {% endblock %}
