@@ -274,6 +274,98 @@ test('Wujian gallery leads with the three real product screens in workflow order
   });
 });
 
+test('SignalForge exposes its OpenAI Build Week demo evidence', () => {
+  workPages.forEach(({ file }) => {
+    const html = readPublic(file);
+    const signalForgeSection = html.match(
+      /<section class="work-project" id="signalforge"[\s\S]*?<\/section>/
+    )?.[0];
+
+    assert.ok(signalForgeSection, `${file} is missing the SignalForge section`);
+    assert.ok(
+      signalForgeSection.includes('03 / OPENAI BUILD WEEK / WORK + PRODUCTIVITY'),
+      `${file} must identify SignalForge as an OpenAI Build Week project`
+    );
+    assert.ok(
+      signalForgeSection.includes('href="https://youtu.be/C_vdD40rpV0"'),
+      `${file} is missing the public SignalForge demo`
+    );
+  });
+});
+
+test('AI delivery gallery leads with the public Figma workflow', () => {
+  workPages.forEach(({ file }) => {
+    const html = readPublic(file);
+    const aiSection = html.match(
+      /<section class="work-project work-project--medium-title" id="ai-native-delivery"[\s\S]*?<\/section>/
+    )?.[0];
+
+    assert.ok(aiSection, `${file} is missing the AI delivery section`);
+    assert.ok(
+      aiSection.includes('data-gallery-total>04</span>'),
+      `${file} must expose all four AI delivery slides`
+    );
+
+    const workflowImage = '/images/work/ai-native-delivery/ai-native-product-delivery-workflow.webp';
+    const workflowIndex = aiSection.indexOf(workflowImage);
+    const compactDiagramIndex = aiSection.indexOf('work-diagram work-diagram--compact');
+
+    assert.ok(workflowIndex >= 0, `${file} is missing the public Figma workflow`);
+    assert.ok(
+      workflowIndex < compactDiagramIndex,
+      `${file} must lead the AI delivery gallery with the detailed workflow`
+    );
+    assert.ok(
+      fs.existsSync(path.join(publicDir, workflowImage)),
+      `${file} references a missing public workflow image`
+    );
+  });
+});
+
+test('every project gallery count matches its rendered slide count', () => {
+  workPages.forEach(({ file }) => {
+    const html = readPublic(file);
+
+    projectIds.forEach(projectId => {
+      const section = html.match(
+        new RegExp(`<section class="[^"]*" id="${projectId}"[\\s\\S]*?<\\/section>`)
+      )?.[0];
+
+      assert.ok(section, `${file} is missing project section ${projectId}`);
+
+      const declaredTotal = Number(
+        section.match(/data-gallery-total>(\d+)<\/span>/)?.[1]
+      );
+      const renderedSlides = section.match(/class="work-gallery__slide(?:\s[^"]*)?"/g)?.length || 0;
+
+      assert.ok(
+        Number.isInteger(declaredTotal) && declaredTotal > 0,
+        `${file} ${projectId} has no valid gallery total`
+      );
+      assert.equal(
+        declaredTotal,
+        renderedSlides,
+        `${file} ${projectId} declares ${declaredTotal} slides but renders ${renderedSlides}`
+      );
+    });
+  });
+});
+
+test('standalone app icons are centered and the Wujian black corners are clipped', () => {
+  workPages.forEach(({ file }) => {
+    const html = readPublic(file);
+
+    assert.ok(
+      html.includes('class="work-gallery__slide work-gallery__slide--icon"'),
+      `${file} is missing standalone app-icon slides`
+    );
+    assert.ok(
+      html.includes('class="work-app-icon work-app-icon--rounded-cutout"'),
+      `${file} must mark the Wujian icon for a clean rounded cutout`
+    );
+  });
+});
+
 test('built CSS contains portfolio layout and mobile gallery rules', () => {
   const css = readPublic('css/main.css');
 
@@ -285,6 +377,8 @@ test('built CSS contains portfolio layout and mobile gallery rules', () => {
     '.work-project--split-title .work-project__header h2',
     '.work-project__subtitle',
     '.work-gallery__slide',
+    '.work-page .work-gallery__slide--icon > a.fancybox',
+    '.work-app-icon--rounded-cutout',
     '@media (max-width: 767px)'
   ].forEach(selector => {
     assert.ok(css.includes(selector), `built CSS is missing ${selector}`);

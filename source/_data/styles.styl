@@ -1786,7 +1786,7 @@ html
   overflow-x: auto
   overscroll-behavior-x: contain
   padding-right: 12%
-  background: var(--work-strong-line)
+  background: var(--work-paper)
   scrollbar-color: var(--work-ink) var(--work-paper)
   scrollbar-width: thin
   scroll-snap-type: x mandatory
@@ -1837,11 +1837,21 @@ html
   margin: 0 auto
 
 .work-gallery__slide--icon img
+  display: block
   width: min(48%, 260px)
   height: auto
   align-self: center
   justify-self: center
+  margin: auto
   padding: 0
+
+.work-page .work-gallery__slide--icon > a.fancybox
+  display: grid
+  place-items: center
+
+.work-gallery__slide--icon .work-app-icon--rounded-cutout
+  border-radius: 24%
+  clip-path: inset(3px round 24%)
 
 .work-gallery__slide figcaption
   min-height: 52px

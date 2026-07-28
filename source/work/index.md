@@ -128,7 +128,7 @@ fancybox: false
           <figcaption><span>05</span> 本地优先的数据可靠性设计</figcaption>
         </figure>
         <figure class="work-gallery__slide work-gallery__slide--icon">
-          <img src="/images/work/wujian/app-icon.webp" alt="物见应用图标" width="512" height="512" loading="lazy">
+          <img class="work-app-icon work-app-icon--rounded-cutout" src="/images/work/wujian/app-icon.webp" alt="物见应用图标" width="512" height="512" loading="lazy">
           <figcaption><span>06</span> 物见应用图标</figcaption>
         </figure>
       </div>
@@ -137,9 +137,9 @@ fancybox: false
 
   <section class="work-project" id="signalforge" aria-labelledby="signalforge-title">
     <header class="work-project__header">
-      <p class="work-project__number">03 / SAAS RESEARCH TOOL / BUILD WEEK</p>
+      <p class="work-project__number">03 / OPENAI BUILD WEEK / WORK + PRODUCTIVITY</p>
       <h2 id="signalforge-title">SignalForge</h2>
-      <p class="work-project__lead">把 GitHub 技术信号转化为可解释的 SaaS 商机研究工作台，明确区分已观察事实、模型推断和待验证建议。</p>
+      <p class="work-project__lead">为 OpenAI Build Week 构建，把 GitHub 技术信号转化为可解释的 SaaS 商机，并明确区分事实证据、模型推断和待验证建议。</p>
     </header>
     <dl class="work-project__facts">
       <div><dt>系统</dt><dd>TypeScript · Node.js · SQLite</dd></div>
@@ -148,6 +148,7 @@ fancybox: false
     </dl>
     <div class="work-links">
       <a href="https://github.com/GreatAndyC/GithubStars" target="_blank" rel="noopener noreferrer">GitHub 仓库 ↗</a>
+      <a href="https://youtu.be/C_vdD40rpV0" target="_blank" rel="noopener noreferrer">观看 Build Week 演示 ↗</a>
       <a href="https://github.com/GreatAndyC/GithubStars#readme" target="_blank" rel="noopener noreferrer">产品与架构说明 ↗</a>
     </div>
     <div class="work-gallery-shell" data-work-gallery>
@@ -195,12 +196,16 @@ fancybox: false
       <div class="work-gallery__toolbar">
         <span>METHOD + PRACTICE</span>
         <div class="work-gallery__controls">
-          <output aria-live="polite"><b data-gallery-current>01</b> / <span data-gallery-total>03</span></output>
+          <output aria-live="polite"><b data-gallery-current>01</b> / <span data-gallery-total>04</span></output>
           <button type="button" data-gallery-prev aria-label="上一张">←</button>
           <button type="button" data-gallery-next aria-label="下一张">→</button>
         </div>
       </div>
       <div class="work-gallery" data-gallery-track tabindex="0" aria-label="AI 原生产品交付研究图片，可左右滑动">
+        <figure class="work-gallery__slide">
+          <img src="/images/work/ai-native-delivery/ai-native-product-delivery-workflow.webp" alt="连接研究意图、Figma 设计、产品规格、人工决策、Agent 实现、自动验证、发布和生产学习的八阶段 AI 原生产品交付流程" width="1672" height="941" loading="lazy">
+          <figcaption><span>01</span> 以 Figma 为设计输入，由人工决策和三条证据反馈闭环控制交付</figcaption>
+        </figure>
         <figure class="work-gallery__slide work-gallery__slide--diagram">
           <div class="work-diagram work-diagram--compact" role="img" aria-label="从意图与约束，经规格与决策、Agent 协作、测试与审查，到反馈沉淀的交付闭环">
             <span>意图<br>与约束</span><i>→</i>
@@ -209,15 +214,15 @@ fancybox: false
             <span>测试<br>与审查</span><i>→</i>
             <span>反馈<br>沉淀</span>
           </div>
-          <figcaption><span>01</span> 从一次性生成转向从意图到证据的可控闭环</figcaption>
+          <figcaption><span>02</span> 从一次性生成转向从意图到证据的可控闭环</figcaption>
         </figure>
         <figure class="work-gallery__slide">
           <img src="/images/work/ai-native-delivery/learning-platform-home.jpg" alt="学习社区平台课程首页，展示周计划、课程模块与学习进度" width="1280" height="720" loading="lazy">
-          <figcaption><span>02</span> 学习社区平台：把产品规格落实为可操作的课程空间</figcaption>
+          <figcaption><span>03</span> 学习社区平台：把产品规格落实为可操作的课程空间</figcaption>
         </figure>
         <figure class="work-gallery__slide">
           <img src="/images/work/ai-native-delivery/learning-platform-discussion.jpg" alt="学习社区平台班级讨论页面" width="1280" height="720" loading="lazy">
-          <figcaption><span>03</span> 学习社区平台：围绕学习行为组织班级讨论</figcaption>
+          <figcaption><span>04</span> 学习社区平台：围绕学习行为组织班级讨论</figcaption>
         </figure>
       </div>
     </div>

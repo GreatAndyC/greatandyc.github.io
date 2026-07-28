@@ -128,7 +128,7 @@ fancybox: false
           <figcaption><span>05</span> Local-first reliability design</figcaption>
         </figure>
         <figure class="work-gallery__slide work-gallery__slide--icon">
-          <img src="/images/work/wujian/app-icon.webp" alt="Wujian app icon" width="512" height="512" loading="lazy">
+          <img class="work-app-icon work-app-icon--rounded-cutout" src="/images/work/wujian/app-icon.webp" alt="Wujian app icon" width="512" height="512" loading="lazy">
           <figcaption><span>06</span> Product identity</figcaption>
         </figure>
       </div>
@@ -137,9 +137,9 @@ fancybox: false
 
   <section class="work-project" id="signalforge" aria-labelledby="signalforge-title">
     <header class="work-project__header">
-      <p class="work-project__number">03 / SAAS RESEARCH TOOL / BUILD WEEK</p>
+      <p class="work-project__number">03 / OPENAI BUILD WEEK / WORK + PRODUCTIVITY</p>
       <h2 id="signalforge-title">SignalForge</h2>
-      <p class="work-project__lead">A SaaS research workspace that turns GitHub signals into explainable opportunities while separating evidence, model inference, and unvalidated ideas.</p>
+      <p class="work-project__lead">Built for OpenAI Build Week, SignalForge turns GitHub signals into explainable SaaS opportunities while separating evidence, model inference, and unvalidated ideas.</p>
     </header>
     <dl class="work-project__facts">
       <div><dt>System</dt><dd>TypeScript · Node.js · SQLite</dd></div>
@@ -148,6 +148,7 @@ fancybox: false
     </dl>
     <div class="work-links">
       <a href="https://github.com/GreatAndyC/GithubStars" target="_blank" rel="noopener noreferrer">GitHub repository ↗</a>
+      <a href="https://youtu.be/C_vdD40rpV0" target="_blank" rel="noopener noreferrer">Watch Build Week demo ↗</a>
       <a href="https://github.com/GreatAndyC/GithubStars#readme" target="_blank" rel="noopener noreferrer">Product and architecture ↗</a>
     </div>
     <div class="work-gallery-shell" data-work-gallery>
@@ -195,12 +196,16 @@ fancybox: false
       <div class="work-gallery__toolbar">
         <span>METHOD + PRACTICE</span>
         <div class="work-gallery__controls">
-          <output aria-live="polite"><b data-gallery-current>01</b> / <span data-gallery-total>03</span></output>
+          <output aria-live="polite"><b data-gallery-current>01</b> / <span data-gallery-total>04</span></output>
           <button type="button" data-gallery-prev aria-label="Previous image">←</button>
           <button type="button" data-gallery-next aria-label="Next image">→</button>
         </div>
       </div>
       <div class="work-gallery" data-gallery-track tabindex="0" aria-label="AI-native product delivery research images; swipe horizontally">
+        <figure class="work-gallery__slide">
+          <img src="/images/work/ai-native-delivery/ai-native-product-delivery-workflow.webp" alt="Eight-stage AI-native product delivery workflow connecting research intent, Figma design, product specifications, human decisions, agent implementation, automated verification, release, and production learning" width="1672" height="941" loading="lazy">
+          <figcaption><span>01</span> Figma-led delivery with human decisions and three evidence feedback loops</figcaption>
+        </figure>
         <figure class="work-gallery__slide work-gallery__slide--diagram">
           <div class="work-diagram work-diagram--compact" role="img" aria-label="A delivery loop from intent and constraints through specifications and decisions, agent collaboration, tests and review, to retained feedback">
             <span>Intent &amp;<br>constraints</span><i>→</i>
@@ -209,15 +214,15 @@ fancybox: false
             <span>Tests &amp;<br>review</span><i>→</i>
             <span>Feedback<br>loop</span>
           </div>
-          <figcaption><span>01</span> From one-shot generation to an evidence-led delivery loop</figcaption>
+          <figcaption><span>02</span> From one-shot generation to an evidence-led delivery loop</figcaption>
         </figure>
         <figure class="work-gallery__slide">
           <img src="/images/work/ai-native-delivery/learning-platform-home.jpg" alt="Learning community platform course home with weekly schedule, modules, and learner progress" width="1280" height="720" loading="lazy">
-          <figcaption><span>02</span> Learning platform: turning product specifications into an actionable course space</figcaption>
+          <figcaption><span>03</span> Learning platform: turning product specifications into an actionable course space</figcaption>
         </figure>
         <figure class="work-gallery__slide">
           <img src="/images/work/ai-native-delivery/learning-platform-discussion.jpg" alt="Class discussion view in the learning community platform" width="1280" height="720" loading="lazy">
-          <figcaption><span>03</span> Learning platform: organizing discussion around learning activity</figcaption>
+          <figcaption><span>04</span> Learning platform: organizing discussion around learning activity</figcaption>
         </figure>
       </div>
     </div>
