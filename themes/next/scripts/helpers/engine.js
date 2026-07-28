@@ -105,9 +105,19 @@ function stripLanguagePrefix(pathname = '', languages = getLanguages()) {
 }
 
 function localizedRoutePath(pathname, language, defaultLanguage) {
-  const normalized = normalizeInputPath(pathname);
-  if (!normalized) return language === defaultLanguage ? '' : `${language}/`;
-  return language === defaultLanguage ? normalized : `${language}/${normalized}`;
+  const normalized = stripLanguagePrefix(pathname);
+  if (!normalized || normalized === 'index.html') {
+    return language === defaultLanguage ? '' : `${language}/`;
+  }
+
+  const languagePrefixedPath = `${language}/${normalized}`;
+
+  // 显式语言目录优先；不存在时回退到基础路径。
+  // 这样默认语言即使改为英文，仍能正确进入 source/en/ 下的静态页面。
+  if (routeExists(languagePrefixedPath)) return languagePrefixedPath;
+  if (routeExists(normalized)) return normalized;
+
+  return language === defaultLanguage ? normalized : languagePrefixedPath;
 }
 
 function extractPaginationInfo(pathname = '', paginationDir = 'page') {
@@ -362,13 +372,12 @@ hexo.extend.helper.register('localized_path', function (path) {
 
   const defaultLanguage = getDefaultLanguage();
   const currentLanguage = getCurrentLanguage(this);
+  const normalizedPath = stripLanguagePrefix(path);
+  const localizedPath = localizedRoutePath(path, currentLanguage, defaultLanguage);
 
-  if (!currentLanguage || currentLanguage === defaultLanguage) {
-    return this.url_for(path);
+  if (!localizedPath) {
+    return this.url_for('/');
   }
-
-  const normalizedPath = normalizeInputPath(path);
-  const localizedPath = localizedRoutePath(normalizedPath, currentLanguage, defaultLanguage);
 
   if (routeExists(localizedPath)) {
     return this.url_for(localizedPath);
