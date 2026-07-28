@@ -1512,9 +1512,6 @@ html
   word-break: normal
   overflow-wrap: anywhere
 
-.main-inner:has(.post-block.page-type-portfolio) .sidebar
-  display: none
-
 .work-page
   --work-paper: #fff
   --work-ink: #222
@@ -1538,7 +1535,6 @@ html
 .work-page dd
   margin: 0
 
-.work-page h1,
 .work-page h2
   color: var(--work-ink)
   font-weight: 800
@@ -1578,12 +1574,17 @@ html
   border-bottom: 3px solid var(--work-strong-line)
 
 .work-intro .work-kicker,
-.work-intro h1
+.work-intro__title
   grid-column: 1 / -1
 
-.work-intro h1
+.work-intro__title
+  margin: 0
   max-width: 900px
+  color: var(--work-ink)
   font-size: clamp(3.5rem, 9vw, 7.2rem)
+  font-weight: 800
+  line-height: 1.02
+  letter-spacing: -0.045em
 
 .work-intro__lead
   max-width: 690px
@@ -1878,10 +1879,14 @@ html
 .work-contact
   padding: 90px 0 24px
 
-.work-contact h2
+.work-contact__title
   max-width: 860px
-  margin-top: 14px
+  margin: 14px 0 0
+  color: var(--work-ink)
   font-size: clamp(2.2rem, 5vw, 4.8rem)
+  font-weight: 800
+  line-height: 1.02
+  letter-spacing: -0.045em
 
 /* NexT wraps content images in FancyBox anchors even on pages where images
    are part of an interactive gallery. Keep the wrapper inert and structural. */
@@ -1929,7 +1934,7 @@ html
     display: block
     padding: 18px 0 34px
 
-  .work-intro h1
+  .work-intro__title
     margin-top: 30px
     font-size: clamp(3.3rem, 20vw, 5.2rem)
 
@@ -2044,7 +2049,7 @@ html
   .work-contact
     padding-top: 64px
 
-  .work-contact h2
+  .work-contact__title
     font-size: clamp(2rem, 11vw, 3.25rem)
 
 @media (prefers-reduced-motion: reduce)

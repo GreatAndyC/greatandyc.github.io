@@ -114,14 +114,13 @@ test('core pages request the versioned stylesheet to avoid stale deployment CSS'
   });
 });
 
-test('portfolio pages have six projects and no NexT sidebar or generated TOC', () => {
+test('portfolio pages have six projects and a six-item flat NexT table of contents', () => {
   workPages.forEach(({ file }) => {
     const html = readPublic(file);
 
     assert.ok(html.includes('class="post-block page-type-portfolio"'));
-    assert.ok(!html.includes('<aside class="sidebar'), `${file} still renders the NexT sidebar`);
-    assert.ok(!html.includes('class="post-toc'), `${file} still renders a generated TOC`);
-    assert.ok(!html.includes('Table of Contents'), `${file} still exposes a TOC label`);
+    assert.ok(html.includes('<aside class="sidebar'), `${file} is missing the NexT sidebar`);
+    assert.ok(html.includes('class="post-toc'), `${file} is missing the generated TOC`);
 
     projectIds.forEach(projectId => {
       assert.equal(
@@ -129,7 +128,23 @@ test('portfolio pages have six projects and no NexT sidebar or generated TOC', (
         1,
         `${file} must contain project #${projectId} exactly once`
       );
+      assert.ok(
+        html.includes(`href="#${projectId}-title"`),
+        `${file} TOC is missing project #${projectId}`
+      );
     });
+
+    const tocHtml = html.match(/<div class="post-toc motion-element">([\s\S]*?)<\/div>/)?.[1] || '';
+    assert.equal(
+      (tocHtml.match(/class="nav-item/g) || []).length,
+      projectIds.length,
+      `${file} TOC must contain exactly six project entries`
+    );
+    assert.ok(!tocHtml.includes('Selected Work'), `${file} TOC must not include the page hero`);
+    assert.ok(!tocHtml.includes('作品集'), `${file} TOC must not include the page hero`);
+    assert.ok(!tocHtml.includes('Want to talk'), `${file} TOC must not include the contact block`);
+    assert.ok(!tocHtml.includes('想聊产品'), `${file} TOC must not include the contact block`);
+    assert.ok(!tocHtml.includes('nav-number'), `${file} TOC must not show numeric prefixes`);
   });
 });
 

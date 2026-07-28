@@ -7,9 +7,10 @@ lang: zh-CN
 description: 曹越洋的独立产品、开源软件与研究型项目。
 comments: false
 toc:
-  enable: false
+  enable: true
   number: false
-sidebar: false
+  max_depth: 2
+sidebar: true
 fancybox: false
 ---
 
@@ -17,7 +18,7 @@ fancybox: false
 <main class="work-page">
   <header class="work-intro">
     <p class="work-kicker">PORTFOLIO / 2024—2026</p>
-    <h1>作品集</h1>
+    <p class="work-intro__title" role="heading" aria-level="1">作品集</p>
     <p class="work-intro__lead">独立产品、开源工具和研究型软件。这里展示的是做出来的东西，以及它们如何工作。</p>
     <div class="work-links work-intro__links">
       <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
@@ -293,7 +294,7 @@ fancybox: false
 
   <footer class="work-contact" id="contact">
     <p class="work-kicker">CONTACT</p>
-    <h2>想聊产品、AI 或软件系统？</h2>
+    <p class="work-contact__title" role="heading" aria-level="2">想聊产品、AI 或软件系统？</p>
     <div class="work-links">
       <a href="mailto:andy.caoyueyang@gmail.com">andy.caoyueyang@gmail.com ↗</a>
       <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">GitHub ↗</a>

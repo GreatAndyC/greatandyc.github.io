@@ -7,9 +7,10 @@ lang: en
 description: Andy Cao's independent products, open-source software, and research projects.
 comments: false
 toc:
-  enable: false
+  enable: true
   number: false
-sidebar: false
+  max_depth: 2
+sidebar: true
 fancybox: false
 ---
 
@@ -17,7 +18,7 @@ fancybox: false
 <main class="work-page">
   <header class="work-intro">
     <p class="work-kicker">PORTFOLIO / 2024—2026</p>
-    <h1>Selected Work</h1>
+    <p class="work-intro__title" role="heading" aria-level="1">Selected Work</p>
     <p class="work-intro__lead">Independent products, open-source tools, and research software—what I built and how each system works.</p>
     <div class="work-links work-intro__links">
       <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
@@ -293,7 +294,7 @@ fancybox: false
 
   <footer class="work-contact" id="contact">
     <p class="work-kicker">CONTACT</p>
-    <h2>Want to talk about products, AI, or software systems?</h2>
+    <p class="work-contact__title" role="heading" aria-level="2">Want to talk about products, AI, or software systems?</p>
     <div class="work-links">
       <a href="mailto:andy.caoyueyang@gmail.com">andy.caoyueyang@gmail.com ↗</a>
       <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
