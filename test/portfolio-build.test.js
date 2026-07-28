@@ -167,7 +167,6 @@ test('built CSS contains portfolio layout and mobile gallery rules', () => {
   const css = readPublic('css/main.css');
 
   [
-    '.main-inner:has(.post-block.page-type-portfolio) .content-wrap',
     '.work-page',
     '.work-project__header',
     '.work-gallery__slide',
@@ -175,6 +174,19 @@ test('built CSS contains portfolio layout and mobile gallery rules', () => {
   ].forEach(selector => {
     assert.ok(css.includes(selector), `built CSS is missing ${selector}`);
   });
+});
+
+test('desktop portfolio keeps the NexT content gutter beside the fixed menu', () => {
+  const css = readPublic('css/main.css');
+
+  assert.ok(
+    css.includes('width: calc(100% - 252px);'),
+    'built CSS is missing the NexT desktop content gutter'
+  );
+  assert.ok(
+    !css.includes('.main-inner:has(.post-block.page-type-portfolio) .content-wrap'),
+    'portfolio CSS must not expand beneath the fixed desktop menu'
+  );
 });
 
 test('portfolio gallery JavaScript is syntactically valid', () => {
