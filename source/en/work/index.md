@@ -139,7 +139,7 @@ fancybox: false
     <header class="work-project__header">
       <p class="work-project__number">03 / SAAS RESEARCH TOOL / BUILD WEEK</p>
       <h2 id="signalforge-title">SignalForge</h2>
-      <p class="work-project__lead">A research workspace that turns GitHub technology signals into explainable SaaS opportunity hypotheses while separating observations, model inference, and ideas that still need validation.</p>
+      <p class="work-project__lead">A SaaS research workspace that turns GitHub signals into explainable opportunities while separating evidence, model inference, and unvalidated ideas.</p>
     </header>
     <dl class="work-project__facts">
       <div><dt>System</dt><dd>TypeScript · Node.js · SQLite</dd></div>
@@ -180,11 +180,11 @@ fancybox: false
     </div>
   </section>
 
-  <section class="work-project" id="ai-native-delivery" aria-labelledby="ai-native-delivery-title">
+  <section class="work-project work-project--medium-title" id="ai-native-delivery" aria-labelledby="ai-native-delivery-title">
     <header class="work-project__header">
       <p class="work-project__number">04 / ONGOING RESEARCH / AI-NATIVE DELIVERY</p>
       <h2 id="ai-native-delivery-title">AI-Native Product Delivery</h2>
-      <p class="work-project__lead">An ongoing study of AI-native software delivery. I am applying ideas from <em>The Modern Software Developer</em>—context engineering, agent management, automated verification, security, and production feedback—to the specifications, architecture, implementation, and tests of a learning community platform. The aim is not to remove human judgment, but to make delivery explicit, traceable, and evidence-led.</p>
+      <p class="work-project__lead">An ongoing study applying context engineering, agent management, automated verification, security, and production feedback to an evidence-led learning-platform workflow with human judgment in control.</p>
     </header>
     <dl class="work-project__facts">
       <div><dt>Status</dt><dd>Ongoing research</dd></div>
@@ -223,10 +223,10 @@ fancybox: false
     </div>
   </section>
 
-  <section class="work-project" id="autogoogleplay" aria-labelledby="autogoogleplay-title">
+  <section class="work-project work-project--compact-title" id="autogoogleplay" aria-labelledby="autogoogleplay-title">
     <header class="work-project__header">
       <p class="work-project__number">05 / OPEN SOURCE / DATA + AI</p>
-      <h2 id="autogoogleplay-title">AutoGooglePlayAnalyzer</h2>
+      <h2 id="autogoogleplay-title">AutoGooglePlay Analyzer</h2>
       <p class="work-project__lead">An open-source system connecting Google Play review collection, persistent storage, and LLM Map-Reduce analysis in one pipeline, with a visual Web control surface.</p>
     </header>
     <dl class="work-project__facts">
@@ -264,11 +264,14 @@ fancybox: false
     </div>
   </section>
 
-  <section class="work-project" id="fatigue-research" aria-labelledby="fatigue-research-title">
+  <section class="work-project work-project--split-title" id="fatigue-research" aria-labelledby="fatigue-research-title fatigue-research-subtitle">
     <header class="work-project__header">
       <p class="work-project__number">06 / RESEARCH PROTOTYPE / HUMAN–ROBOT INTERACTION</p>
-      <h2 id="fatigue-research-title">Fatigue Recognition in Robot-Assisted Squat Training</h2>
-      <p class="work-project__lead">I contributed to experiment design, data collection, and analysis combining ratings of perceived exertion, surface EMG, and platform-recorded kinematics to compare how different indicators reflect fatigue.</p>
+      <div class="work-project__title-group">
+        <h2 id="fatigue-research-title">Fatigue Recognition</h2>
+        <p class="work-project__subtitle" id="fatigue-research-subtitle">Robot-Assisted Squat Training</p>
+      </div>
+      <p class="work-project__lead">Research combining perceived exertion, surface EMG, and platform-recorded kinematics to compare fatigue indicators across experiment design, data collection, and analysis.</p>
     </header>
     <dl class="work-project__facts">
       <div><dt>Signals</dt><dd>RPE · sEMG · Velocity Loss</dd></div>

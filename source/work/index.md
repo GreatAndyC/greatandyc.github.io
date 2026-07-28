@@ -180,11 +180,11 @@ fancybox: false
     </div>
   </section>
 
-  <section class="work-project" id="ai-native-delivery" aria-labelledby="ai-native-delivery-title">
+  <section class="work-project work-project--medium-title" id="ai-native-delivery" aria-labelledby="ai-native-delivery-title">
     <header class="work-project__header">
       <p class="work-project__number">04 / ONGOING RESEARCH / AI-NATIVE DELIVERY</p>
       <h2 id="ai-native-delivery-title">AI-Native Product Delivery</h2>
-      <p class="work-project__lead">围绕 AI 原生软件交付的持续研究。我把《The Modern Software Developer》中的上下文工程、Agent 管理、自动验证、安全与生产反馈方法，应用到学习社区平台的规格、架构、实现和测试中。目标不是让 AI 取代工程判断，而是建立一条人定义意图、AI 协助执行、证据负责验收的可控流程。</p>
+      <p class="work-project__lead">把上下文工程、Agent 管理、自动验证、安全与生产反馈应用到学习社区平台，研究一条由人保持判断、以证据完成验收的 AI 原生交付流程。</p>
     </header>
     <dl class="work-project__facts">
       <div><dt>状态</dt><dd>研究中 · 持续迭代</dd></div>
@@ -223,10 +223,10 @@ fancybox: false
     </div>
   </section>
 
-  <section class="work-project" id="autogoogleplay" aria-labelledby="autogoogleplay-title">
+  <section class="work-project work-project--compact-title" id="autogoogleplay" aria-labelledby="autogoogleplay-title">
     <header class="work-project__header">
       <p class="work-project__number">05 / OPEN SOURCE / DATA + AI</p>
-      <h2 id="autogoogleplay-title">AutoGooglePlayAnalyzer</h2>
+      <h2 id="autogoogleplay-title">AutoGooglePlay Analyzer</h2>
       <p class="work-project__lead">一个把 Google Play 评论采集、持久化和 LLM Map-Reduce 分析串成完整流程的开源工具，并提供可视化 Web 控制台。</p>
     </header>
     <dl class="work-project__facts">
@@ -264,11 +264,14 @@ fancybox: false
     </div>
   </section>
 
-  <section class="work-project" id="fatigue-research" aria-labelledby="fatigue-research-title">
+  <section class="work-project work-project--split-title" id="fatigue-research" aria-labelledby="fatigue-research-title fatigue-research-subtitle">
     <header class="work-project__header">
       <p class="work-project__number">06 / RESEARCH PROTOTYPE / HUMAN–ROBOT INTERACTION</p>
-      <h2 id="fatigue-research-title">机器人辅助深蹲训练中的疲劳识别</h2>
-      <p class="work-project__lead">参与实验设计、数据采集与分析，结合主观疲劳评分、表面肌电和平台记录的运动学数据，比较不同指标如何反映疲劳。</p>
+      <div class="work-project__title-group">
+        <h2 id="fatigue-research-title">疲劳识别</h2>
+        <p class="work-project__subtitle" id="fatigue-research-subtitle">机器人辅助深蹲训练</p>
+      </div>
+      <p class="work-project__lead">结合主观疲劳评分、表面肌电和平台运动学数据，比较不同疲劳指标，并参与实验设计、数据采集与分析。</p>
     </header>
     <dl class="work-project__facts">
       <div><dt>信号</dt><dd>RPE · sEMG · Velocity Loss</dd></div>

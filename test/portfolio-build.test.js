@@ -148,6 +148,60 @@ test('portfolio pages have six projects and a six-item flat NexT table of conten
   });
 });
 
+test('long project names use concise headings without polluting the table of contents', () => {
+  const expectations = [
+    {
+      file: 'work/index.html',
+      fatigueTitle: '疲劳识别',
+      fatigueSubtitle: '机器人辅助深蹲训练'
+    },
+    {
+      file: 'en/work/index.html',
+      fatigueTitle: 'Fatigue Recognition',
+      fatigueSubtitle: 'Robot-Assisted Squat Training'
+    }
+  ];
+
+  expectations.forEach(({ file, fatigueTitle, fatigueSubtitle }) => {
+    const html = readPublic(file);
+    const aiSection = html.match(
+      /<section class="work-project work-project--medium-title" id="ai-native-delivery"[\s\S]*?<\/section>/
+    )?.[0];
+    const fatigueSection = html.match(
+      /<section class="work-project work-project--split-title" id="fatigue-research"[\s\S]*?<\/section>/
+    )?.[0];
+    const tocHtml = html.match(/<div class="post-toc motion-element">([\s\S]*?)<\/div>/)?.[1] || '';
+
+    assert.ok(aiSection, `${file} must apply the medium-title treatment to AI delivery`);
+    assert.ok(fatigueSection, `${file} must apply the split-title treatment to fatigue research`);
+    assert.ok(
+      html.includes(
+        '<section class="work-project work-project--compact-title" id="autogoogleplay"'
+      ),
+      `${file} must apply the compact-title treatment to AutoGooglePlay Analyzer`
+    );
+    assert.ok(
+      html.includes('<h2 id="autogoogleplay-title">AutoGooglePlay Analyzer</h2>'),
+      `${file} must keep the AutoGooglePlay Analyzer display name readable`
+    );
+    assert.ok(
+      fatigueSection.includes(`<h2 id="fatigue-research-title">${fatigueTitle}</h2>`),
+      `${file} has the wrong concise fatigue heading`
+    );
+    assert.ok(
+      fatigueSection.includes(
+        `<p class="work-project__subtitle" id="fatigue-research-subtitle">${fatigueSubtitle}</p>`
+      ),
+      `${file} is missing the fatigue project subtitle`
+    );
+    assert.ok(tocHtml.includes(fatigueTitle), `${file} TOC is missing the concise fatigue title`);
+    assert.ok(
+      !tocHtml.includes(fatigueSubtitle),
+      `${file} TOC must not repeat the fatigue project subtitle`
+    );
+  });
+});
+
 test('portfolio pages load one versioned gallery script and keep language switching', () => {
   workPages.forEach(({ file, alternate }) => {
     const html = readPublic(file);
@@ -226,11 +280,25 @@ test('built CSS contains portfolio layout and mobile gallery rules', () => {
   [
     '.work-page',
     '.work-project__header',
+    '.work-project--medium-title .work-project__header h2',
+    '.work-project--compact-title .work-project__header h2',
+    '.work-project--split-title .work-project__header h2',
+    '.work-project__subtitle',
     '.work-gallery__slide',
     '@media (max-width: 767px)'
   ].forEach(selector => {
     assert.ok(css.includes(selector), `built CSS is missing ${selector}`);
   });
+  assert.match(
+    css,
+    /overflow-wrap:\s*anywhere/,
+    'built CSS must allow long project names to wrap on mobile'
+  );
+  assert.match(
+    css,
+    /@media \(max-width:\s*1100px\)[\s\S]*?\.work-project__header\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)/,
+    'built CSS must stack project headings before the side-by-side columns become cramped'
+  );
 });
 
 test('desktop portfolio keeps the NexT content gutter beside the fixed menu', () => {
