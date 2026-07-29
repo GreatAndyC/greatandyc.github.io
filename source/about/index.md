@@ -1,6 +1,6 @@
 ---
-title: Profile
-date: "2026-05-03 20:20:25"
+title: 关于
+date: "2026-07-29 18:00:00"
 lang: zh-CN
 comments: false
 toc: false
@@ -8,113 +8,55 @@ toc: false
 
 <div class="profile-hero">
   <div class="profile-avatar-frame">
-    <img class="profile-avatar" src="/images/CaoYueyang.png">
+    <img class="profile-avatar" src="/images/CaoYueyang.png" alt="曹越洋个人肖像">
   </div>
 </div>
 
-# 曹越洋 · 产品工程师 / 独立开发者
+# 曹越洋 · AI 产品工程师 / 系统构建者
 
-软硬结合的系统开发者，持续用数据智能、工程实现和产品化方法解决复杂问题。
-
-
-## 基本信息
-
-- 坐标：深圳
-- 教育背景：中山大学高分子材料与工程学士；香港大学工业工程硕士
-- 方向关键词：AI 产品、技术解决方案、智能硬件、独立开发
-- 联系方式：andy.caoyueyang[at]gmail[dot]com
-- GitHub：[GreatAndyC](https://github.com/GreatAndyC)
-- 个人网站：[caoyueyang.org](https://caoyueyang.org)
+我把模糊、非结构化的问题转化为可运行、可验证、可迭代的 AI 产品与软件系统。
 
 ## 关于我
 
-我是一名拥有理工科复合背景的产品与技术探索者。
+我在产品判断、工程实现和应用研究的交界处工作。相比停留在概念或演示阶段，我更关心如何把问题定义清楚，把方案做成真实可用的系统，再通过测试、证据和反馈持续改进。
 
-从高分子的微观世界，到数据工程和系统工程的宏观视角，我更关注的是怎样把复杂技术真正落到产品里。相比停留在概念层面，我更在意工程闭环和执行效率。
+我会大量使用 AI 加速研究、设计和开发，但不会把判断完全交给模型。明确的产品规格、可追溯的证据、自动化验证和必要的人工决策，是我理解中可靠 AI 交付的一部分。
 
-无论是独立开发并推进一款 iOS App，从产品调研、交互设计、前后端开发、TestFlight一路走到上线；还是围绕 ROS、机器人、嵌入式设备、视觉识别和大模型 API 去完成一套可运行的技术方案，我更习惯把问题拆开，然后一步一步做到能用、稳定、可验证。
+目前我居住在香港，关注 Applied AI、AI Software、Research Software 和 AI-native Product Engineering 方向的机会。
 
-目前我在持续寻找 AI 产品经理、技术解决方案、智能硬件相关的全职或研究机会。
+## 当前关注
 
-## 教育背景
+我正在持续研究 **AI-native product delivery**：如何把研究意图、交互设计、产品规格、上下文工程、Agent 实现、自动化验证、人工决策与生产反馈连接成一条清晰、可追溯、可迭代的软件交付流程。
 
-### 香港大学
+## 背景
 
-- 专业：工业工程与物流管理硕士，数据与系统工程学院
-- 相关课程：信息物理系统、机器学习、智能交通与自动驾驶
-- 研究方向：机器人负载下的深蹲训练过程的疲劳识别方法
+我拥有超过三年的 AI 产品使用、调研与实践积累，以及约一年的业界项目和软件交付经历。我的经历横跨产品分析、跨平台应用、数据与 AI 工作流、实验研究和系统实现，但主线始终是把不确定的问题推进到可运行、可验证的结果。
 
-### 中山大学
+### 教育
 
-- 专业：高分子材料与工程学士，化学学院
+**香港大学**
 
-## 核心项目
+- 工学硕士：工业工程与物流管理，2023.09–2025.08
+- 院系：数据与系统工程系（Department of Data and Systems Engineering）
 
-### 食光机：全栈 iOS 产品从 0 到 1 (已上线海外AppStore)
-- 官网：[shiguangjiapp.com](https://shiguangjiapp.com)
-- 角色：独立开发者
-- 覆盖环节：需求调研、产品设计、前后端开发、测试与上线准备
-- 技术栈：Swift / SwiftUI、Supabase、AI 食物识别接口、UI/UX 设计
-- 当前目标：把拍照识别食物与营养记录做成真正可持续使用的个人健康工具，持续优化中
-- 系列文章：
-  - [从 0 到 1 上架一款 iOS 应用（一）：软件开发生态，为什么是 iOS？](/2026/03/23/ios-app-from-zero-vol1/)
-  - [从 0 到 1 上架一款 iOS 应用（二）：为什么你不应该只用一个 AI 模型？](/2026/03/30/ios-app-from-zero-vol2/)
-  - [从 0 到 1 上架一款 iOS 应用（三）：第一个 Hello World iOS APP](/2026/04/23/ios-app-from-zero-vol3/)
+**中山大学**
 
-### 硕士研究：机器人辅助深蹲训练中的疲劳识别
+- 工学学士：高分子材料与工程，2016.09–2020.06
 
-- 角色：硕士研究项目设计者
-- 研究场景：围绕机器人辅助深蹲训练过程，探索人在负载训练中疲劳状态的识别方法
-- 研究内容：结合主观疲劳评价（RPE）、表面肌电信号（sEMG）与平台记录的运动学数据，分析不同指标在疲劳识别中的表现
-- 研究价值：这类工作与康复训练、智能运动系统、人机协作安全性都有直接关系，也让我系统接触了实验设计、数据采集、信号分析和研究写作
-- 相关文章：[硕士研究：机器人辅助深蹲训练中的疲劳识别](/zh-CN/2026/05/03/msc-thesis-fatigue-recognition/)
+### 研究经历
 
-### AI × IoT 软硬结合探索
+我参与了机器人辅助深蹲训练中的疲劳识别研究，结合主观疲劳评价（RPE）、表面肌电信号（sEMG）和平台记录的运动学数据，比较不同指标对疲劳状态的反映。这个过程让我系统接触了实验设计、数据采集、信号分析和研究写作。
 
-- [ESP32 小智语音终端：低成本接入大模型 API，验证嵌入式语音交互闭环](/2025/01/26/esp32-xiaozhi-chatbot/)
-- [STT 本地语音识别：探索离线语音转文字方案与私有化处理路径](/2026/02/07/local-stt-solutions/)
-- [雪中香港：Stable Diffusion 图像生成](/2026/04/16/snowy-hong-kong-stable-diffusion/)
-- [DeepSeek 私有化使用路径：梳理 API 调用、本地部署与私有客户端配置思路](/2025/09/06/deepseek-private-ai-guide/)
+[阅读研究记录 →](/zh-CN/2026/05/03/msc-thesis-fatigue-recognition/)
 
-### 数据分析与自动化项目
+## 工作之外
 
-- [ChatGPT 安卓端产品分析报告](/2025/01/15/chatgpt-android-analysis-report/)
-- [段永平雪球评论数据抓取：完成网页抓取、数据整理与分析输出](/2026/03/18/duan-yongping-xueqiu-crawler/)
-- [星星回家相关数据分析：用 LLM 辅助标注和 Tableau 可视化分析公共议题数据](/2025/01/14/star-home-scam-data-analysis/)
+我喜欢[摄影](/gallery/)，主要拍摄风光、城市与活动纪实；也长期保持游泳、跑步、健身、篮球和徒步。
 
-### 机器人与系统控制研究
+## 联系
 
-- ROS / Gazebo / SLAM 相关仿真与控制实验
-- 机器人非完整运动约束下的控制与远程操控
-- 强化学习在交通信号控制中的初步实验
-- 表面肌电、速度训练与主观疲劳评价的多模态融合研究
-
-## 技术栈
-
-### 移动与产品
-
-- Swift / SwiftUI
-- UI/UX 设计
-- 产品分析与需求拆解
-
-### AI 与数据
-
-- LLM API 调用与工作流设计
-- Stable Diffusion
-- Pandas / NumPy / SQL
-- Tableau
-
-### 机器人与硬件
-
-- ROS / ROS2
-- Gazebo
-- ESP32 / Arduino
-- 传感器与嵌入式原型验证
-
-## 生活之外
-
-- [摄影](/gallery/)：偏好风光与活动纪实
-  - 中山大学化学学院学生会网宣部副部长
-  - 香港大学研究生会宣传部干事
-  - 香港大学汇声艺术社摄影师
-- 运动：[游泳](/2025/09/25/swimming/)、跑步、健身、篮球、徒步 
+<div class="profile-actions" aria-label="作品与联系方式">
+  <a href="/work/">查看作品 →</a>
+  <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+  <a href="mailto:andy.caoyueyang@gmail.com">Email ↗</a>
+</div>

@@ -114,6 +114,84 @@ test('core pages request the versioned stylesheet to avoid stale deployment CSS'
   });
 });
 
+test('bilingual About pages share the updated positioning, background, and concise CTA', () => {
+  const expectations = [
+    {
+      file: 'about/index.html',
+      positioning: '曹越洋 · AI 产品工程师 &#x2F; 系统构建者',
+      location: '目前我居住在香港',
+      aiExperience: '超过三年的 AI 产品使用、调研与实践积累',
+      industryExperience: '约一年的业界项目和软件交付经历',
+      department: '数据与系统工程系（Department of Data and Systems Engineering）',
+      degree: '工学硕士：工业工程与物流管理',
+      researchRole: '我参与了机器人辅助深蹲训练中的疲劳识别研究',
+      portraitAlt: '曹越洋个人肖像',
+      workHref: '/work/'
+    },
+    {
+      file: 'en/about/index.html',
+      positioning: 'Andy Cao · AI Product Engineer &amp; Systems Builder',
+      location: 'I am currently based in Hong Kong',
+      aiExperience: 'more than three years of hands-on AI product use',
+      industryExperience: 'approximately one year of industry project and software-delivery experience',
+      department: 'Department of Data and Systems Engineering',
+      degree: 'MSc(Eng) in Industrial Engineering and Logistics Management',
+      researchRole: 'I contributed to research on fatigue recognition in robot-assisted squat training',
+      portraitAlt: 'Portrait of Andy Cao',
+      workHref: '/en/work/'
+    }
+  ];
+
+  expectations.forEach(expectation => {
+    const html = readPublic(expectation.file);
+
+    [
+      expectation.positioning,
+      expectation.location,
+      expectation.aiExperience,
+      expectation.industryExperience,
+      expectation.department,
+      expectation.degree,
+      expectation.researchRole
+    ].forEach(copy => {
+      assert.ok(html.includes(copy), `${expectation.file} is missing updated copy: ${copy}`);
+    });
+
+    assert.ok(
+      html.includes(`src="/images/CaoYueyang.png" alt="${expectation.portraitAlt}"`),
+      `${expectation.file} is missing an accessible portrait`
+    );
+    assert.ok(
+      html.includes(`class="profile-actions"`) && html.includes(`href="${expectation.workHref}"`),
+      `${expectation.file} is missing its localized Work CTA`
+    );
+    assert.ok(html.includes('AI-native product delivery'), `${expectation.file} is missing current focus`);
+
+    ['Core Work', 'Related Writing', '核心项目', '技术栈', 'ShiguangJi', 'Wujian', 'SignalForge'].forEach(
+      legacyCopy => {
+        assert.ok(!html.includes(legacyCopy), `${expectation.file} still contains ${legacyCopy}`);
+      }
+    );
+    assert.ok(!/href="[^"]*(?:cv|resume)[^"]*"/i.test(html), `${expectation.file} must not link a CV`);
+  });
+
+  const css = readPublic('css/main.css');
+  assert.ok(css.includes('.profile-actions'), 'built CSS is missing the About CTA layout');
+  assert.ok(
+    css.includes('.profile-avatar-frame > a'),
+    'built CSS must make the NexT portrait wrapper fill the circular frame'
+  );
+  assert.ok(
+    css.includes('.profile-avatar-frame .image-caption'),
+    'built CSS must suppress the NexT image caption inside the portrait frame'
+  );
+  assert.match(
+    css,
+    /\.profile-avatar-frame \.profile-avatar\s*\{[^}]*width:\s*100%[^}]*height:\s*100%[^}]*object-fit:\s*cover[^}]*transform:\s*none[^}]*max-width:\s*none/,
+    'built CSS must render the portrait as a complete square inside the circular frame'
+  );
+});
+
 test('portfolio pages have six projects and a six-item flat NexT table of contents', () => {
   workPages.forEach(({ file }) => {
     const html = readPublic(file);

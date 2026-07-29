@@ -1,6 +1,6 @@
 ---
-title: Profile
-date: "2026-05-03 20:21:05"
+title: About
+date: "2026-07-29 18:00:00"
 lang: en
 comments: false
 toc: false
@@ -8,120 +8,55 @@ toc: false
 
 <div class="profile-hero">
   <div class="profile-avatar-frame">
-    <img class="profile-avatar" src="/images/CaoYueyang.png" alt="AndyCao portrait">
+    <img class="profile-avatar" src="/images/CaoYueyang.png" alt="Portrait of Andy Cao">
   </div>
 </div>
 
-# AndyCao · Product Engineer / Indie Developer
+# Andy Cao · AI Product Engineer & Systems Builder
 
-A systems-minded builder working across AI, software, data, and hardware.
+I turn ambiguous, unstructured problems into AI products and software systems that can be run, tested, and improved iteratively.
 
-<!-- more -->
+## About Me
 
-## Basics
+I work at the intersection of product judgment, engineering execution, and applied research. Rather than stopping at concepts or demos, I focus on defining the problem clearly, turning the proposed solution into a usable system, and improving it through tests, evidence, and feedback.
 
-- Location: Shenzhen
-- Education: B.Eng. in Polymer Materials and Engineering, Sun Yat-sen University; M.Sc. in Data and Systems Engineering, The University of Hong Kong
-- Focus areas: AI products, technical solutions, intelligent hardware, indie app development
-- Email: andy.caoyueyang[at]gmail[dot]com
-- GitHub: [GreatAndyC](https://github.com/GreatAndyC)
-- Website: [caoyueyang.org](https://caoyueyang.org)
+I use AI extensively to accelerate research, design, and development, but I do not delegate judgment entirely to models. Explicit product specifications, traceable evidence, automated verification, and necessary human decisions are all part of reliable AI delivery.
 
-## About
+I am currently based in Hong Kong and interested in opportunities across Applied AI, AI Software, Research Software, and AI-native Product Engineering.
 
-I work at the intersection of product thinking and engineering execution.
+## Current Focus
 
-What matters most to me is not just understanding a technology, but turning it into a usable system or a real product. That usually means moving from research and experimentation to implementation, iteration, and delivery.
+I am studying **AI-native product delivery**: how research intent, interaction design, product specifications, context engineering, agent implementation, automated verification, human decisions, and production feedback can form a clear, traceable, and iterative software-delivery workflow.
 
-My work spans independent iOS app development, AI-assisted workflows, data analysis, embedded devices, robotics-related experimentation, and applied system design. I tend to approach problems by breaking them into smaller parts, validating assumptions quickly, and pushing toward something that is actually usable.
+## Background
 
-I am currently interested in full-time opportunities in AI product, technical solutions, and intelligent hardware.
+I bring more than three years of hands-on AI product use, research, and experimentation, together with approximately one year of industry project and software-delivery experience. My work has crossed product analysis, cross-platform applications, data and AI workflows, experimental research, and systems implementation, but the consistent thread is moving uncertain problems toward working, testable outcomes.
 
-## Core Work
+### Education
 
-### ShiguangJi: Building an iOS Product from Zero to One
+**The University of Hong Kong**
 
-- Role: independent developer
-- Scope: research, product design, frontend and backend implementation, testing, launch preparation
-- Stack: Swift / SwiftUI, Supabase, AI food recognition APIs, UI/UX design
+- MSc(Eng) in Industrial Engineering and Logistics Management, 2023.09–2025.08
+- Department of Data and Systems Engineering
 
-### Master's Research: Fatigue Recognition in Robot-Assisted Squat Training
+**Sun Yat-sen University**
 
-- Role: master's research designer
-- Context: investigated how to recognize fatigue during robot-assisted squat training
-- Focus: combined subjective fatigue ratings (RPE), surface EMG signals, and platform-recorded kinematic data to compare how different indicators reflect fatigue
-- Why it matters: the work connects to rehabilitation training, intelligent exercise systems, and safer human-robot interaction, while also reflecting hands-on experience in experiment design, data collection, signal analysis, and research writing
-- Research post: [Master's Research: Fatigue Recognition in Robot-Assisted Squat Training](/en/2026/05/03/msc-thesis-fatigue-recognition/)
+- BEng in Polymer Materials and Engineering, 2016.09–2020.06
 
-### AI × IoT Experiments
+### Research Experience
 
-- ESP32 voice terminal connected to large-model APIs
-- Local STT pipeline for private speech-to-text workflows
-- Stable Diffusion experiments for image generation and visual styling
-- Practical deployment paths for using DeepSeek beyond the official app
+I contributed to research on fatigue recognition in robot-assisted squat training, combining ratings of perceived exertion (RPE), surface EMG (sEMG), and platform-recorded kinematic data to compare how different indicators reflect fatigue. The work gave me practical experience in experiment design, data collection, signal analysis, and research writing.
 
-### Data and Automation
-
-- Product analysis of the ChatGPT Android app
-- Crawling and analyzing Xueqiu comments related to Duan Yongping
-- LLM-assisted structuring and visualization of public-interest datasets
-
-### Robotics and Systems
-
-- ROS / Gazebo / SLAM related simulations
-- Robot control experiments under nonholonomic constraints
-- Early reinforcement learning experiments for traffic-signal control
-- Multimodal fatigue recognition research with sEMG, velocity-based training, and subjective ratings
-
-## Skills
-
-### Product and App Development
-
-- Swift / SwiftUI
-- UI/UX design
-- product analysis and requirement decomposition
-
-### AI and Data
-
-- LLM API integration and workflow design
-- Stable Diffusion
-- Pandas / NumPy / SQL
-- Tableau
-
-### Robotics and Hardware
-
-- ROS / ROS2
-- Gazebo
-- ESP32 / Arduino
-- embedded prototyping and sensor integration
-
-## Related Writing
-
-If you want to jump from the profile into the matching posts, start here:
-
-### iOS / Indie Development
-
-- [Building an iOS App from Zero to One (Part 1): Why iOS?](/en/2026/03/23/ios-app-from-zero-vol1/)
-- [Building an iOS App from Zero to One (Part 2): Why You Should Not Use Only One AI Model](/en/2026/03/30/ios-app-from-zero-vol2/)
-- [Building an iOS App from Zero to One (Part 3): My First Hello World iOS App](/en/2026/04/23/ios-app-from-zero-vol3/)
-
-### AI / Hardware / Tools
-
-- [Escaping the “Server Busy” Trap: Building a Private DeepSeek AI Setup](/en/2025/09/06/deepseek-private-ai-guide/)
-- [ESP32 Xiaozhi Chatbot End-to-End Build Log](/en/2025/01/26/esp32-xiaozhi-chatbot/)
-- [Local STT Solutions](/en/2026/02/07/local-stt-solutions/)
-- [NotebookLM + Gemini + Nanobanana Manga Workflow](/en/2025/12/22/notebooklm-doraemon-workflow/)
-- [Snowy Hong Kong: Custom Stable Diffusion Image Generation Practice](/en/2026/04/16/snowy-hong-kong-stable-diffusion/)
-
-### Data / Research Notes
-
-- [ChatGPT Android Product Analysis Report](/en/2025/01/15/chatgpt-android-analysis-report/)
-- [Duan Yongping Xueqiu Comment Scraping Process](/en/2026/03/18/duan-yongping-xueqiu-crawler/)
-- [Star Home: Data Analysis of Missing People Related to Myanmar Scams](/en/2025/01/14/star-home-scam-data-analysis/)
-- [The Craft of an Event Photographer and a Recap of Heartbeat Pi Night](/en/2026/03/14/The-Craft-of-an-Event-Photographer-and-a-Recap-of-Heartbeat-Pi-Night/)
-- [Swimming](/en/2025/09/25/swimming/)
+[Read the research note →](/en/2026/05/03/msc-thesis-fatigue-recognition/)
 
 ## Outside Work
 
-- [Photography](/en/gallery/): with a focus on landscape and event photography
-- Sports: swimming, running, gym training, basketball, hiking
+I enjoy [photography](/en/gallery/), particularly landscapes, cities, and event documentation. I also make time for swimming, running, gym training, basketball, and hiking.
+
+## Contact
+
+<div class="profile-actions" aria-label="Work and contact links">
+  <a href="/en/work/">View Work →</a>
+  <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+  <a href="mailto:andy.caoyueyang@gmail.com">Email ↗</a>
+</div>
