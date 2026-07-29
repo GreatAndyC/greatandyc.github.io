@@ -35,7 +35,7 @@ categories:
 *注意Github的双重验证登录以及SSH连接配置*
 
 ### 2.在Cloudflare购买域名
-首先在[阿里云万网](wanwang.aliyun.com)搜索自己想要的域名是否被注册，然后到[Cloudflare](dash.cloudflare.com)购买域名，需要使用到外币信用卡或Paypal支付。
+首先在[阿里云万网](https://wanwang.aliyun.com)搜索自己想要的域名是否被注册，然后到[Cloudflare](https://dash.cloudflare.com)购买域名，需要使用到外币信用卡或Paypal支付。
 *在不同的域名商处购买同一个域名价格不太一样，不过笔者嫌麻烦就直接在Cloudflare上面买了*
 
 ### 3.安装node.js、hexo，并且在Github上面创建xxxx.github.io的仓库

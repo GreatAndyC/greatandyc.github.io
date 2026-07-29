@@ -1,6 +1,6 @@
 {% import 'menu-item.swig' as menu_item with context %}
 
-<nav class="site-nav">
+<nav class="site-nav" aria-label="{{ __('accessibility.primary_navigation') }}">
 {%- if theme.menu %}
   <ul id="menu" class="main-menu menu">
     {%- for name, path in theme.menu %}

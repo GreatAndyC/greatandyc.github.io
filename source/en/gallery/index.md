@@ -2,6 +2,7 @@
 title: Gallery
 date: 2026-04-19 16:30:00
 type: gallery
+fancybox: false
 lang: en
 ---
 

@@ -121,7 +121,9 @@ function localizedRoutePath(pathname, language, defaultLanguage) {
 }
 
 function extractPaginationInfo(pathname = '', paginationDir = 'page') {
-  const normalized = normalizeInputPath(pathname).replace(/\/+$/, '');
+  const normalized = normalizeInputPath(pathname)
+    .replace(/(?:^|\/)index\.html$/, '')
+    .replace(/\/+$/, '');
   const prefix = `${paginationDir}/`;
   const match = normalized.match(new RegExp(`(?:^|/)${paginationDir}/(\\d+)$`));
   if (!match) return { basePath: normalized, paginationSuffix: '' };
@@ -143,10 +145,6 @@ function safeDecodeURIComponent(value = '') {
   } catch (_) {
     return value;
   }
-}
-
-function encodePathSegments(pathname = '') {
-  return pathname.split('/').map(segment => encodeURIComponent(segment)).join('/');
 }
 
 function escapeRegExp(value = '') {
@@ -258,40 +256,38 @@ function getPostTranslationKey(post, languages = getLanguages()) {
   return basename.replace(new RegExp(`\\.(${languagePattern})$`, 'i'), '').toLowerCase();
 }
 
-function buildInferredCategoryMaps(ctx) {
+function buildInferredTaxonomyMaps(ctx, taxonomy) {
   const languages = getLanguages();
-  const categoriesByPostKey = ctx.site.categories.toArray().reduce((result, category) => {
-    category.posts.toArray().forEach(post => {
-      const language = post.lang || getDefaultLanguage();
-      const key = getPostTranslationKey(post, languages);
+  const postsByTranslationKey = ctx.site.posts.toArray().reduce((result, post) => {
+    const language = post.lang || getDefaultLanguage();
+    const key = getPostTranslationKey(post, languages);
 
-      if (!key) return;
-      if (!result[key]) result[key] = {};
-      if (!result[key][language]) result[key][language] = [];
-      result[key][language].push(category);
-    });
-
+    if (!key) return result;
+    if (!result[key]) result[key] = {};
+    result[key][language] = post;
     return result;
   }, {});
 
-  return Object.values(categoriesByPostKey).reduce((maps, localizedCategories) => {
-    const entries = Object.entries(localizedCategories);
+  return Object.values(postsByTranslationKey).reduce((maps, localizedPosts) => {
+    const entries = Object.entries(localizedPosts);
 
-    entries.forEach(([sourceLanguage, sourceCategories]) => {
-      if (!sourceCategories.length) return;
+    entries.forEach(([sourceLanguage, sourcePost]) => {
+      const sourceItems = sourcePost[taxonomy === 'category' ? 'categories' : 'tags'].toArray();
+      if (!sourceItems.length) return;
 
-      entries.forEach(([targetLanguage, targetCategories]) => {
+      entries.forEach(([targetLanguage, targetPost]) => {
         if (sourceLanguage === targetLanguage) return;
 
-        const pairCount = Math.min(sourceCategories.length, targetCategories.length);
+        const targetItems = targetPost[taxonomy === 'category' ? 'categories' : 'tags'].toArray();
+        const pairCount = Math.min(sourceItems.length, targetItems.length);
         if (!pairCount) return;
 
         if (!maps[sourceLanguage]) maps[sourceLanguage] = {};
         if (!maps[sourceLanguage][targetLanguage]) maps[sourceLanguage][targetLanguage] = {};
 
         for (let index = 0; index < pairCount; index++) {
-          const sourceName = sourceCategories[index].name;
-          const targetName = targetCategories[index].name;
+          const sourceName = sourceItems[index].name;
+          const targetName = targetItems[index].name;
 
           if (sourceName && targetName) {
             maps[sourceLanguage][targetLanguage][sourceName] = targetName;
@@ -304,23 +300,25 @@ function buildInferredCategoryMaps(ctx) {
   }, {});
 }
 
-function mapCategorySlugByLanguage(ctx, slug, language) {
+function mapTaxonomySlugByLanguage(ctx, taxonomy, slug, language) {
   const defaultLanguage = getDefaultLanguage();
-  const categoryMap = ctx.config.category_map || {};
+  const configuredMap = taxonomy === 'category'
+    ? (ctx.config.category_map || {})
+    : (ctx.config.tag_map || {});
   const decodedSlug = safeDecodeURIComponent(slug);
-  const reverseMap = Object.entries(categoryMap).reduce((result, [source, target]) => {
+  const reverseMap = Object.entries(configuredMap).reduce((result, [source, target]) => {
     result[target] = source;
     return result;
   }, {});
   const sourceLanguage = getCurrentLanguage(ctx);
-  const inferredCategoryMap = buildInferredCategoryMaps(ctx);
-  const inferredMap = inferredCategoryMap[sourceLanguage] && inferredCategoryMap[sourceLanguage][language]
-    ? inferredCategoryMap[sourceLanguage][language]
+  const inferredTaxonomyMap = buildInferredTaxonomyMaps(ctx, taxonomy);
+  const inferredMap = inferredTaxonomyMap[sourceLanguage] && inferredTaxonomyMap[sourceLanguage][language]
+    ? inferredTaxonomyMap[sourceLanguage][language]
     : {};
   const mapped = language === defaultLanguage
-    ? (lookupCaseInsensitive(reverseMap, decodedSlug) || lookupCaseInsensitive(inferredMap, decodedSlug) || decodedSlug)
-    : (lookupCaseInsensitive(categoryMap, decodedSlug) || lookupCaseInsensitive(inferredMap, decodedSlug) || decodedSlug);
-  return encodePathSegments(mapped);
+    ? (lookupCaseInsensitive(configuredMap, decodedSlug) || lookupCaseInsensitive(inferredMap, decodedSlug) || decodedSlug)
+    : (lookupCaseInsensitive(reverseMap, decodedSlug) || lookupCaseInsensitive(inferredMap, decodedSlug) || decodedSlug);
+  return mapped;
 }
 
 function findLocalizedTaxonomyPath(ctx, taxonomy, slug, language) {
@@ -649,7 +647,11 @@ hexo.extend.helper.register('render_gallery', function (language = getCurrentLan
           <button class="gallery-viewer-nav gallery-viewer-prev" type="button" data-gallery-prev aria-label="${previousText}">‹</button>
           <figure class="gallery-viewer-figure">
             <a class="gallery-viewer-image-link" data-gallery-viewer-image-link href="#">
-              <img data-gallery-viewer-image alt="">
+              <img
+                data-gallery-viewer-image
+                src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+                alt=""
+              >
             </a>
             <figcaption class="gallery-viewer-caption">
               <span class="gallery-viewer-photo-title" data-gallery-viewer-photo-title></span>
@@ -711,7 +713,7 @@ hexo.extend.helper.register('post_nav', function (post) {
 
 hexo.extend.helper.register('gitalk_md5', function (path) {
   let str = this.url_for(path);
-  str.replace('index.html', '');
+  str = str.replace('index.html', '');
   return crypto.createHash('md5').update(str).digest('hex');
 });
 
@@ -737,6 +739,7 @@ hexo.extend.helper.register('i18n_path', function (language) {
   const paginationDir = this.config.pagination_dir || 'page';
   const { basePath, paginationSuffix } = extractPaginationInfo(strippedPath, paginationDir);
   const candidates = [];
+  let taxonomyContext = false;
 
   function addCandidate(pathname) {
     const normalized = normalizeInputPath(pathname);
@@ -746,23 +749,39 @@ hexo.extend.helper.register('i18n_path', function (language) {
     }
   }
 
+  const currentPost = this.page && this.site && this.site.posts
+    ? this.site.posts.toArray().find(post => normalizeRoutePath(post.path) === normalizeRoutePath(pagePath))
+    : null;
+  if (currentPost) {
+    const translationKey = getPostTranslationKey(currentPost, languages);
+    const translatedPost = this.site.posts.toArray().find(post => {
+      const postLanguage = post.lang || defaultLanguage;
+      return postLanguage === language && getPostTranslationKey(post, languages) === translationKey;
+    });
+    if (translatedPost) addCandidate(translatedPost.path);
+  }
+
   if (this.page && (this.page.layout === 'category' || this.page.category)) {
     const categoryDir = normalizeInputPath(this.config.category_dir || 'categories').replace(/\/+$/, '');
     const categoryPrefix = `${categoryDir}/`;
     if (basePath.startsWith(categoryPrefix)) {
+      taxonomyContext = true;
       const rawSlug = basePath.slice(categoryPrefix.length);
-      const mappedSlug = mapCategorySlugByLanguage(this, rawSlug, language);
+      const mappedSlug = mapTaxonomySlugByLanguage(this, 'category', rawSlug, language);
       const mappedBasePath = `${categoryPrefix}${mappedSlug}`;
       addCandidate(paginationSuffix ? `${mappedBasePath}/${paginationSuffix}` : mappedBasePath);
+      if (paginationSuffix) addCandidate(mappedBasePath);
 
       const matchedRawPath = findLocalizedTaxonomyPath(this, 'category', rawSlug, language);
       if (matchedRawPath) {
         addCandidate(paginationSuffix ? `${matchedRawPath}/${paginationSuffix}` : matchedRawPath);
+        if (paginationSuffix) addCandidate(matchedRawPath);
       }
 
       const matchedMappedPath = findLocalizedTaxonomyPath(this, 'category', mappedSlug, language);
       if (matchedMappedPath) {
         addCandidate(paginationSuffix ? `${matchedMappedPath}/${paginationSuffix}` : matchedMappedPath);
+        if (paginationSuffix) addCandidate(matchedMappedPath);
       }
     }
   }
@@ -771,10 +790,23 @@ hexo.extend.helper.register('i18n_path', function (language) {
     const tagDir = normalizeInputPath(this.config.tag_dir || 'tags').replace(/\/+$/, '');
     const tagPrefix = `${tagDir}/`;
     if (basePath.startsWith(tagPrefix)) {
+      taxonomyContext = true;
       const rawSlug = basePath.slice(tagPrefix.length);
+      const mappedSlug = mapTaxonomySlugByLanguage(this, 'tag', rawSlug, language);
+      const mappedBasePath = `${tagPrefix}${mappedSlug}`;
+      addCandidate(paginationSuffix ? `${mappedBasePath}/${paginationSuffix}` : mappedBasePath);
+      if (paginationSuffix) addCandidate(mappedBasePath);
+
       const matchedTagPath = findLocalizedTaxonomyPath(this, 'tag', rawSlug, language);
       if (matchedTagPath) {
         addCandidate(paginationSuffix ? `${matchedTagPath}/${paginationSuffix}` : matchedTagPath);
+        if (paginationSuffix) addCandidate(matchedTagPath);
+      }
+
+      const matchedMappedPath = findLocalizedTaxonomyPath(this, 'tag', mappedSlug, language);
+      if (matchedMappedPath) {
+        addCandidate(paginationSuffix ? `${matchedMappedPath}/${paginationSuffix}` : matchedMappedPath);
+        if (paginationSuffix) addCandidate(matchedMappedPath);
       }
     }
   }
@@ -782,6 +814,18 @@ hexo.extend.helper.register('i18n_path', function (language) {
   addCandidate(strippedPath);
 
   for (const candidate of candidates) {
+    if (taxonomyContext) {
+      const normalizedCandidate = stripLanguagePrefix(candidate, languages);
+      const exactCandidate = language === defaultLanguage
+        ? normalizedCandidate
+        : normalizeInputPath(`${language}/${normalizedCandidate}`);
+
+      if (routeExists(exactCandidate)) {
+        return this.url_for(`/${exactCandidate}`);
+      }
+      continue;
+    }
+
     const localizedCandidate = localizedRoutePath(candidate, language, defaultLanguage);
     if (routeExists(localizedCandidate)) {
       return this.url_for(`/${localizedCandidate}`);

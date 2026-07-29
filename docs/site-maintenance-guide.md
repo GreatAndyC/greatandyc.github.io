@@ -33,7 +33,7 @@
 | 所有文章正文 | `source/_posts/` |
 | 中文 About 页 | `source/about/index.md` |
 | 英文 About 页 | `source/en/about/index.md` |
-| 中文 Tags / Categories 页面入口 | `source/tags/index.md`、`source/categories/index.md` |
+| 中文 Tags / Categories 页面入口 | `source/zh-CN/tags/index.md`、`source/zh-CN/categories/index.md` |
 | 英文 Tags / Categories / Archives / Gallery 页面入口 | `source/en/...` |
 | 画廊内容数据 | `source/_data/gallery.yml` |
 | 后台编辑入口 | `source/admin/` |
@@ -210,8 +210,8 @@ categories:
 | --- | --- | --- |
 | About | `source/about/index.md` | `source/en/about/index.md` |
 | Gallery | `source/gallery/index.md` | `source/en/gallery/index.md` |
-| Tags 入口页 | `source/tags/index.md` | `source/en/tags/index.md` |
-| Categories 入口页 | `source/categories/index.md` | `source/en/categories/index.md` |
+| Tags 入口页 | `source/zh-CN/tags/index.md` | `source/en/tags/index.md` |
+| Categories 入口页 | `source/zh-CN/categories/index.md` | `source/en/categories/index.md` |
 | Archives 入口页 | 由主题生成 | `source/en/archives/index.md` |
 
 它们的作用是提供页面入口和 page metadata，本体内容很多时候由模板和 Hexo 数据集合渲染出来。

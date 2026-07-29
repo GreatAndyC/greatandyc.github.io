@@ -70,7 +70,7 @@ hello("Andy")
 ```
 
 ## Level-2 Heading: Links and Images
-This is a link to [Bing Search](www.bing.com).
+This is a link to [Bing Search](https://www.bing.com).
 
 Local image (for posts, put it under `source/images/posts/`):
 <img src="/images/posts/test.png" 
@@ -133,7 +133,7 @@ hello("Andy")
 ```
 
 ## Level-2 Heading: Links and Images
-This is a link to [Bing Search](www.bing.com).
+This is a link to [Bing Search](https://www.bing.com).
 
 Local image (for posts, put it under `source/images/posts/`):
 <img src="/images/posts/test.png"

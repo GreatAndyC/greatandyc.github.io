@@ -29,6 +29,11 @@ db.json
 .cache/
 .tmp/
 tmp/
+playwright-report/
+test-results/
+reports/
+.lighthouseci/
+.lycheecache
 
 # backups
 _backup/

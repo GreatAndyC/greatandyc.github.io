@@ -15,6 +15,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const input = document.querySelector('.search-input');
   const resultContent = document.getElementById('search-result');
 
+  const escapeHTML = value => {
+    const element = document.createElement('span');
+    element.textContent = String(value || '');
+    return element.innerHTML;
+  };
+
+  const normalizeSearchUrl = value => {
+    try {
+      const rawUrl = String(value || '').trim();
+      const normalizedUrl = rawUrl.startsWith('/') ? rawUrl.replace(/^\/+/, '/') : rawUrl;
+      const parsed = new URL(normalizedUrl, location.origin);
+      const allowedHostnames = new Set(
+        [location.hostname, CONFIG.hostname]
+          .filter(Boolean)
+          .map(hostname => String(hostname).toLowerCase())
+      );
+      if (
+        !['http:', 'https:'].includes(parsed.protocol)
+        || !allowedHostnames.has(parsed.hostname.toLowerCase())
+      ) {
+        return CONFIG.root;
+      }
+      return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+    } catch (error) {
+      return CONFIG.root;
+    }
+  };
+
   const getIndexByWord = (word, text, caseSensitive) => {
     if (CONFIG.localsearch.unescape) {
       let div = document.createElement('div');
@@ -79,12 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let result = '';
     let prevEnd = slice.start;
     slice.hits.forEach(hit => {
-      result += text.substring(prevEnd, hit.position);
+      result += escapeHTML(text.substring(prevEnd, hit.position));
       let end = hit.position + hit.length;
-      result += `<b class="search-keyword">${text.substring(hit.position, end)}</b>`;
+      result += `<b class="search-keyword">${escapeHTML(text.substring(hit.position, end))}</b>`;
       prevEnd = end;
     });
-    result += text.substring(prevEnd, slice.end);
+    result += escapeHTML(text.substring(prevEnd, slice.end));
     return result;
   };
 
@@ -167,15 +195,16 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           let resultItem = '';
+          const escapedUrl = escapeHTML(url);
 
           if (slicesOfTitle.length !== 0) {
-            resultItem += `<li><a href="${url}" class="search-result-title">${highlightKeyword(title, slicesOfTitle[0])}</a>`;
+            resultItem += `<li><a href="${escapedUrl}" class="search-result-title">${highlightKeyword(title, slicesOfTitle[0])}</a>`;
           } else {
-            resultItem += `<li><a href="${url}" class="search-result-title">${title}</a>`;
+            resultItem += `<li><a href="${escapedUrl}" class="search-result-title">${escapeHTML(title)}</a>`;
           }
 
           slicesOfContent.forEach(slice => {
-            resultItem += `<a href="${url}"><p class="search-result">${highlightKeyword(content, slice)}...</p></a>`;
+            resultItem += `<a href="${escapedUrl}"><p class="search-result">${highlightKeyword(content, slice)}...</p></a>`;
           });
 
           resultItem += '</li>';
@@ -223,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
         datas = datas.filter(data => data.title).map(data => {
           data.title = data.title.trim();
           data.content = data.content ? data.content.trim().replace(/<[^>]+>/g, '') : '';
-          data.url = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+          data.url = normalizeSearchUrl(data.url);
           return data;
         });
         // Remove loading animation

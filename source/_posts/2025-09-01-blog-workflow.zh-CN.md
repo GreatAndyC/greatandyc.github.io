@@ -30,7 +30,7 @@ hexo new post "xxxx"
 ```
 hexo clean && hexo g && hexo s
 ```
-在本地的[](localhost:4000)网页访问没有问题后
+在本地的 [localhost:4000](http://localhost:4000) 网页访问没有问题后
 执行
 ```
 hexo clean && hexo g && hexo g

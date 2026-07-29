@@ -15,7 +15,7 @@ fancybox: false
 ---
 
 {% raw %}
-<main class="work-page">
+<div class="work-page">
   <header class="work-intro">
     <div class="work-intro__copy">
       <p class="work-kicker">ANDY CAO / AI-NATIVE PRODUCT ENGINEER</p>
@@ -337,5 +337,5 @@ fancybox: false
       <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
     </div>
   </footer>
-</main>
+</div>
 {% endraw %}

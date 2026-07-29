@@ -106,6 +106,10 @@ follow_me:
 
 accessibility:
   nav_toggle: Toggle navigation bar
+  primary_navigation: Primary navigation
+  category_navigation: Category navigation
+  site_statistics: Site statistics
+  pagination: Pagination
   prev_page: Previous page
   next_page: Next page
 

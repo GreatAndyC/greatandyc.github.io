@@ -45,15 +45,23 @@ const LLM_ENV_KEYS = {
 };
 const CMS_SESSION_TTL_MS = 30000;
 const CMS_SHUTDOWN_GRACE_MS = 5000;
+const LOOPBACK_HOSTS = new Set(['127.0.0.1', '::1', 'localhost']);
+const SECURITY_HEADERS = {
+  'Content-Security-Policy': "default-src 'self'; base-uri 'none'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data: blob:; object-src 'none'; script-src 'self'; style-src 'self'",
+  'Cross-Origin-Resource-Policy': 'same-origin',
+  'Referrer-Policy': 'no-referrer',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY'
+};
 
 const PAGE_DEFINITIONS = [
   { id: 'about-zh', label: 'About 中文', file: path.join(ROOT, 'source', 'about', 'index.md') },
   { id: 'about-en', label: 'About English', file: path.join(ROOT, 'source', 'en', 'about', 'index.md') },
   { id: 'gallery-zh', label: 'Gallery 中文', file: path.join(ROOT, 'source', 'gallery', 'index.md') },
   { id: 'gallery-en', label: 'Gallery English', file: path.join(ROOT, 'source', 'en', 'gallery', 'index.md') },
-  { id: 'categories-zh', label: 'Categories 中文', file: path.join(ROOT, 'source', 'categories', 'index.md') },
+  { id: 'categories-zh', label: 'Categories 中文', file: path.join(ROOT, 'source', 'zh-CN', 'categories', 'index.md') },
   { id: 'categories-en', label: 'Categories English', file: path.join(ROOT, 'source', 'en', 'categories', 'index.md') },
-  { id: 'tags-zh', label: 'Tags 中文', file: path.join(ROOT, 'source', 'tags', 'index.md') },
+  { id: 'tags-zh', label: 'Tags 中文', file: path.join(ROOT, 'source', 'zh-CN', 'tags', 'index.md') },
   { id: 'tags-en', label: 'Tags English', file: path.join(ROOT, 'source', 'en', 'tags', 'index.md') }
 ];
 
@@ -149,13 +157,66 @@ function binaryResponse(res, statusCode, contentType, body) {
   res.end(body);
 }
 
+function normalizeIpAddress(address = '') {
+  return String(address).replace(/^::ffff:/, '');
+}
+
+function isLoopbackHost(hostname = '') {
+  const normalized = String(hostname).replace(/^\[|\]$/g, '').toLowerCase();
+  return LOOPBACK_HOSTS.has(normalized) || normalized.startsWith('127.');
+}
+
+function parseRequestHost(hostHeader = '') {
+  try {
+    return new URL(`http://${hostHeader}`);
+  } catch (error) {
+    return null;
+  }
+}
+
+function isTrustedCmsRequest(req) {
+  const remoteAddress = normalizeIpAddress(req.socket && req.socket.remoteAddress);
+  if (remoteAddress && !isLoopbackHost(remoteAddress)) return false;
+
+  const requestHost = parseRequestHost(req.headers && req.headers.host);
+  if (!requestHost || !isLoopbackHost(requestHost.hostname)) return false;
+  if (requestHost.port && Number(requestHost.port) !== PORT) return false;
+
+  const fetchSite = String(req.headers['sec-fetch-site'] || '').toLowerCase();
+  if (fetchSite === 'cross-site') return false;
+
+  const origin = req.headers.origin;
+  if (!origin) return true;
+
+  try {
+    const parsedOrigin = new URL(origin);
+    const originPort = parsedOrigin.port
+      ? Number(parsedOrigin.port)
+      : (parsedOrigin.protocol === 'https:' ? 443 : 80);
+    return parsedOrigin.protocol === 'http:'
+      && isLoopbackHost(parsedOrigin.hostname)
+      && originPort === PORT;
+  } catch (error) {
+    return false;
+  }
+}
+
 function toPosixPath(filePath) {
   return path.relative(ROOT, filePath).split(path.sep).join('/');
 }
 
+function isPathInside(parentPath, candidatePath) {
+  const relative = path.relative(parentPath, candidatePath);
+  return relative === '' || (
+    relative !== '..'
+    && !relative.startsWith(`..${path.sep}`)
+    && !path.isAbsolute(relative)
+  );
+}
+
 function ensureInsideRoot(filePath) {
   const resolved = path.resolve(filePath);
-  if (!resolved.startsWith(ROOT)) {
+  if (!isPathInside(ROOT, resolved)) {
     throw new Error('目标路径超出项目目录。');
   }
   return resolved;
@@ -1378,7 +1439,7 @@ function resolveImageFolder(folder = '') {
   const normalized = normalizeFolderPath(folder);
   const absolute = ensureInsideRoot(path.join(IMAGES_DIR, normalized));
 
-  if (!absolute.startsWith(IMAGES_DIR)) {
+  if (!isPathInside(IMAGES_DIR, absolute)) {
     throw new Error('图片目录必须位于 source/images 下。');
   }
 
@@ -2138,7 +2199,7 @@ function resolveImagePublicPath(imagePath = '') {
 
   const relativePath = normalized.replace(/^\/images\//, '');
   const absolutePath = ensureInsideRoot(path.join(IMAGES_DIR, relativePath));
-  if (!absolutePath.startsWith(IMAGES_DIR)) {
+  if (!isPathInside(IMAGES_DIR, absolutePath)) {
     throw new Error('图片路径必须位于 source/images 下。');
   }
 
@@ -4031,7 +4092,7 @@ function resolvePublicImagePath(publicPath) {
 
   const relativePath = normalized.replace(/^\/images\//, '');
   const absolutePath = ensureInsideRoot(path.join(IMAGES_DIR, relativePath));
-  if (!absolutePath.startsWith(IMAGES_DIR)) return null;
+  if (!isPathInside(IMAGES_DIR, absolutePath)) return null;
 
   return {
     publicPath: normalized,
@@ -4079,7 +4140,7 @@ function isImageReferencedElsewhere(publicPath, excludedFiles = []) {
 function cleanupEmptyImageDirectories(startPath) {
   let currentPath = path.dirname(startPath);
 
-  while (currentPath.startsWith(IMAGES_DIR) && currentPath !== IMAGES_DIR) {
+  while (isPathInside(IMAGES_DIR, currentPath) && currentPath !== IMAGES_DIR) {
     if (!fs.existsSync(currentPath) || !fs.statSync(currentPath).isDirectory()) break;
     if (fs.readdirSync(currentPath).length > 0) break;
     fs.rmdirSync(currentPath);
@@ -4184,7 +4245,7 @@ function serveStaticAsset(res, pathname) {
   const relativePath = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
   const filePath = ensureInsideRoot(path.join(STATIC_DIR, relativePath));
 
-  if (!filePath.startsWith(STATIC_DIR) || !fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+  if (!isPathInside(STATIC_DIR, filePath) || !fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
     textResponse(res, 404, 'text/plain', 'Not found');
     return;
   }
@@ -4208,7 +4269,7 @@ function serveProjectImage(res, pathname) {
   const relativePath = decodeURIComponent(pathname.replace(/^\/images\//, ''));
   const filePath = ensureInsideRoot(path.join(IMAGES_DIR, relativePath));
 
-  if (!filePath.startsWith(IMAGES_DIR) || !fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+  if (!isPathInside(IMAGES_DIR, filePath) || !fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
     textResponse(res, 404, 'text/plain', 'Not found');
     return;
   }
@@ -4246,6 +4307,15 @@ function collectBody(req) {
 
 const server = http.createServer(async (req, res) => {
   try {
+    Object.entries(SECURITY_HEADERS).forEach(([name, value]) => {
+      res.setHeader(name, value);
+    });
+
+    if (!isTrustedCmsRequest(req)) {
+      jsonResponse(res, 403, { error: '只允许从本机 CMS 页面访问。' });
+      return;
+    }
+
     const requestUrl = new URL(req.url, `http://${req.headers.host || `${HOST}:${PORT}`}`);
     const pathname = requestUrl.pathname;
     const categoryOptions = loadCategoryOptions();
@@ -4828,6 +4898,11 @@ function cleanupChildren() {
 }
 
 if (require.main === module) {
+  if (!isLoopbackHost(HOST)) {
+    console.error('Local CMS 只能监听 127.0.0.1、localhost 或 ::1。');
+    process.exit(1);
+  }
+
   process.on('SIGINT', () => {
     cleanupChildren();
     process.exit(0);
@@ -4853,5 +4928,7 @@ module.exports = {
   writePostFiles,
   deletePostPair,
   deleteImageFile,
-  renderMarkdownPreview
+  renderMarkdownPreview,
+  isPathInside,
+  isTrustedCmsRequest
 };

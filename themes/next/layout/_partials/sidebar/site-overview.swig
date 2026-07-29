@@ -12,7 +12,7 @@
 {%- set localized_categories_total = localized_category_count() %}
 {%- set localized_tags_total = localized_tag_count() %}
 <div class="site-state-wrap motion-element">
-  <nav class="site-state">
+  <nav class="site-state" aria-label="{{ __('accessibility.site_statistics') }}">
     {%- if config.archive_dir != '/' and localized_posts_total > 0 %}
       <div class="site-state-item site-state-posts">
         {%- if theme.menu.archives %}

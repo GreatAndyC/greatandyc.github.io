@@ -13,6 +13,11 @@ NexT.utils = {
    */
   wrapImageWithFancyBox: function() {
     document.querySelectorAll('.post-body :not(a) > img, .post-body > img').forEach(element => {
+      // Gallery images are already controlled by accessible buttons and a
+      // dedicated viewer. Wrapping them in an anchor creates invalid nested
+      // interactive controls and breaks keyboard/screen-reader navigation.
+      if (element.closest('.gallery-page, .gallery-viewer')) return;
+
       var $image = $(element);
       var imageLink = $image.attr('data-src') || $image.attr('src');
       var $imageWrapLink = $image.wrap(`<a class="fancybox fancybox.image" href="${imageLink}" itemscope itemtype="http://schema.org/ImageObject" itemprop="url"></a>`).parent('a');
@@ -26,7 +31,7 @@ NexT.utils = {
 
       var imageTitle = $image.attr('title') || $image.attr('alt');
       if (imageTitle) {
-        $imageWrapLink.append(`<p class="image-caption">${imageTitle}</p>`);
+        $imageWrapLink.append(`<p class="image-caption" aria-hidden="true">${imageTitle}</p>`);
         // Make sure img title tag will show correctly in fancybox
         $imageWrapLink.attr('title', imageTitle).attr('data-caption', imageTitle);
       }

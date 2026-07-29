@@ -6,7 +6,15 @@
     "build": "hexo generate",
     "clean": "hexo clean",
     "test": "node --test test/*.test.js",
+    "test:html": "html-validate 'public/**/*.html'",
+    "test:e2e": "playwright test --project=chromium-desktop --project=chromium-mobile",
+    "test:e2e:cross-browser": "playwright test",
+    "test:visual": "RUN_VISUAL_REGRESSION=1 playwright test test/e2e/visual.spec.js --project=chromium-desktop --project=chromium-mobile",
+    "test:visual:update": "RUN_VISUAL_REGRESSION=1 playwright test test/e2e/visual.spec.js --project=chromium-desktop --project=chromium-mobile --update-snapshots=all",
+    "test:lighthouse": "lhci autorun",
     "test:site": "npm run clean && npm run build && npm test",
+    "test:quality": "npm run test:site && npm run test:html && npm run test:e2e && npm run test:lighthouse",
+    "test:security": "npm audit --audit-level=high",
     "cms:local": "node tools/local-cms.js",
     "deploy": "hexo deploy",
     "server": "hexo server",
@@ -35,5 +43,20 @@
     "hexo-server": "^3.0.0",
     "hexo-symbols-count-time": "^0.7.1",
     "hexo-theme-landscape": "^1.0.0"
+  },
+  "overrides": {
+    "brace-expansion": "5.0.8",
+    "hexo-symbols-count-time": {
+      "hexo-util": "3.3.0"
+    },
+    "inquirer": "8.2.7",
+    "tmp": "0.2.7",
+    "uuid": "11.1.1"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
+    "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.62.0",
+    "html-validate": "^10.17.0"
   }
 }

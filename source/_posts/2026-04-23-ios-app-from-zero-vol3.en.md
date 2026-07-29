@@ -238,12 +238,12 @@ After setup, open your project folder in the editor, launch Cline, and ask the a
 
 Then ask for specific tasks. Break your request into small, focused steps instead of asking AI to solve everything at once.
 
-#### Good prompt examples
+### Good prompt examples
 
 - My project fails to run. Help me identify the root cause: `xxxxxxxx`.
 - I want to add a feature. What implementation options do I have for this expected behavior: `xxxxx`?
 
-#### Bad prompt example
+### Bad prompt example
 
 - Turn this project into a global Alipay clone with instant settlement and multi-currency payout.
 

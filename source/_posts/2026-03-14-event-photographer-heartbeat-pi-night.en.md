@@ -27,7 +27,7 @@ Summary: This article looks back on my experience photographing an HKU evening e
 
 </div>
 
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=461544997&auto=0&height=66"></iframe>
+<iframe title="NetEase Cloud Music player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=461544997&auto=0&height=66"></iframe>
 
 ## Context
 As the former head, deputy head, and basically sole member of the photography unit of the HKU Graduate Union's performing arts society, I also contributed as a photographer for the "3.14 Heartbeat Pi Night" show. This is a short recap and technical summary, and also the opening piece for a photography series I had long wanted to write.

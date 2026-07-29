@@ -194,9 +194,9 @@ LOCAL_CMS_PORT=4012 npm run cms:local
 - `source/en/about/index.md`
 - `source/gallery/index.md`
 - `source/en/gallery/index.md`
-- `source/categories/index.md`
+- `source/zh-CN/categories/index.md`
 - `source/en/categories/index.md`
-- `source/tags/index.md`
+- `source/zh-CN/tags/index.md`
 - `source/en/tags/index.md`
 
 页面编辑器支持：

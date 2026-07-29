@@ -91,6 +91,10 @@ follow_me:
   welcome: 欢迎关注我的其它发布渠道
 accessibility:
   nav_toggle: 切换导航栏
+  primary_navigation: 主导航
+  category_navigation: 分类导航
+  site_statistics: 站点统计
+  pagination: 分页导航
   prev_page: 上一页
   next_page: 下一页
 symbols_count_time:

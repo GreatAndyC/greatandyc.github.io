@@ -149,14 +149,19 @@ categories:
 - 中文文章：`categories: [教程]`、`tags: [学习, Hexo]`
 - 英文文章：`categories: [Essay]`、`tags: [Learning, Hexo]`
 
-### 本地检查建议
+### 自动化测试
 
-在提交或部署前，建议至少检查：
+提交或部署前运行完整质量门禁：
 
-1. `npm run build` 是否通过
-2. 中文页是否只显示中文内容
-3. 英文页是否只显示英文内容
-4. 菜单、侧边栏、上一篇/下一篇是否仍停留在当前语言路由下
+```bash
+npm run test:quality
+```
+
+它会检查构建结果、双语路由和菜单、HTML 结构、真实浏览器交互、桌面/移动端响应式、图片加载、WCAG A/AA、Lighthouse 性能与 SEO。
+
+跨 Chromium、Firefox 和 WebKit 的完整矩阵，以及需要人工审阅的视觉基线命令，见：
+
+- [docs/testing-strategy.md](/Users/andycao/Documents/Project/greatandyc.github.io/docs/testing-strategy.md:1)
 
 ## 多语言规则
 

@@ -62,7 +62,7 @@ Then the post-ceremony handshake with the King of Sweden:
 
 Apart from barely perceptible details in lighting or perspective, a simple structured prompt already achieves near-photorealistic results.
 
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=5254815&auto=0&height=66"></iframe>
+<iframe title="NetEase Cloud Music player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=5254815&auto=0&height=66"></iframe>
 
 ## Text-to-image practice
 
@@ -94,7 +94,7 @@ Combining this with the theme of major Chinese universities, I tested pure text-
 
 The author also tried direct text-to-image to recall memories of studying at the Zhihua Library at the University of Hong Kong. The prompt was:
 
-![](/images/posts/post/gpt-image-2/gpt-image2-practice-23-2.png)
+![](/images/posts/post/gpt-image-2/gpt-image2-practice-26.png)
 
 But the generated image was clearly not the real interior.
 

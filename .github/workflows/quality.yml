@@ -1,0 +1,47 @@
+name: Site Quality
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20.19
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Audit dependencies
+        run: npm run test:security
+
+      - name: Build and run generated-site tests
+        run: npm run test:site
+
+      - name: Validate generated HTML
+        run: npm run test:html
+
+      - name: Test routes, interactions, responsive layout, and accessibility
+        run: npm run test:e2e
+
+      - name: Check Lighthouse quality budgets
+        run: npm run test:lighthouse

@@ -44,6 +44,7 @@ category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
+  - admin/index.html
   - admin/config.yml
 
 # Writing
@@ -153,4 +154,5 @@ deploy:
 # NexT Theme Configuration
 theme_config:
   custom_file_path:
+    head: source/_data/head.swig
     style: source/_data/styles.styl

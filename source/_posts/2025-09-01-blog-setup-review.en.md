@@ -38,7 +38,7 @@ There are already plenty of tutorials online for this part, so I will not repeat
 Pay special attention to GitHub two-factor authentication and SSH setup.
 
 ### 2. Buy a domain on Cloudflare
-First, search on [Alibaba Cloud Wanwang](wanwang.aliyun.com) to see whether the domain name you want has already been registered. Then buy it on [Cloudflare](dash.cloudflare.com). You will need either an international credit card or PayPal.
+First, search on [Alibaba Cloud Wanwang](https://wanwang.aliyun.com) to see whether the domain name you want has already been registered. Then buy it on [Cloudflare](https://dash.cloudflare.com). You will need either an international credit card or PayPal.
 
 The price for the same domain can vary across registrars. I bought it directly on Cloudflare because it was the simplest option for me.
 

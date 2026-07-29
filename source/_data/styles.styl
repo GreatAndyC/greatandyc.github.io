@@ -49,7 +49,7 @@ html
 
 .main .content.feed-page.posts-expand .post-meta
   font-size: 0.82rem
-  opacity: .75
+  opacity: 1
   margin-bottom: 12px
   display: flex
   flex-direction: column
@@ -207,7 +207,7 @@ html
   padding: 0 !important
   text-align: right
   font-size: 0.78rem
-  opacity: 0.65
+  opacity: 1
   gap: 0
   width: auto !important
   min-width: fit-content
@@ -231,7 +231,7 @@ html
 
 .main .content.feed-page.feed-view-list .post-meta time
   border-bottom: 0
-  color: rgba(90, 90, 90, 0.65)
+  color: #666
   font-variant-numeric: tabular-nums
   letter-spacing: 0.03em
   white-space: nowrap
@@ -738,7 +738,8 @@ html
     max-width 100%
 
 .post-body
-  word-break break-all
+  word-break: normal
+  overflow-wrap: break-word
 
 /* =============================================
    画廊页面样式

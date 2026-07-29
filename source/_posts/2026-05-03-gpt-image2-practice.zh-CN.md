@@ -62,7 +62,7 @@ Image 2 一出，有如低山臭水遇知音、一拍即合如虎添翼。随即
 
 ## 文生图实践
 
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=5254815&auto=0&height=66"></iframe>
+<iframe title="网易云音乐播放器" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=5254815&auto=0&height=66"></iframe>
 
 笔者一直在南方生活，对雪情有独钟，但实际见雪次数屈指可数，因此用 AI 生成美丽雪景。
 

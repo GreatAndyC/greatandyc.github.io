@@ -74,7 +74,7 @@ hello("Andy")
 ```
 
 ## 二级标题 链接和图片
-这是一个[Bing搜索](www.bing.com)的链接
+这是一个[Bing搜索](https://www.bing.com)的链接
 
 本地图片(文章建议放在`source/images/posts/`下)：
 <img src="/images/posts/test.png" alt="示例图片"
@@ -140,7 +140,7 @@ hello("Andy")
 ```
 
 ## 二级标题 链接和图片
-这是一个[Bing搜索](www.bing.com)的链接
+这是一个[Bing搜索](https://www.bing.com)的链接
 
 本地图片(文章建议放在`source/images/posts/`下)：
 <img src="/images/posts/test.png"

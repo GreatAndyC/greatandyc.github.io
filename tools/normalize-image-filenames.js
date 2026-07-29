@@ -51,6 +51,15 @@ function toPosixPath(input) {
   return String(input || '').split(path.sep).join('/');
 }
 
+function isPathInside(parentPath, candidatePath) {
+  const relative = path.relative(parentPath, candidatePath);
+  return relative === '' || (
+    relative !== '..'
+    && !relative.startsWith(`..${path.sep}`)
+    && !path.isAbsolute(relative)
+  );
+}
+
 function resolveImageRoot(folder = '') {
   const normalizedFolder = String(folder || '')
     .replace(/^\/+|\/+$/g, '')
@@ -59,7 +68,7 @@ function resolveImageRoot(folder = '') {
     .filter(Boolean)
     .join('/');
   const absolute = path.resolve(IMAGES_DIR, normalizedFolder);
-  if (!absolute.startsWith(IMAGES_DIR)) {
+  if (!isPathInside(IMAGES_DIR, absolute)) {
     throw new Error('Folder must stay inside source/images.');
   }
   return { normalizedFolder, absolute };

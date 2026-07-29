@@ -12,7 +12,7 @@
     <div class="home-category-panel-head">
       <span class="home-category-panel-title">{{ __('state.categories') }}</span>
     </div>
-    <nav class="home-category-nav">
+    <nav class="home-category-nav" aria-label="{{ __('accessibility.category_navigation') }}">
       <a class="home-category-link{%- if panel_current_category == 'all' %} is-active{%- endif %}" href="{{ panel_all_url }}" data-category="all">{{ __('home.all') }}</a>
       {{
         localized_list_categories({
