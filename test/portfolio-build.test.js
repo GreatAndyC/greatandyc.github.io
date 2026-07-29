@@ -148,6 +148,57 @@ test('portfolio pages have six projects and a six-item flat NexT table of conten
   });
 });
 
+test('portfolio hero introduces the maker without turning the project index into a résumé', () => {
+  const expectations = [
+    {
+      file: 'work/index.html',
+      kicker: '曹越洋 / AI 原生产品工程师',
+      title: '想法变成<br>产品。',
+      disciplines: ['产品设计', '软件工程', '应用 AI'],
+      portraitAlt: '曹越洋个人肖像',
+      sectionTitle: '作品集'
+    },
+    {
+      file: 'en/work/index.html',
+      kicker: 'ANDY CAO / AI-NATIVE PRODUCT ENGINEER',
+      title: '<span>Ideas into</span><span>products.</span>',
+      disciplines: ['Product Design', 'Software Engineering', 'Applied AI'],
+      portraitAlt: 'Portrait of Andy Cao',
+      sectionTitle: 'Selected Work'
+    }
+  ];
+
+  expectations.forEach(({ file, kicker, title, disciplines, portraitAlt, sectionTitle }) => {
+    const html = readPublic(file);
+    const hero = html.match(/<header class="work-intro">([\s\S]*?)<\/header>/)?.[1] || '';
+
+    assert.ok(hero.includes(kicker), `${file} is missing the positioning statement`);
+    assert.ok(hero.includes(title), `${file} is missing the editorial hero title`);
+    assert.ok(
+      hero.includes(`src="/images/CaoYueyang.png" alt="${portraitAlt}"`),
+      `${file} is missing the shared portrait`
+    );
+    disciplines.forEach(discipline => {
+      assert.ok(hero.includes(discipline), `${file} is missing discipline ${discipline}`);
+    });
+    assert.ok(
+      html.includes(
+        `<p class="work-selection-heading__title" role="heading" aria-level="2">${sectionTitle}</p>`
+      ),
+      `${file} is missing its selected-work section heading`
+    );
+    assert.ok(
+      !/experience|employment|工作经历|职业履历/i.test(hero),
+      `${file} hero must remain portfolio positioning rather than career history`
+    );
+  });
+
+  assert.ok(
+    fs.existsSync(path.join(publicDir, 'images/CaoYueyang.png')),
+    'the portrait must be copied into the generated site'
+  );
+});
+
 test('long project names use concise headings without polluting the table of contents', () => {
   const expectations = [
     {
@@ -364,6 +415,77 @@ test('standalone app icons are centered and the Wujian black corners are clipped
       `${file} must mark the Wujian icon for a clean rounded cutout`
     );
   });
+});
+
+test('Chinese portfolio typography keeps display text aligned and naturally spaced', () => {
+  const html = readPublic('work/index.html');
+  const css = readPublic('css/main.css');
+  const wujianSection = html.match(
+    /<section class="work-project" id="wujian"[\s\S]*?<\/section>/
+  )?.[0] || '';
+
+  assert.ok(
+    wujianSection.includes(
+      '<h2 id="wujian-title"><span>物见</span> <span class="work-project__latin-title">Wujian</span></h2>'
+    ),
+    'the Chinese Wujian title must keep the Chinese name together and demote the Latin label'
+  );
+  assert.match(
+    css,
+    /\.work-page\s*\{[\s\S]*?text-align:\s*left/,
+    'portfolio content must opt out of the theme-wide justified alignment'
+  );
+  assert.match(
+    css,
+    /html\[lang=(?:"zh-CN"|zh-CN)\] \.work-intro__title\s*\{[\s\S]*?line-height:\s*1\.1[\s\S]*?letter-spacing:\s*0\.015em/,
+    'the Chinese hero must use open line height and neutral tracking'
+  );
+  assert.ok(
+    css.includes('.work-project__latin-title'),
+    'built CSS is missing the secondary Latin project-title treatment'
+  );
+});
+
+test('portfolio portrait preserves the complete source image instead of cropping it', () => {
+  const css = readPublic('css/main.css');
+
+  assert.match(
+    css,
+    /\.work-intro__portrait img\s*\{[\s\S]*?width:\s*100%[\s\S]*?height:\s*auto[\s\S]*?min-height:\s*0[\s\S]*?object-fit:\s*contain/,
+    'the portfolio portrait must scale proportionally without cover-cropping'
+  );
+  assert.match(
+    css,
+    /\.work-intro__portrait\s*\{[\s\S]*?align-self:\s*center/,
+    'the complete portrait should remain vertically centered beside the introduction'
+  );
+});
+
+test('English portfolio hero keeps complete title lines across responsive widths', () => {
+  const html = readPublic('en/work/index.html');
+  const css = readPublic('css/main.css');
+
+  assert.ok(
+    html.includes(
+      '<p class="work-intro__title" role="heading" aria-level="1"><span>Ideas into</span><span>products.</span></p>'
+    ),
+    'the English hero must expose two intentional, indivisible title lines'
+  );
+  assert.match(
+    css,
+    /\.work-intro__copy\s*\{[\s\S]*?container-type:\s*inline-size/,
+    'the hero copy column must establish a sizing container'
+  );
+  assert.match(
+    css,
+    /html\[lang=(?:"en"|en)\] \.work-intro__title\s*\{[\s\S]*?font-size:\s*clamp\(3rem,\s*17cqi,\s*6\.2rem\)/,
+    'the English display size must respond to its own column rather than the viewport'
+  );
+  assert.match(
+    css,
+    /html\[lang=(?:"en"|en)\] \.work-intro__title > span\s*\{[\s\S]*?white-space:\s*nowrap/,
+    'English title words must never split internally'
+  );
 });
 
 test('built CSS contains portfolio layout and mobile gallery rules', () => {

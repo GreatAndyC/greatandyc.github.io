@@ -17,13 +17,30 @@ fancybox: false
 {% raw %}
 <main class="work-page">
   <header class="work-intro">
-    <p class="work-kicker">PORTFOLIO / 2024—2026</p>
-    <p class="work-intro__title" role="heading" aria-level="1">作品集</p>
-    <p class="work-intro__lead">独立产品、开源工具和研究型软件。这里展示的是做出来的东西，以及它们如何工作。</p>
-    <div class="work-links work-intro__links">
-      <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-      <a href="mailto:andy.caoyueyang@gmail.com">Email ↗</a>
+    <div class="work-intro__copy">
+      <p class="work-kicker">曹越洋 / AI 原生产品工程师</p>
+      <p class="work-intro__title" role="heading" aria-level="1">想法变成<br>产品。</p>
+      <p class="work-intro__lead">我把产品想法转化为可以实际使用的 AI 原生产品，覆盖交互设计、工程实现、自动验证与上线后的持续迭代。</p>
+      <div class="work-intro__disciplines" aria-label="核心能力">
+        <span>产品设计</span>
+        <span>软件工程</span>
+        <span>应用 AI</span>
+      </div>
+      <div class="work-links work-intro__links">
+        <a href="#shiguangji">查看作品 ↓</a>
+        <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+        <a href="mailto:andy.caoyueyang@gmail.com">Email ↗</a>
+      </div>
     </div>
+    <figure class="work-intro__portrait">
+      <img src="/images/CaoYueyang.png" alt="曹越洋个人肖像" width="968" height="868">
+      <figcaption><span>曹越洋</span><span>产品 · 工程 · AI</span></figcaption>
+    </figure>
+  </header>
+
+  <header class="work-selection-heading">
+    <p class="work-kicker">SELECTED WORK / 01—06</p>
+    <p class="work-selection-heading__title" role="heading" aria-level="2">作品集</p>
   </header>
 
   <nav class="work-index" aria-label="作品目录">
@@ -81,7 +98,7 @@ fancybox: false
   <section class="work-project" id="wujian" aria-labelledby="wujian-title">
     <header class="work-project__header">
       <p class="work-project__number">02 / OPEN SOURCE / FLUTTER</p>
-      <h2 id="wujian-title">物见 Wujian</h2>
+      <h2 id="wujian-title"><span>物见</span> <span class="work-project__latin-title">Wujian</span></h2>
       <p class="work-project__lead">面向家庭收纳、搬家整理和物品盘点的多模态应用。AI 先把照片转成结构化库存草稿，用户确认后再保存到本地。</p>
     </header>
     <dl class="work-project__facts">

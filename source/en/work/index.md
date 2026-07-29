@@ -17,13 +17,30 @@ fancybox: false
 {% raw %}
 <main class="work-page">
   <header class="work-intro">
-    <p class="work-kicker">PORTFOLIO / 2024—2026</p>
-    <p class="work-intro__title" role="heading" aria-level="1">Selected Work</p>
-    <p class="work-intro__lead">Independent products, open-source tools, and research software—what I built and how each system works.</p>
-    <div class="work-links work-intro__links">
-      <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-      <a href="mailto:andy.caoyueyang@gmail.com">Email ↗</a>
+    <div class="work-intro__copy">
+      <p class="work-kicker">ANDY CAO / AI-NATIVE PRODUCT ENGINEER</p>
+      <p class="work-intro__title" role="heading" aria-level="1"><span>Ideas into</span><span>products.</span></p>
+      <p class="work-intro__lead">I design, build, and ship AI-native products—from product intent and interaction design to implementation, automated verification, and production learning.</p>
+      <div class="work-intro__disciplines" aria-label="Core disciplines">
+        <span>Product Design</span>
+        <span>Software Engineering</span>
+        <span>Applied AI</span>
+      </div>
+      <div class="work-links work-intro__links">
+        <a href="#shiguangji">View selected work ↓</a>
+        <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+        <a href="mailto:andy.caoyueyang@gmail.com">Email ↗</a>
+      </div>
     </div>
+    <figure class="work-intro__portrait">
+      <img src="/images/CaoYueyang.png" alt="Portrait of Andy Cao" width="968" height="868">
+      <figcaption><span>Andy Cao</span><span>Product · Engineering · AI</span></figcaption>
+    </figure>
+  </header>
+
+  <header class="work-selection-heading">
+    <p class="work-kicker">SELECTED WORK / 01—06</p>
+    <p class="work-selection-heading__title" role="heading" aria-level="2">Selected Work</p>
   </header>
 
   <nav class="work-index" aria-label="Work index">

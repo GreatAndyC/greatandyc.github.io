@@ -1521,6 +1521,7 @@ html
   --work-canvas: #f3f3f3
   color: var(--work-ink)
   font-family: inherit
+  text-align: left
 
 .work-page *,
 .work-page *::before,
@@ -1538,8 +1539,9 @@ html
 .work-page h2
   color: var(--work-ink)
   font-weight: 800
-  line-height: 1.02
-  letter-spacing: -0.045em
+  line-height: 1
+  letter-spacing: -0.035em
+  text-align: left
 
 .work-page a
   border-bottom: 0
@@ -1568,33 +1570,119 @@ html
 
 .work-intro
   display: grid
-  grid-template-columns: minmax(0, 1fr) minmax(230px, 0.55fr)
-  gap: 38px 64px
-  padding: 28px 0 50px
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.82fr)
+  align-items: stretch
+  border-top: 1px solid var(--work-line)
   border-bottom: 3px solid var(--work-strong-line)
 
-.work-intro .work-kicker,
-.work-intro__title
-  grid-column: 1 / -1
+.work-intro__copy
+  display: flex
+  flex-direction: column
+  min-width: 0
+  padding: 32px 52px 40px 0
+  border-right: 1px solid var(--work-line)
+  container-type: inline-size
 
 .work-intro__title
-  margin: 0
-  max-width: 900px
+  margin-top: 62px
+  max-width: 760px
   color: var(--work-ink)
-  font-size: clamp(3.5rem, 9vw, 7.2rem)
+  font-size: clamp(3.6rem, 7.2vw, 6.8rem)
   font-weight: 800
-  line-height: 1.02
+  line-height: 0.98
   letter-spacing: -0.045em
+  text-align: left
+
+.work-intro__title > span
+  display: block
 
 .work-intro__lead
+  margin-top: 42px
   max-width: 690px
   color: var(--work-ink)
-  font-size: clamp(1.05rem, 2vw, 1.35rem)
-  line-height: 1.7
+  font-size: clamp(1rem, 1.65vw, 1.2rem)
+  line-height: 1.72
+  text-align: left
+
+.work-intro__disciplines
+  display: grid
+  grid-template-columns: repeat(3, minmax(0, 1fr))
+  margin-top: 34px
+  border-top: 1px solid var(--work-line)
+  border-bottom: 1px solid var(--work-line)
+
+.work-intro__disciplines span
+  min-width: 0
+  padding: 12px 10px
+  border-right: 1px solid var(--work-line)
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace
+  font-size: 0.62rem
+  font-weight: 700
+  letter-spacing: 0.06em
+  line-height: 1.4
+  text-align: center
+  text-transform: uppercase
+
+.work-intro__disciplines span:last-child
+  border-right: 0
 
 .work-intro__links
-  align-self: end
-  justify-content: flex-end
+  margin-top: 28px
+
+.work-intro__portrait
+  display: flex
+  flex-direction: column
+  align-self: center
+  min-width: 0
+  margin: 0
+  background: var(--work-canvas)
+
+.work-intro__portrait > a
+  display: block
+  width: 100%
+  height: auto
+  overflow: hidden
+
+.work-intro__portrait img
+  display: block
+  width: 100%
+  height: auto
+  max-width: none
+  min-height: 0
+  margin: 0
+  border: 0
+  object-fit: contain
+  object-position: center
+
+.work-intro__portrait figcaption
+  display: flex
+  gap: 12px
+  justify-content: space-between
+  padding: 13px 15px
+  border-top: 1px solid var(--work-line)
+  color: var(--work-muted)
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace
+  font-size: 0.58rem
+  font-weight: 700
+  letter-spacing: 0.06em
+  line-height: 1.4
+  text-transform: uppercase
+
+.work-selection-heading
+  display: flex
+  align-items: end
+  justify-content: space-between
+  gap: 28px
+  padding: 68px 0 24px
+  border-bottom: 1px solid var(--work-strong-line)
+
+.work-selection-heading__title
+  color: var(--work-ink)
+  font-size: clamp(2.8rem, 5.6vw, 5.2rem)
+  font-weight: 800
+  letter-spacing: -0.035em
+  line-height: 1
+  text-align: left
 
 .work-links
   display: flex
@@ -1660,6 +1748,7 @@ html
 .work-project__header h2
   overflow-wrap: normal
   font-size: clamp(2.5rem, 6vw, 5.2rem)
+  text-align: left
   text-wrap: balance
 
 .work-project--medium-title .work-project__header h2
@@ -1671,6 +1760,14 @@ html
 
 .work-project__title-group
   min-width: 0
+
+.work-project__latin-title
+  display: block
+  margin-top: 0.12em
+  font-size: 0.58em
+  font-weight: 700
+  letter-spacing: -0.035em
+  line-height: 1
 
 .work-project--split-title .work-project__header h2
   max-width: 11ch
@@ -1692,7 +1789,7 @@ html
   padding-bottom: 5px
   color: var(--work-muted)
   font-size: 0.9rem
-  line-height: 1.58
+  line-height: 1.7
   text-align: left
   text-wrap: pretty
 
@@ -1722,7 +1819,8 @@ html
   color: var(--work-ink)
   font-size: 0.85rem
   font-weight: 650
-  line-height: 1.5
+  line-height: 1.6
+  text-align: left
 
 .work-gallery-shell
   margin-top: 34px
@@ -1860,7 +1958,8 @@ html
   background: var(--work-paper)
   color: var(--work-muted)
   font-size: 0.72rem
-  line-height: 1.45
+  line-height: 1.55
+  text-align: left
 
 .work-gallery__slide figcaption span
   margin-right: 12px
@@ -1923,8 +2022,9 @@ html
   color: var(--work-ink)
   font-size: clamp(2.2rem, 5vw, 4.8rem)
   font-weight: 800
-  line-height: 1.02
-  letter-spacing: -0.045em
+  line-height: 1
+  letter-spacing: -0.035em
+  text-align: left
 
 /* NexT wraps content images in FancyBox anchors even on pages where images
    are part of an interactive gallery. Keep the wrapper inert and structural. */
@@ -1957,8 +2057,13 @@ html
     max-width: none
 
   .work-intro
-    grid-template-columns: minmax(0, 1fr) minmax(190px, 0.4fr)
-    gap: 30px 36px
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 0.7fr)
+
+  .work-intro__copy
+    padding-right: 34px
+
+  .work-intro__title
+    font-size: clamp(3.4rem, 7.6vw, 5.6rem)
 
   .work-project__header
     grid-template-columns: minmax(0, 1fr)
@@ -1974,19 +2079,45 @@ html
 
 @media (max-width: 767px)
   .work-intro
-    display: block
-    padding: 18px 0 34px
+    grid-template-columns: minmax(0, 1fr)
+
+  .work-intro__copy
+    padding: 22px 0 32px
+    border-right: 0
+    border-bottom: 1px solid var(--work-line)
 
   .work-intro__title
-    margin-top: 30px
-    font-size: clamp(3.3rem, 20vw, 5.2rem)
+    margin-top: 38px
+    font-size: clamp(3.2rem, 17vw, 4.8rem)
 
   .work-intro__lead
-    margin-top: 28px
+    margin-top: 30px
     font-size: 1rem
 
-  .work-intro__links
-    justify-content: flex-start
+  .work-intro__disciplines
+    margin-top: 28px
+
+  .work-intro__disciplines span
+    padding: 10px 6px
+    font-size: 0.56rem
+
+  .work-intro__portrait img
+    height: auto
+    min-height: 0
+    object-fit: contain
+    object-position: center
+
+  .work-intro__portrait figcaption
+    padding-right: 0
+    padding-left: 0
+
+  .work-selection-heading
+    display: block
+    padding: 50px 0 20px
+
+  .work-selection-heading__title
+    margin-top: 18px
+    font-size: clamp(2.8rem, 15vw, 4.2rem)
 
   .work-index
     display: flex
@@ -2111,6 +2242,67 @@ html
 
   .work-contact__title
     font-size: clamp(2rem, 11vw, 3.25rem)
+
+/* Chinese square glyphs need neutral tracking and more vertical rhythm than
+   the tightly tracked Latin display type used elsewhere on the page. */
+html[lang="en"] .work-intro__title
+  max-width: none
+  overflow-wrap: normal
+  word-break: normal
+  font-size: clamp(3rem, 17cqi, 6.2rem)
+  line-height: 1
+
+html[lang="en"] .work-intro__title > span
+  width: fit-content
+  max-width: 100%
+  white-space: nowrap
+
+html[lang="zh-CN"] .work-intro__title
+  max-width: 7.5em
+  font-size: clamp(3.25rem, 5.6vw, 5.1rem)
+  line-height: 1.1
+  letter-spacing: 0.015em
+
+html[lang="zh-CN"] .work-intro__lead
+  margin-top: 50px
+  max-width: 32em
+  font-size: clamp(1rem, 1.45vw, 1.1rem)
+  line-height: 1.85
+  letter-spacing: 0.015em
+
+html[lang="zh-CN"] .work-selection-heading__title,
+html[lang="zh-CN"] .work-project__header h2,
+html[lang="zh-CN"] .work-contact__title
+  overflow-wrap: normal
+  word-break: keep-all
+  line-height: 1.12
+  letter-spacing: 0.015em
+  text-align: left
+
+html[lang="zh-CN"] .work-project__lead,
+html[lang="zh-CN"] .work-project__facts dd,
+html[lang="zh-CN"] .work-gallery__slide figcaption
+  line-height: 1.75
+  letter-spacing: 0.012em
+  text-align: left
+
+html[lang="zh-CN"] .work-kicker,
+html[lang="zh-CN"] .work-project__number
+  letter-spacing: 0.075em
+
+@media (max-width: 767px)
+  html[lang="zh-CN"] .work-intro__title
+    font-size: clamp(3rem, 14vw, 4.15rem)
+    line-height: 1.12
+
+  html[lang="zh-CN"] .work-intro__lead
+    margin-top: 34px
+    font-size: 1rem
+    line-height: 1.82
+
+  html[lang="zh-CN"] .work-project__header h2
+    overflow-wrap: normal
+    font-size: clamp(2.5rem, 12vw, 3.35rem)
 
 @media (prefers-reduced-motion: reduce)
   .work-gallery
