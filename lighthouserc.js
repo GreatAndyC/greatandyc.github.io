@@ -15,6 +15,7 @@ module.exports = {
       ],
       settings: {
         preset: 'desktop',
+        chromeFlags: '--no-sandbox --disable-dev-shm-usage',
         onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo']
       }
     },
