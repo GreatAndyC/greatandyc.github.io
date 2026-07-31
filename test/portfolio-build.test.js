@@ -230,8 +230,32 @@ test('portfolio pages have ten projects and a ten-item flat NexT table of conten
   });
 });
 
-test('software case studies disclose evidence-based build cadence', () => {
+test('software case studies disclose major-feature build time without counting project age', () => {
   const softwareProjectIds = projectIds.filter(projectId => projectId !== 'fatigue-research');
+  const expectedBuildTimes = {
+    'work/index.html': {
+      shiguangji: '核心功能与上线加固：52 个 Git 活跃开发日',
+      photographhk: '前台、CMS、询价与交付基线：约 20 小时',
+      wujian: '主要功能 3 个活跃日 · 稳定性加固 2 个活跃日',
+      signalforge: '核心产品与两轮迭代：约 24 小时',
+      'learning-community': '认证、课程与直播纵向切片：4 个活跃开发日',
+      'provenance-lens': '核心本地工具：约 30 小时',
+      'publishing-system': '公开站、画廊与 CMS：20 个活跃开发日',
+      challengeforge: '机会雷达与决策管道：约 6 小时',
+      autogoogleplay: '核心管道 2 个活跃日 · Dashboard 1 个活跃日'
+    },
+    'en/work/index.html': {
+      shiguangji: 'Core features + release hardening: 52 active Git days',
+      photographhk: 'Frontend, CMS, inquiry flow + delivery baseline: ~20 hours',
+      wujian: 'Major features: 3 active days · hardening: 2 active days',
+      signalforge: 'Core product + two iteration rounds: ~24 hours',
+      'learning-community': 'Auth, course + live-session slices: 4 active days',
+      'provenance-lens': 'Core local tool: ~30 hours',
+      'publishing-system': 'Public site, gallery + CMS: 20 active days',
+      challengeforge: 'Opportunity radar + decision pipeline: ~6 hours',
+      autogoogleplay: 'Core pipeline: 2 active days · dashboard: 1 active day'
+    }
+  };
 
   workPages.forEach(({ file }) => {
     const html = readPublic(file);
@@ -239,6 +263,18 @@ test('software case studies disclose evidence-based build cadence', () => {
     assert.ok(
       html.includes('class="work-build-note"'),
       `${file} must explain how build durations are measured`
+    );
+    assert.ok(
+      html.includes(file.startsWith('en/') ? 'project age are excluded' : '项目存续时间均不计入'),
+      `${file} must explicitly exclude project age and maintenance gaps`
+    );
+    ['10 months', '9 weeks', '16 days', '8 days', '11 months', '11 days', '10 个月', '约 9 周', '约 16 天', '8 天完成', '11 个月', '11 天完成'].forEach(
+      misleadingDuration => {
+        assert.ok(
+          !html.includes(misleadingDuration),
+          `${file} must not retain elapsed project-span wording: ${misleadingDuration}`
+        );
+      }
     );
 
     softwareProjectIds.forEach(projectId => {
@@ -249,8 +285,12 @@ test('software case studies disclose evidence-based build cadence', () => {
       assert.ok(section, `${file} is missing project section ${projectId}`);
       assert.match(
         section,
-        /<dt>(?:开发节奏|Build cadence)<\/dt>/,
-        `${file} ${projectId} must show its build cadence`
+        /<dt>(?:主要功能开发|Core build time)<\/dt>/,
+        `${file} ${projectId} must label major-feature build time`
+      );
+      assert.ok(
+        section.includes(expectedBuildTimes[file][projectId]),
+        `${file} ${projectId} must show the recalculated major-feature build time`
       );
     });
   });

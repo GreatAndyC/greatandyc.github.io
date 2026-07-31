@@ -42,7 +42,7 @@ fancybox: false
     <p class="work-kicker">精选作品 / 01—10</p>
     <p class="work-selection-heading__title" role="heading" aria-level="2">作品集</p>
   </header>
-  <p class="work-build-note"><strong>开发节奏说明：</strong>以下周期按 Git 中首个可验证提交到所列里程碑的日历窗口计算，用来展示交付与迭代速度，不等同于连续工时。</p>
+  <p class="work-build-note"><strong>时间口径：</strong>只统计主要产品功能、集成与上线加固的开发时间。Git 历史足够细时采用功能提交的活跃开发日；一次性导入基线的仓库采用对应本地开发会话计时。维护空档、纯文档更新和项目存续时间均不计入。</p>
 
   <nav class="work-index" aria-label="作品目录">
     <a href="#shiguangji"><span>01</span> 食光机</a>
@@ -66,7 +66,7 @@ fancybox: false
     <dl class="work-project__facts">
       <div><dt>成果</dt><dd>App Store 产品上线</dd></div>
       <div><dt>核心</dt><dd>Vision LLM · RAG · SwiftData</dd></div>
-      <div><dt>开发节奏</dt><dd>首个可运行 UI 1 天 · 持续迭代 10 个月</dd></div>
+      <div><dt>主要功能开发</dt><dd>核心功能与上线加固：52 个 Git 活跃开发日</dd></div>
     </dl>
     <div class="work-links">
       <a href="https://www.shiguangjiapp.com/" target="_blank" rel="noopener noreferrer">产品官网 ↗</a>
@@ -107,7 +107,7 @@ fancybox: false
       <p class="work-project__lead">为摄影业务从 0 到 1 构建的双语作品站与内容后台：公开站负责项目叙事和询价转化，Payload CMS、PostgreSQL、权限边界、备份与自动化测试共同支撑上线前基线。</p>
     </header>
     <dl class="work-project__facts">
-      <div><dt>开发节奏</dt><dd>1 天完成 8 个可验证里程碑</dd></div>
+      <div><dt>主要功能开发</dt><dd>前台、CMS、询价与交付基线：约 20 小时</dd></div>
       <div><dt>系统</dt><dd>Next.js 16 · Payload · PostgreSQL</dd></div>
       <div><dt>验证</dt><dd>24 单元测试 · 33 E2E</dd></div>
     </dl>
@@ -144,7 +144,7 @@ fancybox: false
       <p class="work-project__lead">面向家庭收纳、搬家整理和物品盘点的多模态应用。AI 先把照片转成结构化库存草稿，用户确认后再保存到本地。</p>
     </header>
     <dl class="work-project__facts">
-      <div><dt>开发节奏</dt><dd>MVP 1 天 · v1.0.4 约 9 周</dd></div>
+      <div><dt>主要功能开发</dt><dd>主要功能 3 个活跃日 · 稳定性加固 2 个活跃日</dd></div>
       <div><dt>可靠性</dt><dd>21 项自动化测试与 CI</dd></div>
       <div><dt>原则</dt><dd>Local-first · Human-in-the-loop</dd></div>
     </dl>
@@ -202,7 +202,7 @@ fancybox: false
     </header>
     <dl class="work-project__facts">
       <div><dt>系统</dt><dd>TypeScript · Node.js · SQLite</dd></div>
-      <div><dt>开发节奏</dt><dd>约 16 天 Build Week 冲刺</dd></div>
+      <div><dt>主要功能开发</dt><dd>核心产品与两轮迭代：约 24 小时</dd></div>
       <div><dt>边界</dt><dd>可解释评分与人工审核</dd></div>
     </dl>
     <div class="work-links">
@@ -247,7 +247,7 @@ fancybox: false
       <p class="work-project__lead">把认证、课程、讨论与直播拆成可验证的纵向切片，并用 Firebase Emulator、Rules 测试、组件测试与 E2E 组成交付证据；产品判断由人掌握，Agent 负责组织、实现与复查。</p>
     </header>
     <dl class="work-project__facts">
-      <div><dt>开发节奏</dt><dd>4 天完成多个真实纵向切片</dd></div>
+      <div><dt>主要功能开发</dt><dd>认证、课程与直播纵向切片：4 个活跃开发日</dd></div>
       <div><dt>后端</dt><dd>Firebase Emulator · Rules · Callable</dd></div>
       <div><dt>验证</dt><dd>31 单元/组件 · 10 Rules · 4 E2E</dd></div>
     </dl>
@@ -294,7 +294,7 @@ fancybox: false
       <p class="work-project__lead">一款本地优先的图片来源检查器，解析 C2PA / JUMBF、EXIF 与软件标签等可读线索，区分“发现了什么”和“能够证明什么”，并在不覆盖原图的前提下导出副本。</p>
     </header>
     <dl class="work-project__facts">
-      <div><dt>开发节奏</dt><dd>8 天完成 v1.0 本地工具</dd></div>
+      <div><dt>主要功能开发</dt><dd>核心本地工具：约 30 小时</dd></div>
       <div><dt>核心</dt><dd>C2PA · JUMBF · EXIF · 指纹</dd></div>
       <div><dt>边界</dt><dd>本地处理 · 不覆盖原图 · 不夸大结论</dd></div>
     </dl>
@@ -333,7 +333,7 @@ fancybox: false
       <p class="work-project__lead">不只是一个博客，而是一套双语内容生产系统：公开站、摄影画廊、本地 CMS、AI 排版与翻译、媒体管理和质量门禁共同形成从草稿到发布的可维护链路。</p>
     </header>
     <dl class="work-project__facts">
-      <div><dt>开发节奏</dt><dd>持续迭代 11 个月 · 最近重构 4 天</dd></div>
+      <div><dt>主要功能开发</dt><dd>公开站、画廊与 CMS：20 个活跃开发日</dd></div>
       <div><dt>内容</dt><dd>24 组双语文章 · 28 个画廊来源</dd></div>
       <div><dt>质量</dt><dd>62 项测试 · Playwright · Axe · Lighthouse</dd></div>
     </dl>
@@ -387,7 +387,7 @@ fancybox: false
       <p class="work-project__lead">把公开 Devpost 赛事转成可操作的机会雷达：按奖金密度、竞争强度、AI 自动化适配与交付窗口排序，同时把资格、知识产权和最终提交保留为人工门槛。</p>
     </header>
     <dl class="work-project__facts">
-      <div><dt>开发节奏</dt><dd>11 天完成机会情报原型</dd></div>
+      <div><dt>主要功能开发</dt><dd>机会雷达与决策管道：约 6 小时</dd></div>
       <div><dt>系统</dt><dd>Next.js · D1 · SSE · 公共数据</dd></div>
       <div><dt>边界</dt><dd>事实 / 评分代理 / 人工决定分层</dd></div>
     </dl>
@@ -424,7 +424,7 @@ fancybox: false
       <p class="work-project__lead">一个把 Google Play 评论采集、持久化和 LLM Map-Reduce 分析串成完整流程的开源工具，并提供可视化 Web 控制台。</p>
     </header>
     <dl class="work-project__facts">
-      <div><dt>开发节奏</dt><dd>核心管道 2 天 · Dashboard 1 天迭代</dd></div>
+      <div><dt>主要功能开发</dt><dd>核心管道 2 个活跃日 · Dashboard 1 个活跃日</dd></div>
       <div><dt>管道</dt><dd>Python · PostgreSQL · LLM</dd></div>
       <div><dt>输出</dt><dd>Markdown · PDF · JSON</dd></div>
     </dl>
