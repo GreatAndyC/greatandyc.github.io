@@ -121,6 +121,7 @@ test('core pages request the versioned stylesheet to avoid stale deployment CSS'
 test('core pages expose the AC brand mark and complete favicon metadata', () => {
   pageMatrix.forEach(({ file }) => {
     const html = readPublic(file);
+    const version = `?v=${assetVersion}`;
 
     assert.match(html, /class="site-brand-mark"/, `${file} is missing the AC header mark`);
     assert.match(
@@ -129,22 +130,61 @@ test('core pages expose the AC brand mark and complete favicon metadata', () => 
       `${file} uses the wrong AC header mark`
     );
     assert.ok(
-      html.includes('rel="apple-touch-icon" sizes="180x180" href="/images/brand/apple-touch-icon.png"'),
+      html.includes(`rel="shortcut icon" type="image/x-icon" href="/favicon.ico${version}"`),
+      `${file} is missing the versioned root favicon`
+    );
+    assert.ok(
+      html.includes(
+        `rel="icon" type="image/svg+xml" sizes="any" href="/images/brand/favicon.svg${version}"`
+      ),
+      `${file} is missing the versioned SVG favicon`
+    );
+    assert.ok(
+      html.includes(
+        `rel="apple-touch-icon" sizes="180x180" href="/images/brand/apple-touch-icon.png${version}"`
+      ),
       `${file} is missing the branded Apple touch icon`
     );
     assert.ok(
-      html.includes('rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png"'),
+      html.includes(
+        `rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png${version}"`
+      ),
       `${file} is missing the branded 32px favicon`
     );
     assert.ok(
-      html.includes('rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png"'),
+      html.includes(
+        `rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png${version}"`
+      ),
       `${file} is missing the branded 16px favicon`
     );
     assert.ok(
-      html.includes('rel="manifest" href="/images/brand/site.webmanifest"'),
+      html.includes(`rel="manifest" href="/images/brand/site.webmanifest${version}"`),
       `${file} is missing the branded web manifest`
     );
   });
+});
+
+test('legacy NexT icon URLs now resolve to the AC identity', () => {
+  const pairs = [
+    ['source/images/brand/apple-touch-icon.png', 'themes/next/source/images/apple-touch-icon-next.png'],
+    ['source/images/brand/favicon-16.png', 'themes/next/source/images/favicon-16x16-next.png'],
+    ['source/images/brand/favicon-32.png', 'themes/next/source/images/favicon-32x32-next.png']
+  ];
+
+  pairs.forEach(([brandPath, legacyPath]) => {
+    assert.deepEqual(
+      fs.readFileSync(path.join(root, legacyPath)),
+      fs.readFileSync(path.join(root, brandPath)),
+      `${legacyPath} still contains the NexT identity`
+    );
+  });
+
+  const legacyLogo = fs.readFileSync(
+    path.join(root, 'themes/next/source/images/logo.svg'),
+    'utf8'
+  );
+  assert.ok(!legacyLogo.includes('id="NexT"'), 'legacy logo.svg still contains the NexT logo');
+  assert.match(legacyLogo, /stroke="#F5F2EE"/, 'legacy logo.svg is not the AC favicon');
 });
 
 test('localized pages use their matching large social card', () => {
