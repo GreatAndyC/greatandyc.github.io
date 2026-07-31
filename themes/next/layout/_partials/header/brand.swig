@@ -18,6 +18,15 @@
 
     <a href="{{ localized_path(config.root) }}" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
+      <img
+        class="site-brand-mark"
+        src="{{ url_for('/images/brand/ac-mark-light.svg') }}"
+        alt=""
+        aria-hidden="true"
+        width="30"
+        height="30"
+        decoding="async"
+      >
       <h1 class="site-title">{{ title }}</h1>
       <span class="logo-line-after"><i></i></span>
     </a>

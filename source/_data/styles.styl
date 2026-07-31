@@ -2355,3 +2355,34 @@ html[lang="zh-CN"] .work-project__number
 @media (prefers-reduced-motion: reduce)
   .work-gallery
     scroll-behavior: auto
+
+/* Personal brand mark: keep the localized site title as the accessible,
+   language-aware wordmark while adding the compact AC identifier. */
+.site-meta .brand
+  align-items: center
+  display: inline-flex
+  gap: 10px
+  justify-content: center
+  line-height: 1
+
+.site-meta .brand .logo-line-before,
+.site-meta .brand .logo-line-after
+  display: none
+
+.site-brand-mark
+  display: block
+  flex: 0 0 30px
+  height: 30px
+  width: 30px
+
+.site-meta .site-title
+  line-height: 1.2
+
+@media (max-width: 767px)
+  .site-meta .brand
+    gap: 8px
+
+  .site-brand-mark
+    flex-basis: 26px
+    height: 26px
+    width: 26px

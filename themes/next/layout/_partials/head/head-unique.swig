@@ -1,4 +1,17 @@
-{{ open_graph({ description: description, language: page.lang }) }}
+{%- set og_image = page.og_image or page.photos %}
+{%- if not og_image or not og_image.length %}
+  {%- if page.lang === 'en' %}
+    {%- set og_image = '/images/brand/social-card-en.jpg' %}
+  {%- else %}
+    {%- set og_image = '/images/brand/social-card-zh.jpg' %}
+  {%- endif %}
+{%- endif %}
+{{ open_graph({
+  description: page.description or description,
+  image: og_image,
+  language: page.lang,
+  twitter_card: 'summary_large_image'
+}) }}
 
 {{ canonical() }}
 

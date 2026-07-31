@@ -118,6 +118,72 @@ test('core pages request the versioned stylesheet to avoid stale deployment CSS'
   });
 });
 
+test('core pages expose the AC brand mark and complete favicon metadata', () => {
+  pageMatrix.forEach(({ file }) => {
+    const html = readPublic(file);
+
+    assert.match(html, /class="site-brand-mark"/, `${file} is missing the AC header mark`);
+    assert.match(
+      html,
+      /class="site-brand-mark"[\s\S]*?src="\/images\/brand\/ac-mark-light\.svg"/,
+      `${file} uses the wrong AC header mark`
+    );
+    assert.ok(
+      html.includes('rel="apple-touch-icon" sizes="180x180" href="/images/brand/apple-touch-icon.png"'),
+      `${file} is missing the branded Apple touch icon`
+    );
+    assert.ok(
+      html.includes('rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png"'),
+      `${file} is missing the branded 32px favicon`
+    );
+    assert.ok(
+      html.includes('rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png"'),
+      `${file} is missing the branded 16px favicon`
+    );
+    assert.ok(
+      html.includes('rel="manifest" href="/images/brand/site.webmanifest"'),
+      `${file} is missing the branded web manifest`
+    );
+  });
+});
+
+test('localized pages use their matching large social card', () => {
+  pageMatrix.forEach(({ file, language }) => {
+    const html = readPublic(file);
+    const card = language === 'en' ? 'social-card-en.jpg' : 'social-card-zh.jpg';
+    const expectedImage = `https://caoyueyang.org/images/brand/${card}`;
+
+    assert.ok(
+      html.includes(`<meta property="og:image" content="${expectedImage}">`),
+      `${file} is missing ${card}`
+    );
+    assert.ok(
+      html.includes('<meta name="twitter:card" content="summary_large_image">'),
+      `${file} is not configured for a large Twitter card`
+    );
+    assert.ok(
+      html.includes(`<meta name="twitter:image" content="${expectedImage}">`),
+      `${file} is missing the localized Twitter image`
+    );
+  });
+});
+
+test('Work pages publish their project-specific localized descriptions', () => {
+  const english = readPublic('en/work/index.html');
+  const chinese = readPublic('work/index.html');
+
+  assert.ok(
+    english.includes(
+      '<meta name="description" content="Andy Cao&#39;s independent products, open-source software, and research projects.">'
+    )
+  );
+  assert.ok(
+    chinese.includes(
+      '<meta name="description" content="曹越洋的独立产品、开源软件与研究型项目。">'
+    )
+  );
+});
+
 test('bilingual About pages share the updated positioning, background, and concise CTA', () => {
   const expectations = [
     {
