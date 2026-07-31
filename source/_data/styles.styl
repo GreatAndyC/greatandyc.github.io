@@ -1716,6 +1716,17 @@ html
   line-height: 1
   text-align: left
 
+.work-build-note
+  margin: 0
+  padding: 14px 0
+  border-bottom: 1px solid var(--work-line)
+  color: var(--work-muted)
+  font-size: 0.72rem
+  line-height: 1.65
+
+.work-build-note strong
+  color: var(--work-ink)
+
 .work-links
   display: flex
   flex-wrap: wrap
@@ -1736,7 +1747,7 @@ html
 
 .work-index
   display: grid
-  grid-template-columns: repeat(6, minmax(0, 1fr))
+  grid-template-columns: repeat(5, minmax(0, 1fr))
   margin: 0
   border-bottom: 1px solid var(--work-strong-line)
 
@@ -1749,8 +1760,12 @@ html
   line-height: 1.35
   text-align: center
 
+.work-index a:nth-child(5n),
 .work-index a:last-child
   border-right: 0
+
+.work-index a:nth-child(n + 6)
+  border-top: 1px solid var(--work-line)
 
 .work-index a:hover
   background: var(--work-ink)
@@ -2163,6 +2178,7 @@ html
     flex: 0 0 auto
     min-width: 116px
     padding: 15px 12px
+    border-top: 0
 
   .work-project
     padding: 60px 0 70px

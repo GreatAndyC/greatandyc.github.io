@@ -65,9 +65,13 @@ const workPages = [
 
 const projectIds = [
   'shiguangji',
+  'photographhk',
   'wujian',
   'signalforge',
-  'ai-native-delivery',
+  'learning-community',
+  'provenance-lens',
+  'publishing-system',
+  'challengeforge',
   'autogoogleplay',
   'fatigue-research'
 ];
@@ -192,7 +196,7 @@ test('bilingual About pages share the updated positioning, background, and conci
   );
 });
 
-test('portfolio pages have six projects and a six-item flat NexT table of contents', () => {
+test('portfolio pages have ten projects and a ten-item flat NexT table of contents', () => {
   workPages.forEach(({ file }) => {
     const html = readPublic(file);
 
@@ -216,13 +220,39 @@ test('portfolio pages have six projects and a six-item flat NexT table of conten
     assert.equal(
       (tocHtml.match(/class="nav-item/g) || []).length,
       projectIds.length,
-      `${file} TOC must contain exactly six project entries`
+      `${file} TOC must contain exactly ten project entries`
     );
     assert.ok(!tocHtml.includes('Selected Work'), `${file} TOC must not include the page hero`);
     assert.ok(!tocHtml.includes('作品集'), `${file} TOC must not include the page hero`);
     assert.ok(!tocHtml.includes('Want to talk'), `${file} TOC must not include the contact block`);
     assert.ok(!tocHtml.includes('想聊产品'), `${file} TOC must not include the contact block`);
     assert.ok(!tocHtml.includes('nav-number'), `${file} TOC must not show numeric prefixes`);
+  });
+});
+
+test('software case studies disclose evidence-based build cadence', () => {
+  const softwareProjectIds = projectIds.filter(projectId => projectId !== 'fatigue-research');
+
+  workPages.forEach(({ file }) => {
+    const html = readPublic(file);
+
+    assert.ok(
+      html.includes('class="work-build-note"'),
+      `${file} must explain how build durations are measured`
+    );
+
+    softwareProjectIds.forEach(projectId => {
+      const section = html.match(
+        new RegExp(`<section class="[^"]*" id="${projectId}"[\\s\\S]*?<\\/section>`)
+      )?.[0];
+
+      assert.ok(section, `${file} is missing project section ${projectId}`);
+      assert.match(
+        section,
+        /<dt>(?:开发节奏|Build cadence)<\/dt>/,
+        `${file} ${projectId} must show its build cadence`
+      );
+    });
   });
 });
 
@@ -277,6 +307,45 @@ test('portfolio hero introduces the maker without turning the project index into
   );
 });
 
+test('portfolio chrome follows the language of each Work page', () => {
+  const chineseHtml = readPublic('work/index.html');
+  const englishHtml = readPublic('en/work/index.html');
+
+  [
+    '精选作品 / 01—10',
+    '项目界面',
+    '安全演示 / 本地构建',
+    '产品界面 + 业务逻辑',
+    '网页端 + 移动端',
+    '方法 + 实践',
+    '来源识别 + 隐私',
+    '公开站 + 本地内容后台',
+    '公开 DEVPOST 数据快照',
+    '数据管道 + 分析输出',
+    '研究视图'
+  ].forEach(copy => {
+    assert.ok(chineseHtml.includes(copy), `Chinese Work page is missing localized copy: ${copy}`);
+    assert.ok(!englishHtml.includes(copy), `English Work page contains Chinese chrome: ${copy}`);
+  });
+
+  [
+    'SELECTED WORK / 01—10',
+    'PROJECT VIEWS',
+    'SAFE DEMO / LOCAL BUILD',
+    'PRODUCT UI + LOGIC',
+    'WEB + MOBILE',
+    'METHOD + PRACTICE',
+    'PROVENANCE + PRIVACY',
+    'PUBLIC SITE + LOCAL CMS',
+    'PUBLIC DEVPOST SNAPSHOT',
+    'PIPELINE + OUTPUT',
+    'RESEARCH VIEWS'
+  ].forEach(copy => {
+    assert.ok(englishHtml.includes(copy), `English Work page is missing localized copy: ${copy}`);
+    assert.ok(!chineseHtml.includes(copy), `Chinese Work page contains English chrome: ${copy}`);
+  });
+});
+
 test('long project names use concise headings without polluting the table of contents', () => {
   const expectations = [
     {
@@ -293,15 +362,18 @@ test('long project names use concise headings without polluting the table of con
 
   expectations.forEach(({ file, fatigueTitle, fatigueSubtitle }) => {
     const html = readPublic(file);
-    const aiSection = html.match(
-      /<section class="work-project work-project--medium-title" id="ai-native-delivery"[\s\S]*?<\/section>/
+    const learningSection = html.match(
+      /<section class="work-project work-project--medium-title" id="learning-community"[\s\S]*?<\/section>/
     )?.[0];
     const fatigueSection = html.match(
       /<section class="work-project work-project--split-title" id="fatigue-research"[\s\S]*?<\/section>/
     )?.[0];
     const tocHtml = html.match(/<div class="post-toc motion-element">([\s\S]*?)<\/div>/)?.[1] || '';
 
-    assert.ok(aiSection, `${file} must apply the medium-title treatment to AI delivery`);
+    assert.ok(
+      learningSection,
+      `${file} must apply the medium-title treatment to Learning Community`
+    );
     assert.ok(fatigueSection, `${file} must apply the split-title treatment to fatigue research`);
     assert.ok(
       html.includes(
@@ -411,8 +483,12 @@ test('SignalForge exposes its OpenAI Build Week demo evidence', () => {
     )?.[0];
 
     assert.ok(signalForgeSection, `${file} is missing the SignalForge section`);
+    const expectedLabel =
+      file === 'work/index.html'
+        ? '04 / OPENAI BUILD WEEK / 工作与效率'
+        : '04 / OPENAI BUILD WEEK / WORK + PRODUCTIVITY';
     assert.ok(
-      signalForgeSection.includes('03 / OPENAI BUILD WEEK / WORK + PRODUCTIVITY'),
+      signalForgeSection.includes(expectedLabel),
       `${file} must identify SignalForge as an OpenAI Build Week project`
     );
     assert.ok(
@@ -422,22 +498,22 @@ test('SignalForge exposes its OpenAI Build Week demo evidence', () => {
   });
 });
 
-test('AI delivery gallery leads with the public Figma workflow', () => {
+test('Learning Community gallery leads with the public AI-delivery workflow', () => {
   workPages.forEach(({ file }) => {
     const html = readPublic(file);
-    const aiSection = html.match(
-      /<section class="work-project work-project--medium-title" id="ai-native-delivery"[\s\S]*?<\/section>/
+    const learningSection = html.match(
+      /<section class="work-project work-project--medium-title" id="learning-community"[\s\S]*?<\/section>/
     )?.[0];
 
-    assert.ok(aiSection, `${file} is missing the AI delivery section`);
+    assert.ok(learningSection, `${file} is missing the Learning Community section`);
     assert.ok(
-      aiSection.includes('data-gallery-total>04</span>'),
-      `${file} must expose all four AI delivery slides`
+      learningSection.includes('data-gallery-total>04</span>'),
+      `${file} must expose all four Learning Community slides`
     );
 
     const workflowImage = '/images/work/ai-native-delivery/ai-native-product-delivery-workflow.webp';
-    const workflowIndex = aiSection.indexOf(workflowImage);
-    const compactDiagramIndex = aiSection.indexOf('work-diagram work-diagram--compact');
+    const workflowIndex = learningSection.indexOf(workflowImage);
+    const compactDiagramIndex = learningSection.indexOf('work-diagram work-diagram--compact');
 
     assert.ok(workflowIndex >= 0, `${file} is missing the public Figma workflow`);
     assert.ok(
@@ -448,6 +524,50 @@ test('AI delivery gallery leads with the public Figma workflow', () => {
       fs.existsSync(path.join(publicDir, workflowImage)),
       `${file} references a missing public workflow image`
     );
+  });
+});
+
+test('Provenance Lens uses its real Flutter interface instead of unrelated source imagery', () => {
+  workPages.forEach(({ file }) => {
+    const html = readPublic(file);
+    const provenanceSection = html.match(
+      /<section class="work-project" id="provenance-lens"[\s\S]*?<\/section>/
+    )?.[0];
+
+    assert.ok(provenanceSection, `${file} is missing the Provenance Lens section`);
+    assert.ok(
+      provenanceSection.includes('/images/work/provenance-lens/app-empty-state.webp'),
+      `${file} must show the real macOS Flutter interface`
+    );
+    assert.ok(
+      !provenanceSection.includes('source-with-provenance'),
+      `${file} must not reuse unrelated source imagery`
+    );
+  });
+});
+
+test('localized case studies use available language-specific screenshots', () => {
+  const chineseHtml = readPublic('work/index.html');
+  const englishHtml = readPublic('en/work/index.html');
+
+  [
+    '/images/work/photographhk/home-demo-en.webp',
+    '/images/work/photographhk/work-index-demo-en.webp',
+    '/images/work/photographhk/project-detail-demo-en.webp',
+    '/images/work/publishing-system/site-home-en.webp',
+    '/images/work/publishing-system/gallery-en.webp'
+  ].forEach(imagePath => {
+    assert.ok(englishHtml.includes(imagePath), `English Work page is missing ${imagePath}`);
+    assert.ok(!chineseHtml.includes(imagePath), `Chinese Work page must not use ${imagePath}`);
+  });
+
+  [
+    '/images/work/publishing-system/cms-articles-hku.webp',
+    '/images/work/publishing-system/cms-gallery-hku.webp',
+    '/images/work/publishing-system/cms-images-hku.webp'
+  ].forEach(imagePath => {
+    assert.ok(chineseHtml.includes(imagePath), `Chinese Work page is missing ${imagePath}`);
+    assert.ok(englishHtml.includes(imagePath), `English Work page is missing ${imagePath}`);
   });
 });
 
