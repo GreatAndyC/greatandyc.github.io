@@ -33,7 +33,7 @@ Summary: This article uses a recent public mutual-aid spreadsheet to structurall
 **Author:** Cao Yueyang  
 **Affiliation:** Department of Data and Systems Engineering, The University of Hong Kong  
 **Role:** Independent analyst (data collection, labeling, visualization, reporting)  
-**Contact:** andy.caoyueyang[at]gmail[dot]com  
+**Contact:** Please use the public contact links on this site.
 **Time:** January 2025
 
 ---

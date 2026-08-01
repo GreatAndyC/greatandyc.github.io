@@ -185,7 +185,6 @@ site_state: true
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
   GitHub: https://github.com/GreatAndyC || fab fa-github
-  E-Mail: mailto:andy.caoyueyang@gmail.com || fa fa-envelope
   RSS: /atom.xml || fa fa-rss
   #Weibo: https://weibo.com/yourname || fab fa-weibo
   #Google: https://plus.google.com/yourname || fab fa-google

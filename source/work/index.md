@@ -29,7 +29,6 @@ fancybox: false
       <div class="work-links work-intro__links">
         <a href="#shiguangji">查看作品 ↓</a>
         <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-        <a href="mailto:andy.caoyueyang@gmail.com">Email ↗</a>
       </div>
     </div>
     <figure class="work-intro__portrait">
@@ -505,8 +504,7 @@ fancybox: false
     <p class="work-kicker">联系</p>
     <p class="work-contact__title" role="heading" aria-level="2">想聊产品、AI 或软件系统？</p>
     <div class="work-links">
-      <a href="mailto:andy.caoyueyang@gmail.com">andy.caoyueyang@gmail.com ↗</a>
-      <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">通过 GitHub 联系 ↗</a>
     </div>
   </footer>
 </div>

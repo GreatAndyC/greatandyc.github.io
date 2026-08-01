@@ -229,26 +229,24 @@ test('bilingual About pages share the updated positioning, background, and conci
     {
       file: 'about/index.html',
       positioning: '曹越洋 · AI 产品工程师 &#x2F; 系统构建者',
-      location: '目前我居住在香港',
-      aiExperience: '超过三年的 AI 产品使用、调研与实践积累',
-      industryExperience: '约一年的业界项目和软件交付经历',
-      department: '数据与系统工程系（Department of Data and Systems Engineering）',
+      focus: '我关注 Applied AI、AI Software、Research Software 和 AI-native Product Engineering。',
+      background: '我的经历横跨产品分析、跨平台应用、数据与 AI 工作流、应用研究和系统实现',
       degree: '工学硕士：工业工程与物流管理',
-      researchRole: '我参与了机器人辅助深蹲训练中的疲劳识别研究',
+      researchRole: '我的研究兴趣包括机器人辅助训练、人机交互和多模态数据分析',
       portraitAlt: '曹越洋个人肖像',
-      workHref: '/work/'
+      workHref: '/work/',
+      removedCopy: ['目前我居住在香港', '超过三年的 AI 产品使用、调研与实践积累', '约一年的业界项目和软件交付经历', '数据与系统工程系（Department of Data and Systems Engineering）']
     },
     {
       file: 'en/about/index.html',
       positioning: 'Andy Cao · AI Product Engineer &amp; Systems Builder',
-      location: 'I am currently based in Hong Kong',
-      aiExperience: 'more than three years of hands-on AI product use',
-      industryExperience: 'approximately one year of industry project and software-delivery experience',
-      department: 'Department of Data and Systems Engineering',
+      focus: 'I focus on Applied AI, AI Software, Research Software, and AI-native Product Engineering.',
+      background: 'My work has crossed product analysis, cross-platform applications, data and AI workflows, applied research, and systems implementation',
       degree: 'MSc(Eng) in Industrial Engineering and Logistics Management',
-      researchRole: 'I contributed to research on fatigue recognition in robot-assisted squat training',
+      researchRole: 'My research interests include robotic training, human–robot interaction, and multimodal data analysis',
       portraitAlt: 'Portrait of Andy Cao',
-      workHref: '/en/work/'
+      workHref: '/en/work/',
+      removedCopy: ['I am currently based in Hong Kong', 'more than three years of hands-on AI product use', 'approximately one year of industry project and software-delivery experience', 'Department of Data and Systems Engineering']
     }
   ];
 
@@ -257,15 +255,18 @@ test('bilingual About pages share the updated positioning, background, and conci
 
     [
       expectation.positioning,
-      expectation.location,
-      expectation.aiExperience,
-      expectation.industryExperience,
-      expectation.department,
+      expectation.focus,
+      expectation.background,
       expectation.degree,
       expectation.researchRole
     ].forEach(copy => {
       assert.ok(html.includes(copy), `${expectation.file} is missing updated copy: ${copy}`);
     });
+
+    expectation.removedCopy.forEach(copy => {
+      assert.ok(!html.includes(copy), `${expectation.file} still contains removed copy: ${copy}`);
+    });
+    assert.ok(!html.includes('andy.caoyueyang@gmail.com'), `${expectation.file} must not expose the personal email`);
 
     assert.ok(
       html.includes(`src="/images/CaoYueyang.png" alt="${expectation.portraitAlt}"`),

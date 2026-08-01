@@ -21,7 +21,7 @@ ChatGPT Android Analysis Report
 
 Author: Cao Yueyang  
 Affiliation: Department of Data and Systems Engineering, The University of Hong Kong  
-Contact: andy.caoyueyang[at]gmail[dot]com  
+Contact: Please use the public contact links on this site.
 Report date: January 15, 2025
 
 ## Abstract
