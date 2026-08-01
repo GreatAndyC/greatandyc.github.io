@@ -3,43 +3,110 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#111216" media="(prefers-color-scheme: dark)">
     <title>Local Content CMS</title>
+    <script src="./school-themes.js"></script>
+    <script src="./file-entry.js"></script>
     <link rel="stylesheet" href="/app.css">
+    <link rel="stylesheet" href="/studio.css">
+    <link rel="stylesheet" href="/school-themes.css">
   </head>
-  <body>
+  <body class="cms-studio" data-workspace-mode="posts">
     <div class="app-shell">
-      <aside class="sidebar" id="sidebar">
-        <div class="sidebar-top">
-          <div class="sidebar-heading">
-            <div class="sidebar-brand">
-              <p class="eyebrow">Local CMS</p>
-              <h1>内容后台</h1>
-            </div>
-            <button id="sidebar-toggle-button" class="ghost-button sidebar-toggle" type="button" aria-expanded="true" aria-controls="sidebar-body" aria-label="收起侧边栏" title="收起侧边栏">&lt;</button>
+      <aside class="sidebar" id="sidebar" aria-label="内容导航">
+        <div class="module-rail">
+          <div id="rail-brand" class="rail-brand" title="Stanford 主题" aria-label="当前学校主题：Stanford">
+            <img id="rail-theme-mark" class="rail-theme-mark" src="/assets/school-marks/stanford.png" alt="">
           </div>
-          <p class="sidebar-copy">本地管理文章、页面、画廊和图片资源，直接回写到仓库文件。</p>
+
+          <div class="mode-switch" role="group" aria-label="内容模块">
+            <button class="mode-button is-active" type="button" data-mode="posts" data-short="文" title="文章">
+              <svg class="mode-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 3h9l3 3v15H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"></path>
+                <path d="M14 3v4h4M8 11h6M8 15h6"></path>
+              </svg>
+              <span class="mode-label">文章</span>
+            </button>
+            <button class="mode-button" type="button" data-mode="pages" data-short="页" title="页面">
+              <svg class="mode-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                <path d="M3 9h18M9 9v12"></path>
+              </svg>
+              <span class="mode-label">页面</span>
+            </button>
+            <button class="mode-button" type="button" data-mode="gallery" data-short="廊" title="画廊">
+              <svg class="mode-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                <circle cx="8.5" cy="9" r="1.5"></circle>
+                <path d="m4 17 5-5 4 4 3-3 4 4"></path>
+              </svg>
+              <span class="mode-label">画廊</span>
+            </button>
+            <button class="mode-button" type="button" data-mode="images" data-short="图" title="图片库">
+              <svg class="mode-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="6" y="6" width="15" height="14" rx="2"></rect>
+                <path d="M3 16V5a2 2 0 0 1 2-2h12M7 17l4-4 3 3 2-2 4 4"></path>
+              </svg>
+              <span class="mode-label">图片</span>
+            </button>
+            <button class="mode-button" type="button" data-mode="logs" data-short="志" title="日志">
+              <svg class="mode-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 6h16M4 12h10M4 18h7"></path>
+                <circle cx="18" cy="17" r="3"></circle>
+                <path d="M18 15.5V17l1 1"></path>
+              </svg>
+              <span class="mode-label">日志</span>
+            </button>
+            <button class="mode-button" type="button" data-mode="settings" data-short="设" title="设置">
+              <svg class="mode-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 7h10M18 7h2M4 17h2M10 17h10"></path>
+                <circle cx="16" cy="7" r="2"></circle>
+                <circle cx="8" cy="17" r="2"></circle>
+              </svg>
+              <span class="mode-label">设置</span>
+            </button>
+          </div>
+
+          <button id="sidebar-toggle-button" class="rail-toggle" type="button" aria-expanded="true" aria-controls="sidebar-body" aria-label="收起侧边栏" title="收起侧边栏">&lt;</button>
         </div>
 
-        <div id="sidebar-body" class="sidebar-body">
-          <div class="mode-switch" role="tablist" aria-label="编辑模式">
-            <button class="mode-button is-active" type="button" data-mode="posts" data-short="文" title="文章">文章</button>
-            <button class="mode-button" type="button" data-mode="pages" data-short="页" title="页面">页面</button>
-            <button class="mode-button" type="button" data-mode="gallery" data-short="廊" title="画廊">画廊</button>
-            <button class="mode-button" type="button" data-mode="images" data-short="图" title="图片库">图片库</button>
-            <button class="mode-button" type="button" data-mode="logs" data-short="志" title="日志">日志</button>
-            <button class="mode-button" type="button" data-mode="settings" data-short="设" title="设置">设置</button>
+        <div id="sidebar-body" class="sidebar-body collection-pane">
+          <div class="sidebar-top">
+            <div class="sidebar-heading">
+              <div class="sidebar-brand">
+                <p id="sidebar-eyebrow" class="eyebrow">Content workspace</p>
+                <h1 id="sidebar-title">内容后台</h1>
+              </div>
+            </div>
+            <p id="sidebar-copy" class="sidebar-copy">管理网站内容与媒体资源</p>
           </div>
 
           <label id="search-box" class="search-box">
             <span>搜索</span>
-            <input id="search-input" type="search" placeholder="标题 / slug / 页面名 / 相册 / 目录">
+            <input id="search-input" type="search" placeholder="搜索标题、slug 或目录">
           </label>
 
           <div id="sidebar-actions" class="sidebar-actions">
-            <button id="new-post-button" class="ghost-button sidebar-action-button" type="button">新建文章</button>
-            <button id="refresh-button" class="ghost-button sidebar-action-button" type="button">刷新列表</button>
-            <button id="post-draft-toggle-button" class="ghost-button sidebar-action-button sidebar-draft-toggle" type="button">草稿箱</button>
-            <button id="new-gallery-button" class="ghost-button sidebar-action-button" type="button" hidden>新建相册</button>
+            <button id="new-post-button" class="primary-button sidebar-action-button" type="button">新建文章</button>
+            <button id="refresh-button" class="ghost-button sidebar-action-button" type="button">刷新</button>
+            <button id="new-gallery-button" class="primary-button sidebar-action-button" type="button" hidden>新建相册</button>
+          </div>
+
+          <div id="post-status-filters" class="post-status-filters" role="group" aria-label="文章状态筛选">
+            <button class="post-status-filter is-active" type="button" data-post-status-filter="all" aria-pressed="true">
+              <span>全部</span>
+              <span id="post-status-count-all" class="post-status-count" data-post-status-count="all">0</span>
+            </button>
+            <button class="post-status-filter" type="button" data-post-status-filter="draft" aria-pressed="false">
+              <span>草稿</span>
+              <span id="post-status-count-draft" class="post-status-count" data-post-status-count="draft">0</span>
+            </button>
+            <button class="post-status-filter" type="button" data-post-status-filter="published" aria-pressed="false">
+              <span>已发布</span>
+              <span id="post-status-count-published" class="post-status-count" data-post-status-count="published">0</span>
+            </button>
           </div>
 
           <div id="list-panel" class="list-panel"></div>
@@ -47,19 +114,32 @@
         </div>
       </aside>
 
-      <main class="workspace">
+      <main class="workspace" id="main-content">
+        <img
+          id="workspace-theme-watermark"
+          class="workspace-theme-watermark"
+          src="/assets/school-marks/stanford.png"
+          alt=""
+          aria-hidden="true"
+        >
         <header class="workspace-header">
-          <div>
+          <div class="workspace-heading">
             <p id="workspace-kicker" class="eyebrow">文章编辑器</p>
             <h2 id="workspace-title">请选择左侧内容</h2>
+            <p class="workspace-theme-motto">
+              <span id="workspace-theme-motto-label">校训</span>
+              <span id="workspace-theme-motto">Die Luft der Freiheit weht · 自由之风劲吹</span>
+            </p>
           </div>
           <div class="workspace-actions">
+            <p id="status-bar" class="status-bar" role="status" aria-live="polite">准备就绪。</p>
             <button id="delete-button" class="ghost-button danger-button" type="button" hidden>删除</button>
             <button id="save-button" class="primary-button" type="button">保存</button>
+            <button id="publish-button" class="primary-button publish-button" type="button">发布文章</button>
           </div>
         </header>
 
-        <p id="status-bar" class="status-bar">准备就绪。</p>
+        <div class="workspace-scroll">
 
         <section id="post-command-panel" class="editor-card command-panel">
           <div class="card-heading">
@@ -108,11 +188,294 @@
           </div>
         </section>
 
+        <section id="workspace-loading" class="workspace-loading" aria-live="polite" hidden>
+          <div class="workspace-loading-heading">
+            <span class="workspace-loading-indicator" aria-hidden="true"></span>
+            <div>
+              <strong id="workspace-loading-label">正在载入文章工作区</strong>
+              <span>保持当前工作台结构，内容准备好后一次呈现。</span>
+            </div>
+          </div>
+          <div class="workspace-loading-skeleton" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </section>
+
+        <section id="appearance-panel" class="editor-card appearance-panel" hidden>
+          <div class="card-heading appearance-heading">
+            <div class="card-heading-copy">
+              <p class="eyebrow">Workspace appearance</p>
+              <h3>学校主题</h3>
+              <span class="field-hint">在当前工作区内按洲与国家／地区筛选学校主题；北美采用 U.S. News，其他地区采用 THE 或官方院校名录。主题会同步替换交互色、背景与学校标志水印。</span>
+            </div>
+            <span id="skin-selection-summary" class="skin-selection-summary" aria-live="polite">
+              <img id="skin-selection-mark" src="/assets/school-marks/stanford.png" alt="">
+              <span id="skin-selection-name">当前：Stanford</span>
+            </span>
+          </div>
+
+          <div class="theme-library-controls">
+            <div
+              id="theme-category-navigation"
+              class="theme-category-navigation"
+              aria-label="学校主题筛选"
+            ></div>
+            <label class="theme-school-search" for="theme-school-search">
+              <span>搜索当前分类</span>
+              <input
+                id="theme-school-search"
+                type="search"
+                autocomplete="off"
+                placeholder="学校名称或缩写"
+              >
+            </label>
+          </div>
+
+          <div id="skin-picker" class="skin-picker" role="group" aria-label="按洲、国家或地区选择学校主题">
+            <button class="skin-option" type="button" data-ui-skin="mit" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/mit.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>MIT</strong>
+                <small>MIT Red</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="harvard" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/harvard.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>Harvard</strong>
+                <small>Crimson</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option is-active" type="button" data-ui-skin="stanford" aria-pressed="true">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/stanford.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>Stanford</strong>
+                <small>Cardinal Red</small>
+              </span>
+              <span class="skin-option-state">当前</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="cambridge" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/cambridge.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>Cambridge</strong>
+                <small>Cambridge Teal</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="oxford" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/oxford.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>Oxford</strong>
+                <small>Oxford Blue</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="uchicago" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/uchicago.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>UChicago</strong>
+                <small>Maroon</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="caltech" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/caltech.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>Caltech</strong>
+                <small>Caltech Orange</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="cornell" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/cornell.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>Cornell</strong>
+                <small>Carnelian</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="peking" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/peking.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>Peking</strong>
+                <small>PKU Red</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="tsinghua" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/tsinghua.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>Tsinghua</strong>
+                <small>Tsinghua Purple</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="lse" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/lse.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>LSE</strong>
+                <small>LSE Red</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="kyoto" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/kyoto.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>Kyoto</strong>
+                <small>Kyoto Blue</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="tokyo" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/tokyo.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>UTokyo</strong>
+                <small>UTokyo Blue</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="princeton" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/princeton.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>Princeton</strong>
+                <small>Princeton Orange</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <div class="skin-group-divider">
+              <strong>香港高校</strong>
+              <small>QS 2027 Hong Kong Top 5</small>
+            </div>
+
+            <button class="skin-option" type="button" data-ui-skin="hku" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/hku.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>HKU</strong>
+                <small>HKU Green</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="cuhk" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/cuhk.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>CUHK</strong>
+                <small>Purple &amp; Gold</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="hkust" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/hkust.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>HKUST</strong>
+                <small>Blue &amp; Gold</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="polyu" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/polyu.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>PolyU</strong>
+                <small>PolyU Red &amp; Grey</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+
+            <button class="skin-option" type="button" data-ui-skin="cityu" aria-pressed="false">
+              <span class="skin-mark" aria-hidden="true">
+                <img src="/assets/school-marks/cityu.png" alt="">
+                <span class="skin-swatch"></span>
+              </span>
+              <span class="skin-option-copy">
+                <strong>CityUHK</strong>
+                <small>Orange &amp; Burgundy</small>
+              </span>
+              <span class="skin-option-state">使用</span>
+            </button>
+          </div>
+        </section>
+
         <section id="post-llm-panel" class="editor-card llm-panel">
           <div class="card-heading">
-            <div>
-              <p class="eyebrow">LLM Config</p>
+            <div class="card-heading-copy">
+              <p class="eyebrow">AI &amp; Formatting</p>
               <h3>一键排版配置</h3>
+              <span class="field-hint">集中管理模型连接、翻译与内容整理提示词；这些配置只影响内容生产能力，不改变工作区的学校视觉主题。</span>
             </div>
             <div class="card-heading-actions">
               <button id="test-llm-button" class="ghost-button" type="button">测试连接</button>
@@ -157,24 +520,29 @@
           </div>
         </section>
 
-        <section id="post-draft-viewer" class="editor-panel" hidden>
-          <section class="editor-card draft-viewer-card">
-            <div class="card-heading">
-              <div class="card-heading-copy">
-                <h3>文章草稿箱</h3>
-                <span id="post-draft-meta" class="field-hint">这里会显示当前文章的本地草稿时间和具体内容。</span>
+        <section id="post-editor" class="editor-panel" hidden>
+          <div class="post-editor-feedback">
+            <div id="post-save-state" class="post-save-state" data-state="idle" role="status" aria-live="polite">
+              <span class="post-save-state-indicator" aria-hidden="true"></span>
+              <span id="post-save-state-label">草稿已就绪</span>
+            </div>
+            <div id="post-recovery-banner" class="post-recovery-banner" role="alert" hidden>
+              <div class="post-recovery-copy">
+                <strong>发现未完成的本地编辑</strong>
+                <span>恢复后可继续编辑；放弃后将以服务器版本为准。</span>
               </div>
-              <div class="card-heading-actions">
-                <button id="post-draft-restore-button" class="primary-button" type="button">恢复到编辑器</button>
-                <button id="post-draft-clear-button" class="ghost-button danger-button" type="button">删除本地草稿</button>
+              <div class="post-recovery-actions">
+                <button id="recovery-restore-button" class="primary-button" type="button">继续编辑</button>
+                <button id="recovery-discard-button" class="ghost-button danger-button" type="button">丢弃恢复</button>
               </div>
             </div>
-            <div id="post-draft-viewer-content" class="draft-viewer-content"></div>
-          </section>
-        </section>
+          </div>
 
-        <section id="post-editor" class="editor-panel" hidden>
-          <div class="editor-card compact-grid">
+          <aside class="editor-card compact-grid post-inspector" aria-label="文章发布设置">
+            <div class="post-inspector-heading">
+              <p class="eyebrow">Document settings</p>
+              <h3>发布设置</h3>
+            </div>
             <label>
               <span>发布时间</span>
               <input id="post-date" type="text" readonly>
@@ -223,9 +591,9 @@
                 </label>
               </div>
             </div>
-          </div>
+          </aside>
 
-          <div class="editor-card">
+          <section class="editor-card post-media-section">
             <div class="card-heading">
               <h3>封面图 / 代表图</h3>
               <button id="upload-image-button" class="ghost-button" type="button">上传到 posts</button>
@@ -235,16 +603,16 @@
                 <span>图片目录</span>
                 <select id="image-folder-select"></select>
               </label>
-              <label>
-                <span>目录操作</span>
+              <div class="field-group" role="group" aria-labelledby="post-folder-actions-label">
+                <span id="post-folder-actions-label">目录操作</span>
                 <div class="folder-action-grid">
-                  <input id="image-new-folder" type="text" placeholder="例如 posts/ios-vol4">
+                  <input id="image-new-folder" type="text" aria-label="新文章图片目录名" placeholder="例如 posts/ios-vol4">
                   <button id="create-image-folder-button" class="ghost-button" type="button">创建</button>
                   <button id="rename-image-folder-button" class="ghost-button" type="button">重命名当前目录</button>
                   <button id="delete-image-folder-button" class="ghost-button danger-button" type="button">删除当前目录</button>
                   <button id="normalize-image-filenames-button" class="ghost-button" type="button">规范化文件名</button>
                 </div>
-              </label>
+              </div>
             </div>
             <div id="image-dropzone" class="image-dropzone" tabindex="0">
               <input id="image-file-input" type="file" accept="image/*" multiple hidden>
@@ -269,10 +637,148 @@
               </div>
               <div id="post-image-library-grid" class="library-grid"></div>
             </div>
-          </div>
+          </section>
 
           <div class="language-grid">
-            <section class="editor-card">
+            <div class="post-language-switchbar">
+              <div class="post-language-switcher">
+                <span class="field-label">编辑语言</span>
+                <div class="post-language-tabs" role="tablist" aria-label="文章编辑语言">
+                  <button
+                    id="post-language-tab-zh"
+                    class="post-language-tab is-active"
+                    type="button"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="post-language-panel-zh"
+                    tabindex="0"
+                    data-post-language="zh"
+                  >中文</button>
+                  <button
+                    id="post-language-tab-en"
+                    class="post-language-tab"
+                    type="button"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="post-language-panel-en"
+                    tabindex="-1"
+                    data-post-language="en"
+                  >EN</button>
+                </div>
+              </div>
+              <button
+                id="insert-netease-music-button"
+                class="ghost-button tool-action-button"
+                type="button"
+                aria-expanded="false"
+                aria-controls="netease-music-panel"
+              >
+                <span class="tool-action-title">插入音乐</span>
+                <span class="tool-action-meta">网易云或本地音频</span>
+              </button>
+            </div>
+
+            <section id="netease-music-panel" class="music-insert-panel" hidden>
+              <div class="music-insert-panel-copy">
+                <span class="music-insert-kicker">Music</span>
+                <h4>插入音乐到当前稿件</h4>
+                <p>选择网易云链接或本地音频；播放器会插入到当前正在编辑的语言正文中。</p>
+              </div>
+              <div class="music-source-tabs" role="tablist" aria-label="音乐来源">
+                <button
+                  id="music-source-tab-netease"
+                  class="music-source-tab is-active"
+                  type="button"
+                  role="tab"
+                  aria-selected="true"
+                  aria-controls="music-source-panel-netease"
+                  tabindex="0"
+                  data-music-source="netease"
+                >网易云</button>
+                <button
+                  id="music-source-tab-local"
+                  class="music-source-tab"
+                  type="button"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="music-source-panel-local"
+                  tabindex="-1"
+                  data-music-source="local"
+                >本地音频</button>
+              </div>
+
+              <div id="music-source-panel-netease" class="music-insert-form" role="tabpanel" aria-labelledby="music-source-tab-netease" data-music-source-panel="netease">
+                <div class="music-insert-panel-copy">
+                  <p>先检测歌曲 ID、可播放性和疑似版权限制，再决定是否插入。当前仍只支持单曲。</p>
+                  <ul class="music-insert-tips">
+                    <li>支持歌曲分享链接、外链播放器链接和纯数字歌曲 ID。</li>
+                    <li>检测会优先提示疑似版权保护或不可外链的歌曲。</li>
+                  </ul>
+                </div>
+                <label class="music-insert-input-block">
+                  <span>网易云链接或歌曲 ID</span>
+                  <input id="netease-music-input" type="text" placeholder="https://music.163.com/#/song?id=461544997 或 461544997">
+                </label>
+                <div id="netease-music-result" class="music-insert-result is-idle">
+                  <div class="music-insert-result-head">
+                    <span id="netease-music-badge" class="music-status-badge">待检测</span>
+                    <span id="netease-music-summary" class="music-insert-result-summary">输入链接后可以先检测，再插入到当前稿件。</span>
+                  </div>
+                  <div class="music-insert-result-grid">
+                    <article class="music-result-item">
+                      <span class="music-result-label">歌曲 ID</span>
+                      <strong id="netease-music-song-id" class="music-result-value">-</strong>
+                    </article>
+                    <article class="music-result-item">
+                      <span class="music-result-label">歌曲名</span>
+                      <strong id="netease-music-song-title" class="music-result-value">-</strong>
+                    </article>
+                    <article class="music-result-item">
+                      <span class="music-result-label">歌手</span>
+                      <strong id="netease-music-song-artist" class="music-result-value">-</strong>
+                    </article>
+                    <article class="music-result-item">
+                      <span class="music-result-label">检测结论</span>
+                      <strong id="netease-music-song-status" class="music-result-value">尚未检测</strong>
+                    </article>
+                  </div>
+                  <p id="netease-music-note" class="music-insert-note">检测结果仅用于降低踩坑概率；最终是否能在外链播放器正常播放，仍取决于网易云当下的版权与地区策略。</p>
+                </div>
+                <div class="music-insert-actions">
+                  <button id="netease-music-validate-button" class="ghost-button music-secondary-button" type="button">先检测</button>
+                  <button id="netease-music-confirm-button" class="primary-button music-primary-button" type="button">检测并插入到当前稿件</button>
+                  <button id="netease-music-cancel-button" class="ghost-button" type="button">收起</button>
+                </div>
+              </div>
+
+              <div
+                id="music-source-panel-local"
+                class="local-audio-panel"
+                role="tabpanel"
+                aria-labelledby="music-source-tab-local"
+                data-music-source-panel="local"
+                hidden
+              >
+                <div class="local-audio-dropzone" id="local-audio-dropzone" role="group" aria-labelledby="local-audio-dropzone-title" aria-describedby="local-audio-help local-audio-status">
+                  <input id="local-audio-file-input" type="file" accept=".mp3,.m4a,.ogg,.wav,audio/mpeg,audio/mp4,audio/ogg,audio/wav" hidden>
+                  <strong id="local-audio-dropzone-title">选择或拖入本地音频</strong>
+                  <span id="local-audio-help">支持 MP3、M4A、OGG、WAV，单个文件最大 32 MiB。选择后会立即上传并插入当前稿件。</span>
+                  <button id="local-audio-select-button" class="primary-button music-primary-button" type="button">选择并插入</button>
+                </div>
+                <p id="local-audio-status" class="local-audio-status" role="status" aria-live="polite">尚未选择文件。</p>
+                <div class="music-insert-actions">
+                  <button id="local-audio-cancel-button" class="ghost-button" type="button">收起</button>
+                </div>
+              </div>
+            </section>
+
+            <section
+              id="post-language-panel-zh"
+              class="editor-card post-language-card"
+              role="tabpanel"
+              aria-labelledby="post-language-tab-zh"
+              data-post-language-panel="zh"
+            >
               <div class="card-heading">
                 <div class="card-heading-copy">
                   <h3>中文稿</h3>
@@ -285,10 +791,6 @@
                     </div>
                     <span id="format-progress-text">准备排版…</span>
                   </div>
-                  <button id="insert-netease-music-button" class="ghost-button tool-action-button" type="button">
-                    <span class="tool-action-title">插入音乐</span>
-                    <span class="tool-action-meta">支持网易云链接</span>
-                  </button>
                   <button id="format-zh-button" class="ghost-button tool-action-button" type="button">
                     <span class="tool-action-title">一键排版</span>
                     <span class="tool-action-meta">整理中文正文结构</span>
@@ -299,53 +801,6 @@
                   </button>
                 </div>
               </div>
-              <section id="netease-music-panel" class="music-insert-panel" hidden>
-                <div class="music-insert-panel-copy">
-                  <span class="music-insert-kicker">NetEase Cloud Music</span>
-                  <h4>插入网易云音乐</h4>
-                  <p>先检测歌曲 ID、可播放性和疑似版权限制，再决定是否插入。当前仍只支持单曲。</p>
-                  <ul class="music-insert-tips">
-                    <li>支持歌曲分享链接、外链播放器链接和纯数字歌曲 ID。</li>
-                    <li>检测会优先提示疑似版权保护或不可外链的歌曲。</li>
-                  </ul>
-                </div>
-                <div class="music-insert-form">
-                  <label class="music-insert-input-block">
-                    <span>网易云链接或歌曲 ID</span>
-                    <input id="netease-music-input" type="text" placeholder="https://music.163.com/#/song?id=461544997 或 461544997">
-                  </label>
-                  <div id="netease-music-result" class="music-insert-result is-idle">
-                    <div class="music-insert-result-head">
-                      <span id="netease-music-badge" class="music-status-badge">待检测</span>
-                      <span id="netease-music-summary" class="music-insert-result-summary">输入链接后可以先检测，再插入到中文稿。</span>
-                    </div>
-                    <div class="music-insert-result-grid">
-                      <article class="music-result-item">
-                        <span class="music-result-label">歌曲 ID</span>
-                        <strong id="netease-music-song-id" class="music-result-value">-</strong>
-                      </article>
-                      <article class="music-result-item">
-                        <span class="music-result-label">歌曲名</span>
-                        <strong id="netease-music-song-title" class="music-result-value">-</strong>
-                      </article>
-                      <article class="music-result-item">
-                        <span class="music-result-label">歌手</span>
-                        <strong id="netease-music-song-artist" class="music-result-value">-</strong>
-                      </article>
-                      <article class="music-result-item">
-                        <span class="music-result-label">检测结论</span>
-                        <strong id="netease-music-song-status" class="music-result-value">尚未检测</strong>
-                      </article>
-                    </div>
-                    <p id="netease-music-note" class="music-insert-note">检测结果仅用于降低踩坑概率；最终是否能在外链播放器正常播放，仍取决于网易云当下的版权与地区策略。</p>
-                  </div>
-                  <div class="music-insert-actions">
-                    <button id="netease-music-validate-button" class="ghost-button music-secondary-button" type="button">先检测</button>
-                    <button id="netease-music-confirm-button" class="primary-button music-primary-button" type="button">检测并插入到中文稿</button>
-                    <button id="netease-music-cancel-button" class="ghost-button" type="button">收起</button>
-                  </div>
-                </div>
-              </section>
               <label>
                 <span>标题</span>
                 <input id="post-zh-title" type="text">
@@ -358,22 +813,71 @@
                 <span>标签（逗号分隔）</span>
                 <input id="post-zh-tags" type="text" placeholder="AI, iOS, 独立开发">
               </label>
-              <label>
-                <span>正文 Markdown</span>
-                <textarea id="post-zh-body" rows="24"></textarea>
-              </label>
-              <div class="markdown-preview-card">
-                <div class="card-heading">
-                  <div class="card-heading-copy">
-                    <h3>正文预览</h3>
-                    <span class="field-hint">这里会显示中文正文当前的 Markdown 渲染结果。</span>
+              <div class="post-body-workspace" data-post-body-workspace="zh">
+                <div class="post-body-toolbar">
+                  <div class="post-body-heading">
+                    <label id="post-zh-body-label" for="post-zh-body">正文</label>
+                    <span>Markdown</span>
+                  </div>
+                  <div class="post-body-view-tabs" role="tablist" aria-label="中文正文视图">
+                    <button
+                      id="post-body-tab-zh-edit"
+                      class="post-body-view-tab is-active"
+                      type="button"
+                      role="tab"
+                      aria-selected="true"
+                      aria-controls="post-body-panel-zh-edit"
+                      tabindex="0"
+                      data-post-body-language="zh"
+                      data-post-body-view="edit"
+                    >编辑</button>
+                    <button
+                      id="post-body-tab-zh-preview"
+                      class="post-body-view-tab"
+                      type="button"
+                      role="tab"
+                      aria-selected="false"
+                      aria-controls="post-body-panel-zh-preview"
+                      tabindex="-1"
+                      data-post-body-language="zh"
+                      data-post-body-view="preview"
+                    >预览</button>
                   </div>
                 </div>
-                <div id="post-zh-preview" class="markdown-preview"></div>
+                <div
+                  id="post-body-panel-zh-edit"
+                  class="post-body-view-panel post-body-editor-panel"
+                  role="tabpanel"
+                  aria-labelledby="post-body-tab-zh-edit"
+                  data-post-body-panel-language="zh"
+                  data-post-body-panel-view="edit"
+                >
+                  <textarea id="post-zh-body" rows="24" aria-labelledby="post-zh-body-label"></textarea>
+                </div>
+                <div
+                  id="post-body-panel-zh-preview"
+                  class="post-body-view-panel post-body-preview-panel"
+                  role="tabpanel"
+                  aria-labelledby="post-body-tab-zh-preview"
+                  data-post-body-panel-language="zh"
+                  data-post-body-panel-view="preview"
+                  aria-busy="false"
+                  tabindex="0"
+                  hidden
+                >
+                  <div id="post-zh-preview" class="markdown-preview"></div>
+                </div>
               </div>
             </section>
 
-            <section class="editor-card">
+            <section
+              id="post-language-panel-en"
+              class="editor-card post-language-card"
+              role="tabpanel"
+              aria-labelledby="post-language-tab-en"
+              data-post-language-panel="en"
+              hidden
+            >
               <div class="card-heading">
                 <div class="card-heading-copy">
                   <h3>English Draft</h3>
@@ -404,10 +908,61 @@
                 <span>Tags (comma separated)</span>
                 <input id="post-en-tags" type="text" placeholder="AI, iOS, Indie Development">
               </label>
-              <label>
-                <span>Markdown body</span>
-                <textarea id="post-en-body" rows="24"></textarea>
-              </label>
+              <div class="post-body-workspace" data-post-body-workspace="en">
+                <div class="post-body-toolbar">
+                  <div class="post-body-heading">
+                    <label id="post-en-body-label" for="post-en-body">Body</label>
+                    <span>Markdown</span>
+                  </div>
+                  <div class="post-body-view-tabs" role="tablist" aria-label="English body view">
+                    <button
+                      id="post-body-tab-en-edit"
+                      class="post-body-view-tab is-active"
+                      type="button"
+                      role="tab"
+                      aria-selected="true"
+                      aria-controls="post-body-panel-en-edit"
+                      tabindex="0"
+                      data-post-body-language="en"
+                      data-post-body-view="edit"
+                    >Edit</button>
+                    <button
+                      id="post-body-tab-en-preview"
+                      class="post-body-view-tab"
+                      type="button"
+                      role="tab"
+                      aria-selected="false"
+                      aria-controls="post-body-panel-en-preview"
+                      tabindex="-1"
+                      data-post-body-language="en"
+                      data-post-body-view="preview"
+                    >Preview</button>
+                  </div>
+                </div>
+                <div
+                  id="post-body-panel-en-edit"
+                  class="post-body-view-panel post-body-editor-panel"
+                  role="tabpanel"
+                  aria-labelledby="post-body-tab-en-edit"
+                  data-post-body-panel-language="en"
+                  data-post-body-panel-view="edit"
+                >
+                  <textarea id="post-en-body" rows="24" aria-labelledby="post-en-body-label"></textarea>
+                </div>
+                <div
+                  id="post-body-panel-en-preview"
+                  class="post-body-view-panel post-body-preview-panel"
+                  role="tabpanel"
+                  aria-labelledby="post-body-tab-en-preview"
+                  data-post-body-panel-language="en"
+                  data-post-body-panel-view="preview"
+                  aria-busy="false"
+                  tabindex="0"
+                  hidden
+                >
+                  <div id="post-en-preview" class="markdown-preview"></div>
+                </div>
+              </div>
             </section>
           </div>
         </section>
@@ -634,17 +1189,17 @@
                     <select id="gallery-image-folder-select"></select>
                     <small id="gallery-folder-meta" class="field-hint">未指定目录</small>
                   </label>
-                  <label>
-                    <span>目录操作</span>
+                  <div class="field-group" role="group" aria-labelledby="gallery-folder-actions-label">
+                    <span id="gallery-folder-actions-label">目录操作</span>
                     <div class="folder-action-grid">
-                      <input id="gallery-image-new-folder" type="text" placeholder="例如 gallery/heartbeat-pi-2026">
+                      <input id="gallery-image-new-folder" type="text" aria-label="新画廊图片目录名" placeholder="例如 gallery/heartbeat-pi-2026">
                       <button id="gallery-create-image-folder-button" class="ghost-button" type="button">创建目录</button>
                       <button id="gallery-rename-image-folder-button" class="ghost-button" type="button">重命名目录</button>
                       <button id="gallery-delete-image-folder-button" class="ghost-button danger-button" type="button">删除目录</button>
                       <button id="gallery-sync-folder-button" class="ghost-button" type="button">扫描目录</button>
                       <button id="gallery-normalize-filenames-button" class="ghost-button" type="button">规范化文件名</button>
                     </div>
-                  </label>
+                  </div>
                 </div>
 
                 <div id="gallery-image-dropzone" class="image-dropzone" tabindex="0">
@@ -697,16 +1252,16 @@
                 <span>当前目录</span>
                 <select id="library-folder-select"></select>
               </label>
-              <label>
-                <span>目录操作</span>
+              <div class="field-group" role="group" aria-labelledby="library-folder-actions-label">
+                <span id="library-folder-actions-label">目录操作</span>
                 <div class="folder-action-grid">
-                  <input id="library-folder-input" type="text" placeholder="例如 gallery/new-album">
+                  <input id="library-folder-input" type="text" aria-label="新图片库目录名" placeholder="例如 gallery/new-album">
                   <button id="library-create-folder-button" class="ghost-button" type="button">创建</button>
                   <button id="library-rename-folder-button" class="ghost-button" type="button">重命名</button>
                   <button id="library-delete-folder-button" class="ghost-button danger-button" type="button">删除目录</button>
                   <button id="library-normalize-filenames-button" class="ghost-button" type="button">规范化文件名</button>
                 </div>
-              </label>
+              </div>
             </div>
 
             <div id="library-image-dropzone" class="image-dropzone" tabindex="0">
@@ -779,6 +1334,7 @@
             <div id="audit-log-list" class="audit-log-list"></div>
           </div>
         </section>
+        </div>
       </main>
     </div>
 

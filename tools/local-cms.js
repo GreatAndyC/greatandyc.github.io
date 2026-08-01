@@ -6,9 +6,11 @@ const http = require('http');
 const net = require('net');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('node:crypto');
 const { URL } = require('url');
 const { spawn } = require('child_process');
 const yaml = require('js-yaml');
+const { createDraftStore } = require('./local-cms/draft-store');
 const {
   isImageFileName,
   sanitizeImageFilename,
@@ -20,6 +22,8 @@ const PORT = Number(process.env.LOCAL_CMS_PORT || 4010);
 const ROOT = path.resolve(__dirname, '..');
 const POSTS_DIR = path.join(ROOT, 'source', '_posts');
 const IMAGES_DIR = path.join(ROOT, 'source', 'images');
+const AUDIO_DIR = path.join(ROOT, 'source', 'audio');
+const AUDIO_POSTS_DIR = path.join(AUDIO_DIR, 'posts');
 const GALLERY_DOC_DIR = path.join(ROOT, 'content', 'gallery');
 const GALLERY_DATA_PATH = path.join(ROOT, 'source', '_data', 'gallery.yml');
 const STATIC_DIR = path.join(ROOT, 'tools', 'local-cms');
@@ -28,6 +32,7 @@ const ENV_PATH = path.join(ROOT, '.env');
 const LOCAL_SETTINGS_PATH = path.join(ROOT, '.local-cms.json');
 const AUDIT_LOG_PATH = path.join(ROOT, '.local-cms-audit.log');
 const LLM_DEBUG_LOG_PATH = path.join(ROOT, '.local-cms-llm-debug.log');
+const DRAFTS_DIR = path.join(ROOT, '.local-cms', 'drafts-v2');
 const WRITING_STYLE_GUIDE_PATH = path.join(ROOT, 'docs', 'writing-style-guide.md');
 const GALLERY_PAGE_IDS = new Set(['gallery-zh', 'gallery-en']);
 const GALLERY_DEFAULT_EMPTY = {
@@ -45,9 +50,29 @@ const LLM_ENV_KEYS = {
 };
 const CMS_SESSION_TTL_MS = 30000;
 const CMS_SHUTDOWN_GRACE_MS = 5000;
+const CMS_AUTO_SHUTDOWN_ENABLED = process.env.LOCAL_CMS_AUTO_SHUTDOWN !== '0';
 const LOOPBACK_HOSTS = new Set(['127.0.0.1', '::1', 'localhost']);
+const MAX_AUDIO_FILE_BYTES = 32 * 1024 * 1024;
+const AUDIO_TYPES = Object.freeze({
+  '.mp3': {
+    contentType: 'audio/mpeg',
+    acceptedMimeTypes: new Set(['audio/mpeg', 'audio/mp3'])
+  },
+  '.m4a': {
+    contentType: 'audio/mp4',
+    acceptedMimeTypes: new Set(['audio/mp4', 'audio/x-m4a', 'audio/m4a'])
+  },
+  '.ogg': {
+    contentType: 'audio/ogg',
+    acceptedMimeTypes: new Set(['audio/ogg', 'application/ogg'])
+  },
+  '.wav': {
+    contentType: 'audio/wav',
+    acceptedMimeTypes: new Set(['audio/wav', 'audio/wave', 'audio/x-wav'])
+  }
+});
 const SECURITY_HEADERS = {
-  'Content-Security-Policy': "default-src 'self'; base-uri 'none'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data: blob:; object-src 'none'; script-src 'self'; style-src 'self'",
+  'Content-Security-Policy': "default-src 'self'; base-uri 'none'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src https://music.163.com; img-src 'self' data: blob:; media-src 'self'; object-src 'none'; script-src 'self'; style-src 'self'",
   'Cross-Origin-Resource-Policy': 'same-origin',
   'Referrer-Policy': 'no-referrer',
   'X-Content-Type-Options': 'nosniff',
@@ -139,8 +164,18 @@ const commandState = {
   }
 };
 const cmsSessions = new Map();
+const draftStore = createDraftStore(DRAFTS_DIR);
 let cmsShutdownTimer = null;
 let hasSeenCmsSession = false;
+
+class CmsHttpError extends Error {
+  constructor(statusCode, message, headers = {}) {
+    super(message);
+    this.name = 'CmsHttpError';
+    this.statusCode = statusCode;
+    this.headers = headers;
+  }
+}
 
 function jsonResponse(res, statusCode, payload) {
   res.writeHead(statusCode, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -886,7 +921,8 @@ function listGalleryAlbums() {
     category: album.category,
     categories: album.categories,
     photoCount: album.photos.length,
-    cover: album.photos[0] ? album.photos[0].src : ''
+    cover: album.photos[0] ? album.photos[0].src : '',
+    record: album
   }));
 }
 
@@ -1663,6 +1699,8 @@ function pruneCmsSessions() {
 }
 
 function scheduleCmsAutoShutdown() {
+  if (!CMS_AUTO_SHUTDOWN_ENABLED) return;
+
   if (cmsShutdownTimer) {
     clearTimeout(cmsShutdownTimer);
     cmsShutdownTimer = null;
@@ -2425,6 +2463,389 @@ function uploadImageFiles(folder, files) {
     folder: normalized,
     uploaded,
     folders: listImageFolders()
+  };
+}
+
+function normalizeAudioPostKey(value) {
+  const normalized = String(value || '').trim().normalize('NFKC');
+
+  if (!normalized) {
+    throw new CmsHttpError(400, '缺少文章标识 postKey。');
+  }
+
+  if (
+    normalized === '.'
+    || normalized === '..'
+    || Buffer.byteLength(normalized, 'utf8') > 180
+    || !/^[\p{L}\p{N}](?:[\p{L}\p{N}._-]*[\p{L}\p{N}])?$/u.test(normalized)
+  ) {
+    throw new CmsHttpError(400, 'postKey 只能包含字母、数字、连字符、下划线和点，且必须以字母或数字开头、结尾。');
+  }
+
+  return normalized;
+}
+
+function sanitizeAudioFilename(filename = '') {
+  const original = String(filename || '').trim().normalize('NFKC');
+
+  if (
+    !original
+    || original !== path.basename(original)
+    || /[\/\\\u0000-\u001f\u007f]/.test(original)
+  ) {
+    throw new CmsHttpError(400, '音频文件名不合法。');
+  }
+
+  const extension = path.extname(original).toLowerCase();
+  if (!Object.prototype.hasOwnProperty.call(AUDIO_TYPES, extension)) {
+    throw new CmsHttpError(415, '仅支持 MP3、M4A、OGG 和 WAV 音频。');
+  }
+
+  const rawBase = original.slice(0, -path.extname(original).length);
+  const cleanedBase = rawBase
+    .replace(/[^\p{L}\p{N}._-]+/gu, '-')
+    .replace(/\.{2,}/g, '.')
+    .replace(/^[._-]+|[._-]+$/g, '');
+  const truncatedBase = Array.from(cleanedBase || 'audio').slice(0, 96).join('');
+  const safeBase = truncatedBase.replace(/[._-]+$/g, '') || 'audio';
+
+  return `${safeBase}${extension}`;
+}
+
+function decodeStrictBase64(value, maxBytes = MAX_AUDIO_FILE_BYTES) {
+  if (typeof value !== 'string' || !value) {
+    throw new CmsHttpError(400, '音频文件缺少 base64 内容。');
+  }
+
+  if (!Number.isSafeInteger(maxBytes) || maxBytes < 1) {
+    throw new TypeError('maxBytes 必须是正整数。');
+  }
+
+  const maximumEncodedLength = 4 * Math.ceil(maxBytes / 3);
+  if (value.length > maximumEncodedLength) {
+    throw new CmsHttpError(413, `音频文件不能超过 ${Math.floor(maxBytes / 1024 / 1024)} MiB。`);
+  }
+
+  const isCanonicalBase64 = value.length % 4 === 0
+    && /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(value);
+  if (!isCanonicalBase64) {
+    throw new CmsHttpError(400, '音频内容不是合法的 base64。');
+  }
+
+  const decoded = Buffer.from(value, 'base64');
+  if (decoded.length > maxBytes) {
+    throw new CmsHttpError(413, `音频文件不能超过 ${Math.floor(maxBytes / 1024 / 1024)} MiB。`);
+  }
+  if (decoded.toString('base64') !== value) {
+    throw new CmsHttpError(400, '音频内容不是规范的 base64。');
+  }
+
+  return decoded;
+}
+
+function hasAudioMagic(extension, buffer) {
+  if (!Buffer.isBuffer(buffer)) return false;
+
+  if (extension === '.mp3') {
+    if (buffer.length >= 10 && buffer.subarray(0, 3).toString('ascii') === 'ID3') {
+      return true;
+    }
+    if (buffer.length < 4 || buffer[0] !== 0xff || (buffer[1] & 0xe0) !== 0xe0) {
+      return false;
+    }
+
+    const version = (buffer[1] >> 3) & 0x03;
+    const layer = (buffer[1] >> 1) & 0x03;
+    const bitrate = (buffer[2] >> 4) & 0x0f;
+    const sampleRate = (buffer[2] >> 2) & 0x03;
+    return version !== 0x01 && layer !== 0 && bitrate !== 0 && bitrate !== 0x0f && sampleRate !== 0x03;
+  }
+
+  if (extension === '.m4a') {
+    if (buffer.length < 12 || buffer.subarray(4, 8).toString('ascii') !== 'ftyp') {
+      return false;
+    }
+    const brand = buffer.subarray(8, 12).toString('ascii');
+    return new Set(['M4A ', 'M4B ', 'mp41', 'mp42', 'isom', 'iso2']).has(brand);
+  }
+
+  if (extension === '.ogg') {
+    return buffer.length >= 4 && buffer.subarray(0, 4).toString('ascii') === 'OggS';
+  }
+
+  if (extension === '.wav') {
+    return buffer.length >= 12
+      && buffer.subarray(0, 4).toString('ascii') === 'RIFF'
+      && buffer.subarray(8, 12).toString('ascii') === 'WAVE';
+  }
+
+  return false;
+}
+
+function validateAudioUploadFile(file) {
+  if (!file || typeof file !== 'object' || Array.isArray(file)) {
+    throw new CmsHttpError(400, '缺少要上传的音频文件。');
+  }
+
+  const originalName = String(file.name || '').trim();
+  const name = sanitizeAudioFilename(originalName);
+  const extension = path.extname(name).toLowerCase();
+  const mimeType = String(file.type || '').split(';', 1)[0].trim().toLowerCase();
+  const audioType = AUDIO_TYPES[extension];
+
+  if (mimeType && !audioType.acceptedMimeTypes.has(mimeType)) {
+    throw new CmsHttpError(415, `文件 ${originalName || name} 的 MIME 类型与扩展名不匹配。`);
+  }
+
+  const content = decodeStrictBase64(file.content);
+  if (!content.length) {
+    throw new CmsHttpError(400, '音频文件不能为空。');
+  }
+
+  if (file.size !== undefined && file.size !== null) {
+    if (!Number.isSafeInteger(file.size) || file.size < 0 || file.size !== content.length) {
+      throw new CmsHttpError(400, '音频文件大小与上传内容不一致。');
+    }
+  }
+
+  if (!hasAudioMagic(extension, content)) {
+    throw new CmsHttpError(415, `文件 ${originalName || name} 的内容不是有效的 ${extension.slice(1).toUpperCase()} 音频。`);
+  }
+
+  return {
+    originalName,
+    name,
+    extension,
+    mimeType: audioType.contentType,
+    content
+  };
+}
+
+function assertNoSymlinkComponents(basePath, candidatePath, options = {}) {
+  const base = path.resolve(basePath);
+  const candidate = path.resolve(candidatePath);
+  const statusCode = options.statusCode || 400;
+  const missingStatusCode = options.missingStatusCode || statusCode;
+
+  if (!isPathInside(base, candidate)) {
+    throw new CmsHttpError(statusCode, options.message || '音频路径不合法。');
+  }
+
+  const pathsToCheck = [base];
+  const relative = path.relative(base, candidate);
+  if (relative) {
+    let current = base;
+    relative.split(path.sep).forEach(segment => {
+      current = path.join(current, segment);
+      pathsToCheck.push(current);
+    });
+  }
+
+  for (const currentPath of pathsToCheck) {
+    let stats;
+    try {
+      stats = fs.lstatSync(currentPath);
+    } catch (error) {
+      if (error.code === 'ENOENT' && options.allowMissing) continue;
+      if (error.code === 'ENOENT') {
+        throw new CmsHttpError(missingStatusCode, options.notFoundMessage || '找不到音频文件。');
+      }
+      throw error;
+    }
+
+    if (stats.isSymbolicLink()) {
+      throw new CmsHttpError(statusCode, options.message || '音频路径不能包含符号链接。');
+    }
+  }
+
+  return candidate;
+}
+
+function encodePublicPath(...segments) {
+  return `/${segments.map(segment => encodeURIComponent(String(segment))).join('/')}`;
+}
+
+function buildLocalAudioEmbed(publicPath) {
+  const safePath = String(publicPath || '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  return `<audio controls preload="none" src="${safePath}">您的浏览器不支持音频播放。</audio>`;
+}
+
+function uploadAudioFile(postKey, file, options = {}) {
+  const normalizedPostKey = normalizeAudioPostKey(postKey);
+  const validatedFile = validateAudioUploadFile(file);
+  const projectRoot = path.resolve(options.projectRoot || ROOT);
+  const audioPostsDir = path.resolve(options.audioPostsDir || AUDIO_POSTS_DIR);
+  const targetDirectory = path.resolve(audioPostsDir, normalizedPostKey);
+
+  if (!isPathInside(projectRoot, audioPostsDir) || !isPathInside(audioPostsDir, targetDirectory)) {
+    throw new CmsHttpError(400, '音频存储路径不合法。');
+  }
+
+  assertNoSymlinkComponents(projectRoot, targetDirectory, {
+    allowMissing: true,
+    message: '音频存储路径不能包含符号链接。'
+  });
+
+  fs.mkdirSync(targetDirectory, { recursive: true });
+
+  assertNoSymlinkComponents(projectRoot, targetDirectory, {
+    message: '音频存储路径不能包含符号链接。'
+  });
+
+  const extension = validatedFile.extension;
+  const baseName = validatedFile.name.slice(0, -extension.length);
+  let targetName = validatedFile.name;
+  let targetPath = '';
+  let written = false;
+
+  for (let suffix = 1; suffix <= 10000; suffix += 1) {
+    targetName = suffix === 1 ? validatedFile.name : `${baseName}-${suffix}${extension}`;
+    targetPath = path.join(targetDirectory, targetName);
+
+    try {
+      fs.writeFileSync(targetPath, validatedFile.content, {
+        flag: 'wx',
+        mode: 0o644
+      });
+      written = true;
+      break;
+    } catch (error) {
+      if (error.code === 'EEXIST') continue;
+      throw error;
+    }
+  }
+
+  if (!written) {
+    throw new CmsHttpError(409, '同名音频文件过多，请修改文件名后重试。');
+  }
+
+  const publicPath = encodePublicPath('audio', 'posts', normalizedPostKey, targetName);
+  return {
+    postKey: normalizedPostKey,
+    originalName: validatedFile.originalName,
+    name: targetName,
+    path: publicPath,
+    mimeType: validatedFile.mimeType,
+    size: validatedFile.content.length,
+    embed: buildLocalAudioEmbed(publicPath)
+  };
+}
+
+function resolveAudioPublicPath(pathname, options = {}) {
+  const projectRoot = path.resolve(options.projectRoot || ROOT);
+  const audioDir = path.resolve(options.audioDir || AUDIO_DIR);
+  let relativePath;
+
+  try {
+    relativePath = decodeURIComponent(String(pathname || '').replace(/^\/audio\//, ''));
+  } catch (error) {
+    throw new CmsHttpError(400, '音频地址编码不合法。');
+  }
+
+  if (!relativePath || relativePath.includes('\\') || relativePath.includes('\u0000')) {
+    throw new CmsHttpError(404, '找不到音频文件。');
+  }
+
+  const segments = relativePath.split('/');
+  if (
+    segments.length !== 3
+    || segments[0] !== 'posts'
+    || segments.some(segment => !segment)
+  ) {
+    throw new CmsHttpError(404, '找不到音频文件。');
+  }
+
+  const normalizedPostKey = normalizeAudioPostKey(segments[1]);
+  if (normalizedPostKey !== segments[1]) {
+    throw new CmsHttpError(404, '找不到音频文件。');
+  }
+
+  const extension = path.extname(segments[2]).toLowerCase();
+  const audioType = AUDIO_TYPES[extension];
+  if (!audioType || sanitizeAudioFilename(segments[2]) !== segments[2]) {
+    throw new CmsHttpError(404, '找不到音频文件。');
+  }
+
+  const filePath = path.resolve(audioDir, ...segments);
+  if (!isPathInside(projectRoot, audioDir) || !isPathInside(audioDir, filePath)) {
+    throw new CmsHttpError(404, '找不到音频文件。');
+  }
+
+  assertNoSymlinkComponents(projectRoot, filePath, {
+    statusCode: 404,
+    missingStatusCode: 404,
+    notFoundMessage: '找不到音频文件。',
+    message: '找不到音频文件。'
+  });
+
+  const stats = fs.lstatSync(filePath);
+  if (!stats.isFile()) {
+    throw new CmsHttpError(404, '找不到音频文件。');
+  }
+
+  const realAudioDir = fs.realpathSync(audioDir);
+  const realFilePath = fs.realpathSync(filePath);
+  if (!isPathInside(realAudioDir, realFilePath)) {
+    throw new CmsHttpError(404, '找不到音频文件。');
+  }
+
+  return {
+    filePath,
+    size: stats.size,
+    contentType: audioType.contentType
+  };
+}
+
+function parseAudioRangeHeader(rangeHeader, fileSize) {
+  if (!rangeHeader) return null;
+
+  const invalidRange = () => new CmsHttpError(416, '请求的音频范围无效。', {
+    'Content-Range': `bytes */${fileSize}`,
+    'Accept-Ranges': 'bytes'
+  });
+
+  if (!Number.isSafeInteger(fileSize) || fileSize < 0) {
+    throw new TypeError('fileSize 必须是非负整数。');
+  }
+
+  const match = String(rangeHeader).trim().match(/^bytes=(\d*)-(\d*)$/);
+  if (!match || (!match[1] && !match[2]) || fileSize === 0) {
+    throw invalidRange();
+  }
+
+  let start;
+  let end;
+
+  if (!match[1]) {
+    const suffixLength = Number(match[2]);
+    if (!Number.isSafeInteger(suffixLength) || suffixLength <= 0) {
+      throw invalidRange();
+    }
+    start = Math.max(fileSize - suffixLength, 0);
+    end = fileSize - 1;
+  } else {
+    start = Number(match[1]);
+    end = match[2] ? Number(match[2]) : fileSize - 1;
+    if (
+      !Number.isSafeInteger(start)
+      || !Number.isSafeInteger(end)
+      || start < 0
+      || start >= fileSize
+      || end < start
+    ) {
+      throw invalidRange();
+    }
+    end = Math.min(end, fileSize - 1);
+  }
+
+  return {
+    start,
+    end,
+    length: end - start + 1
   };
 }
 
@@ -3764,15 +4185,54 @@ function checkPortAvailable(port) {
   });
 }
 
+function resolveNpmCliPath(environment = process.env, nodeExecPath = process.execPath) {
+  const candidates = [
+    environment.npm_execpath,
+    path.join(path.dirname(nodeExecPath), process.platform === 'win32' ? 'npm.cmd' : 'npm')
+  ].filter(Boolean);
+
+  for (const candidate of candidates) {
+    if (!fs.existsSync(candidate)) continue;
+    try {
+      const resolved = fs.realpathSync(candidate);
+      if (path.basename(resolved).toLowerCase() === 'npm-cli.js') {
+        return resolved;
+      }
+    } catch (error) {
+      continue;
+    }
+  }
+
+  return '';
+}
+
+function buildNpmSpawnEnvironment(environment = process.env, nodeExecPath = process.execPath) {
+  const pathKey = Object.keys(environment).find(key => key.toLowerCase() === 'path') || 'PATH';
+  const nodeBinDirectory = path.dirname(nodeExecPath);
+  const existingEntries = String(environment[pathKey] || '')
+    .split(path.delimiter)
+    .filter(Boolean);
+  const pathEntries = [
+    nodeBinDirectory,
+    ...existingEntries.filter(entry => path.resolve(entry) !== path.resolve(nodeBinDirectory))
+  ];
+
+  return {
+    ...environment,
+    [pathKey]: pathEntries.join(path.delimiter)
+  };
+}
+
 function spawnNpmScript(script) {
   const options = {
     cwd: ROOT,
-    stdio: ['ignore', 'pipe', 'pipe']
+    stdio: ['ignore', 'pipe', 'pipe'],
+    env: buildNpmSpawnEnvironment()
   };
-  const npmExecPath = process.env.npm_execpath;
+  const npmCliPath = resolveNpmCliPath();
 
-  if (npmExecPath && fs.existsSync(npmExecPath)) {
-    return spawn(process.execPath, [npmExecPath, 'run', script], options);
+  if (npmCliPath) {
+    return spawn(process.execPath, [npmCliPath, 'run', script], options);
   }
 
   if (process.platform === 'win32') {
@@ -3871,6 +4331,88 @@ function stopHexoServer() {
   commandState.serverProcess.kill('SIGTERM');
 }
 
+function calculatePostRevision(zhPath, enPath) {
+  const hash = crypto.createHash('sha256');
+  [
+    ['zh-CN', zhPath],
+    ['en', enPath]
+  ].forEach(([language, filePath]) => {
+    hash.update(`${language}\0`);
+    if (!filePath || !fs.existsSync(filePath)) {
+      hash.update('missing\0');
+      return;
+    }
+    hash.update(fs.readFileSync(filePath));
+    hash.update('\0');
+  });
+  return `sha256:${hash.digest('hex')}`;
+}
+
+function writeTextFilesAtomically(entries) {
+  const transactionId = crypto.randomUUID();
+  const stages = entries.map(entry => {
+    const targetPath = ensureInsideRoot(entry.path);
+    const directory = path.dirname(targetPath);
+    const basename = path.basename(targetPath);
+    fs.mkdirSync(directory, { recursive: true });
+    return {
+      targetPath,
+      content: String(entry.content),
+      temporaryPath: path.join(directory, `.${basename}.${transactionId}.tmp`),
+      backupPath: path.join(directory, `.${basename}.${transactionId}.bak`),
+      hadTarget: fs.existsSync(targetPath),
+      committed: false
+    };
+  });
+
+  try {
+    stages.forEach(stage => {
+      const mode = stage.hadTarget
+        ? (fs.statSync(stage.targetPath).mode & 0o777)
+        : 0o644;
+      const descriptor = fs.openSync(stage.temporaryPath, 'wx', mode);
+      try {
+        fs.writeFileSync(descriptor, stage.content, 'utf8');
+        fs.fsyncSync(descriptor);
+      } finally {
+        fs.closeSync(descriptor);
+      }
+    });
+
+    stages.forEach(stage => {
+      if (stage.hadTarget) {
+        fs.renameSync(stage.targetPath, stage.backupPath);
+      }
+    });
+    stages.forEach(stage => {
+      fs.renameSync(stage.temporaryPath, stage.targetPath);
+      stage.committed = true;
+    });
+    stages.forEach(stage => {
+      if (fs.existsSync(stage.backupPath)) {
+        fs.unlinkSync(stage.backupPath);
+      }
+    });
+  } catch (error) {
+    stages.slice().reverse().forEach(stage => {
+      try {
+        if (stage.committed && fs.existsSync(stage.targetPath)) {
+          fs.unlinkSync(stage.targetPath);
+        }
+        if (fs.existsSync(stage.backupPath)) {
+          fs.renameSync(stage.backupPath, stage.targetPath);
+        }
+        if (fs.existsSync(stage.temporaryPath)) {
+          fs.unlinkSync(stage.temporaryPath);
+        }
+      } catch (cleanupError) {
+        error.cleanupError = cleanupError;
+      }
+    });
+    throw error;
+  }
+}
+
 function readPostPair(key, categoryOptions) {
   const zhPath = path.join(POSTS_DIR, `${key}.zh-CN.md`);
   const enPath = path.join(POSTS_DIR, `${key}.en.md`);
@@ -3893,6 +4435,7 @@ function readPostPair(key, categoryOptions) {
     kind: 'post',
     key,
     status: zhExists && enExists ? '双语完整' : '待补语言',
+    revision: calculatePostRevision(zhPath, enPath),
     sourceFiles: {
       zh: zhExists ? toPosixPath(zhPath) : '',
       en: enExists ? toPosixPath(enPath) : ''
@@ -3953,7 +4496,8 @@ function listPostPairs(categoryOptions) {
         categoryEn: item.common.categoryId
           ? ((categoryOptions.find(option => option.id === item.common.categoryId) || {}).en || '')
           : (item.common.categoryCustomEn || ''),
-        sourceFiles: item.sourceFiles
+        sourceFiles: item.sourceFiles,
+        record: item
       };
     })
     .sort((left, right) => String(right.date || '').localeCompare(String(left.date || '')));
@@ -3963,7 +4507,8 @@ function listPages() {
   return PAGE_DEFINITIONS.map(page => ({
     id: page.id,
     label: page.label,
-    file: toPosixPath(page.file)
+    file: toPosixPath(page.file),
+    record: readPageById(page.id)
   }));
 }
 
@@ -4068,9 +4613,16 @@ function writePostFiles(payload, categoryOptions) {
   if (!zhFrontMatter.title) throw new Error('中文标题不能为空。');
   if (!enFrontMatter.title) throw new Error('英文标题不能为空。');
 
-  fs.mkdirSync(POSTS_DIR, { recursive: true });
-  fs.writeFileSync(zhPath, buildFrontMatterString(zhFrontMatter, payload.zh.body), 'utf8');
-  fs.writeFileSync(enPath, buildFrontMatterString(enFrontMatter, payload.en.body), 'utf8');
+  writeTextFilesAtomically([
+    {
+      path: zhPath,
+      content: buildFrontMatterString(zhFrontMatter, payload.zh.body)
+    },
+    {
+      path: enPath,
+      content: buildFrontMatterString(enFrontMatter, payload.en.body)
+    }
+  ]);
 
   if (sourceKey && key !== sourceKey) {
     if (sourceZhPath && fs.existsSync(sourceZhPath)) fs.unlinkSync(sourceZhPath);
@@ -4078,6 +4630,111 @@ function writePostFiles(payload, categoryOptions) {
   }
 
   return readPostPair(key, categoryOptions);
+}
+
+function getDraftSourceKey(draft) {
+  const payloadKey = String(draft && draft.payload && draft.payload.key || '').trim();
+  if (payloadKey) return payloadKey;
+  const contentKey = String(draft && draft.contentKey || '');
+  return contentKey.startsWith('post:') ? contentKey.slice('post:'.length) : '';
+}
+
+function publishDraftRecord(draftId, categoryOptions) {
+  const draft = draftStore.get(draftId);
+  if (!draft) {
+    throw new CmsHttpError(404, '找不到要发布的草稿。');
+  }
+
+  const sourceKey = getDraftSourceKey(draft);
+  const sourceZhPath = sourceKey
+    ? ensureInsideRoot(path.join(POSTS_DIR, `${sourceKey}.zh-CN.md`))
+    : '';
+  const sourceEnPath = sourceKey
+    ? ensureInsideRoot(path.join(POSTS_DIR, `${sourceKey}.en.md`))
+    : '';
+  const sourceExists = Boolean(
+    sourceKey
+    && (fs.existsSync(sourceZhPath) || fs.existsSync(sourceEnPath))
+  );
+
+  if (sourceExists && draft.baseRevision) {
+    const currentRevision = calculatePostRevision(sourceZhPath, sourceEnPath);
+    if (currentRevision !== draft.baseRevision) {
+      throw new CmsHttpError(
+        409,
+        '已发布文章在草稿创建后发生变化。请刷新并比较内容后再发布。'
+      );
+    }
+  }
+
+  const result = writePostFiles({
+    ...draft.payload,
+    key: sourceKey || String(draft.payload.key || '').trim()
+  }, categoryOptions);
+  draftStore.delete(draft.id);
+  return {
+    draftId: draft.id,
+    record: result
+  };
+}
+
+function runDraftStoreOperation(operation) {
+  try {
+    return operation();
+  } catch (error) {
+    if (error instanceof CmsHttpError) {
+      throw error;
+    }
+    if (error instanceof TypeError || error instanceof RangeError) {
+      throw new CmsHttpError(400, `草稿数据不合法：${error.message}`);
+    }
+    if (/^draft not found:/i.test(String(error && error.message || ''))) {
+      throw new CmsHttpError(404, '找不到指定的草稿。');
+    }
+    if (/another draft already uses contentKey/i.test(String(error && error.message || ''))) {
+      throw new CmsHttpError(409, '同一篇内容已经存在另一份草稿。');
+    }
+    throw error;
+  }
+}
+
+function decodeDraftRouteId(pathname, suffix = '') {
+  const prefix = '/api/drafts/';
+  const encodedId = suffix
+    ? pathname.slice(prefix.length, -suffix.length)
+    : pathname.slice(prefix.length);
+
+  if (!encodedId || encodedId.includes('/')) {
+    throw new CmsHttpError(400, '草稿 ID 不合法。');
+  }
+
+  try {
+    return decodeURIComponent(encodedId);
+  } catch (error) {
+    throw new CmsHttpError(400, '草稿 ID 编码不合法。');
+  }
+}
+
+function getDraftRecordOrThrow(draftId) {
+  const draft = runDraftStoreOperation(() => draftStore.get(draftId));
+  if (!draft) {
+    throw new CmsHttpError(404, '找不到指定的草稿。');
+  }
+  return draft;
+}
+
+function getDraftAuditTitle(draft) {
+  return String(
+    draft
+    && draft.payload
+    && (
+      draft.payload.zh && draft.payload.zh.title
+      || draft.payload.en && draft.payload.en.title
+    )
+    || draft
+    && draft.contentKey
+    || '未命名草稿'
+  ).trim();
 }
 
 function collectPostPhotoPaths(filePath) {
@@ -4250,19 +4907,30 @@ function serveStaticAsset(res, pathname) {
     return;
   }
 
-  const ext = path.extname(filePath);
-  const contentType = ext === '.css'
-    ? 'text/css'
-    : ext === '.js'
-      ? 'application/javascript'
-      : 'text/html';
+  const ext = path.extname(filePath).toLowerCase();
+  const contentTypes = {
+    '.html': 'text/html; charset=utf-8',
+    '.css': 'text/css; charset=utf-8',
+    '.js': 'application/javascript; charset=utf-8',
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.webp': 'image/webp',
+    '.ico': 'image/x-icon'
+  };
+  const contentType = contentTypes[ext];
+  if (!contentType) {
+    textResponse(res, 404, 'text/plain', 'Not found');
+    return;
+  }
+
   res.writeHead(200, {
-    'Content-Type': `${contentType}; charset=utf-8`,
+    'Content-Type': contentType,
     'Cache-Control': 'no-store, no-cache, must-revalidate',
     Pragma: 'no-cache',
     Expires: '0'
   });
-  res.end(fs.readFileSync(filePath, 'utf8'));
+  res.end(fs.readFileSync(filePath));
 }
 
 function serveProjectImage(res, pathname) {
@@ -4288,20 +4956,61 @@ function serveProjectImage(res, pathname) {
   binaryResponse(res, 200, contentType, fs.readFileSync(filePath));
 }
 
+function serveProjectAudio(req, res, pathname, options = {}) {
+  const resolved = resolveAudioPublicPath(pathname, options);
+  const range = parseAudioRangeHeader(req.headers.range, resolved.size);
+  const headers = {
+    'Accept-Ranges': 'bytes',
+    'Cache-Control': 'private, no-store',
+    'Content-Type': resolved.contentType
+  };
+  let streamOptions;
+
+  if (range) {
+    headers['Content-Length'] = String(range.length);
+    headers['Content-Range'] = `bytes ${range.start}-${range.end}/${resolved.size}`;
+    streamOptions = {
+      start: range.start,
+      end: range.end
+    };
+    res.writeHead(206, headers);
+  } else {
+    headers['Content-Length'] = String(resolved.size);
+    res.writeHead(200, headers);
+  }
+
+  const stream = fs.createReadStream(resolved.filePath, streamOptions);
+  stream.on('error', error => {
+    if (!res.headersSent) {
+      jsonResponse(res, 500, { error: error.message || '读取音频失败。' });
+      return;
+    }
+    res.destroy(error);
+  });
+  stream.pipe(res);
+}
+
 function collectBody(req) {
   return new Promise((resolve, reject) => {
     const chunks = [];
     let totalLength = 0;
+    let rejected = false;
     req.on('data', chunk => {
+      if (rejected) return;
       const nextChunk = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
       chunks.push(nextChunk);
       totalLength += nextChunk.length;
       if (totalLength > 60 * 1024 * 1024) {
-        reject(new Error('请求体过大。'));
+        rejected = true;
+        reject(new CmsHttpError(413, '请求体过大。'));
       }
     });
-    req.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
-    req.on('error', reject);
+    req.on('end', () => {
+      if (!rejected) resolve(Buffer.concat(chunks).toString('utf8'));
+    });
+    req.on('error', error => {
+      if (!rejected) reject(error);
+    });
   });
 }
 
@@ -4598,6 +5307,38 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === 'POST' && pathname === '/api/audio/upload') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+
+      if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+        throw new CmsHttpError(400, '音频上传请求必须是 JSON 对象。');
+      }
+
+      if (
+        Object.prototype.hasOwnProperty.call(payload, 'folder')
+        || Object.prototype.hasOwnProperty.call(payload, 'files')
+      ) {
+        throw new CmsHttpError(400, '音频上传只接受 postKey 和单个 file，目录由服务端生成。');
+      }
+
+      const result = uploadAudioFile(payload.postKey, payload.file);
+      appendAuditLog(req, {
+        entityType: 'audio',
+        action: 'create',
+        summary: `上传音频 ${result.name} 到文章 ${result.postKey}`,
+        target: result.path,
+        details: {
+          postKey: result.postKey,
+          path: result.path,
+          mimeType: result.mimeType,
+          size: result.size
+        }
+      });
+      jsonResponse(res, 201, result);
+      return;
+    }
+
     if (req.method === 'POST' && pathname === '/api/images/normalize-filenames') {
       const body = await collectBody(req);
       const payload = JSON.parse(body || '{}');
@@ -4710,6 +5451,109 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'GET' && pathname === '/api/commands') {
       jsonResponse(res, 200, serializeCommandState());
+      return;
+    }
+
+    if (req.method === 'GET' && pathname === '/api/drafts') {
+      const items = runDraftStoreOperation(() => draftStore.list());
+      appendAuditLog(req, {
+        entityType: 'draft',
+        action: 'read',
+        summary: `查看草稿列表（${items.length} 篇）`,
+        target: '.local-cms/drafts-v2',
+        details: {
+          itemCount: items.length
+        }
+      });
+      jsonResponse(res, 200, { items });
+      return;
+    }
+
+    if (req.method === 'POST' && pathname === '/api/drafts') {
+      const body = await collectBody(req);
+      const payload = JSON.parse(body || '{}');
+      const existingIds = new Set(
+        runDraftStoreOperation(() => draftStore.list()).map(draft => draft.id)
+      );
+      const result = runDraftStoreOperation(() => draftStore.upsert(payload));
+      const isUpdate = existingIds.has(result.id);
+      appendAuditLog(req, {
+        entityType: 'draft',
+        action: isUpdate ? 'update' : 'create',
+        summary: `${isUpdate ? '更新' : '创建'}草稿《${getDraftAuditTitle(result)}》`,
+        target: result.id,
+        details: {
+          draftId: result.id,
+          contentKey: result.contentKey,
+          baseRevision: result.baseRevision,
+          titleZh: String(result.payload.zh && result.payload.zh.title || ''),
+          titleEn: String(result.payload.en && result.payload.en.title || '')
+        }
+      });
+      jsonResponse(res, isUpdate ? 200 : 201, result);
+      return;
+    }
+
+    if (req.method === 'POST' && pathname.startsWith('/api/drafts/') && pathname.endsWith('/publish')) {
+      const draftId = decodeDraftRouteId(pathname, '/publish');
+      const draft = getDraftRecordOrThrow(draftId);
+      const result = runDraftStoreOperation(() => publishDraftRecord(draft.id, categoryOptions));
+      appendAuditLog(req, {
+        entityType: 'draft',
+        action: 'publish',
+        summary: `发布草稿为文章《${result.record.zh.title || result.record.en.title || result.record.key}》`,
+        target: result.record.key,
+        details: {
+          draftId: draft.id,
+          contentKey: draft.contentKey,
+          baseRevision: draft.baseRevision,
+          key: result.record.key,
+          titleZh: result.record.zh.title || '',
+          titleEn: result.record.en.title || '',
+          sourceFiles: result.record.sourceFiles
+        }
+      });
+      jsonResponse(res, 200, result);
+      return;
+    }
+
+    if (req.method === 'GET' && pathname.startsWith('/api/drafts/')) {
+      const draftId = decodeDraftRouteId(pathname);
+      const result = getDraftRecordOrThrow(draftId);
+      appendAuditLog(req, {
+        entityType: 'draft',
+        action: 'read',
+        summary: `查看草稿《${getDraftAuditTitle(result)}》`,
+        target: result.id,
+        details: {
+          draftId: result.id,
+          contentKey: result.contentKey,
+          baseRevision: result.baseRevision
+        }
+      });
+      jsonResponse(res, 200, result);
+      return;
+    }
+
+    if (req.method === 'DELETE' && pathname.startsWith('/api/drafts/')) {
+      const draftId = decodeDraftRouteId(pathname);
+      const draft = getDraftRecordOrThrow(draftId);
+      const deleted = runDraftStoreOperation(() => draftStore.delete(draft.id));
+      if (!deleted) {
+        throw new CmsHttpError(404, '找不到指定的草稿。');
+      }
+      appendAuditLog(req, {
+        entityType: 'draft',
+        action: 'delete',
+        summary: `删除草稿《${getDraftAuditTitle(draft)}》`,
+        target: draft.id,
+        details: {
+          draftId: draft.id,
+          contentKey: draft.contentKey,
+          baseRevision: draft.baseRevision
+        }
+      });
+      jsonResponse(res, 200, { deleted: draft.id });
       return;
     }
 
@@ -4875,6 +5719,10 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === 'GET') {
+      if (pathname.startsWith('/audio/')) {
+        serveProjectAudio(req, res, pathname);
+        return;
+      }
       if (pathname.startsWith('/images/')) {
         serveProjectImage(res, pathname);
         return;
@@ -4885,7 +5733,21 @@ const server = http.createServer(async (req, res) => {
 
     textResponse(res, 405, 'text/plain', 'Method not allowed');
   } catch (error) {
-    jsonResponse(res, 500, {
+    if (res.headersSent) {
+      res.destroy(error);
+      return;
+    }
+
+    const statusCode = error instanceof CmsHttpError
+      ? error.statusCode
+      : (error instanceof SyntaxError ? 400 : 500);
+    if (error instanceof CmsHttpError) {
+      Object.entries(error.headers || {}).forEach(([name, value]) => {
+        res.setHeader(name, value);
+      });
+    }
+
+    jsonResponse(res, statusCode, {
       error: error.message || '未知错误'
     });
   }
@@ -4930,5 +5792,20 @@ module.exports = {
   deleteImageFile,
   renderMarkdownPreview,
   isPathInside,
-  isTrustedCmsRequest
+  isTrustedCmsRequest,
+  resolveNpmCliPath,
+  buildNpmSpawnEnvironment,
+  MAX_AUDIO_FILE_BYTES,
+  SECURITY_HEADERS,
+  normalizeAudioPostKey,
+  sanitizeAudioFilename,
+  decodeStrictBase64,
+  hasAudioMagic,
+  validateAudioUploadFile,
+  assertNoSymlinkComponents,
+  buildLocalAudioEmbed,
+  uploadAudioFile,
+  resolveAudioPublicPath,
+  parseAudioRangeHeader,
+  serveProjectAudio
 };

@@ -5,15 +5,55 @@ const GALLERY_PAGE_IDS = new Set(['gallery-zh', 'gallery-en']);
 const CMS_SESSION_ID = `cms-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 const CMS_SESSION_HEARTBEAT_MS = 10000;
 let cmsSessionHeartbeatTimer = null;
-const POST_DRAFT_STORAGE_KEY = 'local-cms-post-drafts-v1';
+const POST_DRAFT_STORAGE_KEY = 'local-cms-post-recovery-v2';
+const LEGACY_POST_DRAFT_STORAGE_KEY = 'local-cms-post-drafts-v1';
 const PAGE_DRAFT_STORAGE_KEY = 'local-cms-page-drafts-v1';
+const CMS_UI_SKIN_STORAGE_KEY = 'local-cms-ui-skin-v1';
+const CMS_SCHOOL_THEME_CATALOG = window.CMS_SCHOOL_THEME_CATALOG;
+if (!CMS_SCHOOL_THEME_CATALOG || !CMS_SCHOOL_THEME_CATALOG.schools) {
+  throw new Error('学校主题资产未加载，请刷新本地 CMS。');
+}
+const CMS_UI_SKINS = new Set(Object.keys(CMS_SCHOOL_THEME_CATALOG.schools));
+const CMS_UI_SKIN_LABELS = Object.fromEntries(
+  Object.entries(CMS_SCHOOL_THEME_CATALOG.schools).map(([id, school]) => [id, school.label])
+);
+const POST_EDITOR_LANGUAGES = ['zh', 'en'];
+const POST_BODY_VIEWS = ['edit', 'preview'];
+const MUSIC_SOURCES = ['netease', 'local'];
+const LOCAL_AUDIO_MAX_BYTES = 32 * 1024 * 1024;
+const LOCAL_AUDIO_TYPES = {
+  mp3: new Set(['audio/mpeg', 'audio/mp3']),
+  m4a: new Set(['audio/mp4', 'audio/x-m4a', 'audio/m4a']),
+  ogg: new Set(['audio/ogg', 'application/ogg']),
+  wav: new Set(['audio/wav', 'audio/x-wav', 'audio/wave'])
+};
 
 const state = {
   mode: 'posts',
   meta: { categories: [], galleryFilters: [], pages: [] },
+  publishedPosts: [],
+  drafts: [],
   posts: [],
   pages: [],
+  currentDraft: null,
+  postStatusFilter: 'all',
   sidebarCollapsed: false,
+  uiSkin: 'stanford',
+  settingsSection: 'appearance',
+  themeCollection: CMS_SCHOOL_THEME_CATALOG.defaultCollection,
+  themeSearchQuery: '',
+  workspaceTransition: {
+    token: 0
+  },
+  workspaceMemory: {
+    posts: { selectedId: '', currentRecord: null, currentDraft: null },
+    pages: { selectedId: '', currentRecord: null }
+  },
+  recordCache: {
+    posts: new Map(),
+    pages: new Map(),
+    gallery: new Map()
+  },
   gallery: {
     items: [],
     selectedSlug: '',
@@ -59,6 +99,7 @@ const state = {
   audit: {
     file: '',
     items: [],
+    selectedId: '',
     error: '',
     filters: {
       entityType: '',
@@ -92,19 +133,42 @@ const state = {
     }
   },
   preview: {
-    zhHtml: '',
-    zhTimer: null,
-    zhRequestToken: 0
+    html: {
+      zh: '',
+      en: ''
+    },
+    timers: {
+      zh: null,
+      en: null
+    },
+    requestTokens: {
+      zh: 0,
+      en: 0
+    },
+    views: {
+      zh: 'edit',
+      en: 'edit'
+    }
+  },
+  postEditor: {
+    activeLanguage: 'zh'
   },
   autosave: {
     timer: null,
     suspend: false,
-    postDraftAliases: [],
-    postDraftViewerOpen: false
+    queue: Promise.resolve(),
+    dirty: false,
+    newDocumentId: '',
+    localRecovery: null,
+    lastSavedAt: ''
   },
   neteaseMusic: {
     validation: null,
     validating: false
+  },
+  music: {
+    source: 'netease',
+    uploadPending: false
   },
   toastTimer: null,
   commandAlerts: {
@@ -117,23 +181,36 @@ const state = {
 const elements = {
   sidebar: document.querySelector('#sidebar'),
   sidebarBody: document.querySelector('#sidebar-body'),
+  sidebarEyebrow: document.querySelector('#sidebar-eyebrow'),
+  sidebarTitle: document.querySelector('#sidebar-title'),
+  sidebarCopy: document.querySelector('#sidebar-copy'),
   sidebarToggleButton: document.querySelector('#sidebar-toggle-button'),
+  railBrand: document.querySelector('#rail-brand'),
+  railThemeMark: document.querySelector('#rail-theme-mark'),
   searchBox: document.querySelector('#search-box'),
   sidebarActions: document.querySelector('#sidebar-actions'),
   listPanel: document.querySelector('#list-panel'),
   listPagination: document.querySelector('#list-pagination'),
   searchInput: document.querySelector('#search-input'),
   saveButton: document.querySelector('#save-button'),
+  publishButton: document.querySelector('#publish-button'),
   deleteButton: document.querySelector('#delete-button'),
   refreshButton: document.querySelector('#refresh-button'),
   newPostButton: document.querySelector('#new-post-button'),
   newGalleryButton: document.querySelector('#new-gallery-button'),
-  postDraftToggleButton: document.querySelector('#post-draft-toggle-button'),
+  postStatusFilters: Array.from(document.querySelectorAll('[data-post-status-filter]')),
+  postStatusCounts: Array.from(document.querySelectorAll('[data-post-status-count]')),
   translateGalleryButton: document.querySelector('#translate-gallery-button'),
   testLlmButton: document.querySelector('#test-llm-button'),
   saveLlmButton: document.querySelector('#save-llm-button'),
   insertNeteaseMusicButton: document.querySelector('#insert-netease-music-button'),
+  postLanguageTabs: Array.from(document.querySelectorAll('[data-post-language]')),
+  postLanguagePanels: Array.from(document.querySelectorAll('[data-post-language-panel]')),
+  postBodyViewTabs: Array.from(document.querySelectorAll('[data-post-body-language][data-post-body-view]')),
+  postBodyViewPanels: Array.from(document.querySelectorAll('[data-post-body-panel-language][data-post-body-panel-view]')),
   neteaseMusicPanel: document.querySelector('#netease-music-panel'),
+  musicSourceTabs: Array.from(document.querySelectorAll('[data-music-source]')),
+  musicSourcePanels: Array.from(document.querySelectorAll('[data-music-source-panel]')),
   neteaseMusicInput: document.querySelector('#netease-music-input'),
   neteaseMusicValidateButton: document.querySelector('#netease-music-validate-button'),
   neteaseMusicConfirmButton: document.querySelector('#netease-music-confirm-button'),
@@ -146,6 +223,12 @@ const elements = {
   neteaseMusicSongArtist: document.querySelector('#netease-music-song-artist'),
   neteaseMusicSongStatus: document.querySelector('#netease-music-song-status'),
   neteaseMusicNote: document.querySelector('#netease-music-note'),
+  localAudioPanel: document.querySelector('#music-source-panel-local'),
+  localAudioDropzone: document.querySelector('#local-audio-dropzone'),
+  localAudioFileInput: document.querySelector('#local-audio-file-input'),
+  localAudioSelectButton: document.querySelector('#local-audio-select-button'),
+  localAudioCancelButton: document.querySelector('#local-audio-cancel-button'),
+  localAudioStatus: document.querySelector('#local-audio-status'),
   formatZhButton: document.querySelector('#format-zh-button'),
   rewritePostButton: document.querySelector('#rewrite-post-button'),
   translateEnButton: document.querySelector('#translate-en-button'),
@@ -177,6 +260,14 @@ const elements = {
   llmPanelBody: document.querySelector('#llm-panel-body'),
   postCommandPanel: document.querySelector('#post-command-panel'),
   postLlmPanel: document.querySelector('#post-llm-panel'),
+  appearancePanel: document.querySelector('#appearance-panel'),
+  themeCategoryNavigation: document.querySelector('#theme-category-navigation'),
+  themeSchoolSearch: document.querySelector('#theme-school-search'),
+  skinSelectionSummary: document.querySelector('#skin-selection-summary'),
+  skinSelectionMark: document.querySelector('#skin-selection-mark'),
+  skinSelectionName: document.querySelector('#skin-selection-name'),
+  skinPicker: document.querySelector('#skin-picker'),
+  skinButtons: Array.from(document.querySelectorAll('[data-ui-skin]')),
   llm: {
     endpoint: document.querySelector('#llm-endpoint'),
     apiKey: document.querySelector('#llm-api-key'),
@@ -188,9 +279,18 @@ const elements = {
   },
   workspaceKicker: document.querySelector('#workspace-kicker'),
   workspaceTitle: document.querySelector('#workspace-title'),
-  postDraftViewer: document.querySelector('#post-draft-viewer'),
-  postDraftViewerContent: document.querySelector('#post-draft-viewer-content'),
+  workspaceThemeWatermark: document.querySelector('#workspace-theme-watermark'),
+  workspaceThemeMottoLabel: document.querySelector('#workspace-theme-motto-label'),
+  workspaceThemeMotto: document.querySelector('#workspace-theme-motto'),
+  workspaceScroll: document.querySelector('.workspace-scroll'),
+  workspaceLoading: document.querySelector('#workspace-loading'),
+  workspaceLoadingLabel: document.querySelector('#workspace-loading-label'),
   postEditor: document.querySelector('#post-editor'),
+  postSaveState: document.querySelector('#post-save-state'),
+  postSaveStateLabel: document.querySelector('#post-save-state-label'),
+  postRecoveryBanner: document.querySelector('#post-recovery-banner'),
+  recoveryRestoreButton: document.querySelector('#recovery-restore-button'),
+  recoveryDiscardButton: document.querySelector('#recovery-discard-button'),
   pageEditor: document.querySelector('#page-editor'),
   galleryManager: document.querySelector('#gallery-manager'),
   imageLibrary: document.querySelector('#image-library'),
@@ -214,9 +314,6 @@ const elements = {
     imageDropzoneMeta: document.querySelector('#image-dropzone-meta'),
     imageFileInput: document.querySelector('#image-file-input'),
     photoPreview: document.querySelector('#post-photo-preview'),
-    draftMeta: document.querySelector('#post-draft-meta'),
-    draftRestoreButton: document.querySelector('#post-draft-restore-button'),
-    draftClearButton: document.querySelector('#post-draft-clear-button'),
     imageLibrarySummary: document.querySelector('#post-image-library-summary'),
     imageLibraryGrid: document.querySelector('#post-image-library-grid'),
     zhFile: document.querySelector('#post-zh-file'),
@@ -235,7 +332,8 @@ const elements = {
     enTitle: document.querySelector('#post-en-title'),
     enDescription: document.querySelector('#post-en-description'),
     enTags: document.querySelector('#post-en-tags'),
-    enBody: document.querySelector('#post-en-body')
+    enBody: document.querySelector('#post-en-body'),
+    enPreview: document.querySelector('#post-en-preview')
   },
   page: {
     title: document.querySelector('#page-title'),
@@ -345,113 +443,406 @@ function readStoredDraftMap(storageKey) {
 }
 
 function writeStoredDraftMap(storageKey, map) {
-  window.localStorage.setItem(storageKey, JSON.stringify(map));
+  try {
+    window.localStorage.setItem(storageKey, JSON.stringify(map));
+    return true;
+  } catch (_) {
+    return false;
+  }
 }
 
-function getPostDraftStorageIds(payload = null) {
-  const source = payload || buildPostPayload();
-  const ids = [
-    state.currentRecord && state.currentRecord.key ? state.currentRecord.key : '',
-    source && source.common && source.common.fileKey ? String(source.common.fileKey).trim() : '',
-    source && source.common && source.common.slug ? String(source.common.slug).trim() : ''
-  ].filter(Boolean);
+function readStoredCmsUiSkin() {
+  try {
+    const stored = window.localStorage.getItem(CMS_UI_SKIN_STORAGE_KEY);
+    return CMS_UI_SKINS.has(stored) ? stored : CMS_SCHOOL_THEME_CATALOG.defaultTheme;
+  } catch (_) {
+    return CMS_SCHOOL_THEME_CATALOG.defaultTheme;
+  }
+}
 
-  if (!(state.currentRecord && state.currentRecord.key)) {
-    ids.push('__new__');
+function getThemeCollection(collectionId = state.themeCollection) {
+  return CMS_SCHOOL_THEME_CATALOG.collections[collectionId]
+    || CMS_SCHOOL_THEME_CATALOG.collections[CMS_SCHOOL_THEME_CATALOG.defaultCollection];
+}
+
+function findThemeCollection(themeId) {
+  const collection = Object.values(CMS_SCHOOL_THEME_CATALOG.collections)
+    .find(item => item.themes.includes(themeId));
+  return collection || getThemeCollection(CMS_SCHOOL_THEME_CATALOG.defaultCollection);
+}
+
+function getSchoolMarkSource(school) {
+  if (school.mark) return school.mark;
+  const label = String(school.markText || school.label || 'U').slice(0, 6);
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+      <rect width="128" height="128" rx="18" fill="#ffffff"/>
+      <path d="M10 18h108v92H10z" fill="${school.primary}" opacity=".1"/>
+      <path d="M10 18h108v9H10z" fill="${school.primary}"/>
+      <path d="M10 101h76v9H10z" fill="${school.primary}"/>
+      <path d="M86 101h32v9H86z" fill="${school.secondary}"/>
+      <text x="64" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="${label.length > 4 ? 28 : 34}" font-weight="800" fill="${school.primary}">${label}</text>
+    </svg>
+  `;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+function getCollectionRankLabel(collection, themeId) {
+  if (collection.badges && collection.badges[themeId]) {
+    return collection.badges[themeId];
+  }
+  if (collection.badge) {
+    return collection.badge;
+  }
+  if (collection.ranks && collection.ranks[themeId]) {
+    return [collection.rankPrefix, `#${collection.ranks[themeId]}`].filter(Boolean).join(' ');
+  }
+  const position = collection.themes.indexOf(themeId) + 1;
+  return [collection.rankPrefix, `#${position}`].filter(Boolean).join(' ');
+}
+
+function getThemeContinent(collectionId = state.themeCollection) {
+  return CMS_SCHOOL_THEME_CATALOG.continents.find(continent => (
+    continent.collections.includes(collectionId)
+  )) || CMS_SCHOOL_THEME_CATALOG.continents[0];
+}
+
+function renderSettingsNavigation() {
+  if (!elements.listPanel) return;
+
+  const theme = CMS_SCHOOL_THEME_CATALOG.schools[state.uiSkin];
+  const llm = state.settings.llm || {};
+  const sections = [
+    {
+      id: 'appearance',
+      index: '01',
+      label: '外观与品牌',
+      description: '学校主题、标志与工作区视觉',
+      status: theme ? theme.label : '默认主题'
+    },
+    {
+      id: 'ai',
+      index: '02',
+      label: 'AI 与排版',
+      description: '模型连接、翻译与内容整理',
+      status: llm.model || '尚未配置'
+    }
+  ];
+
+  elements.listPanel.innerHTML = `
+    <nav class="settings-section-navigation" aria-label="设置分类">
+      ${sections.map(section => {
+        const isActive = section.id === state.settingsSection;
+        return `
+          <button
+            class="settings-section-item${isActive ? ' is-active' : ''}"
+            type="button"
+            data-settings-section="${escapeHtml(section.id)}"
+            aria-pressed="${String(isActive)}"
+          >
+            <span class="settings-section-index">${escapeHtml(section.index)}</span>
+            <span class="settings-section-copy">
+              <strong>${escapeHtml(section.label)}</strong>
+              <small>${escapeHtml(section.description)}</small>
+            </span>
+            <span class="settings-section-status">${escapeHtml(section.status)}</span>
+          </button>
+        `;
+      }).join('')}
+    </nav>
+  `;
+}
+
+function renderThemeCategoryNavigation() {
+  if (!elements.themeCategoryNavigation) return;
+
+  const activeContinent = getThemeContinent();
+  const continentButtons = CMS_SCHOOL_THEME_CATALOG.continents.map(continent => {
+    const isActive = continent.id === activeContinent.id;
+    return `
+      <button
+        class="theme-filter-button theme-continent-filter${isActive ? ' is-active' : ''}"
+        type="button"
+        data-theme-continent="${escapeHtml(continent.id)}"
+        aria-pressed="${String(isActive)}"
+      >
+        <span>${escapeHtml(continent.label)}</span>
+        <small>${continent.collections.length}</small>
+      </button>
+    `;
+  }).join('');
+
+  const collectionButtons = activeContinent.collections.map(collectionId => {
+    const collection = getThemeCollection(collectionId);
+    const source = CMS_SCHOOL_THEME_CATALOG.rankingSources[collection.sourceId];
+    const isActive = collection.id === state.themeCollection;
+    return `
+      <button
+        class="theme-filter-button theme-collection-filter${isActive ? ' is-active' : ''}"
+        type="button"
+        data-theme-collection="${escapeHtml(collection.id)}"
+        aria-pressed="${String(isActive)}"
+        title="${escapeHtml(collection.meta)}"
+      >
+        <span>${escapeHtml(collection.label)}</span>
+        <small>${collection.themes.length} · ${escapeHtml(source.shortLabel)}</small>
+      </button>
+    `;
+  }).join('');
+
+  elements.themeCategoryNavigation.innerHTML = `
+    <div class="theme-filter-row">
+      <span class="theme-filter-label">地区</span>
+      <div class="theme-filter-options" role="group" aria-label="按洲筛选学校主题">
+        ${continentButtons}
+      </div>
+    </div>
+    <div class="theme-filter-row">
+      <span class="theme-filter-label">分类</span>
+      <div class="theme-filter-options" role="group" aria-label="${escapeHtml(activeContinent.label)}学校分类">
+        ${collectionButtons}
+      </div>
+    </div>
+  `;
+
+  if (elements.themeSchoolSearch) {
+    elements.themeSchoolSearch.value = state.themeSearchQuery;
+  }
+}
+
+function renderSchoolThemePicker() {
+  if (!elements.skinPicker) return;
+
+  const collection = getThemeCollection();
+  const source = CMS_SCHOOL_THEME_CATALOG.rankingSources[collection.sourceId];
+  const searchQuery = state.themeSearchQuery.trim().toLocaleLowerCase('zh-Hans-CN');
+  const visibleThemeIds = collection.themes.filter(themeId => {
+    if (!searchQuery) return true;
+    const school = CMS_SCHOOL_THEME_CATALOG.schools[themeId];
+    return [
+      themeId,
+      school.label,
+      school.fullName,
+      school.nativeName
+    ].filter(Boolean).some(value => (
+      String(value).toLocaleLowerCase('zh-Hans-CN').includes(searchQuery)
+    ));
+  });
+  const themeButtons = visibleThemeIds.map(themeId => {
+    const school = CMS_SCHOOL_THEME_CATALOG.schools[themeId];
+    const markSource = getSchoolMarkSource(school);
+    const rankLabel = getCollectionRankLabel(collection, themeId);
+    return `
+      <button
+        class="skin-option"
+        type="button"
+        data-ui-skin="${escapeHtml(themeId)}"
+        aria-pressed="false"
+        title="${escapeHtml(`${school.fullName} · ${source.label} · ${rankLabel}`)}"
+      >
+        <span class="skin-mark" aria-hidden="true">
+          <img src="${escapeHtml(markSource)}" alt="">
+          <span class="skin-swatch"></span>
+        </span>
+        <span class="skin-option-copy">
+          <strong>${escapeHtml(school.label)}</strong>
+          <small>${escapeHtml(school.nativeName || school.fullName)}</small>
+        </span>
+        <span class="skin-option-meta">
+          <span class="skin-option-rank">${escapeHtml(rankLabel)}</span>
+          <span class="skin-option-state">使用</span>
+        </span>
+      </button>
+    `;
+  }).join('');
+  const emptyState = visibleThemeIds.length
+    ? ''
+    : `
+      <div class="theme-search-empty" role="status">
+        当前分类没有匹配“${escapeHtml(state.themeSearchQuery.trim())}”的学校。
+      </div>
+    `;
+
+  elements.skinPicker.innerHTML = `
+    <div class="skin-collection-heading">
+      <div>
+        <p class="eyebrow">${escapeHtml(collection.label)}</p>
+        <strong>
+          ${escapeHtml(collection.meta)}
+          ${searchQuery ? ` · 显示 ${visibleThemeIds.length}/${collection.themes.length} 所` : ''}
+        </strong>
+      </div>
+      <a href="${escapeHtml(source.source)}" target="_blank" rel="noreferrer">
+        ${escapeHtml(source.label)}
+      </a>
+    </div>
+    ${themeButtons}
+    ${emptyState}
+  `;
+
+  elements.skinButtons = Array.from(elements.skinPicker.querySelectorAll('[data-ui-skin]'));
+  renderCmsUiSkin();
+}
+
+function renderCmsUiSkin() {
+  elements.skinButtons.forEach(button => {
+    const isActive = button.dataset.uiSkin === state.uiSkin;
+    button.classList.toggle('is-active', isActive);
+    button.setAttribute('aria-pressed', String(isActive));
+    const stateLabel = button.querySelector('.skin-option-state');
+    if (stateLabel) {
+      stateLabel.textContent = isActive ? '当前' : '使用';
+    }
+  });
+
+  const themeLabel = CMS_UI_SKIN_LABELS[state.uiSkin];
+  const theme = CMS_SCHOOL_THEME_CATALOG.schools[state.uiSkin];
+  const themeMotto = theme.motto || {
+    label: theme.nativeName ? 'Institution' : '学校',
+    original: theme.nativeName || theme.fullName,
+    zh: ''
+  };
+  const themeMarkPath = getSchoolMarkSource(theme);
+  const collection = getThemeCollection().themes.includes(state.uiSkin)
+    ? getThemeCollection()
+    : findThemeCollection(state.uiSkin);
+  const themeRank = getCollectionRankLabel(collection, state.uiSkin);
+
+  if (elements.skinSelectionName) {
+    elements.skinSelectionName.textContent = `当前：${themeLabel} · ${themeRank}`;
+  }
+  if (elements.skinSelectionMark) {
+    elements.skinSelectionMark.src = themeMarkPath;
+  }
+  if (elements.railThemeMark) {
+    elements.railThemeMark.src = themeMarkPath;
+  }
+  if (elements.workspaceThemeWatermark) {
+    elements.workspaceThemeWatermark.src = themeMarkPath;
+  }
+  if (elements.workspaceThemeMottoLabel) {
+    elements.workspaceThemeMottoLabel.textContent = '校训';
+    elements.workspaceThemeMottoLabel.title = `资料类型：${themeMotto.label}`;
+  }
+  if (elements.workspaceThemeMotto) {
+    elements.workspaceThemeMotto.textContent = themeMotto.zh
+      ? `${themeMotto.original} · ${themeMotto.zh}`
+      : themeMotto.original;
+  }
+  if (elements.railBrand) {
+    elements.railBrand.title = `${themeLabel} 主题`;
+    elements.railBrand.setAttribute('aria-label', `当前学校主题：${themeLabel}`);
+  }
+}
+
+function applyCmsUiSkin(skin, options = {}) {
+  const normalizedSkin = CMS_UI_SKINS.has(skin) ? skin : CMS_SCHOOL_THEME_CATALOG.defaultTheme;
+  state.uiSkin = normalizedSkin;
+  if (!getThemeCollection().themes.includes(normalizedSkin)) {
+    state.themeCollection = findThemeCollection(normalizedSkin).id;
+  }
+  document.documentElement.dataset.studioSkin = normalizedSkin;
+  document.body.dataset.studioSkin = normalizedSkin;
+
+  if (options.persist !== false) {
+    try {
+      window.localStorage.setItem(CMS_UI_SKIN_STORAGE_KEY, normalizedSkin);
+    } catch (_) {
+      // The skin still applies for the current session when storage is unavailable.
+    }
   }
 
-  return Array.from(new Set(ids));
+  renderCmsUiSkin();
+  if (state.mode === 'settings') {
+    renderSettingsNavigation();
+    renderThemeCategoryNavigation();
+  }
 }
 
-function pickLatestDraftEntry(entries) {
-  return (entries || []).reduce((latest, entry) => {
-    if (!entry || !entry.payload) return latest;
-    if (!latest) return entry;
-
-    const latestTime = Date.parse(latest.savedAt || '');
-    const currentTime = Date.parse(entry.savedAt || '');
-    if (Number.isNaN(currentTime)) return latest;
-    if (Number.isNaN(latestTime) || currentTime >= latestTime) {
-      return entry;
-    }
-    return latest;
-  }, null);
+function createClientDocumentId() {
+  if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+    return window.crypto.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
 }
 
-function getCurrentPostDraftId() {
-  if (!state.currentRecord) return '';
-  return state.currentRecord.key
-    || elements.post.fileKey.value.trim()
-    || elements.post.slug.value.trim()
-    || '__new__';
+function getCurrentPostContentKey(payload = null) {
+  if (state.currentDraft && state.currentDraft.contentKey) {
+    return state.currentDraft.contentKey;
+  }
+  if (state.currentRecord && state.currentRecord.key) {
+    return `post:${state.currentRecord.key}`;
+  }
+  if (!state.autosave.newDocumentId) {
+    state.autosave.newDocumentId = createClientDocumentId();
+  }
+  const source = payload || buildPostPayload();
+  const sourceKey = source && source.key ? String(source.key).trim() : '';
+  return sourceKey ? `post:${sourceKey}` : `draft:${state.autosave.newDocumentId}`;
+}
+
+function getLegacyPostRecovery(payload = null) {
+  const source = payload || buildPostPayload();
+  const legacyIds = Array.from(new Set([
+    state.currentRecord && state.currentRecord.key ? state.currentRecord.key : '',
+    source && source.common && source.common.fileKey ? String(source.common.fileKey).trim() : '',
+    source && source.common && source.common.slug ? String(source.common.slug).trim() : '',
+    state.currentRecord && !state.currentRecord.key ? '__new__' : ''
+  ].filter(Boolean)));
+  const legacyDrafts = readStoredDraftMap(LEGACY_POST_DRAFT_STORAGE_KEY);
+  const entry = legacyIds
+    .map(id => legacyDrafts[id])
+    .filter(entry => entry && entry.payload)
+    .sort((left, right) => Date.parse(right.savedAt || '') - Date.parse(left.savedAt || ''))[0] || null;
+  return { entry, legacyIds, legacyDrafts };
 }
 
 function getCurrentPageDraftId() {
   return state.currentRecord && state.currentRecord.id ? state.currentRecord.id : '';
 }
 
-function savePostDraftToStorage() {
-  const payload = buildPostPayload();
-  const draftIds = getPostDraftStorageIds(payload);
-  if (!draftIds.length) return;
-
+function savePostRecoveryToStorage(payload = buildPostPayload()) {
+  const contentKey = getCurrentPostContentKey(payload);
+  if (!contentKey) return false;
   const drafts = readStoredDraftMap(POST_DRAFT_STORAGE_KEY);
-  const previousAliases = Array.isArray(state.autosave.postDraftAliases)
-    ? state.autosave.postDraftAliases
-    : [];
-  previousAliases
-    .filter(draftId => draftId && !draftIds.includes(draftId))
-    .forEach(draftId => {
-      delete drafts[draftId];
-    });
-
-  const savedAt = new Date().toISOString();
-  draftIds.forEach(draftId => {
-    drafts[draftId] = {
-      savedAt,
-      payload
-    };
-  });
-  writeStoredDraftMap(POST_DRAFT_STORAGE_KEY, drafts);
-  state.autosave.postDraftAliases = draftIds;
-}
-
-function loadPostDraftFromStorage(draftId) {
-  if (!draftId) return null;
-  const drafts = readStoredDraftMap(POST_DRAFT_STORAGE_KEY);
-  return drafts[draftId] || null;
-}
-
-function loadLatestPostDraftFromStorage(draftIds) {
-  const ids = Array.isArray(draftIds) ? draftIds.filter(Boolean) : [];
-  if (!ids.length) return null;
-  const drafts = readStoredDraftMap(POST_DRAFT_STORAGE_KEY);
-  return pickLatestDraftEntry(ids.map(draftId => drafts[draftId] || null));
-}
-
-function clearPostDraftFromStorage(draftId) {
-  if (!draftId) return;
-  const drafts = readStoredDraftMap(POST_DRAFT_STORAGE_KEY);
-  if (!Object.prototype.hasOwnProperty.call(drafts, draftId)) return;
-  delete drafts[draftId];
-  writeStoredDraftMap(POST_DRAFT_STORAGE_KEY, drafts);
-}
-
-function clearPostDraftAliases(draftIds) {
-  const uniqueIds = Array.from(new Set((draftIds || []).filter(Boolean)));
-  if (!uniqueIds.length) return;
-
-  const drafts = readStoredDraftMap(POST_DRAFT_STORAGE_KEY);
-  let changed = false;
-  uniqueIds.forEach(draftId => {
-    if (!Object.prototype.hasOwnProperty.call(drafts, draftId)) return;
-    delete drafts[draftId];
-    changed = true;
-  });
-
-  if (changed) {
-    writeStoredDraftMap(POST_DRAFT_STORAGE_KEY, drafts);
+  drafts[contentKey] = {
+    savedAt: new Date().toISOString(),
+    baseRevision: state.currentDraft
+      ? state.currentDraft.baseRevision
+      : (state.currentRecord && state.currentRecord.revision) || null,
+    payload
+  };
+  const stored = writeStoredDraftMap(POST_DRAFT_STORAGE_KEY, drafts);
+  if (!stored) {
+    setPostSaveState('error', '浏览器恢复副本写入失败');
   }
+  return stored;
+}
+
+function loadPostRecoveryFromStorage(contentKey = getCurrentPostContentKey()) {
+  if (!contentKey) return null;
+  const drafts = readStoredDraftMap(POST_DRAFT_STORAGE_KEY);
+  if (drafts[contentKey]) return drafts[contentKey];
+
+  const legacy = getLegacyPostRecovery();
+  if (!legacy.entry) return null;
+  drafts[contentKey] = legacy.entry;
+  if (!writeStoredDraftMap(POST_DRAFT_STORAGE_KEY, drafts)) {
+    return legacy.entry;
+  }
+  legacy.legacyIds.forEach(id => {
+    delete legacy.legacyDrafts[id];
+  });
+  writeStoredDraftMap(LEGACY_POST_DRAFT_STORAGE_KEY, legacy.legacyDrafts);
+  return legacy.entry;
+}
+
+function clearPostRecoveryFromStorage(contentKey = getCurrentPostContentKey()) {
+  if (!contentKey) return false;
+  const drafts = readStoredDraftMap(POST_DRAFT_STORAGE_KEY);
+  if (!Object.prototype.hasOwnProperty.call(drafts, contentKey)) return true;
+  delete drafts[contentKey];
+  return writeStoredDraftMap(POST_DRAFT_STORAGE_KEY, drafts);
 }
 
 function savePageDraftToStorage() {
@@ -484,7 +875,7 @@ function applyPostDraftPayload(payload) {
   if (!payload) return;
   state.autosave.suspend = true;
   try {
-    elements.post.fileKey.value = payload.common && payload.common.fileKey ? payload.common.fileKey : elements.post.fileKey.value;
+    elements.post.fileKey.value = payload.common && payload.common.fileKey ? payload.common.fileKey : '';
     elements.post.slug.value = payload.common && payload.common.slug ? payload.common.slug : '';
     elements.post.toc.checked = Boolean(payload.common && payload.common.toc);
     elements.post.photos.value = payload.common && payload.common.photos ? payload.common.photos : '';
@@ -497,29 +888,19 @@ function applyPostDraftPayload(payload) {
     elements.post.enTags.value = payload.en && payload.en.tags ? payload.en.tags : '';
     elements.post.enBody.value = payload.en && payload.en.body ? payload.en.body : '';
 
-    const categoryId = payload.common && payload.common.categoryId ? payload.common.categoryId : '';
-    if (categoryId) {
-      elements.post.category.value = categoryId;
-      setCategoryFormValue({
-        common: {
-          categoryId,
-          categoryCustomZh: '',
-          categoryCustomEn: ''
-        }
-      });
-    } else if (payload.common && (payload.common.categoryCustomZh || payload.common.categoryCustomEn)) {
-      elements.post.category.value = CUSTOM_CATEGORY_VALUE;
-      elements.post.categoryCustomZh.value = payload.common.categoryCustomZh || '';
-      elements.post.categoryCustomEn.value = payload.common.categoryCustomEn || '';
-      updateCategoryCustomPanel();
-    }
+    setCategoryFormValue({
+      common: {
+        categoryId: payload.common && payload.common.categoryId ? payload.common.categoryId : '',
+        categoryCustomZh: payload.common && payload.common.categoryCustomZh ? payload.common.categoryCustomZh : '',
+        categoryCustomEn: payload.common && payload.common.categoryCustomEn ? payload.common.categoryCustomEn : ''
+      }
+    });
   } finally {
     state.autosave.suspend = false;
   }
 
   renderPostPhotoPreview();
-  renderPostDraftPanel();
-  scheduleZhPreviewRender(0);
+  scheduleAllPostPreviews(0);
 }
 
 function applyPageDraftPayload(payload) {
@@ -537,118 +918,217 @@ function applyPageDraftPayload(payload) {
   }
 }
 
-function getCurrentPostDraftEntry() {
-  const draft = loadLatestPostDraftFromStorage(getPostDraftStorageIds());
-  if (!draft || !draft.payload) return null;
+function setPostSaveState(saveState, label) {
+  if (!elements.postSaveState || !elements.postSaveStateLabel) return;
+  elements.postSaveState.dataset.state = saveState;
+  elements.postSaveStateLabel.textContent = label;
+}
 
+function renderPostRecoveryBanner() {
+  if (!elements.postRecoveryBanner) return;
+  const recovery = loadPostRecoveryFromStorage();
+  const currentPayload = state.currentRecord ? buildPostPayload() : null;
+  const hasDifferentRecovery = Boolean(
+    recovery
+    && recovery.payload
+    && currentPayload
+    && JSON.stringify(recovery.payload) !== JSON.stringify(currentPayload)
+  );
+  state.autosave.localRecovery = hasDifferentRecovery ? recovery : null;
+  elements.postRecoveryBanner.hidden = !hasDifferentRecovery;
+}
+
+function recordFromDraft(draft, publishedRecord = null) {
+  const payload = draft && draft.payload ? draft.payload : {};
+  const common = payload.common || {};
+  const zh = payload.zh || {};
+  const en = payload.en || {};
+  const sourceKey = draft && String(draft.contentKey || '').startsWith('post:')
+    ? String(draft.contentKey).slice('post:'.length)
+    : '';
   return {
-    ...draft,
-    draftIds: getPostDraftStorageIds(draft.payload)
+    kind: 'post',
+    key: payload.key || sourceKey || (publishedRecord && publishedRecord.key) || '',
+    revision: (publishedRecord && publishedRecord.revision) || draft.baseRevision || '',
+    status: publishedRecord ? '有未发布修改' : '草稿',
+    sourceFiles: (publishedRecord && publishedRecord.sourceFiles) || { zh: '', en: '' },
+    common: {
+      date: (publishedRecord && publishedRecord.common && publishedRecord.common.date) || draft.updatedAt || '',
+      fileKey: common.fileKey || '',
+      slug: common.slug || '',
+      toc: Boolean(common.toc),
+      photos: common.photos || '',
+      categoryId: common.categoryId || '',
+      categoryCustomZh: common.categoryCustomZh || '',
+      categoryCustomEn: common.categoryCustomEn || ''
+    },
+    zh: {
+      title: zh.title || '',
+      description: zh.description || '',
+      tags: zh.tags || '',
+      permalink: zh.permalink || '',
+      body: zh.body || '',
+      extras: zh.extras || {}
+    },
+    en: {
+      title: en.title || '',
+      description: en.description || '',
+      tags: en.tags || '',
+      permalink: en.permalink || '',
+      body: en.body || '',
+      extras: en.extras || {}
+    }
   };
 }
 
-function renderDraftReadonlyField(label, value, rows = 3) {
-  return `
-    <label class="draft-readonly-field">
-      <span>${escapeHtml(label)}</span>
-      <textarea rows="${rows}" readonly>${escapeHtml(value || '')}</textarea>
-    </label>
-  `;
+function mergePostItems(publishedItems = state.publishedPosts, drafts = state.drafts) {
+  const publishedByKey = new Map(publishedItems.map(item => [item.key, item]));
+  const shadowedPublishedKeys = new Set();
+  const draftItems = drafts.map(draft => {
+    const sourceKey = String(draft.contentKey || '').startsWith('post:')
+      ? String(draft.contentKey).slice('post:'.length)
+      : '';
+    const published = sourceKey ? publishedByKey.get(sourceKey) : null;
+    if (published) shadowedPublishedKeys.add(sourceKey);
+    const record = recordFromDraft(draft, published && published.record);
+    return {
+      id: `draft:${draft.id}`,
+      key: record.key || draft.id,
+      draftId: draft.id,
+      contentKey: draft.contentKey,
+      lifecycle: 'draft',
+      hasPublishedVersion: Boolean(published),
+      titleZh: record.zh.title,
+      titleEn: record.en.title,
+      date: draft.updatedAt,
+      status: published ? '有未发布修改' : '草稿',
+      categoryId: record.common.categoryId,
+      categoryZh: record.common.categoryCustomZh,
+      categoryEn: record.common.categoryCustomEn,
+      sourceFiles: record.sourceFiles,
+      record
+    };
+  });
+  const publishedOnlyItems = publishedItems
+    .filter(item => !shadowedPublishedKeys.has(item.key))
+    .map(item => ({
+      ...item,
+      id: `post:${item.key}`,
+      lifecycle: 'published',
+      hasPublishedVersion: true,
+      record: {
+        ...item.record,
+        status: item.record.status || '已发布'
+      }
+    }));
+  return draftItems.concat(publishedOnlyItems).sort((left, right) =>
+    String(right.date || '').localeCompare(String(left.date || ''))
+  );
 }
 
-function fillPostDraftWorkspace(record) {
-  renderWorkspaceSections();
-  elements.postDraftViewer.hidden = false;
-  elements.postEditor.hidden = true;
-  elements.pageEditor.hidden = true;
-  elements.galleryManager.hidden = true;
-  elements.imageLibrary.hidden = true;
-  elements.auditViewer.hidden = true;
-
-  const currentTitle = record
-    ? (record.zh.title || record.en.title || record.key || '未命名文章')
-    : '文章草稿箱';
-  elements.workspaceTitle.textContent = `${currentTitle} · 草稿箱`;
-  updatePrimarySaveButtonLabel();
-  renderPrimarySaveButton();
-  renderDeleteButton();
-
-  if (!record) {
-    elements.post.draftMeta.textContent = '先从左侧文章列表选择一篇文章，再查看它的本地草稿。';
-    elements.post.draftRestoreButton.disabled = true;
-    elements.post.draftClearButton.disabled = true;
-    elements.postDraftViewerContent.innerHTML = '<div class="gallery-empty-state">当前还没有选中目标文章。</div>';
-    return;
-  }
-
-  const draftEntry = getCurrentPostDraftEntry();
-  if (!draftEntry || !draftEntry.payload) {
-    elements.post.draftMeta.textContent = `当前文章《${currentTitle}》还没有本地草稿。后续自动暂存后，这里会显示具体内容和保存时间。`;
-    elements.post.draftRestoreButton.disabled = true;
-    elements.post.draftClearButton.disabled = true;
-    elements.postDraftViewerContent.innerHTML = '<div class="gallery-empty-state">当前文章没有可查看的本地草稿。</div>';
-    return;
-  }
-
-  const payload = draftEntry.payload;
-  const coverPath = getPostCoverPath(payload.common && payload.common.photos ? payload.common.photos : '');
-  const overviewItems = [
-    ['保存时间', formatTimestamp(draftEntry.savedAt)],
-    ['文件名', payload.common && payload.common.fileKey ? payload.common.fileKey : ''],
-    ['Slug', payload.common && payload.common.slug ? payload.common.slug : ''],
-    ['分类', payload.common && payload.common.categoryId ? payload.common.categoryId : (payload.common && payload.common.categoryCustomZh ? payload.common.categoryCustomZh : '')],
-    ['封面图', coverPath || '未设置']
-  ].filter(item => item[1]);
-
-  elements.post.draftMeta.textContent = `这份本地草稿保存于 ${formatTimestamp(draftEntry.savedAt)}。下面展示的是当时暂存在浏览器里的具体内容。`;
-  elements.post.draftRestoreButton.disabled = false;
-  elements.post.draftClearButton.disabled = false;
-  elements.postDraftViewerContent.innerHTML = `
-    <div class="draft-overview-grid">
-      ${overviewItems.map(item => `
-        <article class="draft-overview-item">
-          <span class="draft-overview-label">${escapeHtml(item[0])}</span>
-          <strong class="draft-overview-value">${escapeHtml(item[1])}</strong>
-        </article>
-      `).join('')}
-    </div>
-    <div class="draft-content-grid">
-      <section class="editor-card draft-language-card">
-        <div class="card-heading">
-          <div class="card-heading-copy">
-            <h3>中文草稿快照</h3>
-            <span class="field-hint">这里展示自动暂存时中文编辑器里的原始内容。</span>
-          </div>
-        </div>
-        ${renderDraftReadonlyField('标题', payload.zh && payload.zh.title ? payload.zh.title : '', 2)}
-        ${renderDraftReadonlyField('一句话概括', payload.zh && payload.zh.description ? payload.zh.description : '', 2)}
-        ${renderDraftReadonlyField('标签', payload.zh && payload.zh.tags ? payload.zh.tags : '', 2)}
-        ${renderDraftReadonlyField('正文 Markdown', payload.zh && payload.zh.body ? payload.zh.body : '', 18)}
-      </section>
-      <section class="editor-card draft-language-card">
-        <div class="card-heading">
-          <div class="card-heading-copy">
-            <h3>English Draft Snapshot</h3>
-            <span class="field-hint">这里展示自动暂存时英文编辑器里的原始内容。</span>
-          </div>
-        </div>
-        ${renderDraftReadonlyField('Title', payload.en && payload.en.title ? payload.en.title : '', 2)}
-        ${renderDraftReadonlyField('One-line summary', payload.en && payload.en.description ? payload.en.description : '', 2)}
-        ${renderDraftReadonlyField('Tags', payload.en && payload.en.tags ? payload.en.tags : '', 2)}
-        ${renderDraftReadonlyField('Markdown body', payload.en && payload.en.body ? payload.en.body : '', 18)}
-      </section>
-    </div>
-  `;
+function rebuildPostItems() {
+  state.posts = mergePostItems();
+  state.recordCache.posts.clear();
+  state.posts.forEach(item => cacheRecord('posts', item.id, item.record));
+  renderPostStatusFilters();
 }
 
-function renderPostDraftPanel() {
-  const draftEntry = getCurrentPostDraftEntry();
-  const hasDraft = Boolean(draftEntry);
-  const isPostsMode = state.mode === 'posts';
-  elements.postDraftToggleButton.hidden = !isPostsMode;
-  elements.postDraftToggleButton.classList.toggle('has-draft', hasDraft);
-  elements.postDraftToggleButton.classList.toggle('is-active', state.autosave.postDraftViewerOpen);
-  elements.postDraftToggleButton.setAttribute('aria-pressed', state.autosave.postDraftViewerOpen ? 'true' : 'false');
+function renderPostStatusFilters() {
+  const counts = {
+    all: state.posts.length,
+    draft: state.posts.filter(item => item.lifecycle === 'draft').length,
+    published: state.posts.filter(item => item.lifecycle === 'published').length
+  };
+  elements.postStatusFilters.forEach(button => {
+    const isActive = button.dataset.postStatusFilter === state.postStatusFilter;
+    button.classList.toggle('is-active', isActive);
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+  elements.postStatusCounts.forEach(counter => {
+    counter.textContent = String(counts[counter.dataset.postStatusCount] || 0);
+  });
+}
+
+function createPostDraftInput(payload = buildPostPayload()) {
+  return {
+    id: state.currentDraft ? state.currentDraft.id : '',
+    contentKey: getCurrentPostContentKey(payload),
+    baseRevision: state.currentDraft
+      ? state.currentDraft.baseRevision
+      : (state.currentRecord && state.currentRecord.revision) || null,
+    payload
+  };
+}
+
+function isCurrentPostContentKey(contentKey) {
+  if (state.mode !== 'posts') return false;
+  if (state.currentDraft && state.currentDraft.contentKey) {
+    return state.currentDraft.contentKey === contentKey;
+  }
+  if (state.currentRecord && state.currentRecord.key) {
+    return `post:${state.currentRecord.key}` === contentKey;
+  }
+  return Boolean(
+    state.autosave.newDocumentId
+    && `draft:${state.autosave.newDocumentId}` === contentKey
+  );
+}
+
+function upsertDraftInState(draft) {
+  const index = state.drafts.findIndex(item => item.id === draft.id);
+  if (index >= 0) {
+    state.drafts.splice(index, 1, draft);
+  } else {
+    state.drafts.unshift(draft);
+  }
+  rebuildPostItems();
+}
+
+async function persistPostDraft(input, options = {}) {
+  const draft = await request('/api/drafts', {
+    method: 'POST',
+    body: JSON.stringify(input)
+  });
+  upsertDraftInState(draft);
+  clearPostRecoveryFromStorage(input.contentKey);
+
+  if (isCurrentPostContentKey(input.contentKey)) {
+    state.currentDraft = draft;
+    state.currentRecord = recordFromDraft(
+      draft,
+      state.publishedPosts.find(item => `post:${item.key}` === draft.contentKey)?.record || null
+    );
+    state.selectedId = `draft:${draft.id}`;
+    state.workspaceMemory.posts = {
+      selectedId: state.selectedId,
+      currentRecord: state.currentRecord,
+      currentDraft: draft
+    };
+    state.autosave.dirty = false;
+    state.autosave.lastSavedAt = draft.updatedAt;
+    elements.workspaceTitle.textContent = state.currentRecord.zh.title
+      || state.currentRecord.en.title
+      || state.currentRecord.key
+      || '未命名草稿';
+    setPostSaveState('saved', `草稿已保存 · ${formatTimestamp(draft.updatedAt)}`);
+    renderPrimarySaveButton();
+    renderDeleteButton();
+    renderList();
+    renderPostRecoveryBanner();
+  }
+
+  if (!options.silent) {
+    setStatus('草稿已保存到本机私有草稿库。', 'success');
+    showToast('草稿已保存', '尚未写入公开文章；点击“发布文章”后才会更新站点内容。');
+  }
+  return draft;
+}
+
+function enqueuePostDraftSave(input = createPostDraftInput(), options = {}) {
+  state.autosave.queue = state.autosave.queue
+    .catch(() => {})
+    .then(() => persistPostDraft(input, options));
+  return state.autosave.queue;
 }
 
 function maybeRestorePageDraft() {
@@ -667,23 +1147,55 @@ function scheduleAutosave() {
   if (state.autosave.suspend) return;
   if (!['posts', 'pages'].includes(state.mode)) return;
 
+  if (state.mode === 'posts') {
+    state.autosave.dirty = true;
+    setPostSaveState('dirty', '有未保存的修改');
+    savePostRecoveryToStorage();
+  }
+
   if (state.autosave.timer) {
     window.clearTimeout(state.autosave.timer);
   }
 
-  state.autosave.timer = window.setTimeout(() => {
+  state.autosave.timer = window.setTimeout(async () => {
+    state.autosave.timer = null;
     if (state.autosave.suspend) return;
     if (state.mode === 'posts') {
-      savePostDraftToStorage();
-      renderPostDraftPanel();
-      if (state.autosave.postDraftViewerOpen) {
-        fillPostDraftWorkspace(state.currentRecord);
+      const input = createPostDraftInput();
+      setPostSaveState('saving', '正在自动保存草稿…');
+      try {
+        await enqueuePostDraftSave(input, { silent: true });
+      } catch (error) {
+        setPostSaveState('error', '自动保存失败，已保留浏览器恢复副本');
+        setStatus(error.message, 'error');
       }
     } else if (state.mode === 'pages') {
       savePageDraftToStorage();
+      setStatus('页面草稿已自动暂存到浏览器本地。');
     }
-    setStatus('草稿已自动暂存到浏览器本地。');
   }, 1200);
+}
+
+function flushPendingAutosave() {
+  const hadTimer = Boolean(state.autosave.timer);
+  if (state.autosave.timer) {
+    window.clearTimeout(state.autosave.timer);
+    state.autosave.timer = null;
+  }
+  if (state.autosave.suspend) return;
+
+  if (state.mode === 'posts') {
+    if (hadTimer || state.autosave.dirty) {
+      const payload = buildPostPayload();
+      savePostRecoveryToStorage(payload);
+    }
+    if (hadTimer) {
+      const payload = buildPostPayload();
+      enqueuePostDraftSave(createPostDraftInput(payload), { silent: true }).catch(() => {});
+    }
+  } else if (state.mode === 'pages') {
+    savePageDraftToStorage();
+  }
 }
 
 function setStatus(message, tone = '') {
@@ -1020,6 +1532,7 @@ function normalizeAuditLoadError(error) {
 function syncAuditSelection(selectFirst = false) {
   if (state.audit.error) {
     state.selectedId = '';
+    state.audit.selectedId = '';
     state.currentRecord = null;
     return;
   }
@@ -1027,19 +1540,30 @@ function syncAuditSelection(selectFirst = false) {
   const items = state.audit.items || [];
   if (!items.length) {
     state.selectedId = '';
+    state.audit.selectedId = '';
     state.currentRecord = null;
     return;
   }
 
-  const matched = items.find(item => item.id === state.selectedId);
+  const selectedId = state.mode === 'logs'
+    ? (state.selectedId || state.audit.selectedId)
+    : state.audit.selectedId;
+  const matched = items.find(item => item.id === selectedId);
   if (matched) {
-    state.currentRecord = matched;
+    state.audit.selectedId = matched.id;
+    if (state.mode === 'logs') {
+      state.selectedId = matched.id;
+      state.currentRecord = matched;
+    }
     return;
   }
 
   if (selectFirst || state.mode === 'logs') {
-    state.selectedId = items[0].id;
-    state.currentRecord = items[0];
+    state.audit.selectedId = items[0].id;
+    if (state.mode === 'logs') {
+      state.selectedId = items[0].id;
+      state.currentRecord = items[0];
+    }
   }
 }
 
@@ -1103,16 +1627,42 @@ function renderSidebarState() {
 }
 
 function renderWorkspaceSections() {
-  elements.postCommandPanel.hidden = state.mode === 'settings' || state.autosave.postDraftViewerOpen;
-  elements.postLlmPanel.hidden = state.mode !== 'settings';
+  elements.postCommandPanel.hidden = state.mode === 'settings';
+  const isSettings = state.mode === 'settings';
+  elements.postLlmPanel.hidden = !isSettings || state.settingsSection !== 'ai';
+  elements.appearancePanel.hidden = !isSettings || state.settingsSection !== 'appearance';
 }
 
 function renderSidebarContentVisibility() {
-  const hideList = state.mode === 'settings';
-  elements.searchBox.hidden = hideList;
-  elements.listPanel.hidden = hideList;
-  elements.listPagination.hidden = hideList;
-  elements.sidebarActions.hidden = hideList;
+  const isSettings = state.mode === 'settings';
+  elements.searchBox.hidden = isSettings;
+  elements.listPanel.hidden = false;
+  elements.listPagination.hidden = isSettings;
+  elements.sidebarActions.hidden = isSettings;
+  const postStatusFilters = document.querySelector('#post-status-filters');
+  if (postStatusFilters) {
+    postStatusFilters.hidden = state.mode !== 'posts';
+  }
+  elements.sidebarBody.classList.toggle('is-settings-navigation', isSettings);
+  elements.sidebarEyebrow.textContent = isSettings ? 'Settings' : 'Content workspace';
+  elements.sidebarTitle.textContent = isSettings ? '设置分类' : '内容后台';
+  elements.sidebarCopy.textContent = isSettings ? '分区管理外观、品牌与 AI 能力' : '管理网站内容与媒体资源';
+}
+
+function renderSettingsWorkspaceSection() {
+  const isAppearance = state.settingsSection === 'appearance';
+  elements.workspaceKicker.textContent = '设置中心';
+  elements.workspaceTitle.textContent = isAppearance ? '外观与品牌' : 'AI 与排版';
+  renderWorkspaceSections();
+  renderSettingsNavigation();
+
+  if (isAppearance) {
+    renderThemeCategoryNavigation();
+    renderSchoolThemePicker();
+    return;
+  }
+
+  fillLlmSettings();
 }
 
 function isGalleryPageRecord(record) {
@@ -1121,7 +1671,7 @@ function isGalleryPageRecord(record) {
 
 function updatePrimarySaveButtonLabel() {
   if (state.mode === 'posts') {
-    elements.saveButton.textContent = '保存文章';
+    elements.saveButton.textContent = '保存草稿';
     return;
   }
 
@@ -1144,7 +1694,8 @@ function updatePrimarySaveButtonLabel() {
 }
 
 function renderPrimarySaveButton() {
-  elements.saveButton.hidden = state.mode === 'images' || state.mode === 'settings' || state.mode === 'logs' || state.autosave.postDraftViewerOpen;
+  elements.saveButton.hidden = state.mode === 'images' || state.mode === 'settings' || state.mode === 'logs';
+  elements.publishButton.hidden = state.mode !== 'posts' || !state.currentRecord;
 }
 
 function normalizeCommaList(value) {
@@ -1396,13 +1947,23 @@ function setCategoryFormValue(record) {
 
 function getFilteredItems() {
   const keyword = elements.searchInput.value.trim().toLowerCase();
-  const items = getCurrentModeItems();
+  let items = getCurrentModeItems();
+  if (state.mode === 'posts' && state.postStatusFilter !== 'all') {
+    items = items.filter(item => item.lifecycle === state.postStatusFilter);
+  }
   if (!keyword) return items;
 
   return items.filter(item => {
     let raw;
     if (state.mode === 'posts') {
-      raw = [item.key, item.titleZh, item.titleEn, item.sourceFiles.zh, item.sourceFiles.en];
+      raw = [
+        item.key,
+        item.titleZh,
+        item.titleEn,
+        item.status,
+        item.sourceFiles && item.sourceFiles.zh,
+        item.sourceFiles && item.sourceFiles.en
+      ];
     } else if (state.mode === 'pages') {
       raw = [item.id, item.label, item.file];
     } else if (state.mode === 'gallery') {
@@ -1418,6 +1979,13 @@ function getFilteredItems() {
 }
 
 function renderList() {
+  if (state.mode === 'settings') {
+    renderSettingsNavigation();
+    elements.listPagination.innerHTML = '';
+    elements.listPagination.hidden = true;
+    return;
+  }
+
   const items = getFilteredItems();
   const pagination = getListPaginationState();
   const paginatedItems = pagination
@@ -1442,7 +2010,7 @@ function renderList() {
 
   const html = paginatedItems.map(item => {
     const itemId = state.mode === 'posts'
-      ? item.key
+      ? item.id
       : state.mode === 'pages'
         ? item.id
         : state.mode === 'gallery'
@@ -1451,12 +2019,12 @@ function renderList() {
     const isActive = itemId === state.selectedId;
     if (state.mode === 'posts') {
       return `
-        <button class="list-item${isActive ? ' is-active' : ''}" type="button" data-item-id="${item.key}">
+        <button class="list-item${isActive ? ' is-active' : ''}${item.lifecycle === 'draft' ? ' is-draft' : ' is-published'}" type="button" data-item-id="${escapeHtml(item.id)}">
           <div class="list-title">${escapeHtml(formatPostListTitle(item))}</div>
           <div class="list-subtitle">${escapeHtml(formatPostListSubtitle(item))}</div>
           <div class="list-meta">
             <span>${escapeHtml(item.date || '')}</span>
-            <span>${escapeHtml(item.status || '')}</span>
+            <span class="list-status-badge">${escapeHtml(item.status || (item.lifecycle === 'draft' ? '草稿' : '已发布'))}</span>
           </div>
         </button>
       `;
@@ -1535,8 +2103,12 @@ function escapeHtml(value) {
 }
 
 function renderDeleteButton() {
-  const shouldShow = state.mode === 'posts' && !state.autosave.postDraftViewerOpen && Boolean(state.currentRecord && state.currentRecord.key);
+  const shouldShow = state.mode === 'posts' && Boolean(
+    (state.currentDraft && state.currentDraft.id)
+    || (state.currentRecord && state.currentRecord.key)
+  );
   elements.deleteButton.hidden = !shouldShow;
+  elements.deleteButton.textContent = state.currentDraft ? '删除草稿' : '删除文章';
 }
 
 function renderPostPhotoPreview() {
@@ -1559,6 +2131,146 @@ function buildPostImageMarkdown(imagePath) {
   return `![](${imagePath})`;
 }
 
+function getActivePostLanguage() {
+  return POST_EDITOR_LANGUAGES.includes(state.postEditor.activeLanguage)
+    ? state.postEditor.activeLanguage
+    : 'zh';
+}
+
+function getActivePostLanguageLabel() {
+  return getActivePostLanguage() === 'en' ? '英文稿' : '中文稿';
+}
+
+function getActivePostBody() {
+  return getActivePostLanguage() === 'en' ? elements.post.enBody : elements.post.zhBody;
+}
+
+function getPostBodyElement(language) {
+  return language === 'en' ? elements.post.enBody : elements.post.zhBody;
+}
+
+function getPostPreviewElement(language) {
+  return language === 'en' ? elements.post.enPreview : elements.post.zhPreview;
+}
+
+function getPostBodyView(language) {
+  const view = state.preview.views[language];
+  return POST_BODY_VIEWS.includes(view) ? view : 'edit';
+}
+
+function renderPostBodyView(language, options = {}) {
+  if (!POST_EDITOR_LANGUAGES.includes(language)) return;
+  const activeView = getPostBodyView(language);
+
+  elements.postBodyViewTabs
+    .filter(tab => tab.dataset.postBodyLanguage === language)
+    .forEach(tab => {
+      const isActive = tab.dataset.postBodyView === activeView;
+      tab.classList.toggle('is-active', isActive);
+      tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      tab.tabIndex = isActive ? 0 : -1;
+    });
+
+  elements.postBodyViewPanels
+    .filter(panel => panel.dataset.postBodyPanelLanguage === language)
+    .forEach(panel => {
+      panel.hidden = panel.dataset.postBodyPanelView !== activeView;
+    });
+
+  if (activeView === 'preview') {
+    schedulePostPreviewRender(language, 0);
+  }
+
+  if (options.focusTab) {
+    const activeTab = elements.postBodyViewTabs.find(tab => (
+      tab.dataset.postBodyLanguage === language
+      && tab.dataset.postBodyView === activeView
+    ));
+    activeTab?.focus();
+  }
+}
+
+function renderPostBodyViews() {
+  POST_EDITOR_LANGUAGES.forEach(language => {
+    renderPostBodyView(language);
+  });
+}
+
+function setPostBodyView(language, view, options = {}) {
+  if (!POST_EDITOR_LANGUAGES.includes(language) || !POST_BODY_VIEWS.includes(view)) return;
+  state.preview.views[language] = view;
+  renderPostBodyView(language, options);
+}
+
+function handlePostBodyViewTabKeydown(event) {
+  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  event.preventDefault();
+
+  const language = event.currentTarget.dataset.postBodyLanguage;
+  const currentView = event.currentTarget.dataset.postBodyView;
+  const currentIndex = POST_BODY_VIEWS.indexOf(currentView);
+  let nextIndex = currentIndex;
+  if (event.key === 'Home') {
+    nextIndex = 0;
+  } else if (event.key === 'End') {
+    nextIndex = POST_BODY_VIEWS.length - 1;
+  } else {
+    const direction = event.key === 'ArrowRight' ? 1 : -1;
+    nextIndex = (currentIndex + direction + POST_BODY_VIEWS.length) % POST_BODY_VIEWS.length;
+  }
+
+  setPostBodyView(language, POST_BODY_VIEWS[nextIndex], { focusTab: true });
+}
+
+function renderPostEditorLanguage(options = {}) {
+  const activeLanguage = getActivePostLanguage();
+
+  elements.postLanguageTabs.forEach(tab => {
+    const isActive = tab.dataset.postLanguage === activeLanguage;
+    tab.classList.toggle('is-active', isActive);
+    tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    tab.tabIndex = isActive ? 0 : -1;
+  });
+
+  elements.postLanguagePanels.forEach(panel => {
+    panel.hidden = panel.dataset.postLanguagePanel !== activeLanguage;
+  });
+  elements.insertNeteaseMusicButton.setAttribute(
+    'aria-label',
+    `插入音乐到${activeLanguage === 'en' ? '英文稿' : '中文稿'}`
+  );
+  renderPostBodyView(activeLanguage);
+
+  if (options.focusTab) {
+    const activeTab = elements.postLanguageTabs.find(tab => tab.dataset.postLanguage === activeLanguage);
+    activeTab?.focus();
+  }
+}
+
+function setPostEditorLanguage(language, options = {}) {
+  if (!POST_EDITOR_LANGUAGES.includes(language)) return;
+  state.postEditor.activeLanguage = language;
+  renderPostEditorLanguage(options);
+}
+
+function handlePostLanguageTabKeydown(event) {
+  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  event.preventDefault();
+
+  const currentIndex = POST_EDITOR_LANGUAGES.indexOf(getActivePostLanguage());
+  let nextIndex = currentIndex;
+  if (event.key === 'Home') {
+    nextIndex = 0;
+  } else if (event.key === 'End') {
+    nextIndex = POST_EDITOR_LANGUAGES.length - 1;
+  } else {
+    const direction = event.key === 'ArrowRight' ? 1 : -1;
+    nextIndex = (currentIndex + direction + POST_EDITOR_LANGUAGES.length) % POST_EDITOR_LANGUAGES.length;
+  }
+
+  setPostEditorLanguage(POST_EDITOR_LANGUAGES[nextIndex], { focusTab: true });
+}
+
 function insertTextIntoTextarea(textarea, snippet) {
   const start = typeof textarea.selectionStart === 'number' ? textarea.selectionStart : textarea.value.length;
   const end = typeof textarea.selectionEnd === 'number' ? textarea.selectionEnd : textarea.value.length;
@@ -1577,8 +2289,18 @@ function insertTextIntoTextarea(textarea, snippet) {
 }
 
 function insertMarkdownIntoZhBody(imagePath) {
+  setPostEditorLanguage('zh');
+  setPostBodyView('zh', 'edit');
   insertTextIntoTextarea(elements.post.zhBody, buildPostImageMarkdown(imagePath));
-  scheduleZhPreviewRender(0);
+  schedulePostPreviewRender('zh', 0);
+  scheduleAutosave();
+}
+
+function insertTextIntoActivePostBody(snippet) {
+  const language = getActivePostLanguage();
+  setPostBodyView(language, 'edit');
+  insertTextIntoTextarea(getActivePostBody(), snippet);
+  schedulePostPreviewRender(language, 0);
   scheduleAutosave();
 }
 
@@ -1598,6 +2320,49 @@ function extractNeteaseSongId(value) {
 
 function buildNeteaseMusicEmbed(songId) {
   return `<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=${songId}&auto=0&height=66"></iframe>`;
+}
+
+function renderMusicSource(options = {}) {
+  const activeSource = MUSIC_SOURCES.includes(state.music.source) ? state.music.source : 'netease';
+
+  elements.musicSourceTabs.forEach(tab => {
+    const isActive = tab.dataset.musicSource === activeSource;
+    tab.classList.toggle('is-active', isActive);
+    tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    tab.tabIndex = isActive ? 0 : -1;
+  });
+
+  elements.musicSourcePanels.forEach(panel => {
+    panel.hidden = panel.dataset.musicSourcePanel !== activeSource;
+  });
+
+  if (options.focusTab) {
+    const activeTab = elements.musicSourceTabs.find(tab => tab.dataset.musicSource === activeSource);
+    activeTab?.focus();
+  }
+}
+
+function setMusicSource(source, options = {}) {
+  if (!MUSIC_SOURCES.includes(source)) return;
+  state.music.source = source;
+  renderMusicSource(options);
+}
+
+function handleMusicSourceTabKeydown(event) {
+  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  event.preventDefault();
+
+  const currentIndex = MUSIC_SOURCES.indexOf(state.music.source);
+  let nextIndex = currentIndex;
+  if (event.key === 'Home') {
+    nextIndex = 0;
+  } else if (event.key === 'End') {
+    nextIndex = MUSIC_SOURCES.length - 1;
+  } else {
+    const direction = event.key === 'ArrowRight' ? 1 : -1;
+    nextIndex = (currentIndex + direction + MUSIC_SOURCES.length) % MUSIC_SOURCES.length;
+  }
+  setMusicSource(MUSIC_SOURCES[nextIndex], { focusTab: true });
 }
 
 function resetNeteaseMusicValidation() {
@@ -1620,7 +2385,7 @@ function renderNeteaseMusicValidationResult() {
   if (!result) {
     elements.neteaseMusicResult.classList.add('is-idle');
     elements.neteaseMusicBadge.textContent = '待检测';
-    elements.neteaseMusicSummary.textContent = '输入链接后可以先检测，再插入到中文稿。';
+    elements.neteaseMusicSummary.textContent = '输入链接后可以先检测，再插入到当前稿件。';
     elements.neteaseMusicSongId.textContent = '-';
     elements.neteaseMusicSongTitle.textContent = '-';
     elements.neteaseMusicSongArtist.textContent = '-';
@@ -1687,33 +2452,161 @@ function toggleNeteaseMusicPanel(expanded) {
   const nextExpanded = Boolean(expanded);
   elements.neteaseMusicPanel.hidden = !nextExpanded;
   elements.insertNeteaseMusicButton.classList.toggle('is-active', nextExpanded);
-  elements.insertNeteaseMusicButton.setAttribute('aria-pressed', nextExpanded ? 'true' : 'false');
+  elements.insertNeteaseMusicButton.setAttribute('aria-expanded', nextExpanded ? 'true' : 'false');
   if (nextExpanded) {
-    elements.neteaseMusicInput.focus();
+    renderMusicSource();
+    if (state.music.source === 'local') {
+      elements.localAudioSelectButton.focus();
+    } else {
+      elements.neteaseMusicInput.focus();
+    }
   } else {
     resetNeteaseMusicValidation();
   }
 }
 
-async function insertNeteaseMusicIntoZhBody(rawValue) {
+async function insertNeteaseMusicIntoActiveBody(rawValue) {
+  const targetLanguage = getActivePostLanguage();
   const result = await validateNeteaseMusicInput(rawValue, { silentStatus: true });
 
   if (result.availability === 'protected') {
     throw new Error(result.message || '这首歌疑似存在版权或外链限制，建议更换歌曲后再插入。');
   }
   if (result.availability === 'unknown') {
-    const shouldContinue = window.confirm(`${result.message || '当前无法确认这首歌是否可外链播放。'}\n\n要继续插入到中文稿里吗？`);
+    const shouldContinue = window.confirm(`${result.message || '当前无法确认这首歌是否可外链播放。'}\n\n要继续插入到当前稿件里吗？`);
     if (!shouldContinue) {
       throw new Error('已取消插入，请先更换歌曲或再次检测。');
     }
   }
 
-  insertTextIntoTextarea(elements.post.zhBody, buildNeteaseMusicEmbed(result.songId));
-  scheduleZhPreviewRender(0);
-  scheduleAutosave();
+  setPostEditorLanguage(targetLanguage);
+  insertTextIntoActivePostBody(buildNeteaseMusicEmbed(result.songId));
   elements.neteaseMusicInput.value = '';
   toggleNeteaseMusicPanel(false);
   return result;
+}
+
+function getLocalAudioFileExtension(file) {
+  const match = String(file?.name || '').trim().toLowerCase().match(/\.([a-z0-9]+)$/);
+  return match ? match[1] : '';
+}
+
+function validateLocalAudioFile(file) {
+  if (!file) {
+    throw new Error('请选择一个本地音频文件。');
+  }
+  if (!file.size) {
+    throw new Error('音频文件为空，请重新选择。');
+  }
+  if (file.size > LOCAL_AUDIO_MAX_BYTES) {
+    throw new Error('音频文件超过 32 MiB，请压缩后再上传。');
+  }
+
+  const extension = getLocalAudioFileExtension(file);
+  const allowedMimeTypes = LOCAL_AUDIO_TYPES[extension];
+  if (!allowedMimeTypes) {
+    throw new Error('仅支持 MP3、M4A、OGG 和 WAV 文件。');
+  }
+
+  const mimeType = String(file.type || '').trim().toLowerCase();
+  if (mimeType && !allowedMimeTypes.has(mimeType)) {
+    throw new Error(`文件扩展名与音频类型不匹配：.${extension} / ${mimeType}`);
+  }
+}
+
+function getLocalAudioPostKey() {
+  return elements.post.fileKey.value.trim() || elements.post.slug.value.trim();
+}
+
+function setLocalAudioUploadPending(isPending, message = '') {
+  state.music.uploadPending = Boolean(isPending);
+  elements.localAudioPanel.setAttribute('aria-busy', state.music.uploadPending ? 'true' : 'false');
+  elements.localAudioDropzone.setAttribute('aria-disabled', state.music.uploadPending ? 'true' : 'false');
+  elements.localAudioSelectButton.disabled = state.music.uploadPending;
+  elements.localAudioFileInput.disabled = state.music.uploadPending;
+  elements.localAudioCancelButton.disabled = state.music.uploadPending;
+  elements.musicSourceTabs.forEach(tab => {
+    tab.disabled = state.music.uploadPending;
+  });
+  if (message) {
+    elements.localAudioStatus.textContent = message;
+  }
+}
+
+function buildLocalAudioEmbed(upload) {
+  const uploadedCollection = upload?.uploaded;
+  const uploaded = upload?.audio
+    || upload?.file
+    || (Array.isArray(uploadedCollection) ? uploadedCollection[0] : uploadedCollection)
+    || upload
+    || {};
+  if (typeof uploaded.embed === 'string' && uploaded.embed.trim()) {
+    return uploaded.embed.trim();
+  }
+
+  const audioPath = String(uploaded.path || upload?.path || '').trim();
+  if (!audioPath) {
+    throw new Error('音频已上传，但服务端没有返回可插入的音频路径。');
+  }
+
+  return `<audio controls preload="none" src="${escapeHtml(audioPath)}">您的浏览器不支持音频播放。</audio>`;
+}
+
+async function uploadLocalAudioFile(file) {
+  validateLocalAudioFile(file);
+  const postKey = getLocalAudioPostKey();
+  if (!postKey) {
+    throw new Error('请先填写源文件名或 Slug，再导入本地音频。');
+  }
+
+  const targetLanguage = getActivePostLanguage();
+  const targetLabel = getActivePostLanguageLabel();
+  setLocalAudioUploadPending(true, `正在读取并上传 ${file.name}…`);
+  setStatus(`正在上传本地音频：${file.name}`);
+
+  try {
+    const encodedFile = await fileToBase64(file);
+    const payload = await request('/api/audio/upload', {
+      method: 'POST',
+      body: JSON.stringify({
+        postKey,
+        file: encodedFile
+      })
+    });
+    const snippet = buildLocalAudioEmbed(payload);
+
+    setPostEditorLanguage(targetLanguage);
+    insertTextIntoActivePostBody(snippet);
+    elements.localAudioStatus.textContent = `已上传并插入：${file.name}`;
+    setStatus(`已把本地音频插入${targetLabel}：${file.name}`, 'success');
+    showToast('音频已插入', `${file.name} 已上传并插入${targetLabel}。`);
+    toggleNeteaseMusicPanel(false);
+    return payload;
+  } finally {
+    elements.localAudioFileInput.value = '';
+    setLocalAudioUploadPending(false);
+  }
+}
+
+async function uploadSelectedLocalAudio(fileList) {
+  const files = Array.from(fileList || []);
+  if (files.length !== 1) {
+    const message = files.length
+      ? '每次只能导入一个音频文件。'
+      : '尚未选择音频文件。';
+    elements.localAudioStatus.textContent = message;
+    setStatus(message, 'error');
+    return;
+  }
+
+  try {
+    await uploadLocalAudioFile(files[0]);
+  } catch (error) {
+    elements.localAudioStatus.textContent = error.message;
+    setStatus(error.message, 'error');
+  } finally {
+    elements.localAudioFileInput.value = '';
+  }
 }
 
 function setPostCoverImage(imagePath) {
@@ -1789,14 +2682,27 @@ function renderPostImageLibrary() {
   }).join('');
 }
 
-async function renderZhPreview() {
-  const markdown = elements.post.zhBody.value.trim();
-  const token = state.preview.zhRequestToken + 1;
-  state.preview.zhRequestToken = token;
+async function renderPostPreview(language, token) {
+  if (!POST_EDITOR_LANGUAGES.includes(language)) return;
+  if (token !== state.preview.requestTokens[language]) return;
 
-  if (!markdown) {
-    state.preview.zhHtml = '';
-    elements.post.zhPreview.innerHTML = '<div class="gallery-empty-state">中文正文为空时，这里会显示空白。</div>';
+  const body = getPostBodyElement(language);
+  const preview = getPostPreviewElement(language);
+  const previewPanel = preview.closest('[data-post-body-panel-language]');
+  const markdown = body.value;
+  const emptyMessage = language === 'en'
+    ? 'The English body is empty. Its preview will appear here.'
+    : '中文正文为空时，这里会显示预览。';
+  const fallbackPath = language === 'en'
+    ? 'source/_posts/preview.en.md'
+    : 'source/_posts/preview.zh-CN.md';
+
+  previewPanel?.setAttribute('aria-busy', 'true');
+
+  if (!markdown.trim()) {
+    state.preview.html[language] = '';
+    preview.innerHTML = `<div class="gallery-empty-state">${emptyMessage}</div>`;
+    previewPanel?.setAttribute('aria-busy', 'false');
     return;
   }
 
@@ -1806,40 +2712,196 @@ async function renderZhPreview() {
       body: JSON.stringify({
         markdown,
         sourcePath: state.currentRecord && state.currentRecord.sourceFiles
-          ? (state.currentRecord.sourceFiles.zh || 'source/_posts/preview.zh-CN.md')
-          : 'source/_posts/preview.zh-CN.md'
+          ? (state.currentRecord.sourceFiles[language] || fallbackPath)
+          : fallbackPath
       })
     });
 
-    if (token !== state.preview.zhRequestToken) return;
-    state.preview.zhHtml = payload.html || '';
-    elements.post.zhPreview.innerHTML = state.preview.zhHtml || '<div class="gallery-empty-state">没有可预览的内容。</div>';
+    if (token !== state.preview.requestTokens[language]) return;
+    state.preview.html[language] = payload.html || '';
+    preview.innerHTML = state.preview.html[language]
+      || '<div class="gallery-empty-state">没有可预览的内容。</div>';
+    previewPanel?.setAttribute('aria-busy', 'false');
   } catch (error) {
-    if (token !== state.preview.zhRequestToken) return;
-    elements.post.zhPreview.innerHTML = `<div class="gallery-empty-state">${escapeHtml(error.message)}</div>`;
+    if (token !== state.preview.requestTokens[language]) return;
+    preview.innerHTML = `<div class="gallery-empty-state">${escapeHtml(error.message)}</div>`;
+    previewPanel?.setAttribute('aria-busy', 'false');
   }
 }
 
-function scheduleZhPreviewRender(delay = 240) {
-  if (state.preview.zhTimer) {
-    window.clearTimeout(state.preview.zhTimer);
+function schedulePostPreviewRender(language, delay = 240) {
+  if (!POST_EDITOR_LANGUAGES.includes(language)) return;
+  if (state.preview.timers[language]) {
+    window.clearTimeout(state.preview.timers[language]);
   }
 
-  state.preview.zhTimer = window.setTimeout(() => {
-    renderZhPreview();
+  const token = state.preview.requestTokens[language] + 1;
+  state.preview.requestTokens[language] = token;
+  state.preview.timers[language] = window.setTimeout(() => {
+    state.preview.timers[language] = null;
+    renderPostPreview(language, token);
   }, delay);
 }
 
-function applyMode(mode) {
-  state.mode = mode;
-  state.autosave.postDraftViewerOpen = false;
-  state.selectedId = '';
+function scheduleAllPostPreviews(delay = 0) {
+  POST_EDITOR_LANGUAGES.forEach(language => {
+    schedulePostPreviewRender(language, delay);
+  });
+}
+
+function hideWorkspaceEditorsForTransition() {
+  elements.postEditor.hidden = true;
+  elements.pageEditor.hidden = true;
+  elements.galleryManager.hidden = true;
+  elements.imageLibrary.hidden = true;
+  elements.auditViewer.hidden = true;
+}
+
+function beginWorkspaceTransition(mode = state.mode, options = {}) {
+  state.workspaceTransition.token += 1;
+  const token = state.workspaceTransition.token;
+  document.body.dataset.workspaceMode = mode;
+  const showLoading = options.loading !== false;
+  const showRefreshing = !showLoading && options.refreshing === true;
+
+  document.body.classList.toggle('is-workspace-loading', showLoading);
+  document.body.classList.toggle('is-workspace-refreshing', showRefreshing);
+  if (showLoading && options.sidebar === true) {
+    document.body.classList.add('is-sidebar-loading');
+    elements.listPanel?.setAttribute('aria-busy', 'true');
+  } else {
+    document.body.classList.remove('is-sidebar-loading');
+    elements.listPanel?.setAttribute('aria-busy', 'false');
+  }
+
+  if (options.hideContent !== false) {
+    hideWorkspaceEditorsForTransition();
+  }
+
+  if (elements.workspaceLoadingLabel) {
+    elements.workspaceLoadingLabel.textContent = `正在载入${getModeLabel(mode)}工作区`;
+  }
+  if (elements.workspaceLoading) {
+    elements.workspaceLoading.hidden = !showLoading;
+  }
+  elements.workspaceScroll?.setAttribute('aria-busy', showLoading || showRefreshing ? 'true' : 'false');
+  return token;
+}
+
+function finishWorkspaceTransition(token, mode = state.mode) {
+  if (token !== state.workspaceTransition.token || mode !== state.mode) return;
+  document.body.classList.remove('is-workspace-loading');
+  document.body.classList.remove('is-workspace-refreshing');
+  document.body.classList.remove('is-sidebar-loading');
+  elements.listPanel?.setAttribute('aria-busy', 'false');
+  if (elements.workspaceLoading) {
+    elements.workspaceLoading.hidden = true;
+  }
+  elements.workspaceScroll?.setAttribute('aria-busy', 'false');
+}
+
+function cacheRecord(mode, id, record) {
+  const cache = state.recordCache[mode];
+  if (!cache || !id || !record) return;
+  cache.set(id, record);
+}
+
+function getCachedRecord(mode, id) {
+  const cache = state.recordCache[mode];
+  return cache && id ? (cache.get(id) || null) : null;
+}
+
+function rememberCurrentWorkspace() {
+  if (state.mode === 'posts') {
+    state.workspaceMemory.posts = {
+      selectedId: state.selectedId,
+      currentRecord: state.currentRecord,
+      currentDraft: state.currentDraft
+    };
+    return;
+  }
+
+  if (state.mode === 'pages') {
+    state.workspaceMemory.pages = {
+      selectedId: state.selectedId,
+      currentRecord: state.currentRecord
+    };
+    return;
+  }
+
+  if (state.mode === 'logs' && state.selectedId) {
+    state.audit.selectedId = state.selectedId;
+  }
+}
+
+function restoreWorkspaceMemory(mode) {
+  if (mode === 'posts' || mode === 'pages') {
+    const memory = state.workspaceMemory[mode];
+    state.selectedId = memory.selectedId;
+    state.currentRecord = memory.currentRecord;
+    state.currentDraft = mode === 'posts' ? (memory.currentDraft || null) : null;
+    return;
+  }
+
+  state.currentDraft = null;
+  state.selectedId = mode === 'gallery'
+    ? state.gallery.selectedSlug
+    : mode === 'images'
+      ? (state.images.selectedFolder || '__root__')
+      : mode === 'logs'
+        ? state.audit.selectedId
+        : '';
   state.currentRecord = null;
-  state.gallery.selectedSlug = '';
-  state.gallery.currentAlbum = null;
-  state.gallery.folderItems = [];
-  state.images.selectedFolder = '';
-  resetPostPagination();
+}
+
+function renderCachedModeWorkspace() {
+  renderList();
+
+  if (state.mode === 'posts' && state.currentRecord) {
+    revealPostEditor(state.currentRecord);
+    return;
+  }
+
+  if (state.mode === 'pages' && state.currentRecord) {
+    revealPageEditor(state.currentRecord);
+    return;
+  }
+
+  if (state.mode === 'gallery' && state.gallery.currentAlbum) {
+    revealGalleryEditor(state.gallery.currentAlbum);
+    return;
+  }
+
+  if (state.mode === 'images') {
+    fillImageLibraryWorkspace();
+    return;
+  }
+
+  if (state.mode === 'logs') {
+    const selectedId = state.audit.selectedId || (state.audit.items[0] && state.audit.items[0].id) || '';
+    state.audit.selectedId = selectedId;
+    state.selectedId = selectedId;
+    state.currentRecord = state.audit.items.find(item => item.id === selectedId) || null;
+    fillAuditWorkspace();
+    return;
+  }
+
+  if (state.mode === 'settings') {
+    fillSettingsWorkspace();
+  }
+}
+
+function applyMode(mode, options = {}) {
+  flushPendingAutosave();
+  rememberCurrentWorkspace();
+
+  const transitionToken = beginWorkspaceTransition(mode, {
+    sidebar: options.loading !== false,
+    loading: options.loading !== false,
+    refreshing: options.refreshing === true
+  });
+  state.mode = mode;
+  restoreWorkspaceMemory(mode);
 
   document.querySelectorAll('.mode-button').forEach(button => {
     button.classList.toggle('is-active', button.dataset.mode === mode);
@@ -1847,12 +2909,6 @@ function applyMode(mode) {
 
   elements.newPostButton.hidden = mode !== 'posts';
   elements.newGalleryButton.hidden = mode !== 'gallery';
-  elements.postDraftViewer.hidden = true;
-  elements.postEditor.hidden = true;
-  elements.pageEditor.hidden = true;
-  elements.galleryManager.hidden = true;
-  elements.imageLibrary.hidden = true;
-  elements.auditViewer.hidden = true;
   elements.workspaceKicker.textContent = `${getModeLabel(mode)}编辑器`;
   elements.workspaceTitle.textContent = `请选择${getModeLabel(mode)}`;
   updatePrimarySaveButtonLabel();
@@ -1860,15 +2916,15 @@ function applyMode(mode) {
   renderDeleteButton();
   renderWorkspaceSections();
   renderSidebarContentVisibility();
-  renderPostDraftPanel();
-  renderList();
+  renderPostStatusFilters();
+  if (options.renderCached === true) {
+    renderCachedModeWorkspace();
+  }
+  return transitionToken;
 }
 
-function fillPostEditor(record) {
-  state.autosave.suspend = true;
-  state.autosave.postDraftViewerOpen = false;
+function revealPostEditor(record) {
   renderWorkspaceSections();
-  elements.postDraftViewer.hidden = true;
   elements.postEditor.hidden = false;
   elements.pageEditor.hidden = true;
   elements.galleryManager.hidden = true;
@@ -1877,6 +2933,11 @@ function fillPostEditor(record) {
   updatePrimarySaveButtonLabel();
   renderPrimarySaveButton();
   renderDeleteButton();
+}
+
+function fillPostEditor(record) {
+  state.autosave.suspend = true;
+  revealPostEditor(record);
 
   elements.post.date.value = record.common.date || '保存后自动生成';
   elements.post.fileKey.value = record.common.fileKey || record.key || '';
@@ -1894,6 +2955,7 @@ function fillPostEditor(record) {
   elements.post.enDescription.value = record.en.description || '';
   elements.post.enTags.value = record.en.tags || '';
   elements.post.enBody.value = record.en.body || '';
+  renderPostEditorLanguage();
 
   const inferredFolder = inferImageFolder(record);
   if (state.imageFolders.includes(inferredFolder)) {
@@ -1906,9 +2968,15 @@ function fillPostEditor(record) {
   state.postImages.items = [];
   renderPostPhotoPreview();
   renderPostImageLibrary();
-  scheduleZhPreviewRender(0);
-  renderPostDraftPanel();
+  scheduleAllPostPreviews(0);
   state.autosave.suspend = false;
+  setPostSaveState(
+    state.currentDraft ? 'saved' : 'idle',
+    state.currentDraft
+      ? `草稿已保存 · ${formatTimestamp(state.currentDraft.updatedAt)}`
+      : '当前为已发布版本'
+  );
+  renderPostRecoveryBanner();
   loadPostImageLibrary(elements.post.imageFolderSelect.value).catch(() => {
     state.postImages.folder = '';
     state.postImages.items = [];
@@ -1917,14 +2985,12 @@ function fillPostEditor(record) {
 }
 
 function fillSettingsWorkspace() {
-  renderWorkspaceSections();
-  elements.postDraftViewer.hidden = true;
   elements.postEditor.hidden = true;
   elements.pageEditor.hidden = true;
   elements.galleryManager.hidden = true;
   elements.imageLibrary.hidden = true;
   elements.auditViewer.hidden = true;
-  elements.workspaceTitle.textContent = '设置';
+  renderSettingsWorkspaceSection();
   updatePrimarySaveButtonLabel();
   renderPrimarySaveButton();
   renderDeleteButton();
@@ -1932,7 +2998,6 @@ function fillSettingsWorkspace() {
 
 function fillAuditWorkspace() {
   renderWorkspaceSections();
-  elements.postDraftViewer.hidden = true;
   elements.postEditor.hidden = true;
   elements.pageEditor.hidden = true;
   elements.galleryManager.hidden = true;
@@ -1947,10 +3012,8 @@ function fillAuditWorkspace() {
   renderAuditPanel();
 }
 
-function fillPageEditor(record) {
-  state.autosave.suspend = true;
+function revealPageEditor(record) {
   renderWorkspaceSections();
-  elements.postDraftViewer.hidden = true;
   elements.pageEditor.hidden = false;
   elements.postEditor.hidden = true;
   elements.galleryManager.hidden = true;
@@ -1960,6 +3023,11 @@ function fillPageEditor(record) {
   updatePrimarySaveButtonLabel();
   renderPrimarySaveButton();
   renderDeleteButton();
+}
+
+function fillPageEditor(record, options = {}) {
+  state.autosave.suspend = true;
+  revealPageEditor(record);
 
   elements.page.title.value = record.title || '';
   elements.page.date.value = record.date || '保存后自动生成';
@@ -1970,7 +3038,9 @@ function fillPageEditor(record) {
   elements.page.body.value = record.body || '';
   elements.page.file.textContent = record.file || '';
   state.autosave.suspend = false;
-  maybeRestorePageDraft();
+  if (options.restoreDraft !== false) {
+    maybeRestorePageDraft();
+  }
 }
 
 function formatGalleryAlbumTitle(item) {
@@ -2230,21 +3300,25 @@ async function handleGalleryNormalizeFilenames() {
   }
 }
 
-function fillGalleryEditor(album) {
-  const nextAlbum = album || createEmptyGalleryAlbum();
-  state.gallery.currentAlbum = nextAlbum;
-  state.gallery.selectedSlug = nextAlbum.sourceSlug || nextAlbum.slug || '';
-  state.selectedId = state.gallery.selectedSlug;
+function revealGalleryEditor(album) {
   renderWorkspaceSections();
   elements.postEditor.hidden = true;
   elements.pageEditor.hidden = true;
   elements.galleryManager.hidden = false;
   elements.imageLibrary.hidden = true;
   elements.auditViewer.hidden = true;
-  elements.workspaceTitle.textContent = formatGalleryAlbumTitle(nextAlbum);
+  elements.workspaceTitle.textContent = formatGalleryAlbumTitle(album);
   updatePrimarySaveButtonLabel();
   renderPrimarySaveButton();
   renderDeleteButton();
+}
+
+function fillGalleryEditor(album) {
+  const nextAlbum = album || createEmptyGalleryAlbum();
+  state.gallery.currentAlbum = nextAlbum;
+  state.gallery.selectedSlug = nextAlbum.sourceSlug || nextAlbum.slug || '';
+  state.selectedId = state.gallery.selectedSlug;
+  revealGalleryEditor(nextAlbum);
 
   elements.gallery.slug.value = nextAlbum.slug || '';
   elements.gallery.file.textContent = nextAlbum.file || '新建后生成';
@@ -2481,6 +3555,15 @@ function getPostImageBaseName(folder = '') {
 async function loadMeta() {
   state.meta = await request('/api/meta');
   state.pages = state.meta.pages;
+  state.pages.forEach(item => {
+    cacheRecord('pages', item.id, item.record);
+  });
+  if (!state.workspaceMemory.pages.currentRecord && state.pages.length) {
+    state.workspaceMemory.pages = {
+      selectedId: state.pages[0].id,
+      currentRecord: state.pages[0].record
+    };
+  }
   renderCategoryOptions();
   renderGalleryFilterOptions();
 }
@@ -2501,21 +3584,67 @@ async function loadCommands() {
   renderCommandPanel();
 }
 
+async function preloadSecondaryWorkspaces() {
+  const [galleryResult, imageResult] = await Promise.allSettled([
+    request('/api/gallery'),
+    request('/api/images/library')
+  ]);
+
+  if (galleryResult.status === 'fulfilled') {
+    state.gallery.items = galleryResult.value.items || [];
+    state.gallery.items.forEach(item => {
+      cacheRecord('gallery', item.slug, item.record);
+    });
+  }
+
+  if (imageResult.status === 'fulfilled') {
+    const payload = imageResult.value;
+    state.images.selectedFolder = payload.folder || '';
+    state.images.items = payload.items || [];
+    state.images.selectedPaths = [];
+  }
+
+  const firstAlbum = state.gallery.items[0];
+  const firstAlbumRecord = firstAlbum ? getCachedRecord('gallery', firstAlbum.slug) : null;
+  if (firstAlbumRecord) {
+    state.gallery.currentAlbum = firstAlbumRecord;
+    state.gallery.selectedSlug = firstAlbumRecord.sourceSlug || firstAlbumRecord.slug || firstAlbum.slug;
+  }
+}
+
 async function loadPosts(selectFirst = false) {
-  const payload = await request('/api/posts');
-  state.posts = payload.items;
+  const requestedMode = state.mode;
+  const requestedTransitionToken = state.workspaceTransition.token;
+  const [publishedPayload, draftPayload] = await Promise.all([
+    request('/api/posts'),
+    request('/api/drafts')
+  ]);
+  if (state.mode !== requestedMode || state.workspaceTransition.token !== requestedTransitionToken) return;
+  state.publishedPosts = publishedPayload.items || [];
+  state.drafts = draftPayload.items || [];
+  rebuildPostItems();
   renderList();
   refreshAuditLogsSilently();
 
   if (selectFirst && state.posts.length) {
-    await selectItem(state.posts[0].key);
+    await selectItem(state.posts[0].id);
   }
 }
 
-async function loadGallery(selectFirst = false, preferredSlug = '') {
+async function loadGallery(selectFirst = false, preferredSlug = '', options = {}) {
+  const requestedMode = state.mode;
+  const requestedTransitionToken = state.workspaceTransition.token;
   const payload = await request('/api/gallery');
+  if (state.mode !== requestedMode || state.workspaceTransition.token !== requestedTransitionToken) return;
   state.gallery.items = payload.items || [];
+  state.gallery.items.forEach(item => {
+    cacheRecord('gallery', item.slug, item.record);
+  });
   renderList();
+
+  if (options.listOnly === true) {
+    return;
+  }
 
   if (!state.gallery.items.length) {
     if (state.mode === 'gallery') {
@@ -2534,9 +3663,12 @@ async function loadGallery(selectFirst = false, preferredSlug = '') {
 }
 
 async function loadImageLibrary(folder = '', options = {}) {
+  const requestedMode = state.mode;
+  const requestedTransitionToken = state.workspaceTransition.token;
   const targetFolder = typeof folder === 'string' ? folder : '';
   const query = targetFolder ? `?folder=${encodeURIComponent(targetFolder)}` : '';
   const payload = await request(`/api/images/library${query}`);
+  if (state.mode !== requestedMode || state.workspaceTransition.token !== requestedTransitionToken) return;
   const nextItems = payload.items || [];
   const nextPaths = new Set(nextItems.map(item => item.path));
   state.images.selectedFolder = payload.folder || '';
@@ -2685,49 +3817,114 @@ function getImageFileName(imagePath) {
 }
 
 async function selectItem(id) {
+  const requestedMode = state.mode;
+  const requestedTransitionToken = state.workspaceTransition.token;
   state.selectedId = id;
   renderList();
 
-  if (state.mode === 'posts') {
-    const record = await request(`/api/posts/${encodeURIComponent(id)}`);
-    state.currentRecord = record;
-    if (state.autosave.postDraftViewerOpen) {
-      fillPostDraftWorkspace(record);
-    } else {
-      fillPostEditor(record);
+  if (requestedMode === 'posts') {
+    const item = state.posts.find(post => post.id === id);
+    if (!item) {
+      throw new Error('找不到这篇文章或草稿。');
     }
+    state.currentDraft = item.draftId
+      ? (state.drafts.find(draft => draft.id === item.draftId) || null)
+      : null;
+    state.autosave.newDocumentId = '';
+    const cachedRecord = getCachedRecord('posts', id);
+    if (cachedRecord) {
+      state.currentRecord = cachedRecord;
+      fillPostEditor(cachedRecord);
+    }
+    const freshDraft = item.draftId
+      ? await request(`/api/drafts/${encodeURIComponent(item.draftId)}`)
+      : null;
+    const publishedKey = item.lifecycle === 'published' ? item.key : '';
+    const record = freshDraft
+      ? recordFromDraft(
+        freshDraft,
+        state.publishedPosts.find(post => `post:${post.key}` === freshDraft.contentKey)?.record || null
+      )
+      : await request(`/api/posts/${encodeURIComponent(publishedKey)}`);
+    if (
+      state.mode !== requestedMode
+      || state.workspaceTransition.token !== requestedTransitionToken
+      || state.selectedId !== id
+    ) return;
+    state.currentDraft = freshDraft;
+    cacheRecord('posts', id, record);
+    state.currentRecord = record;
+    state.workspaceMemory.posts = {
+      selectedId: id,
+      currentRecord: record,
+      currentDraft: freshDraft
+    };
+    fillPostEditor(record);
     refreshAuditLogsSilently();
     return;
   }
 
-  if (state.mode === 'pages') {
+  if (requestedMode === 'pages') {
+    const cachedRecord = getCachedRecord('pages', id);
+    if (cachedRecord) {
+      state.currentRecord = cachedRecord;
+      fillPageEditor(cachedRecord, { restoreDraft: false });
+    }
     const record = await request(`/api/pages/${encodeURIComponent(id)}`);
+    if (
+      state.mode !== requestedMode
+      || state.workspaceTransition.token !== requestedTransitionToken
+      || state.selectedId !== id
+    ) return;
+    cacheRecord('pages', id, record);
     state.currentRecord = record;
+    state.workspaceMemory.pages = {
+      selectedId: id,
+      currentRecord: record
+    };
     fillPageEditor(record);
     return;
   }
 
-  if (state.mode === 'gallery') {
+  if (requestedMode === 'gallery') {
     await selectGalleryAlbum(id);
     return;
   }
 
-  if (state.mode === 'settings') {
+  if (requestedMode === 'settings') {
+    if (state.mode !== requestedMode) return;
     fillSettingsWorkspace();
     return;
   }
 
-  if (state.mode === 'logs') {
+  if (requestedMode === 'logs') {
+    if (state.mode !== requestedMode || state.selectedId !== id) return;
+    state.audit.selectedId = id;
     state.currentRecord = (state.audit.items || []).find(item => item.id === id) || null;
     fillAuditWorkspace();
     return;
   }
 
+  if (state.mode !== requestedMode || state.selectedId !== id) return;
   await loadImageLibrary(id === '__root__' ? '' : id);
 }
 
 async function selectGalleryAlbum(slug) {
+  const requestedMode = state.mode;
+  const requestedTransitionToken = state.workspaceTransition.token;
+  state.selectedId = slug;
+  renderList();
+  const cachedRecord = getCachedRecord('gallery', slug);
+  if (cachedRecord) {
+    fillGalleryEditor(cachedRecord);
+  }
   const record = await request(`/api/gallery/${encodeURIComponent(slug)}`);
+  if (
+    state.mode !== requestedMode
+    || state.workspaceTransition.token !== requestedTransitionToken
+    || state.selectedId !== slug
+  ) return;
+  cacheRecord('gallery', slug, record);
   fillGalleryEditor(record);
 }
 
@@ -2911,6 +4108,8 @@ function fileToBase64(file) {
       const content = result.includes(',') ? result.split(',')[1] : result;
       resolve({
         name: file.name,
+        type: file.type || '',
+        size: file.size,
         content
       });
     };
@@ -2962,6 +4161,9 @@ async function handleSaveLlmSettings() {
       body: JSON.stringify(payload)
     });
     fillLlmSettings();
+    if (state.mode === 'settings') {
+      renderSettingsNavigation();
+    }
     setStatus(`LLM 配置已保存到 ${state.settings.envPath || '.env'}。`, 'success');
     showToast('LLM 配置已保存', `保存位置：${state.settings.envPath || '.env'}`);
   } catch (error) {
@@ -3159,31 +4361,15 @@ async function uploadSelectedImages(fileList) {
   }
 }
 
-async function savePostRecord(payload, options = {}) {
-  const draftIds = Array.from(new Set([
-    state.currentRecord && state.currentRecord.key ? state.currentRecord.key : '',
-    payload && payload.common && payload.common.fileKey ? String(payload.common.fileKey).trim() : '',
-    payload && payload.common && payload.common.slug ? String(payload.common.slug).trim() : '',
-    '__new__'
-  ].filter(Boolean)));
-  const saved = await request('/api/posts', {
-    method: 'POST',
-    body: JSON.stringify(payload)
-  });
-
-  draftIds.forEach(clearPostDraftFromStorage);
-  state.autosave.postDraftAliases = [];
-
-  state.currentRecord = saved;
-  state.selectedId = saved.key;
-  fillPostEditor(saved);
-  await loadPosts(false);
-
-  if (!options.silent) {
-    setStatus(options.message || '保存成功。', 'success');
+async function saveCurrentPostDraft(options = {}) {
+  if (state.autosave.timer) {
+    window.clearTimeout(state.autosave.timer);
+    state.autosave.timer = null;
   }
-
-  return saved;
+  const input = createPostDraftInput(buildPostPayload());
+  savePostRecoveryToStorage(input.payload);
+  setPostSaveState('saving', '正在保存草稿…');
+  return enqueuePostDraftSave(input, options);
 }
 
 function appendGalleryPhotos(paths) {
@@ -3820,7 +5006,7 @@ async function handleFormatZh() {
 
     setFormatProgress(82, '模型已返回结果，正在写入编辑区…');
     elements.post.zhBody.value = payload.content || '';
-    scheduleZhPreviewRender(0);
+    schedulePostPreviewRender('zh', 0);
 
     const canAutoSave = Boolean(
       elements.post.slug.value.trim() &&
@@ -3829,16 +5015,16 @@ async function handleFormatZh() {
     );
 
     if (canAutoSave) {
-      await savePostRecord(buildPostPayload(), {
+      await saveCurrentPostDraft({
         silent: true
       });
-      setFormatProgress(100, '排版结果已写入正文与 Markdown 文件。');
-      setStatus('中文稿已完成一键排版，并已自动写入 Markdown 文件。', 'success');
-      showToast('排版完成', '中文正文已更新到界面，并自动保存到了文章 Markdown 文件。');
+      setFormatProgress(100, '排版结果已写入正文并保存为草稿。');
+      setStatus('中文稿已完成一键排版，并已自动保存为私有草稿。', 'success');
+      showToast('排版完成', '中文正文已更新并保存为草稿；发布前不会改动站点文章。');
     } else {
       setFormatProgress(100, '排版结果已写入编辑区，等待手动保存。');
       setStatus('中文稿已完成一键排版，但当前文章信息不完整，暂未自动保存到文件。', 'success');
-      showToast('排版完成', '中文正文已写入编辑区；补齐 slug 和中英文标题后保存，即可写回 Markdown 文件。');
+      showToast('排版完成', '中文正文已写入编辑区；补齐 slug 和中英文标题后即可保存草稿。');
     }
 
     clearFormatProgress();
@@ -3854,6 +5040,7 @@ async function handleTranslateEn() {
     const targets = getMissingEnglishTargets();
     const targetCount = Object.values(targets).filter(Boolean).length;
     if (!targetCount) {
+      setPostEditorLanguage('en');
       setStatus('英文标题、摘要、标签和正文都已经有内容了；当前一键翻译会自动跳过已填字段。', 'success');
       showToast('无需翻译', '当前英文稿字段都已填充，没有新的空字段需要补。');
       return;
@@ -3881,6 +5068,8 @@ async function handleTranslateEn() {
     if (targets.description) elements.post.enDescription.value = payload.description || '';
     if (targets.tags) elements.post.enTags.value = Array.isArray(payload.tags) ? payload.tags.join(', ') : (payload.tags || '');
     if (targets.body) elements.post.enBody.value = payload.body || '';
+    schedulePostPreviewRender('en', 0);
+    setPostEditorLanguage('en');
 
     const canAutoSave = Boolean(
       elements.post.slug.value.trim() &&
@@ -3889,16 +5078,16 @@ async function handleTranslateEn() {
     );
 
     if (canAutoSave) {
-      await savePostRecord(buildPostPayload(), {
+      await saveCurrentPostDraft({
         silent: true
       });
-      setTranslateProgress(100, '英文稿已写入编辑区与 Markdown 文件。');
-      setStatus(`英文空字段已补齐，并已自动写入 Markdown 文件。当前模型：${payload.modelUsed || '未返回'}`, 'success');
+      setTranslateProgress(100, '英文稿已写入编辑区并保存为草稿。');
+      setStatus(`英文空字段已补齐，并已自动保存为私有草稿。当前模型：${payload.modelUsed || '未返回'}`, 'success');
       showToast('翻译完成', `已自动跳过原本有内容的字段，只补齐空白英文内容。模型：${payload.modelUsed || '未返回'}`);
     } else {
       setTranslateProgress(100, '英文稿已写入编辑区，等待手动保存。');
       setStatus(`英文空字段已补齐，但当前文章信息不完整，暂未自动保存到文件。当前模型：${payload.modelUsed || '未返回'}`, 'success');
-      showToast('翻译完成', `已自动跳过原本有内容的字段；补齐 slug 和标题后保存，即可写回 Markdown 文件。模型：${payload.modelUsed || '未返回'}`);
+      showToast('翻译完成', `已自动跳过原本有内容的字段；补齐 slug 和标题后即可保存草稿。模型：${payload.modelUsed || '未返回'}`);
     }
 
     clearTranslateProgress();
@@ -3941,7 +5130,7 @@ async function handleRewritePost() {
     elements.post.enDescription.value = payload.en && payload.en.description ? payload.en.description : '';
     elements.post.enTags.value = payload.en && Array.isArray(payload.en.tags) ? payload.en.tags.join(', ') : ((payload.en && payload.en.tags) || '');
     elements.post.enBody.value = payload.en && payload.en.body ? payload.en.body : '';
-    scheduleZhPreviewRender(0);
+    scheduleAllPostPreviews(0);
 
     const canAutoSave = Boolean(
       elements.post.slug.value.trim() &&
@@ -3950,16 +5139,16 @@ async function handleRewritePost() {
     );
 
     if (canAutoSave) {
-      await savePostRecord(buildPostPayload(), {
+      await saveCurrentPostDraft({
         silent: true
       });
-      setFormatProgress(100, '重度整理结果已写入双语正文与 Markdown 文件。');
-      setStatus(`中英文结构已重度整理，并已自动写入 Markdown 文件。当前模型：${payload.modelUsed || '未返回'}`, 'success');
-      showToast('重度整理完成', `中英文标题、摘要、标签和正文都已更新并保存。模型：${payload.modelUsed || '未返回'}`);
+      setFormatProgress(100, '重度整理结果已写入双语草稿。');
+      setStatus(`中英文结构已重度整理，并已自动保存为私有草稿。当前模型：${payload.modelUsed || '未返回'}`, 'success');
+      showToast('重度整理完成', `中英文标题、摘要、标签和正文都已更新到草稿。模型：${payload.modelUsed || '未返回'}`);
     } else {
       setFormatProgress(100, '重度整理结果已写入编辑区，等待手动保存。');
       setStatus(`中英文结构已重度整理，但当前文章信息不完整，暂未自动保存到文件。当前模型：${payload.modelUsed || '未返回'}`, 'success');
-      showToast('重度整理完成', `双语内容已写入编辑区；补齐 slug 后保存，即可写回 Markdown 文件。模型：${payload.modelUsed || '未返回'}`);
+      showToast('重度整理完成', `双语内容已写入编辑区；补齐 slug 后即可保存草稿。模型：${payload.modelUsed || '未返回'}`);
     }
 
     clearFormatProgress();
@@ -3985,6 +5174,7 @@ async function handleSaveGalleryAlbum() {
 
     state.gallery.currentAlbum = saved;
     state.gallery.selectedSlug = saved.slug;
+    cacheRecord('gallery', saved.slug, saved);
     await loadGallery(false, saved.slug);
     setStatus('画廊相册已保存，并已同步 gallery.yml。', 'success');
   } catch (error) {
@@ -4077,20 +5267,17 @@ async function handleDeleteGalleryFilterPreset() {
   }
 }
 
-async function handleSave() {
+async function handleSaveDraft() {
   if (!state.currentRecord && !['posts', 'gallery'].includes(state.mode)) {
     setStatus('请先选择一个页面。', 'error');
     return;
   }
 
   try {
-    setStatus('正在保存...');
+    setStatus(state.mode === 'posts' ? '正在保存草稿...' : '正在保存...');
 
     if (state.mode === 'posts') {
-      await savePostRecord(buildPostPayload(), {
-        message: '文章保存成功。'
-      });
-      showToast('文章已保存', '双语 Markdown 文件与当前编辑内容已同步。');
+      await saveCurrentPostDraft();
     } else if (state.mode === 'gallery') {
       await handleSaveGalleryAlbum();
     } else {
@@ -4101,12 +5288,64 @@ async function handleSave() {
       });
       clearPageDraftFromStorage(state.currentRecord.id);
       state.currentRecord = saved;
+      cacheRecord('pages', saved.id, saved);
+      state.workspaceMemory.pages = {
+        selectedId: saved.id,
+        currentRecord: saved
+      };
       fillPageEditor(saved);
       renderList();
       showToast('页面已保存', `页面内容已写回 ${saved.file}`);
     }
   } catch (error) {
     setStatus(error.message, 'error');
+  }
+}
+
+async function handlePublishPost() {
+  if (state.mode !== 'posts' || !state.currentRecord) {
+    setStatus('请先选择或新建一篇文章。', 'error');
+    return;
+  }
+
+  elements.publishButton.disabled = true;
+  elements.saveButton.disabled = true;
+  try {
+    setStatus('正在保存最新草稿并发布...');
+    setPostSaveState('saving', '正在准备发布…');
+    const draft = await saveCurrentPostDraft({ silent: true });
+    const published = await request(`/api/drafts/${encodeURIComponent(draft.id)}/publish`, {
+      method: 'POST'
+    });
+    const record = published.record;
+
+    clearPostRecoveryFromStorage(draft.contentKey);
+    state.drafts = state.drafts.filter(item => item.id !== draft.id);
+    state.currentDraft = null;
+    state.currentRecord = record;
+    state.selectedId = `post:${record.key}`;
+    state.autosave.newDocumentId = '';
+    state.autosave.dirty = false;
+    state.workspaceMemory.posts = {
+      selectedId: state.selectedId,
+      currentRecord: record,
+      currentDraft: null
+    };
+    await loadPosts(false);
+    cacheRecord('posts', state.selectedId, record);
+    fillPostEditor(record);
+    renderList();
+    setPostSaveState('saved', `已发布 · ${formatTimestamp(record.common && record.common.date)}`);
+    setStatus('文章发布成功，双语 Markdown 已原子写入。', 'success');
+    showToast('文章已发布', '中文与英文版本已同时写入站点内容。');
+    refreshAuditLogsSilently();
+  } catch (error) {
+    setPostSaveState('error', '发布失败，草稿仍安全保留');
+    setStatus(error.message, 'error');
+    showToast('发布未完成', error.message);
+  } finally {
+    elements.publishButton.disabled = false;
+    elements.saveButton.disabled = false;
   }
 }
 
@@ -4184,19 +5423,61 @@ async function handleDeleteCategoryPreset() {
 }
 
 async function handleDeletePost() {
-  if (!state.currentRecord || !state.currentRecord.key) {
-    setStatus('当前文章还没有保存，不需要删除。', 'error');
+  if (!state.currentRecord) {
+    setStatus('当前没有可删除的文章或草稿。', 'error');
     return;
   }
 
   const title = state.currentRecord.zh.title || state.currentRecord.en.title || state.currentRecord.key;
+  if (state.currentDraft) {
+    if (!window.confirm(`确认删除草稿《${title || '未命名草稿'}》吗？\n\n如果它对应一篇已发布文章，已发布版本不会被删除。`)) {
+      return;
+    }
+
+    try {
+      const draft = state.currentDraft;
+      setStatus('正在删除草稿...');
+      await request(`/api/drafts/${encodeURIComponent(draft.id)}`, {
+        method: 'DELETE'
+      });
+      clearPostRecoveryFromStorage(draft.contentKey);
+      state.drafts = state.drafts.filter(item => item.id !== draft.id);
+      state.currentDraft = null;
+      rebuildPostItems();
+
+      const sourceKey = String(draft.contentKey || '').startsWith('post:')
+        ? String(draft.contentKey).slice('post:'.length)
+        : '';
+      const publishedItem = sourceKey
+        ? state.posts.find(item => item.id === `post:${sourceKey}`)
+        : null;
+      if (publishedItem) {
+        await selectItem(publishedItem.id);
+      } else {
+        createEmptyPost();
+      }
+      renderList();
+      setStatus('草稿已删除，已发布内容未受影响。', 'success');
+      showToast('草稿已删除', sourceKey ? '已恢复显示文章的已发布版本。' : '未发布草稿已从本机草稿库移除。');
+      return;
+    } catch (error) {
+      setStatus(error.message, 'error');
+      return;
+    }
+  }
+
+  if (!state.currentRecord.key) {
+    setStatus('当前新文章还没有保存为草稿。', 'error');
+    return;
+  }
+
   if (!window.confirm(`确认删除文章《${title}》吗？\n\n会删除对应的中英文 Markdown 文件，并尝试联动清理这篇文章 photos 字段里的图片；如果图片仍被其他内容引用，则会保留。`)) {
     return;
   }
 
   try {
     setStatus('正在删除文章...');
-    clearPostDraftFromStorage(state.currentRecord.key);
+    clearPostRecoveryFromStorage(`post:${state.currentRecord.key}`);
     const payload = await request(`/api/posts/${encodeURIComponent(state.currentRecord.key)}/delete`, {
       method: 'POST'
     });
@@ -4245,10 +5526,15 @@ async function handleCommand(name) {
 }
 
 function createEmptyPost() {
-  state.selectedId = '';
+  state.currentDraft = null;
+  state.autosave.newDocumentId = createClientDocumentId();
+  state.autosave.dirty = false;
+  state.autosave.localRecovery = null;
+  state.selectedId = `new:${state.autosave.newDocumentId}`;
   state.currentRecord = {
     kind: 'post',
     key: '',
+    revision: '',
     status: '新建',
     sourceFiles: { zh: '', en: '' },
     common: {
@@ -4264,15 +5550,22 @@ function createEmptyPost() {
     zh: { title: '', description: '', tags: '', permalink: '', body: '', extras: {} },
     en: { title: '', description: '', tags: '', permalink: '', body: '', extras: {} }
   };
+  state.workspaceMemory.posts = {
+    selectedId: state.selectedId,
+    currentRecord: state.currentRecord,
+    currentDraft: null
+  };
   renderList();
   fillPostEditor(state.currentRecord);
-  setStatus('已进入新建文章模式。保存时会自动写入当前时间。');
+  setPostSaveState('idle', '新文章尚未保存为草稿');
+  renderDeleteButton();
+  setStatus('已进入新建文章模式；保存草稿不会写入公开文章。');
 }
 
 async function bootstrap() {
+  const transitionToken = applyMode('posts');
   try {
     await openCmsSession();
-    applyMode('posts');
     renderSidebarState();
     renderPanelVisibility();
     await loadMeta();
@@ -4280,32 +5573,45 @@ async function bootstrap() {
     await loadImageFolders();
     await loadCommands();
     await loadPosts(true);
-    await loadAuditLogs({ silent: true });
+    await Promise.all([
+      preloadSecondaryWorkspaces(),
+      loadAuditLogs({ selectFirst: true, silent: true })
+    ]);
     setStatus('本地 CMS 已加载。');
   } catch (error) {
     setStatus(error.message, 'error');
+  } finally {
+    finishWorkspaceTransition(transitionToken, 'posts');
   }
 }
 
 document.querySelectorAll('.mode-button').forEach(button => {
   button.addEventListener('click', async () => {
-    applyMode(button.dataset.mode);
+    const mode = button.dataset.mode;
+    const transitionToken = applyMode(mode, {
+      loading: false,
+      refreshing: true,
+      renderCached: true
+    });
     try {
-      if (button.dataset.mode === 'posts') {
+      if (mode === 'posts') {
         await loadPosts(false);
-      } else if (button.dataset.mode === 'gallery') {
-        await loadGallery(true);
-      } else if (button.dataset.mode === 'images') {
-        await loadImageLibrary('', { skipWorkspaceRender: false });
-      } else if (button.dataset.mode === 'logs') {
+      } else if (mode === 'gallery') {
+        await loadGallery(false, '', { listOnly: true });
+      } else if (mode === 'images') {
+        await loadImageLibrary(state.images.selectedFolder, { skipWorkspaceRender: false });
+      } else if (mode === 'logs') {
         await loadAuditLogs({ selectFirst: true, silent: true });
-      } else if (button.dataset.mode === 'settings') {
+      } else if (mode === 'settings') {
         fillSettingsWorkspace();
       } else {
         renderList();
       }
     } catch (error) {
+      renderList();
       setStatus(error.message, 'error');
+    } finally {
+      finishWorkspaceTransition(transitionToken, mode);
     }
   });
 });
@@ -4316,13 +5622,38 @@ elements.sidebarToggleButton.addEventListener('click', () => {
 });
 
 elements.listPanel.addEventListener('click', async event => {
+  const settingsButton = event.target.closest('[data-settings-section]');
+  if (settingsButton && state.mode === 'settings') {
+    const nextSection = settingsButton.dataset.settingsSection;
+    if (!['appearance', 'ai'].includes(nextSection)) return;
+    state.settingsSection = nextSection;
+    renderSettingsWorkspaceSection();
+    elements.workspaceScroll.scrollTop = 0;
+    setStatus(
+      nextSection === 'appearance'
+        ? '已打开外观与品牌设置。'
+        : '已打开 AI 与排版设置。',
+      'success'
+    );
+    return;
+  }
+
   const button = event.target.closest('[data-item-id]');
   if (!button) return;
+  flushPendingAutosave();
+  const mode = state.mode;
+  const transitionToken = beginWorkspaceTransition(mode, {
+    loading: false,
+    refreshing: true,
+    hideContent: false
+  });
   try {
     await selectItem(button.dataset.itemId);
     setStatus('已加载。');
   } catch (error) {
     setStatus(error.message, 'error');
+  } finally {
+    finishWorkspaceTransition(transitionToken, mode);
   }
 });
 
@@ -4348,14 +5679,77 @@ elements.searchInput.addEventListener('input', () => {
   resetCurrentModePagination();
   renderList();
 });
-elements.saveButton.addEventListener('click', handleSave);
+elements.saveButton.addEventListener('click', handleSaveDraft);
+elements.publishButton.addEventListener('click', handlePublishPost);
 elements.deleteButton.addEventListener('click', handleDeletePost);
+elements.postStatusFilters.forEach(button => {
+  button.addEventListener('click', () => {
+    state.postStatusFilter = button.dataset.postStatusFilter;
+    resetPostPagination();
+    renderPostStatusFilters();
+    renderList();
+  });
+});
 elements.translateGalleryButton.addEventListener('click', handleTranslateGalleryToEnglish);
 elements.saveLlmButton.addEventListener('click', handleSaveLlmSettings);
 elements.testLlmButton.addEventListener('click', handleTestLlmConnection);
+renderSchoolThemePicker();
+elements.themeCategoryNavigation.addEventListener('click', event => {
+  const continentButton = event.target.closest('[data-theme-continent]');
+  if (continentButton) {
+    const continent = CMS_SCHOOL_THEME_CATALOG.continents.find(item => (
+      item.id === continentButton.dataset.themeContinent
+    ));
+    if (!continent || !continent.collections.length) return;
+    state.themeCollection = continent.collections[0];
+    state.themeSearchQuery = '';
+    renderThemeCategoryNavigation();
+    renderSchoolThemePicker();
+    const collection = getThemeCollection();
+    setStatus(`已打开${continent.label}的${collection.label}，共 ${collection.themes.length} 个学校主题。`, 'success');
+    return;
+  }
+
+  const categoryButton = event.target.closest('[data-theme-collection]');
+  if (!categoryButton) return;
+  const collectionId = categoryButton.dataset.themeCollection;
+  if (!CMS_SCHOOL_THEME_CATALOG.collections[collectionId]) return;
+  state.themeCollection = collectionId;
+  state.themeSearchQuery = '';
+  renderThemeCategoryNavigation();
+  renderSchoolThemePicker();
+  const collection = getThemeCollection();
+  setStatus(`已打开${collection.label}，共 ${collection.themes.length} 个学校主题。`, 'success');
+});
+elements.themeSchoolSearch.addEventListener('input', () => {
+  state.themeSearchQuery = elements.themeSchoolSearch.value;
+  renderSchoolThemePicker();
+});
+elements.skinPicker.addEventListener('click', event => {
+  const button = event.target.closest('[data-ui-skin]');
+  if (!button) return;
+  const skin = button.dataset.uiSkin;
+  if (!CMS_UI_SKINS.has(skin)) return;
+  applyCmsUiSkin(skin);
+  const label = CMS_UI_SKIN_LABELS[skin];
+  setStatus(`学校主题已切换为 ${label}。`, 'success');
+  showToast('学校主题已切换', `${label} 主题只保存在当前浏览器。`);
+});
 elements.formatZhButton.addEventListener('click', handleFormatZh);
 elements.rewritePostButton.addEventListener('click', handleRewritePost);
 elements.translateEnButton.addEventListener('click', handleTranslateEn);
+elements.postLanguageTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    setPostEditorLanguage(tab.dataset.postLanguage);
+  });
+  tab.addEventListener('keydown', handlePostLanguageTabKeydown);
+});
+elements.postBodyViewTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    setPostBodyView(tab.dataset.postBodyLanguage, tab.dataset.postBodyView);
+  });
+  tab.addEventListener('keydown', handlePostBodyViewTabKeydown);
+});
 elements.createImageFolderButton.addEventListener('click', handleCreateImageFolder);
 elements.renameImageFolderButton.addEventListener('click', handleRenameImageFolder);
 elements.deleteImageFolderButton.addEventListener('click', handleDeleteImageFolder);
@@ -4446,8 +5840,11 @@ elements.post.imageFolderSelect.addEventListener('change', async () => {
   }
 });
 elements.post.zhBody.addEventListener('input', () => {
-  scheduleZhPreviewRender();
+  schedulePostPreviewRender('zh');
   renderPostImageLibrary();
+});
+elements.post.enBody.addEventListener('input', () => {
+  schedulePostPreviewRender('en');
 });
 elements.postEditor.addEventListener('input', scheduleAutosave);
 elements.postEditor.addEventListener('change', scheduleAutosave);
@@ -4465,6 +5862,12 @@ elements.insertNeteaseMusicButton.addEventListener('click', () => {
 elements.neteaseMusicCancelButton.addEventListener('click', () => {
   toggleNeteaseMusicPanel(false);
 });
+elements.musicSourceTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    setMusicSource(tab.dataset.musicSource);
+  });
+  tab.addEventListener('keydown', handleMusicSourceTabKeydown);
+});
 elements.neteaseMusicValidateButton.addEventListener('click', async () => {
   try {
     await validateNeteaseMusicInput(elements.neteaseMusicInput.value);
@@ -4474,8 +5877,9 @@ elements.neteaseMusicValidateButton.addEventListener('click', async () => {
 });
 elements.neteaseMusicConfirmButton.addEventListener('click', async () => {
   try {
-    const result = await insertNeteaseMusicIntoZhBody(elements.neteaseMusicInput.value);
-    setStatus(`已把网易云音乐播放器插入中文稿：${result.songId}${result.title ? ` · ${result.title}` : ''}`, 'success');
+    const targetLabel = getActivePostLanguageLabel();
+    const result = await insertNeteaseMusicIntoActiveBody(elements.neteaseMusicInput.value);
+    setStatus(`已把网易云音乐播放器插入${targetLabel}：${result.songId}${result.title ? ` · ${result.title}` : ''}`, 'success');
   } catch (error) {
     setStatus(error.message, 'error');
   }
@@ -4487,6 +5891,34 @@ elements.neteaseMusicInput.addEventListener('keydown', event => {
   if (event.key !== 'Enter') return;
   event.preventDefault();
   elements.neteaseMusicConfirmButton.click();
+});
+elements.localAudioCancelButton.addEventListener('click', () => {
+  toggleNeteaseMusicPanel(false);
+});
+elements.localAudioSelectButton.addEventListener('click', event => {
+  event.stopPropagation();
+  elements.localAudioFileInput.click();
+});
+elements.localAudioFileInput.addEventListener('change', event => {
+  uploadSelectedLocalAudio(event.target.files);
+});
+elements.localAudioDropzone.addEventListener('click', event => {
+  if (event.target === elements.localAudioFileInput || state.music.uploadPending) return;
+  elements.localAudioFileInput.click();
+});
+elements.localAudioDropzone.addEventListener('dragover', event => {
+  if (state.music.uploadPending) return;
+  event.preventDefault();
+  elements.localAudioDropzone.classList.add('is-dragover');
+});
+elements.localAudioDropzone.addEventListener('dragleave', () => {
+  elements.localAudioDropzone.classList.remove('is-dragover');
+});
+elements.localAudioDropzone.addEventListener('drop', event => {
+  event.preventDefault();
+  elements.localAudioDropzone.classList.remove('is-dragover');
+  if (state.music.uploadPending) return;
+  uploadSelectedLocalAudio(event.dataTransfer.files);
 });
 elements.post.imageLibraryGrid.addEventListener('click', async event => {
   const button = event.target.closest('[data-post-image-action]');
@@ -4526,48 +5958,21 @@ elements.post.imageLibraryGrid.addEventListener('click', async event => {
     setStatus(error.message, 'error');
   }
 });
-elements.postDraftToggleButton.addEventListener('click', () => {
-  state.autosave.postDraftViewerOpen = !state.autosave.postDraftViewerOpen;
-  renderPostDraftPanel();
-
-  if (state.autosave.postDraftViewerOpen) {
-    fillPostDraftWorkspace(state.currentRecord);
-    return;
-  }
-
-  if (state.currentRecord) {
-    fillPostEditor(state.currentRecord);
-    return;
-  }
-
-  renderWorkspaceSections();
-  elements.postDraftViewer.hidden = true;
-  elements.postEditor.hidden = true;
-  elements.workspaceTitle.textContent = '请选择文章';
-  renderPrimarySaveButton();
-  renderDeleteButton();
+elements.recoveryRestoreButton.addEventListener('click', () => {
+  const recovery = state.autosave.localRecovery || loadPostRecoveryFromStorage();
+  if (!recovery || !recovery.payload) return;
+  applyPostDraftPayload(recovery.payload);
+  state.autosave.dirty = true;
+  elements.postRecoveryBanner.hidden = true;
+  setPostSaveState('dirty', '已恢复本地修改，等待保存草稿');
+  scheduleAutosave();
+  setStatus(`已恢复浏览器恢复副本：${formatTimestamp(recovery.savedAt)}`, 'success');
 });
-elements.post.draftRestoreButton.addEventListener('click', () => {
-  const draftEntry = getCurrentPostDraftEntry();
-  if (!draftEntry || !draftEntry.payload) return;
-
-  if (!state.currentRecord) return;
-
-  state.autosave.postDraftViewerOpen = false;
-  fillPostEditor(state.currentRecord);
-  applyPostDraftPayload(draftEntry.payload);
-  renderPostDraftPanel();
-  setStatus(`已恢复本地草稿：${formatTimestamp(draftEntry.savedAt)}`, 'success');
-});
-elements.post.draftClearButton.addEventListener('click', () => {
-  const draftEntry = getCurrentPostDraftEntry();
-  if (!draftEntry) return;
-
-  clearPostDraftAliases(draftEntry.draftIds);
-  state.autosave.postDraftAliases = [];
-  fillPostDraftWorkspace(state.currentRecord);
-  renderPostDraftPanel();
-  setStatus('已删除这篇文章的本地草稿。', 'success');
+elements.recoveryDiscardButton.addEventListener('click', () => {
+  clearPostRecoveryFromStorage();
+  state.autosave.localRecovery = null;
+  elements.postRecoveryBanner.hidden = true;
+  setStatus('已丢弃浏览器恢复副本，服务器草稿未受影响。', 'success');
 });
 elements.gallery.imageFileInput.addEventListener('change', event => {
   uploadGalleryImages(event.target.files);
@@ -4825,11 +6230,20 @@ elements.refreshButton.addEventListener('click', async () => {
     setStatus(error.message, 'error');
   }
 });
-elements.newPostButton.addEventListener('click', createEmptyPost);
+elements.newPostButton.addEventListener('click', () => {
+  flushPendingAutosave();
+  createEmptyPost();
+});
 
-window.addEventListener('pagehide', closeCmsSession);
-window.addEventListener('beforeunload', closeCmsSession);
+function handlePageExit() {
+  flushPendingAutosave();
+  closeCmsSession();
+}
 
+window.addEventListener('pagehide', handlePageExit);
+window.addEventListener('beforeunload', handlePageExit);
+
+applyCmsUiSkin(readStoredCmsUiSkin(), { persist: false });
 bootstrap();
 window.setInterval(() => {
   loadCommands().catch(() => {});

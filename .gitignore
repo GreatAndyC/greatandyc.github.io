@@ -17,6 +17,7 @@ db.json
 .env
 .env.*
 .local-cms.json
+.local-cms/
 !.env.example
 
 # local editor / temp

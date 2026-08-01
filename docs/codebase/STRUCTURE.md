@@ -6,58 +6,63 @@
 
 | 路径 | 职责 | 证据 |
 |------|------|------|
-| `_config.yml` | Hexo 站点、URL、语言顺序、生成器和部署配置 | `_config.yml` |
-| `source/` | Hexo 的直接输入：文章、独立页面、数据和图片 | `_config.yml`、`source/` |
-| `content/gallery/` | 人工维护的画廊 Markdown 源数据 | `tools/gallery-sync.js` |
+| `_config.yml` | 域名、语言顺序、永久链接、生成器和部署配置 | `_config.yml` |
+| `source/` | Hexo 的直接输入：文章、页面、数据、管理入口和图片 | `_config.yml`、`source/` |
+| `content/gallery/` | 人工维护的结构化画廊 Markdown 源 | `tools/gallery-sync.js` |
 | `scripts/` | Hexo 启动时自动加载的站点级生成器 | `scripts/localized-taxonomy.js` |
-| `themes/next/` | 仓库内置且已定制的 NexT 主题、模板、helper 和浏览器脚本 | `themes/next/package.json`、`themes/next/scripts/helpers/engine.js` |
-| `tools/` | 本地 CMS、画廊同步、画廊 CLI 和图片命名工具 | `package.json`、`tools/` |
+| `themes/next/` | 仓库内置并定制的 NexT 主题、模板、helper、样式和前台脚本 | `themes/next/package.json` |
+| `tools/` | 本地 CMS、画廊工具和图片命名/压缩工具 | `package.json`、`tools/` |
+| `test/` | Node 契约/安全测试、Playwright E2E 和视觉基线 | `package.json`、`playwright.config.js` |
 | `languages/` | 站点级英文与中文文案覆盖 | `languages/en.yml`、`languages/zh-CN.yml` |
-| `scaffolds/` | Hexo 新建文章、页面和草稿的模板 | `scaffolds/` |
-| `.github/workflows/` | 自动构建与 GitHub Pages 发布 | `.github/workflows/deploy.yml` |
-| `docs/` | 写作、本地 CMS、维护和代码库说明 | `docs/` |
-| `public/` | 构建产物，不是编辑源 | `_config.yml`、`.gitignore` |
-| `.deploy_git/` | 本地部署缓存，不是编辑源 | `.gitignore` |
+| `scaffolds/` | Hexo 新文章、页面和草稿模板 | `scaffolds/` |
+| `.github/` | CI/CD、定时质量检查和 Dependabot | `.github/workflows/`、`.github/dependabot.yml` |
+| `docs/` | 写作、CMS、测试、维护和代码库说明 | `docs/` |
+| `public/` | Hexo 构建输出，不是编辑源 | `_config.yml`、`.gitignore` |
+| `.deploy_git/` | 本地 Hexo deploy 缓存，不是编辑源 | `.gitignore` |
 
-`source/` 内的重要边界：
+`source/` 的关键边界：
 
-- `source/_posts/`：所有中英文文章，共用一个目录，以 `lang` 和文件后缀区分。
-- `source/about/`、`source/gallery/`、`source/tags/`、`source/categories/`：中文独立页。
+- `source/_posts/`：48 篇文章；24 篇 `en`、24 篇 `zh-CN`，统一放在一个目录。
+- `source/about/`、`source/gallery/`、`source/work/`：中文独立页。
 - `source/en/`：英文独立页。
-- `source/_data/gallery.yml`：Hexo/主题实际消费的画廊数据。
-- `source/_data/styles.styl`：站点级样式覆盖。
-- `source/images/`：文章、画廊、头像等静态图片。
-- `source/admin/`：Decap CMS 的线上入口与配置壳。
+- `source/zh-CN/`：中文显式语言首页/taxonomy 入口。
+- `source/_data/gallery.yml`：Hexo/主题消费的派生画廊数据。
+- `source/_data/styles.styl`：2,341 行站点级全局样式覆盖。
+- `source/images/`：447 个被 Git 跟踪的图片文件，约 276 MB。
+- `source/admin/`：Decap CMS 的线上入口与配置。
 
 ### 2）入口点
 
 - 主构建入口：`package.json` 的 `build` / `server` / `deploy` 脚本调用 Hexo CLI。
-- Hexo 站点扩展入口：`scripts/localized-taxonomy.js`。
-- 主题扩展入口：`themes/next/scripts/helpers/engine.js` 及 `themes/next/scripts/filters/`。
-- 本地管理入口：`tools/local-cms.js`，由 `npm run cms:local` 启动。
-- 画廊同步入口：`tools/gallery-sync.js`，由 `npm run gallery:sync` 启动。
-- 浏览器画廊入口：`themes/next/source/js/gallery-loader.js`。
-- 线上不存在 Node.js 应用入口；部署后只有静态资源。
+- 站点生成器：`scripts/localized-taxonomy.js`。
+- 主题渲染器：`themes/next/scripts/renderer.js`，把 `.njk` 和 `.swig` 交给 Nunjucks。
+- 主题扩展：`themes/next/scripts/helpers/engine.js` 及 `themes/next/scripts/filters/`。
+- 本地管理服务：`tools/local-cms.js`，由 `npm run cms:local` 启动。
+- 本地 CMS 前端：`tools/local-cms/index.html`、`app.js`、`app.css`。
+- 画廊同步：`tools/gallery-sync.js`。
+- 浏览器交互：`themes/next/source/js/` 和生成的 `js/portfolio-gallery.js`。
+- 线上没有 Node.js 请求入口；部署后只有静态文件和第三方浏览器服务。
 
 ### 3）模块边界
 
 | 边界 | 应放内容 | 不应放内容 |
 |------|----------|------------|
-| `source/` | 可发布内容和静态资源 | 生成器逻辑、密钥 |
-| `content/gallery/` | 可人工维护的画廊记录 | 最终前台渲染逻辑 |
-| `scripts/` | 站点级 Hexo 生成器 | 页面样式和文章正文 |
-| `themes/next/` | 页面模板、主题 helper、客户端交互 | 原始文章和个人密钥 |
-| `tools/` | 只在本机运行的内容管理与同步工具 | 线上必须存在的 API |
-| `public/` / `.deploy_git/` | 生成输出和部署缓存 | 手工维护的源文件 |
+| `source/` | 可发布内容、页面数据和静态资源 | 密钥、构建缓存、通用 Node 服务逻辑 |
+| `content/gallery/` | 可编辑的画廊事实源 | 最终渲染模板 |
+| `scripts/` | 站点级 Hexo generator | 页面样式和文章正文 |
+| `themes/next/` | 主题模板、helper/filter 和客户端交互 | 内容事实源、私密配置 |
+| `tools/` | 只在本机运行的内容管理与转换工具 | 线上必须存在的 API |
+| `test/` | 生成契约、浏览器验收与基线 | 生产逻辑 |
+| `public/` / `.deploy_git/` | 生成结果与部署缓存 | 手工维护的源文件 |
 
-### 4）命名和组织规则
+### 4）命名与组织规则
 
-- 双语文章：`<date>-<slug>.zh-CN.md` 与 `<date>-<slug>.en.md` 成对存在。
-- 文章永久链接由 front matter 明确区分；英文通常为 `en/...`，中文保留无语言前缀的旧 URL。
-- 英文独立页使用 `source/en/<page>/index.md`，中文独立页使用 `source/<page>/index.md`。
-- JavaScript 文件以 kebab-case 为主，函数和变量使用 camelCase，常量使用 UPPER_SNAKE_CASE。
-- 项目没有 TypeScript 路径别名；Node.js 脚本使用 CommonJS `require` 和相对路径。
-- `public/` 和 `.deploy_git/` 属于生成内容，分析和改动时应排除。
+- 双语文章：`<date>-<slug>.zh-CN.md` 与 `<date>-<slug>.en.md` 成对。
+- 工具/脚本文件以 kebab-case 为主；函数和变量为 camelCase；常量为 UPPER_SNAKE_CASE。
+- 英文独立页通常为 `source/en/<page>/index.md`；中文兼容页通常为 `source/<page>/index.md`，taxonomy 另有 `source/zh-CN/` 入口。
+- JavaScript 使用相对路径和 CommonJS `require`；无路径别名和 barrel exports。
+- 目录按“内容、生成、主题、创作工具、测试”职责分区，不是前端组件树或传统 MVC 分层。
+- `public/`、`.deploy_git/`、测试报告和 Lighthouse 输出均为生成物，应从源码分析和手工编辑中排除。
 
 ### 5）证据
 
@@ -67,4 +72,6 @@
 - `scripts/localized-taxonomy.js`
 - `tools/local-cms.js`
 - `tools/gallery-sync.js`
-- `themes/next/layout/page.swig`
+- `themes/next/scripts/renderer.js`
+- `themes/next/scripts/helpers/engine.js`
+- `playwright.config.js`
