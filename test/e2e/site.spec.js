@@ -109,7 +109,7 @@ for (const languageSwitch of [
     documentLanguage: 'en'
   }
 ]) {
-  test(`language selector maps ${languageSwitch.from} to ${languageSwitch.path}`, async ({ page }) => {
+  test(`language switcher maps ${languageSwitch.from} to ${languageSwitch.path}`, async ({ page }) => {
     const problems = await openPage(page, languageSwitch.from);
 
     if (page.viewportSize().width < 992) {
@@ -119,7 +119,7 @@ for (const languageSwitch of [
 
     await Promise.all([
       page.waitForURL(url => url.pathname === languageSwitch.path),
-      page.locator('.lang-select').selectOption(languageSwitch.language)
+      page.locator(`.language-switcher-option[data-language="${languageSwitch.language}"]`).click()
     ]);
 
     await expect(page.locator('html')).toHaveAttribute('lang', languageSwitch.documentLanguage);

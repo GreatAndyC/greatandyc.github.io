@@ -73,13 +73,15 @@ test('all generated local links and assets resolve to a generated file', () => {
   assert.deepEqual(brokenReferences, [], `broken generated references:\n${brokenReferences.join('\n')}`);
 });
 
-test('every language-selector destination exists and has the requested document language', () => {
+test('every language-switcher destination exists and has the requested document language', () => {
   const languageErrors = [];
 
   htmlFiles.forEach(filePath => {
     const html = readHtml(filePath);
     const options = [
-      ...html.matchAll(/<option\s+value="(en|zh-CN)"\s+data-href="([^"]+)"/g)
+      ...html.matchAll(
+        /class="language-switcher-option[^"]*"[^>]*data-language="(en|zh-CN)"[^>]*data-href="([^"]+)"/g
+      )
     ];
 
     options.forEach(([, language, targetUrl]) => {

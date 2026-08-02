@@ -370,7 +370,14 @@ NexT.utils = {
     } else {
       sidebarNav.style.display = 'none';
       sidebarNav.classList.remove('motion-element');
-      document.querySelector('.sidebar-nav-overview').click();
+      // The overview is the default panel on index/about-style pages. Show
+      // it synchronously so a fixed rail never paints as a blank, truncated
+      // card while the tab animation is still starting.
+      const overviewNav = document.querySelector('.sidebar-nav-overview');
+      const overviewPanel = document.querySelector('.site-overview-wrap');
+      overviewNav.classList.add('sidebar-nav-active');
+      overviewPanel.classList.add('sidebar-panel-active');
+      overviewPanel.style.opacity = '1';
     }
     NexT.utils.initSidebarDimension();
     if (!this.isDesktop() || CONFIG.scheme === 'Pisces' || CONFIG.scheme === 'Gemini') return;

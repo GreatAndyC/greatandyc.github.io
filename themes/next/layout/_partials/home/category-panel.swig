@@ -47,8 +47,8 @@
         </div>
       {%- endif %}
       <div class="home-view-toggle" role="group" aria-label="文章视图切换">
-        <button class="home-view-button is-active" type="button" data-view-mode="card" aria-label="卡片视图"><i class="fa fa-th-large" aria-hidden="true"></i></button>
-        <button class="home-view-button" type="button" data-view-mode="list" aria-label="列表视图"><i class="fa fa-list" aria-hidden="true"></i></button>
+        <button class="home-view-button" type="button" data-view-mode="card" aria-label="卡片视图"><i class="fa fa-th-large" aria-hidden="true"></i></button>
+        <button class="home-view-button is-active" type="button" data-view-mode="list" aria-label="列表视图"><i class="fa fa-list" aria-hidden="true"></i></button>
       </div>
     </div>
   </section>

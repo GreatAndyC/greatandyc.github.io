@@ -7,11 +7,25 @@ NexT.boot.registerEvents = function() {
   NexT.utils.registerScrollPercent();
   NexT.utils.registerCanIUseTag();
 
+  // Keep the mobile drawer anchored to the real header height. The title can
+  // wrap at narrow widths, so a fixed 79px offset would either overlap the
+  // header or leave an unnecessary gap.
+  var syncRailHeaderOffset = function() {
+    var header = document.querySelector('.header-inner');
+    if (!header) return;
+    var headerBottom = Math.ceil(header.getBoundingClientRect().bottom);
+    document.documentElement.style.setProperty('--rail-header-offset', headerBottom + 'px');
+  };
+  syncRailHeaderOffset();
+  window.addEventListener('resize', syncRailHeaderOffset);
+
   // Mobile top menu bar.
-  document.querySelector('.site-nav-toggle .toggle').addEventListener('click', () => {
+  document.querySelector('.site-nav-toggle .toggle').addEventListener('click', event => {
     event.currentTarget.classList.toggle('toggle-close');
     var siteNav = document.querySelector('.site-nav');
-    var animateAction = siteNav.classList.contains('site-nav-on') ? 'slideUp' : 'slideDown';
+    var willOpen = !siteNav.classList.contains('site-nav-on');
+    var animateAction = willOpen ? 'slideDown' : 'slideUp';
+    document.documentElement.classList.toggle('rail-drawer-open', willOpen);
 
     if (typeof Velocity === 'function') {
       Velocity(siteNav, animateAction, {

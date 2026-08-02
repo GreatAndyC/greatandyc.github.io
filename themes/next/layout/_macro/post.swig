@@ -4,7 +4,7 @@
   <article
     itemscope
     itemtype="http://schema.org/Article"
-    class="post-block"
+    class="post-block{%- if is_index and post.photos and post.photos.length %} has-cover{%- endif %}"
     lang="{{ post.lang or config.language }}"
     {%- if is_index and post.categories and post.categories.length %} data-home-categories="{%- for cat in post.categories.toArray() -%}{{ cat.name | lower }}{%- if loop.index !== post.categories.length %},{%- endif -%}{%- endfor -%}"{%- endif %}
     {%- if is_index %} data-home-published="{{ moment(post.date).valueOf() }}" data-home-updated="{{ moment(post.updated).valueOf() }}"{%- endif %}
@@ -54,7 +54,7 @@
           {%- set datetime_diff = date_diff or time_diff %}
 
           {%- if theme.post_meta.created_at %}
-            <span class="post-meta-item">
+            <span class="post-meta-item post-meta-item-created">
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
@@ -74,7 +74,7 @@
             {%- set display_updated = not theme.post_meta.updated_at.another_day or theme.post_meta.updated_at.another_day and date_diff %}
 
             {%- if display_updated or not theme.post_meta.created_at %}
-              <span class="post-meta-item">
+              <span class="post-meta-item post-meta-item-updated">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
@@ -85,7 +85,7 @@
           {%- endif %}
 
           {%- if post.categories and post.categories.length and theme.post_meta.categories %}
-            <span class="post-meta-item">
+            <span class="post-meta-item post-meta-item-category">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
@@ -138,7 +138,7 @@
 
           {%- if config.symbols_count_time.symbols %}
           {%- if theme.symbols_count_time.separated_meta %}<br>{%- endif %}
-            <span class="post-meta-item" title="{{ __('symbols_count_time.count') }}">
+            <span class="post-meta-item post-meta-item-count" title="{{ __('symbols_count_time.count') }}">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
@@ -150,7 +150,7 @@
           {%- endif %}
 
           {%- if config.symbols_count_time.time %}
-            <span class="post-meta-item" title="{{ __('symbols_count_time.time') }}">
+            <span class="post-meta-item post-meta-item-reading-time" title="{{ __('symbols_count_time.time') }}">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
@@ -174,13 +174,17 @@
     {#################}
     <div class="post-body{%- if post.direction and post.direction.toLowerCase() === 'rtl' %} rtl{%- endif %}" itemprop="articleBody">
 
-      {# Cover image for index cards only #}
-      {%- if is_index and post.photos and post.photos.length %}
-        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
-          {%- for photo in post.photos %}
-            <img src="{{ url_for(photo) }}" alt="{{ post.title | escape }}" itemprop="contentUrl">
-          {%- endfor %}
-        </div>
+      {# Use a project cover when available and a shared editorial default otherwise. #}
+      {%- if is_index %}
+        {%- if post.photos and post.photos.length %}
+          <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+            {%- for photo in post.photos %}
+              <img src="{{ url_for(photo) }}" alt="{{ post.title | escape }}" itemprop="contentUrl">
+            {%- endfor %}
+          </div>
+        {%- else %}
+          <div class="post-gallery post-gallery-default" aria-hidden="true"></div>
+        {%- endif %}
       {%- endif %}
 
       {%- if is_index %}
@@ -190,7 +194,7 @@
           {%- if theme.read_more_btn %}
             <div class="post-button">
               <a class="btn" href="{{ url_for(post.path) }}">
-                {{ __('post.read_more') }} &raquo;
+                {{ __('post.read_more') }}
               </a>
             </div>
           {%- endif %}
@@ -201,7 +205,7 @@
           {%- if theme.read_more_btn %}
             <div class="post-button">
               <a class="btn" href="{{ url_for(post.path) }}#more" rel="contents">
-                {{ __('post.read_more') }} &raquo;
+                {{ __('post.read_more') }}
               </a>
             </div>
           {%- endif %}

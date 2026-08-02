@@ -9,7 +9,7 @@ html
 /* 本地音频播放器：保持文章正文中的播放器与内容列对齐。 */
 .post-body .post-audio-player,
 .post-body audio
-  display: block
+  display: flex
   width: 100%
   max-width: 100%
   margin: 1.5em 0
@@ -330,105 +330,128 @@ html
 .main .content.feed-page .home-category-panel
   column-span: all
   box-sizing: border-box
-  display: flex
+  display: grid
+  grid-template-columns: auto minmax(0, 1fr) auto
+  grid-template-areas: "heading navigation tools"
   align-items: center
-  gap: 14px
-  width: auto
-  max-width: 100%
-  height: 52px
-  margin: 0 0 20px
-  padding: 0 16px
+  column-gap: 24px
+  row-gap: 0
+  /* Keep the controls on the exact same content track as the feed below. */
+  width: 100%
+  max-width: none
+  min-height: 52px
+  height: auto
+  margin: 0 0 12px
+  padding: 14px 16px
   border-radius: 0
   background: var(--content-bg-color)
   border: 1px solid rgba(120, 120, 120, 0.15)
+  border-left: 0
+  border-right: 0
   box-shadow: none
   overflow: visible
 
 .main .content.feed-page .home-category-panel-head
   display: flex
   align-items: center
-  flex: 0 0 auto
+  grid-area: heading
+  min-width: 0
   gap: 10px
   margin-bottom: 0
 
 .main .content.feed-page .home-category-panel-title
   font-weight: 600
-  font-size: 0.92rem
-  color: var(--text-color)
+  font-size: 0.76rem
+  color: #666
+  letter-spacing: 0.12em
+  text-transform: uppercase
   white-space: nowrap
 
 .main .content.feed-page .home-category-nav
   display: flex
-  flex: 1 1 auto
+  grid-area: navigation
+  width: 100%
   min-width: 0
   flex-wrap: nowrap
-  gap: 8px
+  align-items: stretch
+  gap: 16px
   overflow-x: auto
   overflow-y: hidden
   scrollbar-width: thin
+  overscroll-behavior-x: contain
+  border-bottom: 0
 
 .main .content.feed-page .home-category-panel-tools
-  flex: 0 0 auto
+  grid-area: tools
+  min-width: 0
   display: flex
   align-items: center
   justify-content: flex-end
-  gap: 10px
-  margin-left: auto
+  gap: 8px
+  margin-left: 0
 
 .main .content.feed-page .home-category-link
   display: inline-flex
   align-items: center
-  gap: 6px
+  box-sizing: border-box
+  gap: 5px
   flex: 0 0 auto
   white-space: nowrap
-  padding: 4px 12px
+  min-height: 34px
+  padding: 5px 0 7px
   border-radius: 0
   background: transparent
-  border: 1px solid rgba(110, 110, 110, 0.18)
-  color: var(--text-color)
-  font-size: 0.86rem
+  border: 0
+  border-bottom: 2px solid transparent
+  color: rgba(90, 90, 90, 0.88)
+  font-size: 0.84rem
   line-height: 1.1
   text-decoration: none
-  transition: all .2s ease
+  transition: color .2s ease, border-color .2s ease
 
 .main .content.feed-page .home-category-link:hover
   color: var(--link-hover-color)
-  border-color: rgba(80, 80, 80, 0.4)
-  background: rgba(120, 120, 120, 0.05)
+  border-bottom-color: rgba(80, 80, 80, 0.42)
 
 .main .content.feed-page .home-category-link.is-active
-  color: #fff
-  border-color: var(--text-color)
-  background: var(--text-color)
+  color: var(--text-color)
+  border-bottom-color: var(--text-color)
+  background: transparent
   box-shadow: none
 
 .main .content.feed-page .home-category-link-more
-  border-style: dashed
   color: var(--link-color)
+  font-style: italic
 
 .main .content.feed-page .home-category-link-more:hover
-  border-color: currentColor
+  border-bottom-color: currentColor
 
 .main .content.feed-page .home-category-count
   display: inline-flex
   align-items: center
   justify-content: center
-  min-width: 20px
-  height: 18px
-  padding: 0 6px
+  min-width: 0
+  height: auto
+  padding: 0
   border-radius: 0
-  background: var(--body-bg-color)
-  color: var(--text-color)
-  font-size: 0.72rem
+  background: transparent
+  color: #666
+  font-size: 0.68rem
+  font-variant-numeric: tabular-nums
+  line-height: 1
+  position: relative
+  top: -0.3em
 
 .main .content.feed-page .home-category-search
   display: inline-flex
   align-items: center
+  box-sizing: border-box
   gap: 7px
   min-width: 0
-  height: 32px
-  padding: 0 12px
-  border: 1px solid rgba(110, 110, 110, 0.18)
+  height: 34px
+  padding: 0 0 3px
+  border: 0
+  border-bottom: 1px solid rgba(110, 110, 110, 0.24)
   border-radius: 0
   background: transparent
   color: var(--text-color)
@@ -441,14 +464,13 @@ html
 
 .main .content.feed-page .home-category-search:hover
   color: var(--link-hover-color)
-  border-color: rgba(80, 80, 80, 0.4)
-  background: rgba(120, 120, 120, 0.05)
+  border-bottom-color: rgba(80, 80, 80, 0.56)
 
 .main .content.feed-page .home-category-search:focus
   outline: none
   color: var(--link-hover-color)
-  border-color: rgba(80, 80, 80, 0.34)
-  box-shadow: 0 0 0 3px rgba(120, 120, 120, 0.10), 0 3px 8px rgba(0, 0, 0, 0.07)
+  border-bottom-color: rgba(80, 80, 80, 0.56)
+  box-shadow: none
 
 .main .content.feed-page .home-category-search-icon
   flex: 0 0 auto
@@ -461,11 +483,13 @@ html
   letter-spacing: 0.01em
 
 .main .content.feed-page .home-sort-group
+  box-sizing: border-box
   display: inline-flex
   align-items: center
   gap: 0
   min-width: 0
-  border: 1px solid rgba(110, 110, 110, 0.18)
+  border: 0
+  border-bottom: 1px solid rgba(110, 110, 110, 0.24)
   border-radius: 0
   background: transparent
   overflow: hidden
@@ -473,21 +497,23 @@ html
 .main .content.feed-page .home-sort-label
   display: inline-flex
   align-items: center
-  height: 32px
-  padding: 0 10px
-  border-right: 1px solid rgba(110, 110, 110, 0.18)
-  background: rgba(120, 120, 120, 0.04)
+  height: 34px
+  padding: 0 10px 0 0
+  border-right: 0
+  background: transparent
   color: rgba(90, 90, 90, 0.88)
-  font-size: 0.84rem
+  font-size: 0.68rem
+  letter-spacing: 0.08em
   line-height: 1
   white-space: nowrap
+  text-transform: uppercase
 
 .main .content.feed-page .home-sort-option
   display: inline-flex
   align-items: center
   justify-content: center
   min-width: 0
-  height: 32px
+  height: 34px
   padding: 0 12px
   border: 0
   border-radius: 0
@@ -500,32 +526,35 @@ html
   transition: all .2s ease
 
 .main .content.feed-page .home-sort-option + .home-sort-option
-  border-left: 1px solid rgba(110, 110, 110, 0.12)
+  border-left: 0
 
 .main .content.feed-page .home-sort-option:hover
   color: var(--link-hover-color)
-  background: rgba(120, 120, 120, 0.06)
+  background: transparent
 
 .main .content.feed-page .home-sort-option.is-active
-  background: var(--text-color)
-  color: #fff
+  background: transparent
+  color: var(--text-color)
+  box-shadow: inset 0 -2px 0 var(--text-color)
 
 .main .content.feed-page .home-view-toggle
+  box-sizing: border-box
   display: inline-flex
   align-items: center
   padding: 0
-  border: 1px solid rgba(110, 110, 110, 0.18)
+  border: 0
+  border-bottom: 1px solid rgba(110, 110, 110, 0.24)
   border-radius: 0
   background: transparent
 
 .main .content.feed-page .home-view-button
   width: 32px
-  height: 30px
+  height: 32px
   padding: 0
   border: 0
   border-radius: 0
   background: transparent
-  color: rgba(90, 90, 90, 0.82)
+  color: rgba(90, 90, 90, 0.72)
   cursor: pointer
   font: inherit
   font-size: 0.78rem
@@ -535,8 +564,16 @@ html
   transition: all .2s ease
 
 .main .content.feed-page .home-view-button.is-active
-  background: var(--text-color)
-  color: #fff
+  background: transparent
+  color: var(--text-color)
+  box-shadow: inset 0 -2px 0 var(--text-color)
+
+.main .content.feed-page .home-category-link:focus-visible,
+.main .content.feed-page .home-category-search:focus-visible,
+.main .content.feed-page .home-sort-option:focus-visible,
+.main .content.feed-page .home-view-button:focus-visible
+  outline: 2px solid var(--link-color)
+  outline-offset: 2px
   box-shadow: none
 
 @media (prefers-color-scheme: dark)
@@ -557,15 +594,19 @@ html
     background: rgba(255, 255, 255, 0.14)
 
   .main .content.feed-page.feed-view-list .feed-posts-container
-    background: rgba(30, 30, 30, 0.90)
-    border-color: rgba(255, 255, 255, 0.10)
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,.24), 0 3px 1px -2px rgba(0,0,0,.16), 0 1px 5px 0 rgba(0,0,0,.24)
+    background: transparent
+    border: 0
+    box-shadow: none
 
   .main .content.feed-page.feed-view-list .post-block
-    border-bottom-color: rgba(255, 255, 255, 0.06)
+    border-color: rgba(255, 255, 255, 0.12)
+    background: rgba(30, 30, 30, 0.92)
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.22)
 
   .main .content.feed-page.feed-view-list .post-block:hover
-    background: rgba(255, 255, 255, 0.04)
+    border-color: rgba(255, 255, 255, 0.24)
+    background: rgba(36, 36, 36, 0.96)
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3)
 
   .main .content.feed-page .home-category-panel
     border-color: rgba(255, 255, 255, 0.14)
@@ -582,60 +623,73 @@ html
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.06)
 
   .main .content.feed-page .home-category-link
-    background: rgba(255, 255, 255, 0.05)
-    border-color: rgba(255, 255, 255, 0.17)
+    background: transparent
+    border-color: transparent
+    color: rgba(235, 238, 242, 0.82)
+
+  .main .content.feed-page .home-category-panel-title
+    color: rgba(220, 224, 228, 0.72)
 
   .main .content.feed-page .home-category-link:hover
-    background: rgba(255, 255, 255, 0.10)
-    border-color: rgba(255, 255, 255, 0.27)
+    background: transparent
+    border-bottom-color: rgba(255, 255, 255, 0.42)
 
   .main .content.feed-page .home-category-link.is-active
-    border-color: rgba(123, 176, 220, 0.60)
-    background: rgba(70, 130, 180, 0.24)
+    border-bottom-color: rgba(160, 205, 244, 0.86)
+    background: transparent
+    color: rgba(255, 255, 255, 0.96)
+
+  .main .content.feed-page .home-category-count
+    background: transparent
+    color: rgba(220, 224, 228, 0.58)
+
+  .main .content.feed-page .home-category-nav
+    border-bottom-color: rgba(255, 255, 255, 0.18)
 
   .main .content.feed-page .home-category-search
-    border-color: rgba(255, 255, 255, 0.17)
-    background: rgba(255, 255, 255, 0.05)
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12)
+    border-bottom-color: rgba(255, 255, 255, 0.24)
+    background: transparent
+    box-shadow: none
 
   .main .content.feed-page .home-category-search:hover
-    border-color: rgba(255, 255, 255, 0.27)
-    background: rgba(255, 255, 255, 0.10)
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.22)
+    border-bottom-color: rgba(255, 255, 255, 0.56)
+    background: transparent
+    box-shadow: none
 
   .main .content.feed-page .home-category-search:focus
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08), 0 3px 8px rgba(0, 0, 0, 0.22)
+    box-shadow: none
 
   .main .content.feed-page .home-sort-group
-    border-color: rgba(255, 255, 255, 0.14)
+    border-bottom-color: rgba(255, 255, 255, 0.24)
 
   .main .content.feed-page .home-sort-label
-    border-right-color: rgba(255, 255, 255, 0.12)
-    background: rgba(255, 255, 255, 0.05)
+    border-right-color: transparent
+    background: transparent
     color: rgba(220, 224, 228, 0.72)
 
   .main .content.feed-page .home-sort-option + .home-sort-option
-    border-left-color: rgba(255, 255, 255, 0.10)
+    border-left-color: transparent
 
   .main .content.feed-page .home-sort-option:hover
-    background: rgba(255, 255, 255, 0.10)
+    background: transparent
 
   .main .content.feed-page .home-sort-option.is-active
-    background: rgba(255, 255, 255, 0.12)
+    background: transparent
     color: rgba(255, 255, 255, 0.96)
+    box-shadow: inset 0 -2px 0 rgba(160, 205, 244, 0.86)
 
   .main .content.feed-page .home-view-toggle
-    border-color: rgba(255, 255, 255, 0.14)
-    background: rgba(255, 255, 255, 0.04)
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05)
+    border-bottom-color: rgba(255, 255, 255, 0.24)
+    background: transparent
+    box-shadow: none
 
   .main .content.feed-page .home-view-button
     color: rgba(220, 224, 228, 0.78)
 
   .main .content.feed-page .home-view-button.is-active
-    background: rgba(255, 255, 255, 0.12)
+    background: transparent
     color: rgba(255, 255, 255, 0.96)
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24)
+    box-shadow: inset 0 -2px 0 rgba(160, 205, 244, 0.86)
 
   .gallery-page-button
     border-color: rgba(255, 255, 255, 0.16)
@@ -656,61 +710,642 @@ html
   .main .content.feed-page.posts-expand
     column-count: 2
 
+@media (max-width: 1199px)
+  .main .content.feed-page .home-category-panel
+    grid-template-columns: minmax(0, 1fr)
+    grid-template-areas: "heading" "navigation" "tools"
+    row-gap: 10px
+    width: 100%
+    max-width: none
+    margin-left: 0
+    margin-right: 0
+    padding: 12px
+
+  .main .content.feed-page .home-category-panel-tools
+    justify-content: flex-start
+
+  .main .content.feed-page .home-category-nav
+    flex-wrap: wrap
+    border-bottom: 1px solid rgba(110, 110, 110, 0.16)
+
 @media (max-width: 767px)
   .main .content.feed-page.feed-view-list .post-block
     padding: 14px 16px
 
   .main .content.feed-page .home-category-panel
-    display: flex
-    flex-direction: column
-    align-items: stretch
-    height: auto
-    padding: 10px 12px
-    gap: 10px
+    grid-template-columns: minmax(0, 1fr)
+    grid-template-areas: "heading" "navigation" "tools"
+    width: 100%
+    max-width: none
+    margin-right: 0
+    margin-left: 0
+    padding: 10px
+    row-gap: 8px
 
   .main .content.feed-page .home-category-panel-head
     margin-bottom: 0
 
   .main .content.feed-page .home-category-nav
-    flex-wrap: wrap
-    overflow-x: visible
-    gap: 6px
+    flex-wrap: nowrap
+    overflow-x: auto
+    gap: 18px
+    padding-bottom: 2px
+    scrollbar-width: none
+
+  .main .content.feed-page .home-category-nav::-webkit-scrollbar
+    display: none
 
   .main .content.feed-page .home-category-panel-tools
-    margin-top: 0
-    justify-content: flex-start
-    flex-wrap: wrap
+    display: grid
+    grid-template-columns: minmax(0, 1fr) auto
+    grid-template-rows: 44px 44px
+    align-items: stretch
+    width: 100%
     gap: 8px
 
   .main .content.feed-page .home-category-link
-    padding: 4px 10px
+    min-height: 44px
+    padding: 11px 0 9px
     font-size: 0.82rem
 
   .main .content.feed-page .home-category-count
-    min-width: 18px
-    height: 17px
-    padding: 0 5px
     font-size: 0.68rem
 
   .main .content.feed-page .home-category-search
-    flex: 1 1 auto
+    grid-column: 1
+    grid-row: 1
+    width: 100%
+    min-height: 44px
+    height: 44px
+    padding-bottom: 3px
     justify-content: center
 
   .main .content.feed-page .home-sort-group
-    flex: 1 1 100%
-    flex-wrap: wrap
+    grid-column: 1 / -1
+    grid-row: 2
+    display: flex
+    width: 100%
+    height: 44px
+    flex-wrap: nowrap
+    border-bottom-width: 1px
 
   .main .content.feed-page .home-sort-label
-    width: 100%
+    width: auto
+    height: 44px
     justify-content: center
     border-right: 0
-    border-bottom: 1px solid rgba(110, 110, 110, 0.12)
+    border-bottom: 0
+    padding: 0 8px 0 0
+    font-size: 0.68rem
 
   .main .content.feed-page .home-sort-option
     flex: 1 1 0
+    height: 44px
+    padding: 0 6px
+    overflow: hidden
+    text-overflow: ellipsis
+    font-size: 0.76rem
+
+  .main .content.feed-page .home-view-toggle
+    grid-column: 2
+    grid-row: 1
+    height: 44px
+    border-bottom-width: 1px
+
+  .main .content.feed-page .home-view-button
+    width: 44px
+    height: 44px
 
   .main .content.feed-page.posts-expand
     column-count: 1
+
+@media (max-width: 380px)
+  .main .content.feed-page .home-sort-label
+    display: none
+
+/* =============================================
+   编辑型内容流：规整网格 + 带缩略图的索引列表
+   ============================================= */
+
+/* The previous feed used CSS columns, which made the reading order jump
+   between columns and produced uneven card heights. Keep the feed on one
+   predictable layout axis so the visual order always matches the DOM order. */
+.main .content.feed-page.posts-expand
+  column-count: initial
+  column-gap: 0
+  display: block
+
+.main .content.feed-page .feed-posts-container
+  column-span: none
+
+/* ---- Card view: editorial grid ---- */
+.main .content.feed-page.feed-view-card .feed-posts-container
+  display: grid
+  grid-template-columns: repeat(3, minmax(0, 1fr))
+  gap: 24px
+  align-items: stretch
+  grid-auto-flow: row
+  width: 100%
+
+.main .content.feed-page.feed-view-card .post-block
+  box-sizing: border-box
+  display: flex
+  flex-direction: column
+  min-width: 0
+  min-height: 552px
+  height: 100%
+  align-self: stretch
+  margin: 0
+  padding: 0
+  border: 1px solid rgba(90, 90, 90, 0.14)
+  border-radius: 2px
+  background: var(--content-bg-color, #fff)
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.055)
+  overflow: hidden
+  break-inside: avoid
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease
+
+.main .content.feed-page.feed-view-card .post-block:hover
+  border-color: rgba(70, 70, 70, 0.32)
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.10)
+  transform: translateY(-2px)
+
+.main .content.feed-page.feed-view-card .post-header
+  box-sizing: border-box
+  min-width: 0
+  margin: 0
+  padding: 22px 22px 16px
+  text-align: left
+
+.main .content.feed-page.feed-view-card .post-title
+  margin: 0 0 12px
+  font-size: 1.12rem
+  font-weight: 650
+  line-height: 1.42
+  letter-spacing: -0.01em
+  white-space: normal
+  text-align: left
+  display: block
+  min-height: calc(3 * 1.42em)
+  max-height: calc(3 * 1.42em)
+  overflow: hidden
+
+.main .content.feed-page.feed-view-card .post-title-link
+  display: -webkit-box
+  -webkit-box-orient: vertical
+  -webkit-line-clamp: 3
+  overflow: hidden
+  border-bottom: 0
+
+.main .content.feed-page.feed-view-card .post-title-link::before
+  display: none
+
+.main .content.feed-page.feed-view-card .post-meta
+  display: grid
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr)
+  /* Dates get their own rows so the full ISO date remains readable even on
+     three-column layouts. The lower metrics still share a compact row. */
+  grid-template-rows: repeat(4, 18px)
+  column-gap: 10px
+  row-gap: 4px
+  align-content: start
+  margin: 0
+  min-height: 84px
+  height: 84px
+  max-height: 84px
+  overflow: hidden
+  font-size: 0.74rem
+  line-height: 1.35
+  opacity: 1
+  text-align: left
+
+.main .content.feed-page.feed-view-card .post-meta .post-meta-item
+  display: flex
+  align-items: center
+  justify-content: flex-start
+  gap: 4px
+  min-width: 0
+  min-height: 18px
+  overflow: hidden
+  white-space: nowrap
+  text-overflow: ellipsis
+
+.main .content.feed-page.feed-view-card .post-meta .post-meta-item-created
+  grid-column: 1 / -1
+  grid-row: 1
+
+.main .content.feed-page.feed-view-card .post-meta .post-meta-item-updated
+  grid-column: 1 / -1
+  grid-row: 2
+
+.main .content.feed-page.feed-view-card .post-meta .post-meta-item-category
+  grid-column: 1 / -1
+  grid-row: 3
+
+.main .content.feed-page.feed-view-card .post-meta .post-meta-item-count
+  grid-column: 1
+  grid-row: 4
+
+.main .content.feed-page.feed-view-card .post-meta .post-meta-item-reading-time
+  grid-column: 2
+  grid-row: 4
+
+.main .content.feed-page.feed-view-card .post-meta .post-meta-item-icon
+  flex: 0 0 auto
+
+.main .content.feed-page.feed-view-card .post-meta time,
+.main .content.feed-page.feed-view-card .post-meta a
+  min-width: 0
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+
+.main .content.feed-page.feed-view-card .post-meta .post-meta-item + .post-meta-item::before
+  display: none
+
+.main .content.feed-page.feed-view-card .post-meta br
+  display: none
+
+.main .content.feed-page.feed-view-card .post-body
+  box-sizing: border-box
+  display: flex
+  flex: 1 1 auto
+  flex-direction: column
+  min-width: 0
+  min-height: 0
+  padding: 0 22px 22px
+  text-align: left
+
+.main .content.feed-page.feed-view-card .post-gallery
+  flex: 0 0 auto
+  width: calc(100% + 44px)
+  height: auto
+  aspect-ratio: 16 / 10
+  margin: 0 -22px 17px
+  overflow: hidden
+  background: rgba(120, 120, 120, 0.08)
+
+.main .content.feed-page.feed-view-card .post-gallery img
+  display: block
+  width: 100% !important
+  max-width: none !important
+  height: 100% !important
+  margin: 0 !important
+  object-fit: cover !important
+  border: 0 !important
+  border-radius: 0 !important
+  box-shadow: none !important
+
+.main .content.feed-page.feed-view-card .post-body > p
+  display: -webkit-box
+  flex: 0 1 auto
+  margin: 0 0 16px
+  color: rgba(70, 70, 70, 0.82)
+  font-size: 0.9rem
+  line-height: 1.68
+  -webkit-box-orient: vertical
+  -webkit-line-clamp: 3
+  overflow: hidden
+  text-overflow: ellipsis
+
+.main .content.feed-page.feed-view-card .post-button
+  margin-top: auto
+  padding-top: 18px
+  text-align: left
+
+.main .content.feed-page.feed-view-card .post-button .btn
+  display: inline-flex
+  align-items: center
+  gap: 9px
+  min-height: 30px
+  padding: 5px 0 6px
+  border: 0
+  border-bottom: 1px solid rgba(90, 90, 90, 0.34)
+  border-radius: 0
+  background: transparent
+  color: rgba(70, 70, 70, 0.88)
+  font-size: 0.78rem
+  line-height: 1.3
+  letter-spacing: 0.025em
+  transition: color .2s ease, border-color .2s ease
+
+.main .content.feed-page.feed-view-card .post-button .btn::after
+  content: '↗'
+  color: currentColor
+  font-size: 0.95rem
+  line-height: 1
+  transition: transform .2s ease
+
+.main .content.feed-page.feed-view-card .post-button .btn:hover
+  border-bottom-color: var(--link-hover-color)
+  color: var(--link-hover-color)
+
+.main .content.feed-page.feed-view-card .post-button .btn:hover::after
+  transform: translate(2px, -2px)
+
+.main .content.feed-page.feed-view-card .post-eof
+  display: none
+
+/* ---- List view: editorial index with a thumbnail rail ---- */
+.main .content.feed-page.feed-view-list
+  column-count: initial
+  column-gap: 0
+  display: block
+  padding-top: 0
+
+.main .content.feed-page.feed-view-list .feed-posts-container
+  display: flex
+  flex-direction: column
+  gap: 14px
+  width: 100%
+  border: 0
+  border-radius: 2px
+  background: transparent
+  box-shadow: none
+  overflow: visible
+
+.main .content.feed-page.feed-view-list .post-block
+  box-sizing: border-box
+  display: grid
+  grid-template-columns: minmax(0, 1fr)
+  grid-template-rows: auto auto
+  min-width: 0
+  min-height: 0
+  margin: 0
+  padding: 22px 24px 24px
+  border: 1px solid rgba(90, 90, 90, 0.13)
+  border-radius: 4px
+  background: var(--content-bg-color)
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.045)
+  overflow: visible
+  transition: background .2s ease, border-color .2s ease, box-shadow .2s ease
+
+.main .content.feed-page.feed-view-list .post-block:last-child
+  border-bottom: 1px solid rgba(90, 90, 90, 0.13)
+
+.main .content.feed-page.feed-view-list .post-block:hover
+  border-color: rgba(90, 90, 90, 0.24)
+  background: var(--content-bg-color)
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07)
+  transform: none
+
+.main .content.feed-page.feed-view-list .post-header
+  display: flex !important
+  flex-direction: row !important
+  flex-wrap: nowrap !important
+  align-items: flex-start
+  justify-content: space-between
+  gap: 16px
+  min-width: 0
+  margin: 0 0 12px !important
+  padding: 0 !important
+  border: 0
+  text-align: left
+
+.main .content.feed-page.feed-view-list .post-title
+  flex: 1 1 auto !important
+  min-width: 0 !important
+  max-width: 70ch
+  margin: 0 !important
+  padding: 0 !important
+  font-size: 1.18rem
+  font-weight: 650
+  line-height: 1.4
+  letter-spacing: -0.01em
+  white-space: normal
+  overflow-wrap: anywhere
+  text-align: left
+  display: -webkit-box !important
+  -webkit-box-orient: vertical
+  -webkit-line-clamp: 2
+  overflow: hidden
+
+.main .content.feed-page.feed-view-list .post-title-link
+  border-bottom: 0
+
+.main .content.feed-page.feed-view-list .post-title-link::before
+  display: none
+
+.main .content.feed-page.feed-view-list .post-meta
+  flex: 0 0 auto !important
+  display: inline-flex !important
+  flex-direction: row !important
+  flex-wrap: wrap
+  align-items: center
+  justify-content: flex-end
+  gap: 0
+  min-width: max-content
+  margin: 3px 0 0 !important
+  padding: 0 !important
+  font-size: 0.78rem
+  line-height: 1.4
+  opacity: 1
+  text-align: right
+
+.main .content.feed-page.feed-view-list .post-meta .post-meta-item
+  display: none
+
+.main .content.feed-page.feed-view-list .post-meta .post-meta-item:first-child
+  display: inline-flex
+  align-items: center
+  gap: 4px
+
+.main .content.feed-page.feed-view-list .post-meta .post-meta-item-icon
+  display: none
+
+.main .content.feed-page.feed-view-list .post-meta .post-meta-item-text
+  display: none
+
+.main .content.feed-page.feed-view-list .post-meta .post-meta-item + .post-meta-item::before,
+.main .content.feed-page.feed-view-list .post-meta br
+  display: none
+
+.main .content.feed-page.feed-view-list .post-meta time
+  border-bottom: 0
+  color: #666
+  font-size: 0.78rem
+  font-variant-numeric: tabular-nums
+  letter-spacing: 0.025em
+  white-space: nowrap
+
+.main .content.feed-page.feed-view-list .post-body
+  display: grid
+  grid-template-columns: minmax(0, 1fr) clamp(176px, 18vw, 204px)
+  grid-template-rows: 1fr
+  column-gap: 24px
+  align-items: center
+  min-width: 0
+  margin: 0
+  padding: 0
+  text-align: left
+
+.main .content.feed-page.feed-view-list .post-body > p
+  grid-column: 1
+  grid-row: 1
+  align-self: start
+  max-width: 68ch
+  margin: 0
+  color: #666
+  font-size: 0.9rem
+  line-height: 1.7
+  display: -webkit-box
+  -webkit-box-orient: vertical
+  -webkit-line-clamp: 2
+  overflow: hidden
+  text-overflow: ellipsis
+
+.main .content.feed-page.feed-view-list .post-gallery
+  grid-column: 2
+  grid-row: 1
+  width: 100%
+  height: auto
+  aspect-ratio: 16 / 9
+  margin: 0
+  overflow: hidden
+  background: rgba(120, 120, 120, 0.08)
+
+.main .content.feed-page.feed-view-list .post-gallery img
+  display: block
+  width: 100% !important
+  max-width: none !important
+  height: 100% !important
+  margin: 0 !important
+  object-fit: cover !important
+  border: 0 !important
+  border-radius: 0 !important
+  box-shadow: none !important
+
+.main .content.feed-page.feed-view-list .post-body > .post-gallery.post-gallery
+  display: block !important
+
+.main .content.feed-page .post-gallery.post-gallery-default
+  background-color: #f2eee5
+  background-image: url('/images/posts/default-text-cover.png')
+  background-position: center
+  background-size: cover
+
+.main .content.feed-page.feed-view-list .post-block:not(.has-cover) .post-body > p
+  grid-column: 1
+
+.main .content.feed-page.feed-view-list .post-description,
+.main .content.feed-page.feed-view-list .post-button,
+.main .content.feed-page.feed-view-list .post-footer,
+.main .content.feed-page.feed-view-list .post-eof,
+.main .content.feed-page.feed-view-list .post-body > :not(p):not(.post-gallery):not(.post-description)
+  display: none !important
+
+/* Keep the index visually quiet while preserving the existing pagination. */
+.main .content.feed-page.feed-view-list + .pagination
+  margin-top: 26px
+
+@media (max-width: 1199px)
+  .main .content.feed-page.feed-view-card .feed-posts-container
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+
+@media (max-width: 767px)
+  .main .content.feed-page.feed-view-card .feed-posts-container
+    grid-template-columns: minmax(0, 1fr)
+    gap: 16px
+
+  .main .content.feed-page.feed-view-card .post-header
+    padding: 19px 18px 14px
+
+  .main .content.feed-page.feed-view-card .post-title
+    font-size: 1.04rem
+
+  .main .content.feed-page.feed-view-card .post-body
+    padding: 0 18px 19px
+
+  .main .content.feed-page.feed-view-card .post-block
+    min-height: 528px
+
+  .main .content.feed-page.feed-view-card .post-gallery
+    width: calc(100% + 36px)
+    margin-right: -18px
+    margin-left: -18px
+    margin-bottom: 14px
+
+  .main .content.feed-page.feed-view-card .post-body > p
+    font-size: 0.88rem
+    line-height: 1.64
+
+  .main .content.feed-page.feed-view-list .post-block
+    padding: 18px 18px 20px
+
+  .main .content.feed-page.feed-view-list .post-header
+    flex-direction: column !important
+    align-items: flex-start
+    gap: 7px
+    margin-bottom: 13px !important
+
+  .main .content.feed-page.feed-view-list .post-title
+    max-width: none
+    font-size: 1.04rem
+    line-height: 1.45
+
+  .main .content.feed-page.feed-view-list .post-meta
+    justify-content: flex-start
+    margin-top: 0 !important
+    text-align: left
+
+  .main .content.feed-page.feed-view-list .post-body
+    display: flex
+    flex-direction: column
+    align-items: stretch
+    gap: 13px
+
+  .main .content.feed-page.feed-view-list .feed-posts-container
+    gap: 12px
+
+  .main .content.feed-page.feed-view-list .post-gallery
+    order: -1
+    width: 100%
+    aspect-ratio: 16 / 9
+
+  .main .content.feed-page.feed-view-list .post-body > p
+    order: 1
+    max-width: none
+    font-size: 0.88rem
+    line-height: 1.65
+
+@media (prefers-color-scheme: dark)
+  .main .content.feed-page.feed-view-card .post-block
+    border-color: rgba(255, 255, 255, 0.12)
+    background: rgba(30, 30, 30, 0.92)
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24)
+
+  .main .content.feed-page.feed-view-card .post-block:hover
+    border-color: rgba(255, 255, 255, 0.28)
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.34)
+
+  .main .content.feed-page.feed-view-card .post-body > p,
+  .main .content.feed-page.feed-view-list .post-body > p
+    color: rgba(225, 228, 232, 0.78)
+
+  .main .content.feed-page.feed-view-list .feed-posts-container
+    border: 0
+
+  .main .content.feed-page.feed-view-list .post-block
+    border-color: rgba(255, 255, 255, 0.12)
+    background: rgba(30, 30, 30, 0.92)
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.22)
+
+  .main .content.feed-page.feed-view-list .post-block:hover
+    border-color: rgba(255, 255, 255, 0.24)
+    background: rgba(36, 36, 36, 0.96)
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3)
+
+  .main .content.feed-page.feed-view-list .post-meta time
+    color: rgba(225, 228, 232, 0.72)
+
+@media (prefers-reduced-motion: reduce)
+  .main .content.feed-page.feed-view-card .post-block,
+  .main .content.feed-page.feed-view-card .post-button .btn,
+  .main .content.feed-page.feed-view-list .post-block
+    transition: none
+
+  .main .content.feed-page.feed-view-card .post-block:hover
+    transform: none
 
 /* =============================================
    文章内图片样式（缩小居中 + 图注）
@@ -1501,37 +2136,84 @@ html
     column-count: 1
 
 /* =============================================
-   Header 语言切换与导航对齐
+   Header 语言切换：用紧凑的双语导航替代原生下拉菜单
    ============================================= */
 
 .site-nav .menu .menu-item-language
   vertical-align: middle
 
-.site-nav .menu .menu-item-language .languages
-  display: block
-  font-size: inherit
-  line-height: inherit
-
-.site-nav .menu .menu-item-language .lang-select-label
+.site-nav .menu .menu-item-language .language-switcher
   display: flex
   align-items: center
-  gap: 6px
-  margin: 0
-  padding: 5px 20px
-  position: relative
+  box-sizing: border-box
+  height: 56px
+  min-height: 56px
+  width: 100%
+  margin: 8px 0 0
+  padding: 8px 20px 0
+  border-top: 1px solid rgba(110, 110, 110, 0.16)
   font-size: 0.86em
-  line-height: inherit
-  text-align: left
+  line-height: 1
   white-space: nowrap
-  cursor: pointer
 
-.site-nav .menu .menu-item-language .lang-select-label span
-  margin: 0
+.site-nav .menu .menu-item-language .language-switcher-label
+  margin-right: 14px
+  color: #666
+  font-size: 0.66em
+  font-weight: 600
+  letter-spacing: 0.11em
+  line-height: 1
+  text-transform: uppercase
 
-.site-nav .menu .menu-item-language .lang-select-label .fa,
-.site-nav .menu .menu-item-language .lang-select-label .fas
-  flex: 0 0 1.25em
-  margin-right: 0
+.site-nav .menu .menu-item-language .language-switcher-options
+  display: inline-flex
+  align-items: center
+  height: 44px
+  gap: 8px
+
+.site-nav .menu .menu-item-language .language-switcher-option
+  display: inline-flex
+  align-items: center
+  justify-content: center
+  box-sizing: border-box
+  height: 44px
+  min-width: 40px
+  min-height: 44px
+  padding: 11px 4px
+  border-bottom: 2px solid transparent
+  color: var(--text-color)
+  font-size: 0.82em
+  font-weight: 600
+  letter-spacing: 0.06em
+  line-height: 1
+  text-align: center
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease
+
+.site-nav .menu .menu-item-language .language-switcher-option:hover
+  color: var(--link-hover-color)
+  background: transparent
+  border-bottom-color: var(--link-hover-color)
+
+.site-nav .menu .menu-item-language .language-switcher-option.is-current
+  color: var(--link-hover-color)
+  border-bottom-color: var(--link-hover-color)
+  cursor: default
+
+.site-nav .menu .menu-item-language .language-switcher-option:focus-visible
+  outline: 2px solid var(--link-hover-color)
+  outline-offset: 2px
+  border-radius: 2px
+
+.site-nav .menu .menu-item-language .language-switcher-divider
+  display: inline-block
+  color: rgba(90, 90, 90, 0.46)
+  font-size: 0.82em
+  font-weight: 400
+  line-height: 1
+
+@media (prefers-reduced-motion: reduce)
+  .site-nav .menu .menu-item-language .language-switcher-option
+    transition: none
 
 /* =============================================
    Work page v2 — monochrome editorial portfolio
@@ -2394,3 +3076,279 @@ html[lang="zh-CN"] .work-project__number
     flex-basis: 26px
     height: 26px
     width: 26px
+
+/* Desktop navigation rail: the menu and profile now share one native scroll
+   container. This keeps the whole rail draggable when its combined height is
+   taller than the viewport instead of making only the lower profile panel
+   scroll independently. */
+@media (min-width: 992px)
+  /* Keep the localized wordmark centered independently from the AC mark. */
+  .site-meta .brand
+    box-sizing: border-box
+    display: grid
+    grid-template-columns: minmax(0, 1fr) max-content minmax(0, 1fr)
+    grid-template-rows: 30px
+    align-items: center
+    width: 100%
+    height: 30px
+    gap: 0
+    overflow: visible
+
+  .site-meta .site-brand-mark
+    grid-column: 1
+    grid-row: 1
+    align-self: center
+    justify-self: end
+    width: 24px
+    height: 24px
+    margin-right: 4px
+
+  .site-meta .site-title
+    grid-column: 2
+    grid-row: 1
+    align-self: center
+    justify-self: center
+    display: flex
+    align-items: center
+    justify-content: center
+    width: max-content
+    height: 30px
+    white-space: nowrap
+    text-align: center
+
+  .site-rail
+    position: fixed
+    z-index: 100
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
+    width: $content-desktop
+    margin: 0 auto
+    overflow-x: hidden
+    overflow-y: auto
+    overscroll-behavior: none
+    overscroll-behavior-y: none
+    pointer-events: none
+    scrollbar-width: thin
+
+  @media (min-width: 1200px)
+    .site-rail
+      width: $content-desktop-large
+
+  @media (min-width: 1600px)
+    .site-rail
+      width: $content-desktop-largest
+
+  .site-rail::-webkit-scrollbar
+    width: 5px
+
+  .site-rail::-webkit-scrollbar-thumb
+    background: rgba(90, 90, 90, 0.28)
+    border-radius: 5px
+
+  .site-rail > .header
+    position: relative
+    z-index: auto
+    pointer-events: none
+    width: 100%
+    margin: 0
+    background: transparent
+
+  .site-rail > .header .header-inner
+    position: static
+    margin: 0
+    pointer-events: auto
+
+  .site-rail-sidebar
+    width: 100%
+    margin: 0
+    pointer-events: none
+
+  .site-rail-sidebar > .sidebar
+    position: static
+    display: block
+    width: $sidebar-desktop
+    margin: 0
+    pointer-events: auto
+
+  .site-rail-sidebar .sidebar-inner.affix,
+  .site-rail-sidebar .sidebar-inner.affix-top,
+  .site-rail-sidebar .sidebar-inner.affix-bottom
+    position: static
+    top: auto
+    bottom: auto
+    max-height: none
+    overflow: visible
+
+  .sidebar-layout-spacer
+    flex: 0 0 $sidebar-desktop
+    width: $sidebar-desktop
+
+  .header
+    position: fixed
+    top: 0
+    left: 0
+    right: 0
+    z-index: 100
+    margin: 0 auto
+    pointer-events: none
+
+  .header-inner
+    pointer-events: auto
+    border-radius: 0
+    box-shadow: none
+
+  .header-inner .main-menu
+    margin-top: 12px
+    margin-bottom: 0
+
+  .header-inner .menu-item-language .language-switcher
+    margin-top: 4px
+
+  .sidebar-inner.affix
+    top: var(--sidebar-affix-top, 0px)
+    border-radius: 0 0 2px 2px
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.10)
+    max-height: calc(100vh - var(--sidebar-affix-top, 0px) - 16px)
+    overflow-y: auto
+    overscroll-behavior: contain
+    scrollbar-width: thin
+
+  .sidebar-inner.affix .site-overview-wrap
+    max-height: none !important
+    overflow: visible !important
+
+  .sidebar-inner.affix .site-author-image
+    box-sizing: border-box
+    width: 72px
+    height: 72px
+    max-width: 72px
+    margin: 0 auto 6px
+    padding: 2px
+
+  .sidebar-inner.affix .site-author-name
+    margin: 0
+    font-size: 0.95rem
+    line-height: 1.35
+
+  .sidebar-inner.affix .site-description
+    margin-top: 2px
+    font-size: 0.75rem
+    line-height: 1.35
+
+  .sidebar-inner.affix .site-state
+    margin-top: 10px
+    line-height: 1.2
+
+  .sidebar-inner.affix .site-state-item
+    padding: 0 8px
+
+  .sidebar-inner.affix .site-state-item-count
+    font-size: 1.05rem
+    line-height: 1.1
+
+  .sidebar-inner.affix .site-state-item-name
+    font-size: 0.68rem
+    line-height: 1.2
+
+  .sidebar-inner.affix .links-of-author
+    margin-top: 9px
+
+  .sidebar-inner.affix .links-of-author-item
+    margin: 0
+
+  .sidebar-inner.affix .links-of-author-item a
+    margin: 0 8px 0 0
+    font-size: 0.72rem
+
+  .sidebar-inner.affix .links-of-blogroll
+    margin-top: 7px
+    font-size: 0.72rem
+
+  .sidebar-inner.affix .links-of-blogroll-title,
+  .sidebar-inner.affix .links-of-blogroll-list
+    line-height: 1.3
+
+  .sidebar-inner.affix .links-of-blogroll-title
+    font-size: 0.72rem
+
+  .mobile-rail-profile
+    display: none
+
+  .sidebar-inner.affix::-webkit-scrollbar
+    width: 4px
+
+  .sidebar-inner.affix::-webkit-scrollbar-thumb
+    background: rgba(90, 90, 90, 0.28)
+    border-radius: 4px
+
+@media (max-width: 991px)
+  .site-rail
+    position: static
+    overflow: visible
+    pointer-events: auto
+
+  .site-rail-sidebar
+    display: none
+
+  .sidebar-layout-spacer
+    display: none
+
+  html.rail-drawer-open,
+  html.rail-drawer-open body
+    overflow: hidden
+
+  .site-nav.site-nav-on
+    position: fixed
+    z-index: 110
+    top: var(--rail-header-offset, 79px)
+    right: 0
+    left: 0
+    box-sizing: border-box
+    max-height: calc(100vh - var(--rail-header-offset, 79px))
+    padding: 12px 0 18px
+    overflow-x: hidden
+    overflow-y: auto
+    background: var(--content-bg-color, #fff)
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18)
+
+  .mobile-rail-profile
+    display: flex
+    align-items: center
+    gap: 12px
+    margin: 0 20px 10px
+    padding: 0 0 12px
+    border-bottom: 1px solid rgba(110, 110, 110, 0.16)
+
+  .mobile-rail-profile-image
+    box-sizing: border-box
+    flex: 0 0 56px
+    width: 56px
+    height: 56px
+    border: 2px solid rgba(110, 110, 110, 0.14)
+    border-radius: 50%
+    object-fit: cover
+
+  .mobile-rail-profile-copy
+    display: flex
+    min-width: 0
+    flex-direction: column
+    gap: 3px
+
+  .mobile-rail-profile-name
+    color: var(--text-color)
+    font-size: 0.95rem
+    line-height: 1.3
+
+  .mobile-rail-profile-description
+    overflow: hidden
+    color: #666
+    font-size: 0.78rem
+    line-height: 1.4
+    text-overflow: ellipsis
+    white-space: nowrap
+
+  .site-nav.site-nav-on .main-menu
+    margin-top: 0
+    margin-bottom: 0
