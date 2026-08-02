@@ -2,6 +2,7 @@
 
 <nav class="site-nav" aria-label="{{ __('accessibility.primary_navigation') }}">
 {%- if theme.menu %}
+  {{ partial('_partials/header/mobile-rail-profile.swig', {}, {cache: theme.cache.enable}) }}
   <ul id="menu" class="main-menu menu">
     {%- for name, path in theme.menu %}
       {%- set respath = path %}

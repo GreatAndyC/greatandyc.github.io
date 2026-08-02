@@ -102,7 +102,9 @@ function initHomeFeedControls() {
 
   syncCurrentCategory(panel);
 
-  let initialMode = 'card';
+  // The index opens as an editorial reading list; the visual grid remains
+  // available as an explicit alternative and saved preferences still win.
+  let initialMode = 'list';
   try {
     const savedMode = window.localStorage.getItem(HOME_VIEW_STORAGE_KEY);
     if (savedMode === 'list' || savedMode === 'card') {

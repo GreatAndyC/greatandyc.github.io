@@ -67,16 +67,37 @@ var Affix = {
 };
 
 NexT.utils.getAffixParam = function() {
-  const sidebarOffset = CONFIG.sidebar.offset || 12;
+  let sidebar = document.querySelector('.sidebar');
+  let rail = document.querySelector('.site-rail');
+
+  if (rail && sidebar) {
+    // The header and overview now live in one native scroll container. Keep
+    // Affix's class for the existing sidebar state machine, but do not add a
+    // second fixed position or a header-sized margin inside the rail.
+    sidebar.style.marginTop = '0';
+    document.documentElement.style.setProperty('--sidebar-affix-top', '0px');
+    return {
+      top   : -1,
+      bottom: null
+    };
+  }
 
   let headerOffset = document.querySelector('.header-inner').offsetHeight;
-  let footerOffset = document.querySelector('.footer').offsetHeight;
+  // Header and profile are rendered as one continuous desktop rail. The
+  // overview starts at the header's lower edge instead of becoming a second
+  // floating card with an arbitrary gap.
+  let sidebarAffixTop = headerOffset;
 
-  document.querySelector('.sidebar').style.marginTop = headerOffset + sidebarOffset + 'px';
+  sidebar.style.marginTop = sidebarAffixTop + 'px';
+  document.documentElement.style.setProperty('--sidebar-affix-top', sidebarAffixTop + 'px');
 
   return {
-    top   : headerOffset,
-    bottom: footerOffset
+    // Pin the complete left rail from the first paint. The navigation card
+    // is already in the fixed header; the profile card starts below it and
+    // should not briefly scroll away before Affix engages. Leaving the
+    // bottom boundary unset keeps both panels fixed for the full article.
+    top   : -1,
+    bottom: null
   };
 };
 

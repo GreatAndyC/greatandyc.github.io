@@ -13,9 +13,17 @@
   <div class="container{%- if theme.motion.enable %} use-motion{%- endif %}">
     <div class="headband"></div>
 
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner">{% include '_partials/header/index.swig' %}</div>
-    </header>
+    <div class="site-rail">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner">{% include '_partials/header/index.swig' %}</div>
+      </header>
+
+      {%- if theme.sidebar.display !== 'remove' %}
+        <div class="site-rail-sidebar">
+          {% block sidebar %}{% endblock %}
+        </div>
+      {%- endif %}
+    </div>
 
     {{ partial('_partials/widgets.swig', {}, {cache: theme.cache.enable}) }}
 
@@ -28,8 +36,8 @@
           </div>
           {% include '_partials/comments.swig' %}
         </div>
-        {%- if theme.sidebar.display !== 'remove' %}
-          {% block sidebar %}{% endblock %}
+        {%- if theme.sidebar.display !== 'remove' and page.sidebar !== false %}
+          <div class="sidebar-layout-spacer" aria-hidden="true"></div>
         {%- endif %}
       </div>
     </main>

@@ -108,6 +108,19 @@ test('core pages keep the localized Home, About, Work, and Gallery menu', () => 
   });
 });
 
+test('home feeds publish twelve cards per page and keep one shared desktop rail', () => {
+  const html = readPublic('zh-CN/index.html');
+  const postCount = (html.match(/class="post-block/g) || []).length;
+
+  assert.equal(postCount, 12, 'the localized homepage should publish twelve posts per page');
+  assert.match(html, /class="site-rail"/, 'the page should render one shared navigation rail');
+  assert.match(
+    html,
+    /class="sidebar-layout-spacer"/,
+    'the content layout should reserve the rail gutter without duplicating the sidebar'
+  );
+});
+
 test('core pages request the versioned stylesheet to avoid stale deployment CSS', () => {
   pageMatrix.forEach(({ file }) => {
     const html = readPublic(file);
@@ -116,6 +129,60 @@ test('core pages request the versioned stylesheet to avoid stale deployment CSS'
     assert.ok(html.includes(`href="${expectedAsset}"`), `${file} is missing ${expectedAsset}`);
     assert.ok(!html.includes('href="/css/main.css"'), `${file} still requests unversioned CSS`);
   });
+});
+
+test('home category controls use the feed-aligned responsive layout', () => {
+  const css = readPublic('css/main.css');
+
+  assert.ok(
+    css.includes('grid-template-columns: auto minmax(0, 1fr) auto;')
+      && css.includes('grid-template-areas: "heading navigation tools";'),
+    'the desktop category panel must align the heading, categories, and tools on one rail'
+  );
+  assert.ok(
+    css.includes('box-sizing: border-box;')
+      && css.includes('width: 100%;')
+      && css.includes('max-width: none;'),
+    'the category panel must fill the same bounded content track as the feed'
+  );
+  assert.ok(
+    css.includes('@media (max-width: 1199px)')
+      && css.includes('grid-template-areas: "heading" "navigation" "tools";'),
+    'tablet widths must stack the category panel into predictable rows'
+  );
+  assert.ok(
+    css.includes('grid-template-rows: 44px 44px;')
+      && css.includes('.home-category-nav::-webkit-scrollbar'),
+    'mobile controls must provide touch-sized actions and a contained category scroller'
+  );
+  assert.ok(
+    css.includes('border-bottom: 2px solid transparent;')
+      && css.includes('box-shadow: inset 0 -2px 0 var(--text-color);'),
+    'category and sort states must use the editorial underline treatment instead of filled pills'
+  );
+});
+
+test('home feed opens as an editorial index and keeps the visual grid alternative', () => {
+  const html = readPublic('zh-CN/index.html');
+  const css = readPublic('css/main.css');
+  const filterScript = readPublic('js/home-category-filter.js');
+
+  assert.match(
+    html,
+    /class="home-view-button is-active"[^>]*data-view-mode="list"/,
+    'the localized homepage should make the readable index the no-script default'
+  );
+  assert.ok(
+    css.includes('.main .content.feed-page.feed-view-card .feed-posts-container')
+      && css.includes('grid-template-columns: repeat(3, minmax(0, 1fr));')
+      && css.includes('.main .content.feed-page.feed-view-list .post-body > .post-gallery.post-gallery'),
+    'the feed should ship both a structured grid and a thumbnail-led index layout'
+  );
+  assert.match(
+    filterScript,
+    /let initialMode = 'list';/,
+    'the client-side default should match the no-script index layout'
+  );
 });
 
 test('core pages expose the AC brand mark and complete favicon metadata', () => {
@@ -550,7 +617,7 @@ test('long project names use concise headings without polluting the table of con
   });
 });
 
-test('portfolio pages load one versioned gallery script and keep language switching', () => {
+test('portfolio pages load one versioned gallery script and keep the compact language switcher', () => {
   workPages.forEach(({ file, alternate }) => {
     const html = readPublic(file);
     const expectedScript = `/js/portfolio-gallery.js?v=${assetVersion}`;
@@ -561,6 +628,10 @@ test('portfolio pages load one versioned gallery script and keep language switch
       1,
       `${file} must load the versioned gallery script exactly once`
     );
+    assert.ok(html.includes('class="languages language-switcher"'), `${file} is missing the language switcher`);
+    assert.ok(html.includes('class="language-switcher-label"'), `${file} is missing the localized switcher label`);
+    assert.ok(html.includes('class="language-switcher-divider"'), `${file} is missing the editorial language divider`);
+    assert.ok(!html.includes('class="lang-select"'), `${file} still renders the old language dropdown`);
     assert.ok(html.includes(`data-href="${alternate}"`), `${file} is missing its language pair`);
   });
 });
