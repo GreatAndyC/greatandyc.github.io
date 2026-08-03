@@ -15,7 +15,7 @@ categories:
   - Tutorial
 toc: true
 ---
-> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
+> Translation note: This English version follows the structure, data, figures, and references of the corresponding Chinese post. It was reviewed and synchronized on 2026-08-03.
 
 <figure class="post-figure">
   <img src="/images/posts/feishu-migration/ios-app-from-zero-vol2/ios_series_vol2_cover.png" alt="">
@@ -45,6 +45,37 @@ The competition is no longer just about raw capability. It is becoming a battle 
 - Chinese models compete by balancing quality and cost
 - Other companies extend the ecosystem through clouds, GPUs, or social platforms
 
+The current landscape can be summarized as follows:
+
+| Rank | Model | Company | Country | Camp |
+| :--- | :--- | :--- | :--- | :--- |
+| 1 | Gemini 3 Pro | Google | 🇺🇸 United States | Big Tech |
+| 2 | GPT-5 (High) | OpenAI | 🇺🇸 United States | Frontier Lab |
+| 3 | Claude Opus 4.6 | Anthropic | 🇺🇸 United States | Frontier Lab |
+| 4 | Claude Sonnet 4.6 | Anthropic | 🇺🇸 United States | Frontier Lab |
+| 5 | GLM-5 | Zhipu AI | 🇨🇳 China | AI startup |
+| 6 | MiniMax M2.7 | MiniMax | 🇨🇳 China | Startup |
+| 7 | MiMo-V2-Pro | Xiaomi AI | 🇨🇳 China | Big Tech |
+| 8 | Grok 4.2 | xAI | 🇺🇸 United States | Elon ecosystem |
+| 9 | GPT-5 mini | OpenAI | 🇺🇸 United States | Frontier Lab |
+| 10 | Kimi K2.5 | Moonshot AI | 🇨🇳 China | Startup |
+| 11 | Gemini 3 Flash | Google | 🇺🇸 United States | Big Tech |
+| 12 | Qwen 3.5 397B | Alibaba | 🇨🇳 China | Big Tech |
+| 13 | DeepSeek V3 | DeepSeek | 🇨🇳 China | Startup |
+| 14 | MiMo-V2 Flash | Xiaomi | 🇨🇳 China | Big Tech |
+| 15 | Claude Haiku 4.5 | Anthropic | 🇺🇸 United States | Frontier Lab |
+| 16 | NVIDIA Nemotron | NVIDIA | 🇺🇸 United States | Big Tech |
+| 17 | Amazon Nova | AWS | 🇺🇸 United States | Big Tech |
+| 18 | Gemini Flash Lite | Google | 🇺🇸 United States | Big Tech |
+| 19 | gpt-oss-120B | OpenAI / open-source ecosystem | 🇺🇸 United States | Open-ish |
+| 20 | K-EXAONE | LG AI | 🇰🇷 South Korea | Enterprise AI |
+| 21 | gpt-oss-20B | OpenAI | 🇺🇸 United States | Open-ish |
+| 22 | NVIDIA Nemotron Nano | NVIDIA | 🇺🇸 United States | Big Tech |
+| 23 | K2 Think V2 | Kuaishou | 🇨🇳 China | Big Tech |
+| 24 | MiniMax K2.5 Pro | MiniMax | 🇨🇳 China | Startup |
+| 25 | Mistral Large 3 | Mistral | 🇫🇷 France | Independent Europe |
+| 26 | Llama 4 Maverick | Meta | 🇺🇸 United States | Big Tech |
+
 ### First tier
 
 The first tier is dominated by the major US players:
@@ -53,7 +84,7 @@ The first tier is dominated by the major US players:
 - Anthropic Claude
 - OpenAI ChatGPT
 
-They define the frontier of capability.
+Their defining characteristic is the pursuit of maximum intelligence and the ability to set the upper limit of model capability.
 
 ### Second tier
 
@@ -65,7 +96,7 @@ Chinese companies focus more on “good enough + much cheaper”:
 - MiniMax
 - GLM
 
-They win through cost effectiveness.
+Their defining characteristic is using cost advantages to capture the market quickly.
 
 ### Other players
 
@@ -74,7 +105,7 @@ They win through cost effectiveness.
 - Amazon (Nova)
 - Meta (Llama)
 
-They expand through cloud, GPU, or platform ecosystems.
+Their defining characteristic is binding users through cloud services, GPUs, or social entry points.
 
 ## Coding Ability
 
@@ -93,25 +124,38 @@ AI models are powered by tokens, which are basically the electricity of the AI w
 
 ### API usage
 
-Pay-as-you-go is like connecting a power line and paying for what you consume.
+Pay-as-you-go is like connecting a power line and paying for what you consume. Every major vendor supports this model.
 
 <figure class="post-figure">
   <img src="/images/posts/feishu-migration/ios-app-from-zero-vol2/openrouter_token_consumption.png" alt="">
   <figcaption>OpenRouter token consumption</figcaption>
 </figure>
 
+OpenRouter's weekly token-consumption ranking shows the input and output prices and usage of popular models. It is a useful reference for model popularity, although exact pricing should be checked on each vendor's official platform.
+
 ### Subscription plans
 
-Gemini, Claude, and ChatGPT all offer subscription products. The mainstream plans are around $20/month and include web access plus AI coding quota.
+Gemini, Claude, and ChatGPT all offer subscription products. The mainstream plans are around $20/month and include web access plus AI coding quota. For example, ChatGPT Plus includes Codex usage quota with five-hour and weekly limits; Claude provides Claude Code quota; and Google provides Antigravity quota.
 
 <figure class="post-figure">
   <img src="/images/posts/feishu-migration/ios-app-from-zero-vol2/chatgpt_plus_pricing_plans.png" alt="">
   <figcaption>ChatGPT pricing</figcaption>
 </figure>
 
+Official pricing pages:
+
+- [ChatGPT](https://chatgpt.com/zh-Hans-CN/pricing/)
+- [Claude](https://claude.com/pricing)
+- [Gemini](https://gemini.google/subscriptions/)
+
 ### Coding plans
 
-As token burn increased, domestic vendors introduced package-style coding plans. This reflects AI moving from “usage-based billing” to a more infrastructure-like model.
+As token burn increased—especially after OpenClaw became popular—domestic vendors introduced package-style coding plans. This reflects AI moving from “usage-based billing” to a more infrastructure-like model. Like electricity moving from per-use billing to a monthly plan, developers can continuously call AI within a more predictable cost range.
+
+Coding plans are therefore one of the best choices for controlling development cost. Readers who want to buy a MiniMax or GLM coding plan can use the invitation links below for a discount:
+
+- [MiniMax token plan](https://platform.minimaxi.com/subscribe/token-plan?code=H5mFhfRxqH&source=link)
+- [GLM coding plan](https://www.bigmodel.cn/glm-coding?ic=PH3OZYF5I9)
 
 <figure class="post-figure">
   <img src="/images/posts/feishu-migration/ios-app-from-zero-vol2/zhipu_glm_coding_plan.png" alt="">
@@ -120,12 +164,20 @@ As token burn increased, domestic vendors introduced package-style coding plans.
 
 ### Relays and intermediaries
 
-Because of export restrictions and regional availability issues, users sometimes rely on reputable intermediaries such as OpenRouter.
+Because of US export-control rules and regional availability issues, users in mainland China, Hong Kong, and Macao may not be able to subscribe directly to the major US vendors. They sometimes rely on reputable intermediaries or aggregators such as [OpenRouter](https://openrouter.ai/) or Cursor.
+
+This can work in the short term, but regulatory changes make its long-term stability and sustainability uncertain. Architectures should avoid depending on one region or one vendor. Since March 2026, API restrictions have also become stricter, so it is safer to keep several geographically diverse AI suppliers available.
 
 <figure class="post-figure">
   <img src="/images/posts/feishu-migration/ios-app-from-zero-vol2/cursor_subscription_view.png" alt="">
   <figcaption>Cursor pricing page</figcaption>
 </figure>
+
+### Other suppliers
+
+There are also individual third-party suppliers that obtain compute through reverse proxies or other grey-market methods. Readers should assess them carefully and balance cost control against privacy risk.
+
+Non-official suppliers and providers without a strong reputation may resell everything they receive. Treat information security as a first-class concern.
 
 ## Conclusion
 

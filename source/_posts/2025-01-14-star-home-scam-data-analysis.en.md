@@ -15,7 +15,7 @@ categories:
   - Data Analysis
 toc: true
 ---
-> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
+> Translation note: This English version follows the structure, data, figures, and references of the corresponding Chinese post. It was reviewed and synchronized on 2026-08-03.
 
 <figure class="post-figure">
   <img src="/images/posts/feishu-migration/star-home-scam-data-analysis/star-comparison-cover.png" alt="">
@@ -92,17 +92,34 @@ I first exported the Excel sheet into a TXT file with commas so it could be past
 import pandas as pd
 
 def excel_to_txt_with_commas(excel_file, txt_file):
-    df = pd.read_excel(excel_file)
+    """
+    Export every cell in an Excel workbook into a comma-separated TXT file.
+    """
+    try:
+        df = pd.read_excel(excel_file)
+    except FileNotFoundError:
+        print(f"Error: Excel file '{excel_file}' was not found.")
+        return
+
+    # Remove columns whose names start with Unnamed.
     df = df.loc[:, ~df.columns.str.startswith('Unnamed')]
 
     with open(txt_file, 'w', encoding='utf-8') as f:
+        # Wrap each header in corner brackets and separate headers with commas.
         header = ",".join([f"【{col}】" for col in df.columns])
         f.write(header + "\n")
 
+        # Write each row as a comma-separated line.
         for _, row in df.iterrows():
-            f.write(",".join([str(value) for value in row.values]) + "\n")
+            row_values = [str(value) for value in row.values]
+            f.write(",".join(row_values) + "\n")
 
-excel_to_txt_with_commas('initial-cleaned-data.xlsx', 'initial-cleaned-data.txt')
+    print(f"Excel file '{excel_file}' was exported to TXT successfully.")
+
+excel_file_path = 'initial-cleaned-data.xlsx'
+txt_file_path = 'initial-cleaned-data.txt'
+
+excel_to_txt_with_commas(excel_file_path, txt_file_path)
 ```
 
 <figure class="post-figure">
@@ -112,7 +129,9 @@ excel_to_txt_with_commas('initial-cleaned-data.xlsx', 'initial-cleaned-data.txt'
 
 ### Step 2: LLM labeling
 
-I pasted the text into Gemini Pro 2.0 and repeatedly refined the prompt until the results could be exported as CSV.
+Because the dataset was small, I did not need an API. I pasted the structured text into Google AI Studio's Gemini Pro 2.0 and refined the prompt repeatedly until the output could be exported as CSV.
+
+A representative prompt first asked the model to classify the reasons for being deceived and return a CSV-friendly text file with fields such as disappearance number, disappearance date, and reason. I then asked it to make the reasons more abstract while retaining useful details, and finally requested a complete row-by-row output.
 
 <figure class="post-figure">
   <img src="/images/posts/feishu-migration/star-home-scam-data-analysis/scam_gender_ratio_viz.png" alt="">

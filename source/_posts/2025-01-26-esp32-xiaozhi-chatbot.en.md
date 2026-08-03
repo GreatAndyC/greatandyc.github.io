@@ -15,7 +15,7 @@ categories:
   - Tutorial
 toc: true
 ---
-> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
+> Translation note: This English version follows the structure, data, figures, and references of the corresponding Chinese post. It was reviewed and synchronized on 2026-08-03.
 
 # ESP32 Xiaozhi Chatbot: Full Build Log
 
@@ -25,8 +25,8 @@ Project start: 2025-01-26
 
 - ESP32: a low-cost, high-performance Wi-Fi and Bluetooth dual-mode chip from Espressif, widely used for IoT devices.
 - Xiaozhi: the personified name of this AI software/project.
-- Xiaoge: reportedly the current owner of the open-source Xiaozhi project.
-- Breadboard: a solderless prototyping board for quickly building and testing circuits.
+- Xiaoge: reportedly the current owner of the open-source Xiaozhi project. His public links include the [GitHub organization](https://github.com/78), [Bilibili profile](https://space.bilibili.com/59357679), and [personal blog](https://xiaoxia.org/).
+- Breadboard: a solderless prototyping board for quickly building and testing circuits. Components and jumper wires can be inserted and removed without soldering, which makes it useful for prototyping and learning electronics.
 
 ## 2. Features
 
@@ -53,19 +53,21 @@ As of 2025-01-26, the project supports:
 
 <!-- more -->
 
-## 4. BOM
+## 4. Bill of Materials (BOM)
 
-1. ESP32-S3-DevKitC-1 (WROOM N16R8)
-2. INMP441 digital microphone
-3. MAX98357A audio amplifier
-4. 8Ω 2~3W or 4Ω 2~3W speaker
-5. Two 400-hole breadboards
-6. 1.54-inch 240x240 LCD display
-7. One box of 140 breadboard wires
+| Part | Approximate Taobao price |
+| :--- | :--- |
+| ESP32-S3-DevKitC-1 (WROOM N16R8) development board | RMB 33 |
+| INMP441 digital microphone | RMB 9 |
+| MAX98357A audio amplifier | RMB 8 |
+| 8Ω 2–3W or 4Ω 2–3W speaker | RMB 3 |
+| Two 400-hole breadboards | RMB 4 |
+| 1.54-inch 240×240 LCD display | RMB 7 |
+| One box of 140 breadboard wires | RMB 4 |
 
-Total cost: about 68 RMB.
+Total cost: about RMB 68.
 
-I eventually bought a DIY kit on Taobao instead of sourcing every part separately.
+After comparing the options, I bought a DIY kit on Taobao instead of sourcing every part separately.
 
 Useful references:
 
@@ -90,18 +92,22 @@ Use Espressif’s official flashing tool to burn the firmware.
 
 ![](/images/posts/feishu-migration/esp32-xiaozhi-chatbot/xiaozhi_console_backend_settings.png)
 
-Configure the backend in the Xiaozhi console and connect the device to the network.
+Configure the backend in the [Xiaozhi console](https://xiaozhi.me/console/agents) and connect the device to the network.
 
 ## 6. What It Can Do
 
 1. Conversational chat
-2. ASR wake word support
+2. ASR wake-word support. A simple custom wake-word approach is documented in the [project notes](https://kcn80f4hacgs.feishu.cn/wiki/OxsZwab8iiGYjvkH9SBcFK2anmh).
 
 ## 7. Technical Route
 
-Reference: a Bilibili project video and the architecture diagram around 2:14.
+Reference: the architecture diagram around 2:14 in the Bilibili video [I built a mini Iron Man robotic arm](https://www.bilibili.com/video/BV12341117rG).
 
-## 8. References
+## Problems Encountered
+
+- What is ESP32? See Espressif's [official product page](https://www.espressif.com.cn/zh-hans/products/socs).
+
+## References
 
 - GitHub: <https://github.com/78/xiaozhi-esp32>
 - Xiaozhi encyclopedia page: <https://my.feishu.cn/wiki/F5krwD16viZoF0kKkvDcrZNYnhb>

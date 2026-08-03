@@ -83,6 +83,12 @@ function readPublic(relativePath) {
   return fs.readFileSync(absolutePath, 'utf8');
 }
 
+function readSource(relativePath) {
+  const absolutePath = path.join(root, relativePath);
+  assert.ok(fs.existsSync(absolutePath), `missing source file: ${relativePath}`);
+  return fs.readFileSync(absolutePath, 'utf8');
+}
+
 function menuHref(html, item) {
   const itemPattern = new RegExp(
     `<li class="menu-item menu-item-${item}">([\\s\\S]*?)<\\/li>`
@@ -277,6 +283,70 @@ test('index and gallery covers reserve space and prioritize only the first visib
   assert.match(gallery, /gallery-album-cover[\s\S]*?<img[\s\S]*loading="lazy"/);
   assert.match(article, /<img[\s\S]*loading="eager"[\s\S]*fetchpriority="high"/);
   assert.match(article, /<img[\s\S]*loading="lazy"[\s\S]*decoding="async"/);
+});
+
+test('ChatGPT Android report keeps its English translation aligned with the Chinese source', () => {
+  const zh = readSource('source/_posts/2025-01-15-chatgpt-android-analysis-report.zh-CN.md');
+  const en = readSource('source/_posts/2025-01-15-chatgpt-android-analysis-report.en.md');
+  const imagePaths = content => [...content.matchAll(/!\[[^\]]*\]\((\/images\/[^)]+)\)/g)]
+    .map(match => match[1]);
+
+  assert.deepEqual(
+    imagePaths(en),
+    imagePaths(zh),
+    'the English report must keep the same figures and image order as the Chinese report'
+  );
+  assert.match(en, /^## 1\. Background Analysis$/m);
+  assert.match(en, /^## 2\. Methods and Environment$/m);
+  assert.match(en, /^## 3\. Product Overview$/m);
+  assert.match(en, /^## 4\. Product Analysis$/m);
+  assert.match(en, /^## 5\. User Feedback$/m);
+  assert.match(en, /^## 6\. Competitor Analysis$/m);
+  assert.match(en, /^## 7\. Conclusion$/m);
+  assert.match(en, /1,116/);
+  assert.match(en, /1,967/);
+  assert.match(en, /13\.09%/);
+  assert.match(en, /Google Play Weakness Statistics/);
+  assert.match(en, /Zapier, 2025/);
+  assert.doesNotMatch(en, /References are kept in the original Chinese article/);
+});
+
+test('every bilingual post keeps its figures, tables, and top-level sections aligned', () => {
+  const postsDir = path.join(root, 'source', '_posts');
+  const imagePaths = content => [...content.matchAll(/(?:!\[[^\]]*\]\(|<img[^>]+src=["'])([^)"']+)/g)]
+    .map(match => match[1].split('?')[0]);
+  const tableRows = content => content.match(/^\|.*\|$/gm) || [];
+  const topLevelSections = content => content.match(/^##\s+.+$/gm) || [];
+  const chinesePosts = fs.readdirSync(postsDir)
+    .filter(file => file.endsWith('.zh-CN.md'))
+    .sort();
+
+  assert.ok(chinesePosts.length > 0, 'no Chinese source posts were found');
+
+  chinesePosts.forEach(chineseFile => {
+    const englishFile = chineseFile.replace(/\.zh-CN\.md$/, '.en.md');
+    const chinesePath = path.join(postsDir, chineseFile);
+    const englishPath = path.join(postsDir, englishFile);
+    assert.ok(fs.existsSync(englishPath), `${chineseFile} is missing its English pair`);
+
+    const chinese = fs.readFileSync(chinesePath, 'utf8');
+    const english = fs.readFileSync(englishPath, 'utf8');
+
+    assert.deepEqual(
+      imagePaths(english),
+      imagePaths(chinese),
+      `${englishFile} must keep the same local figures and image order as ${chineseFile}`
+    );
+    assert.equal(
+      tableRows(english).length,
+      tableRows(chinese).length,
+      `${englishFile} must keep the same Markdown table structure as ${chineseFile}`
+    );
+    assert.ok(
+      topLevelSections(english).length >= topLevelSections(chinese).length,
+      `${englishFile} must not drop top-level sections from ${chineseFile}`
+    );
+  });
 });
 
 test('legacy NexT icon URLs now resolve to the AC identity', () => {

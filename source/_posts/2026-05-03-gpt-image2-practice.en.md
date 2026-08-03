@@ -20,7 +20,7 @@ updated: "2026-05-15 20:37:23"
 
 <!-- more -->
 
-> Translation note: This English version was translated by deepseek-v4-flash on 2026-05-14 19:34:08 CST. The source text is the corresponding Chinese post in this repository.
+> Translation note: This English version follows the structure, prompts, figures, and references of the corresponding Chinese post. It was reviewed and synchronized on 2026-08-03.
 
 ![](/images/posts/post/gpt-image-2/gpt-image2-practice-15.png)
 
@@ -116,7 +116,7 @@ Result: an impressively good image.
 ![](/images/posts/post/gpt-image-2/gpt-image2-practice-19.png)
 *This image received over 10,000 views on social media (applause 👏)*
 
-Summary of a simple image generation workflow:
+## Summary: a simple image-generation workflow
 
 Provide a prompt with positive cues, negative cues (optional), and reference image (optional). Enable GPT's Think mode to generate the target image. Then you can fine-tune details through iterative conversation and editing.
 

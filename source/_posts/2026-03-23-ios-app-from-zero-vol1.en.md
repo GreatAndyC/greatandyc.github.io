@@ -15,7 +15,7 @@ categories:
   - Tutorial
 toc: true
 ---
-> Translation note: This English version was translated by Codex (GPT-5) on 2026-04-20 18:01:46 CST. The source text is the corresponding Chinese post in this repository.
+> Translation note: This English version follows the structure, data, figures, and references of the corresponding Chinese post. It was reviewed and synchronized on 2026-08-03.
 
 **Written:** 2026-03-23, 6:00 PM - 7:30 PM
 
@@ -40,17 +40,21 @@ I started with almost no iOS knowledge and am now preparing to ship my first app
 
 ## What Is a Product?
 
-In the age of **vibe coding**, the cost of writing code has dropped dramatically. What is scarce now is creativity, execution, delivery, engineering stability, and monetization.
+In the age of **vibe coding**—a term popularized by OpenAI co-founder [Andrej Karpathy](https://karpathy.ai) for describing natural-language collaboration with an AI agent—the cost of producing code has dropped close to zero. What is scarce now is creativity, execution, delivery, engineering stability, and monetization.
 
-The product manager role is therefore not just “making slides” or “writing documents.” In a commercial sense, a product is a packaged item designed for sale. In software, that usually means an app, a mini program, a game, or another shippable digital product.
+People used to say, “I have an idea that can change the world; all I need is a programmer to build it.” AI agents have now reduced both the learning cost and execution cost of coding, so we really are entering an era in which everyone can act as a product manager.
 
-From an engineering perspective, building a real product requires a division of labor. Fred Brooks’ *The Mythical Man-Month* is often treated as a classic in software engineering. One of its most famous ideas is the “surgical team” model, which maps nicely to modern product and engineering roles:
+What, then, is a product? Why does the product-manager role command such high salaries? I see the concept of a product as coming from commerce: a highly packaged good intended for sale. Apples grown in Yunnan and phones produced by Apple are both products; so are software products such as a game, an e-commerce app, or a WeChat mini program.
+
+In the internet industry, a product manager is broadly responsible for defining, designing, and commercializing a software product—especially an app. This definition emphasizes commercial realization, although product-management theory also includes broader interpretations such as user-value and black-box models.
+
+From an engineering perspective, building a large hardware or software product such as a DJI drone or Adobe Photoshop is not easy. It requires a division of labor. Fred Brooks’ *The Mythical Man-Month* is often treated as a classic in software engineering. One of its most famous ideas is the “surgical team” model, which maps nicely to modern product and engineering roles:
 
 | Role | Core Responsibility | Modern Equivalent |
 | --- | --- | --- |
-| Surgeon | Define the architecture and write the critical code | Tech lead / chief architect |
+| **Surgeon** | **Define the architecture and write the critical code** | **Tech lead / chief architect** |
 | Alter Ego | Review alternatives and act as the surgeon’s shadow | Senior engineer / technical deputy |
-| Architect | Guard the user interface and define product specs | Product manager / product architect |
+| **Architect** | **Guard the user interface and define product specs** | **Product manager / product architect** |
 | Administrator | Handle contracts, finance, logistics, and legal work | Project manager / operations |
 | Editor | Turn drafts into clear documents and manuals | Technical writer |
 | Secretaries | Handle records and file management | PMO / config admin |
@@ -59,9 +63,11 @@ From an engineering perspective, building a real product requires a division of 
 | Tester | Search for faults with test cases | QA |
 | Language Lawyer | Master the language and its low-level quirks | Specialist / fellow |
 
-The bolded parts are the responsibilities that, in practice, a product manager is often expected to cover.
+The bolded roles are the responsibilities that the product manager needs to take on in this development model. In reality, many product managers have gradually become people who only draw diagrams and write documents, which is neither efficient nor reliable.
 
-With AI tools now lowering the cost of coding, the ideal AI-era product person is increasingly a hybrid of architect and lead engineer: someone who understands technology, aesthetics, research, and execution well enough to direct AI effectively.
+As AI tools become more common, the idea of a “one-person company” is increasingly discussed as a way to soften employment pressure. An ideal agent could replace almost every role except the architect and chief programmer. But that also means that even if a person can learn while building, a lack of basic engineering patterns will eventually create enormous technical debt and an engineering collapse. For beginners, of course, this detour is almost unavoidable.
+
+The AI-era product manager should therefore combine the roles of chief programmer and architect. Only someone who understands technology, aesthetics, and research can direct AI well and become an AI-era **Super Individual**.
 
 ---
 
@@ -69,7 +75,7 @@ With AI tools now lowering the cost of coding, the ideal AI-era product person i
 
 People sometimes talk about “Apple users” versus “Android users” in a very rough way. Leaving that aside, the difference in spending power and ecosystem friction is real.
 
-For an indie developer, iOS has three major advantages:
+For an indie developer, iOS has three major advantages: **return on effort, publishing friction, and distribution**.
 
 ### 1. Better return on effort
 
@@ -77,23 +83,23 @@ Apple users are generally more willing to pay for software, while Android’s op
 
 ### 2. Lower publishing friction
 
-Many domestic Android app stores require company credentials. Google Play also requires staged testing for new accounts. By contrast, the App Store mainly requires an Apple Developer account and review approval, which is much simpler for an individual.
+Many domestic Android app stores require company credentials. Google Play also requires staged testing for new accounts—new accounts may need 20 testers for 14 consecutive days. By contrast, the App Store mainly requires an Apple Developer account and review approval, which is much simpler for an individual.
 
 ### 3. Cleaner distribution
 
-On modern phones, people rarely sideload APKs from random websites. Official stores matter. Android distribution is fragmented across multiple vendor stores, while iOS has a single App Store. Once an app passes review, it can reach Apple users worldwide.
+Publishing and compliance are necessary for commercialization: a product must reach users before it can create revenue. On modern phones, people rarely sideload APKs from random websites, and the operating system itself warns them about the risks. It is like trusting a bottle of Coca-Cola from a major supermarket while being suspicious of a bottle bought in a back alley.
+
+Android distribution is fragmented across multiple vendor stores—Xiaomi, Huawei, Oppo, Vivo, Google Play, and others—so a developer has to submit credentials to several marketplaces. iOS has a single App Store. Once an app passes review, it can reach Apple users worldwide. App Store review is stricter than most platforms and focuses on privacy, design consistency, functional value, and user experience, but it usually returns a result within 24–72 hours.
+
+The much-criticized 30% “Apple tax” on in-app purchases has recently fallen to 25%, and other app stores often charge even more.
 
 ---
 
 ## Cost vs. Return
 
-For someone starting from zero, iOS is a strong first platform:
+For someone starting from zero, iOS is a strong first platform. All that is required is a macOS computer and the $99 annual Apple Developer fee. The potential return is high because software has almost zero marginal distribution cost once it is built.
 
-- one Mac
-- a yearly $99 Apple Developer fee
-- a clear distribution path
-
-That combination gives independent developers a realistic shot at shipping a product and earning from it.
+With that in mind, I hope the later articles in this series give readers more confidence to build and ship their own apps.
 
 ## Next
 

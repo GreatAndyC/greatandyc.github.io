@@ -19,7 +19,7 @@ updated: "2026-05-15 20:01:44"
 
 <!-- more -->
 
-> Translation note: This English version was translated by deepseek-v4-flash on 2026-05-15 19:34:57 CST. The source text is the corresponding Chinese post in this repository.
+> Translation note: This English version follows the structure, figures, and conclusions of the corresponding Chinese post. It was reviewed and synchronized on 2026-08-03.
 
 Since the explosion of LLMs worldwide announced the arrival of the AI era, a widespread anxiety has visibly spread from the tech circle to the entire society.
 
@@ -71,6 +71,8 @@ The resulting offline local files:
 ![](/images/posts/2026-05-15-manus-trial/manus-04.png)
 
 ## Difference between Openclaw and Manus
+
+![](/images/posts/2026-05-15-manus-trial/manus-06.png)
 
 Through this process, we can see that the biggest difference between Openclaw and Manus lies in their positioning: "engineer's tool" versus "mature commercial product."
 

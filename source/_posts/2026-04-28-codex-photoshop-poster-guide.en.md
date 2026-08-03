@@ -17,9 +17,10 @@ updated: "2026-04-28 22:15:19"
 
 <!-- more -->
 
-> Translation note: This English version was translated by deepseek-v4-flash on 2026-04-28 22:07:41 CST. The source text is the corresponding Chinese post in this repository.
+> Translation note: This English version follows the structure and content of the corresponding Chinese post. It was reviewed and synchronized on 2026-08-03.
 
-This is a test translation document haha hahaha
-Guess what?
-Making a poster is not difficult at all
-Just let CodeX read the whole thing and it's done! Why make it so complicated with all these twists and turns? So funny, hehehehe.
+# How to make a promotional poster with CodeX and Photoshop
+
+This article introduces one feasible way to create a promotional poster with CodeX and Photoshop.
+
+This is a test-translation document. Making a poster is not difficult, is it? Just let CodeX read the whole thing and handle it. Why make it so complicated with all these twists and turns? Haha.
