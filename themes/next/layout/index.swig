@@ -11,7 +11,7 @@
 
   <div class="feed-posts-container">
   {%- for post in page.posts.toArray() %}
-    {{ partial('_macro/post.swig', {post: post, is_index: true}) }}
+    {{ partial('_macro/post.swig', {post: post, is_index: true, index: loop.index}) }}
   {%- endfor %}
   </div>
 

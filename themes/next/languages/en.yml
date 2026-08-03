@@ -1,5 +1,5 @@
 name: English
-description: My writing
+description: AI products, software systems, and applied research
 
 title:
   archive: Archive
@@ -15,6 +15,7 @@ menu:
   about: About
   work: Work
   gallery: Gallery
+  explore: Explore
   search: Search
   schedule: Schedule
   sitemap: Sitemap
@@ -107,6 +108,7 @@ follow_me:
 accessibility:
   nav_toggle: Toggle navigation bar
   primary_navigation: Primary navigation
+  skip_to_content: Skip to content
   category_navigation: Category navigation
   site_statistics: Site statistics
   pagination: Pagination

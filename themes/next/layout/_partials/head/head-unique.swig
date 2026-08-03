@@ -7,13 +7,26 @@
   {%- endif %}
 {%- endif %}
 {{ open_graph({
+  title: title,
   description: page.description or description,
   image: og_image,
+  site_name: title,
   language: page.lang,
+  author: author,
   twitter_card: 'summary_large_image'
 }) }}
 
 {{ canonical() }}
+
+{# Tell crawlers which localized page is the equivalent alternate. #}
+{%- for language in languages %}
+  {%- set alternate_url = i18n_path(language) %}
+  {%- set alternate_href = absolute_url(alternate_url) %}
+  <link rel="alternate" hreflang="{{ language }}" href="{{ alternate_href }}">
+  {%- if loop.index === 1 %}
+    <link rel="alternate" hreflang="x-default" href="{{ alternate_href }}">
+  {%- endif %}
+{%- endfor %}
 
 {# Exports some front-matter variables to Front-End #}
 <script id="page-configurations">

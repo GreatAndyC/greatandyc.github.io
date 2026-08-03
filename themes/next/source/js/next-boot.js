@@ -19,24 +19,50 @@ NexT.boot.registerEvents = function() {
   syncRailHeaderOffset();
   window.addEventListener('resize', syncRailHeaderOffset);
 
-  // Mobile top menu bar.
-  document.querySelector('.site-nav-toggle .toggle').addEventListener('click', event => {
-    event.currentTarget.classList.toggle('toggle-close');
-    var siteNav = document.querySelector('.site-nav');
-    var willOpen = !siteNav.classList.contains('site-nav-on');
-    var animateAction = willOpen ? 'slideDown' : 'slideUp';
-    document.documentElement.classList.toggle('rail-drawer-open', willOpen);
+  // Mobile top menu bar. Keep the control semantic so keyboard and assistive
+  // technology users can understand and operate the drawer.
+  var navToggle = document.querySelector('.site-nav-toggle .toggle');
+  var siteNav = document.querySelector('.site-nav');
 
-    if (typeof Velocity === 'function') {
-      Velocity(siteNav, animateAction, {
-        duration: 200,
-        complete: function() {
-          siteNav.classList.toggle('site-nav-on');
-        }
-      });
-    } else {
-      siteNav.classList.toggle('site-nav-on');
-    }
+  if (navToggle && siteNav) {
+    var setNavigationState = function(willOpen) {
+      navToggle.classList.toggle('toggle-close', willOpen);
+      navToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      document.documentElement.classList.toggle('rail-drawer-open', willOpen);
+    };
+
+    var toggleNavigation = function() {
+      var willOpen = !siteNav.classList.contains('site-nav-on');
+      var animateAction = willOpen ? 'slideDown' : 'slideUp';
+
+      setNavigationState(willOpen);
+
+      if (typeof Velocity === 'function') {
+        Velocity(siteNav, animateAction, {
+          duration: 200,
+          complete: function() {
+            siteNav.classList.toggle('site-nav-on', willOpen);
+          }
+        });
+      } else {
+        siteNav.classList.toggle('site-nav-on', willOpen);
+      }
+    };
+
+    navToggle.addEventListener('click', toggleNavigation);
+
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Escape' || !siteNav.classList.contains('site-nav-on')) return;
+      setNavigationState(false);
+      siteNav.classList.remove('site-nav-on');
+      navToggle.focus();
+    });
+  }
+
+  // Preserve the full Work label in a native tooltip when the compact rail
+  // truncates a long project title.
+  document.querySelectorAll('.post-toc .nav-link').forEach(link => {
+    if (!link.title) link.title = link.textContent.trim();
   });
 
   var TAB_ANIMATE_DURATION = 200;

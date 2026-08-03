@@ -9,8 +9,8 @@ test.describe.configure({ mode: 'serial' });
 for (const route of accessibilityRoutes) {
   test(`${route} has no automatically detectable WCAG A/AA violations`, async ({ page }, testInfo) => {
     test.skip(
-      testInfo.project.name !== 'chromium-desktop',
-      'accessibility rules are browser-independent enough to run once in the fast suite'
+      !['chromium-desktop', 'chromium-mobile'].includes(testInfo.project.name),
+      'run the accessibility scan in Chromium desktop and mobile viewports'
     );
     const problems = await openPage(page, route);
     // Let the theme finish applying its sidebar/TOC state before axe computes

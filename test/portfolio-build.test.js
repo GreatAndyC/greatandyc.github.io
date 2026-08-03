@@ -6,9 +6,10 @@ const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
 const publicDir = path.join(root, 'public');
-const assetVersion = fs
+const configuredAssetVersion = fs
   .readFileSync(path.join(root, '_config.yml'), 'utf8')
   .match(/^asset_version:\s*["']?([^"'\s]+)["']?\s*$/m)?.[1];
+const assetVersion = process.env.ASSET_VERSION?.slice(0, 12) || configuredAssetVersion;
 
 const pageMatrix = [
   {
@@ -229,6 +230,53 @@ test('core pages expose the AC brand mark and complete favicon metadata', () => 
       `${file} is missing the branded web manifest`
     );
   });
+});
+
+test('core pages expose semantic mobile navigation, skip links, and localized metadata', () => {
+  const zh = readPublic('zh-CN/index.html');
+  const en = readPublic('en/index.html');
+
+  [zh, en].forEach((html, index) => {
+    assert.match(html, /<button[\s\S]*class="toggle"[\s\S]*type="button"[\s\S]*aria-expanded="false"[\s\S]*aria-controls="site-navigation"/);
+    assert.match(html, /<nav id="site-navigation" class="site-nav"/);
+    assert.match(html, /class="skip-link" href="#main-content"/);
+    assert.match(html, /rel="alternate" hreflang="en"/);
+    assert.match(html, /rel="alternate" hreflang="zh-CN"/);
+    assert.match(html, /rel="alternate" hreflang="x-default"/);
+    assert.match(
+      html,
+      index === 0
+        ? /<link rel="alternate" hreflang="en" href="https:\/\/caoyueyang\.org\/">/
+        : /<link rel="alternate" hreflang="zh-CN" href="https:\/\/caoyueyang\.org\/zh-CN\/">/
+    );
+    assert.doesNotMatch(html, /rel="alternate"[^>]+href="[^"]+index\.html"/);
+    assert.match(html, /class="menu-section-label"/);
+    assert.match(
+      html,
+      index === 0
+        ? /<meta name="description" content="AI 产品、软件系统与应用研究">/
+        : /<meta name="description" content="AI products, software systems, and applied research">/
+    );
+  });
+});
+
+test('index and gallery covers reserve space and prioritize only the first visible image', () => {
+  const home = readPublic('zh-CN/index.html');
+  const gallery = readPublic('gallery/index.html');
+  const article = readPublic('2026/05/15/manus/index.html');
+
+  assert.match(
+    home,
+    /<img[\s\S]*width="1280"[\s\S]*height="800"[\s\S]*loading="eager"[\s\S]*fetchpriority="high"/
+  );
+  assert.match(home, /<img[\s\S]*loading="lazy"[\s\S]*decoding="async"/);
+  assert.match(
+    gallery,
+    /gallery-album-cover[\s\S]*?<img[\s\S]*loading="eager"[\s\S]*fetchpriority="high"/
+  );
+  assert.match(gallery, /gallery-album-cover[\s\S]*?<img[\s\S]*loading="lazy"/);
+  assert.match(article, /<img[\s\S]*loading="eager"[\s\S]*fetchpriority="high"/);
+  assert.match(article, /<img[\s\S]*loading="lazy"[\s\S]*decoding="async"/);
 });
 
 test('legacy NexT icon URLs now resolve to the AC identity', () => {

@@ -1,6 +1,6 @@
 ---
 name: 简体中文
-description: 我的写作
+description: AI 产品、软件系统与应用研究
 title:
   archive: 归档
   category: 分类
@@ -14,6 +14,7 @@ menu:
   about: 关于
   work: 作品
   gallery: 画廊
+  explore: 浏览
   search: 搜索
   schedule: 日程表
   sitemap: 站点地图
@@ -92,6 +93,7 @@ follow_me:
 accessibility:
   nav_toggle: 切换导航栏
   primary_navigation: 主导航
+  skip_to_content: 跳到正文
   category_navigation: 分类导航
   site_statistics: 站点统计
   pagination: 分页导航

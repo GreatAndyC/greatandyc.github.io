@@ -179,7 +179,16 @@
         {%- if post.photos and post.photos.length %}
           <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
             {%- for photo in post.photos %}
-              <img src="{{ url_for(photo) }}" alt="{{ post.title | escape }}" itemprop="contentUrl">
+              <img
+                src="{{ url_for(photo) }}"
+                alt="{{ post.title | escape }}"
+                itemprop="contentUrl"
+                width="1280"
+                height="800"
+                loading="{% if index === 1 %}eager{% else %}lazy{% endif %}"
+                decoding="async"
+                {% if index === 1 %}fetchpriority="high"{% endif %}
+              >
             {%- endfor %}
           </div>
         {%- else %}

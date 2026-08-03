@@ -524,7 +524,7 @@ hexo.extend.helper.register('render_gallery', function (language = getCurrentLan
     return `<div class="gallery-empty">${emptyText}</div>`;
   }
 
-  const albumCards = albums.map(album => {
+  const albumCards = albums.map((album, albumIndex) => {
     const title = escapeHTML(getLocalizedValue(album.title, language));
     const description = escapeHTML(getLocalizedValue(album.description, language));
     const location = escapeHTML(getLocalizedValue(album.location, language));
@@ -536,6 +536,8 @@ hexo.extend.helper.register('render_gallery', function (language = getCurrentLan
     const photoList = album.photos || [];
     const coverPhoto = photoList[0] || {};
     const coverSrc = coverPhoto.src ? this.url_for(coverPhoto.src) : '';
+    const isFirstCard = albumIndex === 0;
+    const coverLoading = isFirstCard ? 'eager' : 'lazy';
     const dataUrl = this.url_for(`/${galleryAlbumDataPath(album, language)}`);
     const countText = String(language).toLowerCase().startsWith('zh') ? `${photoList.length} 张照片` : `${photoList.length} photos`;
     const openText = String(language).toLowerCase().startsWith('zh') ? '打开相册' : 'Open album';
@@ -555,7 +557,7 @@ hexo.extend.helper.register('render_gallery', function (language = getCurrentLan
           data-gallery-url="${escapeHTML(dataUrl)}"
         >
           <span class="gallery-album-cover">
-            ${coverSrc ? `<img src="${coverSrc}" alt="${title}" loading="lazy" decoding="async">` : ''}
+            ${coverSrc ? `<img src="${coverSrc}" alt="${title}" width="1280" height="720" loading="${coverLoading}" decoding="async"${isFirstCard ? ' fetchpriority="high"' : ''}>` : ''}
             <span class="gallery-album-count">${countText}</span>
           </span>
           <span class="gallery-album-card-copy">
@@ -725,6 +727,19 @@ hexo.extend.helper.register('canonical', function () {
     url = url.replace(/\.html$/, '');
   }
   return `<link rel="canonical" href="${url}">`;
+});
+
+/**
+ * Turn a generated site path into an absolute URL for crawler metadata.
+ * `hreflang` requires absolute URLs even though regular site navigation can
+ * (and should) continue using the site's relative paths.
+ */
+hexo.extend.helper.register('absolute_url', function (path) {
+  const baseUrl = String(this.config.url || '').replace(/\/+$/, '');
+  const relativePath = String(this.url_for(path)).replace(/index\.html$/, '');
+
+  if (!baseUrl) return relativePath;
+  return `${baseUrl}/${relativePath.replace(/^\/+/, '')}`;
 });
 
 /**

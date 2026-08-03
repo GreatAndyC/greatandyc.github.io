@@ -22,7 +22,8 @@ language:
   - zh-CN
 timezone: Asia/Hong_Kong
 
-# Bump this value whenever core CSS or page-specific JavaScript changes.
+# Local fallback for development builds. CI overrides this with the current
+# commit SHA so every deployment gets a fresh CSS/JS URL automatically.
 # The query string prevents browsers and Cloudflare from mixing new HTML with cached assets.
 asset_version: "20260731-3"
 

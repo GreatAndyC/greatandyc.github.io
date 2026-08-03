@@ -2,11 +2,36 @@
 
 'use strict';
 
+function addNativeImageHints(content) {
+  let imageIndex = 0;
+
+  return content.replace(/<img\b[^>]*>/giu, imageTag => {
+    imageIndex += 1;
+    let updatedTag = imageTag;
+    const addAttribute = attribute => {
+      updatedTag = updatedTag.replace(/\s*\/?>$/u, ` ${attribute}>`);
+    };
+
+    if (!/\sloading\s*=/iu.test(updatedTag)) {
+      addAttribute(`loading="${imageIndex === 1 ? 'eager' : 'lazy'}"`);
+    }
+    if (!/\sdecoding\s*=/iu.test(updatedTag)) addAttribute('decoding="async"');
+    if (imageIndex === 1 && !/\sfetchpriority\s*=/iu.test(updatedTag)) {
+      addAttribute('fetchpriority="high"');
+    }
+
+    return updatedTag;
+  });
+}
+
 hexo.extend.filter.register('after_post_render', data => {
   const { config } = hexo;
   const theme = hexo.theme.config;
   const hasNeteaseEmbed = /src=["']\/\/music\.163\.com\/outchain\/player/iu.test(data.content || '');
-  if (!theme.exturl && !theme.lazyload && !hasNeteaseEmbed) return;
+  if (!theme.exturl && !theme.lazyload && !hasNeteaseEmbed) {
+    data.content = addNativeImageHints(data.content || '');
+    return;
+  }
   if (hasNeteaseEmbed) {
     data.content = data.content.replace(
       /src=(["'])\/\/music\.163\.com\/outchain\/player/giu,
@@ -30,5 +55,7 @@ hexo.extend.filter.register('after_post_render', data => {
       return `<span class="exturl" data-url="${Buffer.from(href).toString('base64')}">${html}<i class="fa fa-external-link-alt"></i></span>`;
     });
   }
+
+  data.content = addNativeImageHints(data.content || '');
 
 }, 0);

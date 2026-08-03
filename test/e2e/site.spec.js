@@ -115,6 +115,7 @@ for (const languageSwitch of [
     if (page.viewportSize().width < 992) {
       await page.locator('.site-nav-toggle .toggle').click();
       await expect(page.locator('.site-nav')).toHaveClass(/site-nav-on/);
+      await expect(page.locator('.site-nav-toggle .toggle')).toHaveAttribute('aria-expanded', 'true');
     }
 
     await Promise.all([
@@ -133,8 +134,14 @@ test('mobile navigation opens and keeps Work available', async ({ page }, testIn
 
   await page.locator('.site-nav-toggle .toggle').click();
   await expect(page.locator('.site-nav')).toHaveClass(/site-nav-on/);
+  await expect(page.locator('.site-nav-toggle .toggle')).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('.site-nav-toggle .toggle')).toHaveAttribute('aria-controls', 'site-navigation');
   await expect(page.locator('.menu-item-work > a')).toBeVisible();
   await expect(page.locator('.menu-item-work > a')).toHaveAttribute('href', '/en/work/');
+
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.site-nav')).not.toHaveClass(/site-nav-on/);
+  await expect(page.locator('.site-nav-toggle .toggle')).toHaveAttribute('aria-expanded', 'false');
 
   await expectNoRuntimeProblems(problems);
 });

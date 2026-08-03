@@ -16,6 +16,8 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      ASSET_VERSION: ${{ github.sha }}
 
     steps:
       - name: Checkout repository

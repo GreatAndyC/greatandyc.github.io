@@ -1,10 +1,13 @@
 {% import 'menu-item.swig' as menu_item with context %}
 
-<nav class="site-nav" aria-label="{{ __('accessibility.primary_navigation') }}">
+<nav id="site-navigation" class="site-nav" aria-label="{{ __('accessibility.primary_navigation') }}">
 {%- if theme.menu %}
   {{ partial('_partials/header/mobile-rail-profile.swig', {}, {cache: theme.cache.enable}) }}
   <ul id="menu" class="main-menu menu">
     {%- for name, path in theme.menu %}
+      {%- if name | lower == 'tags' %}
+        <li class="menu-section-label" aria-hidden="true">{{ __('menu.explore') }}</li>
+      {%- endif %}
       {%- set respath = path %}
       {%- if path == '[object Object]' %}
         {# Main Menu (default menu item for Submenu) #}
