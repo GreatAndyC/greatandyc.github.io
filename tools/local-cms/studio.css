@@ -4433,7 +4433,8 @@
   }
 
   .cms-studio #post-editor > .post-media-section {
-    grid-row: 3;
+    /* Keep the image library below the writing canvas on wide screens. */
+    grid-row: 3 !important;
   }
 }
 

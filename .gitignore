@@ -43,3 +43,6 @@ source/images_backup/
 
 # planning docs (local only)
 future-expansion-plan/
+
+# 本地案例文档工作区：包含原始面试 PPT、分析笔记、素材、渲染结果和最终导出文件，全部不进入博客仓库。
+/workbench/ai-native-software-engineering/
