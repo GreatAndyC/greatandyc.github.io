@@ -166,6 +166,26 @@ test('mobile navigation opens and keeps Work available', async ({ page }, testIn
   await expect(page.locator('.site-nav')).not.toHaveClass(/site-nav-on/);
   await expect(page.locator('.site-nav-toggle .toggle')).toHaveAttribute('aria-expanded', 'false');
 
+  // The mobile trigger must remain reachable after scrolling through a long
+  // article; otherwise the menu appears to stop responding halfway down the
+  // page because the original header has already left the viewport.
+  await page.evaluate(() => window.scrollTo(0, 600));
+  const menuButtonAfterScroll = page.locator('.site-nav-toggle .toggle');
+  await expect.poll(() => menuButtonAfterScroll.evaluate(button => {
+    const rect = button.getBoundingClientRect();
+    const header = button.closest('.header');
+    return Boolean(
+      header
+      && getComputedStyle(header).position === 'fixed'
+      && rect.top >= 0
+      && rect.bottom <= window.innerHeight
+    );
+  })).toBe(true);
+
+  await menuButtonAfterScroll.click();
+  await expect(page.locator('.site-nav')).toHaveClass(/site-nav-on/);
+  await page.keyboard.press('Escape');
+
   await expectNoRuntimeProblems(problems);
 });
 

@@ -3622,8 +3622,25 @@ html[lang="zh-CN"] .work-project__number
     border-radius: 4px
 
 @media (max-width: 991px)
+  // Keep the mobile navigation trigger reachable while reading long pages.
+  // The header lives in the short navigation rail, so sticky positioning
+  // would stop at the rail's bottom. Fixed positioning keeps it available
+  // throughout the document while the rail reserves its real height below.
+  .header
+    position: fixed
+    top: 0
+    right: 0
+    left: 0
+    z-index: 100
+    margin: 0 auto
+    pointer-events: none
+
+  .header-inner
+    pointer-events: auto
+
   .site-rail
     position: static
+    min-height: var(--rail-header-offset, 79px)
     overflow: visible
     pointer-events: auto
 

@@ -37,11 +37,11 @@ My work has crossed product analysis, cross-platform applications, data and AI w
 
 **The University of Hong Kong**
 
-- MSc(Eng) in Industrial Engineering and Logistics Management
+- Master's: Department of Data and Systems Engineering
 
 **Sun Yat-sen University**
 
-- BEng in Polymer Materials and Engineering
+- Bachelor's: Department of Chemistry
 
 ### Research Experience
 
