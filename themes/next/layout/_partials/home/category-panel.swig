@@ -12,25 +12,31 @@
     <div class="home-category-panel-head">
       <span class="home-category-panel-title">{{ __('state.categories') }}</span>
     </div>
-    <nav class="home-category-nav" aria-label="{{ __('accessibility.category_navigation') }}">
-      <a class="home-category-link{%- if panel_current_category == 'all' %} is-active{%- endif %}" href="{{ panel_all_url }}" data-category="all">{{ __('home.all') }}</a>
-      {{
-        localized_list_categories({
-          style: 'flat',
-          class: 'home-category',
-          separator: '',
-          show_count: true,
-          orderby: 'length',
-          order: -1,
-          amount: panel_category_limit,
-          include_current: true,
-          current: panel_current_category
-        })
-      }}
-      {%- if localized_categories_total > panel_category_limit %}
-        <a class="home-category-link home-category-link-more" href="{{ panel_categories_url }}">{{ __('home.more_categories') }}</a>
-      {%- endif %}
-    </nav>
+    <div class="home-category-nav-shell">
+      <nav class="home-category-nav" aria-label="{{ __('accessibility.category_navigation') }}" data-category-scroller>
+        <a class="home-category-link{%- if panel_current_category == 'all' %} is-active{%- endif %}" href="{{ panel_all_url }}" data-category="all">{{ __('home.all') }}</a>
+        {{
+          localized_list_categories({
+            style: 'flat',
+            class: 'home-category',
+            separator: '',
+            show_count: true,
+            orderby: 'length',
+            order: -1,
+            amount: panel_category_limit,
+            include_current: true,
+            current: panel_current_category
+          })
+        }}
+        {%- if localized_categories_total > panel_category_limit %}
+          <a class="home-category-link home-category-link-more" href="{{ panel_categories_url }}">{{ __('home.more_categories') }}</a>
+        {%- endif %}
+      </nav>
+      <span class="home-category-scroll-hint" data-category-scroll-hint aria-hidden="true">
+        <span>{{ __('home.swipe_categories') }}</span>
+        <i class="fa fa-angle-right" aria-hidden="true"></i>
+      </span>
+    </div>
     <div class="home-category-panel-tools">
       {%- if theme.algolia_search.enable or theme.local_search.enable %}
         <button class="home-category-search popup-trigger" type="button" aria-label="{{ __('menu.search') }}">

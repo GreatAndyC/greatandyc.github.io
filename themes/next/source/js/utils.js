@@ -356,28 +356,46 @@ NexT.utils = {
     if (CONFIG.scheme === 'Pisces' || CONFIG.scheme === 'Gemini') sidebarSchemePadding += (sidebarOffset * 2) - 22;
     // Initialize Sidebar & TOC Height.
     var sidebarWrapperHeight = document.body.offsetHeight - sidebarSchemePadding + 'px';
-    document.querySelector('.site-overview-wrap').style.maxHeight = sidebarWrapperHeight;
-    document.querySelector('.post-toc-wrap').style.maxHeight = sidebarWrapperHeight;
+    var overviewWrap = document.querySelector('.site-overview-wrap');
+    var tocWrap = document.querySelector('.post-toc-wrap');
+    if (overviewWrap) overviewWrap.style.maxHeight = sidebarWrapperHeight;
+    if (tocWrap) tocWrap.style.maxHeight = sidebarWrapperHeight;
   },
 
   updateSidebarPosition: function() {
     var sidebarNav = document.querySelector('.sidebar-nav');
     var hasTOC = document.querySelector('.post-toc');
+    var overviewNav = document.querySelector('.sidebar-nav-overview');
+    var overviewPanel = document.querySelector('.site-overview-wrap');
+    var hideOverview = Boolean(hasTOC && CONFIG.page.isPost);
+
+    // Keep the rail's DOM stable for Pjax while making the contextual choice
+    // explicit: post details with a real TOC do not expose the site overview.
+    if (overviewNav) {
+      overviewNav.hidden = hideOverview;
+      overviewNav.setAttribute('aria-hidden', hideOverview ? 'true' : 'false');
+    }
+    if (overviewPanel) {
+      overviewPanel.hidden = hideOverview;
+      overviewPanel.setAttribute('aria-hidden', hideOverview ? 'true' : 'false');
+    }
+
     if (hasTOC) {
       sidebarNav.style.display = '';
       sidebarNav.classList.add('motion-element');
-      document.querySelector('.sidebar-nav-toc').click();
+      var tocNav = document.querySelector('.sidebar-nav-toc');
+      if (tocNav) tocNav.click();
     } else {
       sidebarNav.style.display = 'none';
       sidebarNav.classList.remove('motion-element');
       // The overview is the default panel on index/about-style pages. Show
       // it synchronously so a fixed rail never paints as a blank, truncated
       // card while the tab animation is still starting.
-      const overviewNav = document.querySelector('.sidebar-nav-overview');
-      const overviewPanel = document.querySelector('.site-overview-wrap');
-      overviewNav.classList.add('sidebar-nav-active');
-      overviewPanel.classList.add('sidebar-panel-active');
-      overviewPanel.style.opacity = '1';
+      if (overviewNav && overviewPanel) {
+        overviewNav.classList.add('sidebar-nav-active');
+        overviewPanel.classList.add('sidebar-panel-active');
+        overviewPanel.style.opacity = '1';
+      }
     }
     NexT.utils.initSidebarDimension();
     if (!this.isDesktop() || CONFIG.scheme === 'Pisces' || CONFIG.scheme === 'Gemini') return;

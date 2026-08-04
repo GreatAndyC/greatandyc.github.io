@@ -138,24 +138,26 @@
 
           {%- if config.symbols_count_time.symbols %}
           {%- if theme.symbols_count_time.separated_meta %}<br>{%- endif %}
-            <span class="post-meta-item post-meta-item-count" title="{{ __('symbols_count_time.count') }}">
+            <span class="post-meta-item post-meta-item-count" title="{{ __('symbols_count_time.count') }}" aria-label="{{ __('symbols_count_time.count') + __('symbol.colon') + symbolsCount(post) }}">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
               {%- if theme.symbols_count_time.item_text_post %}
-                <span class="post-meta-item-text">{{ __('symbols_count_time.count') + __('symbol.colon') }}</span>
+                <span class="post-meta-item-text post-meta-item-text-full">{{ __('symbols_count_time.count') + __('symbol.colon') }}</span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">{{ __('symbols_count_time.feed_count') }}{{ __('symbol.colon') }}</span>
               {%- endif %}
               <span>{{ symbolsCount(post) }}</span>
             </span>
           {%- endif %}
 
           {%- if config.symbols_count_time.time %}
-            <span class="post-meta-item post-meta-item-reading-time" title="{{ __('symbols_count_time.time') }}">
+            <span class="post-meta-item post-meta-item-reading-time" title="{{ __('symbols_count_time.time') }}" aria-label="{{ __('symbols_count_time.time') + __('symbol.colon') + symbolsTime(post, config.symbols_count_time.awl, config.symbols_count_time.wpm, __('symbols_count_time.time_minutes')) }}">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
               {%- if theme.symbols_count_time.item_text_post %}
-                <span class="post-meta-item-text">{{ __('symbols_count_time.time') }} &asymp;</span>
+                <span class="post-meta-item-text post-meta-item-text-full">{{ __('symbols_count_time.time') }} &asymp;</span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">{{ __('symbols_count_time.feed_time') }}&asymp;</span>
               {%- endif %}
               <span>{{ symbolsTime(post, config.symbols_count_time.awl, config.symbols_count_time.wpm, __('symbols_count_time.time_minutes')) }}</span>
             </span>

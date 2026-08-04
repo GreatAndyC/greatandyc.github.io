@@ -59,6 +59,7 @@ counter:
 home:
   all: 全部
   more_categories: 全部分类
+  swipe_categories: 滑动查看更多
   sort_label: 排序
   sort_hot: 热度
   sort_updated: 更新时间
@@ -101,7 +102,9 @@ accessibility:
   next_page: 下一页
 symbols_count_time:
   count: 本文字数
+  feed_count: 字数
   count_total: 站点总字数
   time: 阅读时长
+  feed_time: 阅读
   time_total: 站点阅读时长
   time_minutes: 分钟

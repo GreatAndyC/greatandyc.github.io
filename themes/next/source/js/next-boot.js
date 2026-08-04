@@ -71,11 +71,30 @@ NexT.boot.registerEvents = function() {
       var item = event.currentTarget;
       var activeTabClassName = 'sidebar-nav-active';
       var activePanelClassName = 'sidebar-panel-active';
-      if (item.classList.contains(activeTabClassName)) return;
-
       var targets = document.querySelectorAll('.sidebar-panel');
       var target = targets[index];
       var currentTarget = targets[1 - index];
+      if (!target) return;
+
+      // Pjax keeps the navigation rail in place while replacing the page
+      // content. During that hand-off a tab can retain its active class even
+      // when its panel has not been activated yet. Only treat the tab as a
+      // no-op when both states agree, so a later click can repair the state.
+      if (
+        item.classList.contains(activeTabClassName)
+        && target.classList.contains(activePanelClassName)
+      ) return;
+
+      // Article pages with a real table of contents intentionally hide the
+      // redundant Overview panel. Keep this branch defensive for a future
+      // single-panel render instead of animating an absent sibling.
+      if (!currentTarget) {
+        target.style.opacity = 1;
+        target.classList.add(activePanelClassName);
+        item.classList.add(activeTabClassName);
+        return;
+      }
+
       window.anime({
         targets : currentTarget,
         duration: TAB_ANIMATE_DURATION,

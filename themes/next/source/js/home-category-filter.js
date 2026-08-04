@@ -30,6 +30,47 @@ function syncCurrentCategory(panel) {
   });
 }
 
+function syncCategoryScrollHint(panel) {
+  const shell = panel?.querySelector('.home-category-nav-shell');
+  const nav = shell?.querySelector('[data-category-scroller]');
+  const hint = shell?.querySelector('[data-category-scroll-hint]');
+  if (!shell || !nav) return;
+
+  const hasOverflow = nav.scrollWidth > nav.clientWidth + 2;
+  const isAtEnd = !hasOverflow
+    || nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 2;
+
+  shell.classList.toggle('is-overflowing', hasOverflow);
+  shell.classList.toggle('is-at-end', isAtEnd);
+  if (hint) {
+    hint.setAttribute('aria-hidden', hasOverflow && !isAtEnd ? 'false' : 'true');
+  }
+}
+
+function initCategoryScrollHint(panel) {
+  const shell = panel?.querySelector('.home-category-nav-shell');
+  const nav = shell?.querySelector('[data-category-scroller]');
+  if (!shell || !nav) return;
+
+  if (shell.dataset.scrollHintReady === '1') {
+    syncCategoryScrollHint(panel);
+    return;
+  }
+
+  const sync = () => syncCategoryScrollHint(panel);
+  nav.addEventListener('scroll', sync, { passive: true });
+
+  if (typeof window.ResizeObserver === 'function') {
+    const observer = new window.ResizeObserver(sync);
+    observer.observe(nav);
+  } else {
+    window.addEventListener('resize', sync);
+  }
+
+  shell.dataset.scrollHintReady = '1';
+  sync();
+}
+
 function applyViewMode(content, panel, mode) {
   if (!content || !panel) return;
 
@@ -98,6 +139,7 @@ function initHomeFeedControls() {
   const content = document.querySelector('.main .content.feed-page');
   const panel = document.querySelector('.home-category-panel');
   if (!content || !panel) return;
+  initCategoryScrollHint(panel);
   if (panel.dataset.controlsReady === '1') return;
 
   syncCurrentCategory(panel);

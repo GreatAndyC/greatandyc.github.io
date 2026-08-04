@@ -139,7 +139,20 @@ test('core pages request the versioned stylesheet to avoid stale deployment CSS'
 });
 
 test('home category controls use the feed-aligned responsive layout', () => {
+  const html = readPublic('zh-CN/index.html');
   const css = readPublic('css/main.css');
+  const filterScript = readPublic('js/home-category-filter.js');
+
+  assert.match(
+    html,
+    /class="home-category-nav-shell"[\s\S]*data-category-scroller[\s\S]*data-category-scroll-hint/,
+    'the category rail should expose a scroll hint wrapper for overflow states'
+  );
+  assert.match(
+    filterScript,
+    /function syncCategoryScrollHint\(panel\)/,
+    'the category rail should detect overflow and update its hint while scrolling'
+  );
 
   assert.ok(
     css.includes('grid-template-columns: auto minmax(0, 1fr) auto;')
@@ -166,6 +179,33 @@ test('home category controls use the feed-aligned responsive layout', () => {
     css.includes('border-bottom: 2px solid transparent;')
       && css.includes('box-shadow: inset 0 -2px 0 var(--text-color);'),
     'category and sort states must use the editorial underline treatment instead of filled pills'
+  );
+});
+
+test('home feed metadata remains readable in English cards and list dates', () => {
+  const englishHtml = readPublic('en/index.html');
+  const css = readPublic('css/main.css');
+
+  assert.match(
+    englishHtml,
+    /post-meta-item-text post-meta-item-text-compact[^>]*>Words:/,
+    'English cards should use the compact Words label'
+  );
+  assert.match(
+    englishHtml,
+    /post-meta-item-count[^>]*aria-label="Symbols count in article:/,
+    'the compact English label should retain the full accessible description'
+  );
+  assert.ok(
+    css.includes('.main .content.feed-page.feed-view-card .post-meta .post-meta-item-text-full')
+      && css.includes('.main .content.feed-page.feed-view-card .post-meta .post-meta-item-text-compact')
+      && css.includes('grid-template-columns: minmax(0, max-content);'),
+    'card metrics need compact labels while list metadata needs a dedicated date column'
+  );
+  assert.match(
+    css,
+    /feed-view-list \.post-meta \.post-meta-item-created,[\s\S]*feed-view-list \.post-meta \.post-meta-item-updated/,
+    'list view should keep both publication and update dates visible'
   );
 });
 
@@ -257,6 +297,14 @@ test('core pages expose semantic mobile navigation, skip links, and localized me
     );
     assert.doesNotMatch(html, /rel="alternate"[^>]+href="[^"]+index\.html"/);
     assert.match(html, /class="menu-section-label"/);
+    assert.match(html, /class="mobile-rail-links"/);
+    assert.match(html, /class="mobile-rail-link"[^>]*>[\s\S]*<span>GitHub<\/span>/);
+    assert.match(
+      html,
+      index === 0
+        ? /<span>走向世界<\/span>/
+        : /<span>Explore the World<\/span>/
+    );
     assert.match(
       html,
       index === 0
@@ -264,6 +312,56 @@ test('core pages expose semantic mobile navigation, skip links, and localized me
         : /<meta name="description" content="AI products, software systems, and applied research">/
     );
   });
+
+  const css = readPublic('css/main.css');
+  assert.match(
+    css,
+    /\.menu-section-label\s*\{[\s\S]*list-style: none;[\s\S]*text-align: left;/,
+    'the Explore menu section label should be a clean, left-aligned heading without a browser-default bullet'
+  );
+});
+
+test('the fixed desktop rail cannot escape the viewport during root overscroll', () => {
+  const css = readPublic('css/main.css');
+
+  assert.match(
+    css,
+    /html,\s*body\s*\{[\s\S]*overscroll-behavior-y:\s*none;/,
+    'the document root should suppress elastic top and bottom overscroll'
+  );
+  assert.match(
+    css,
+    /\.site-rail\s*\{[\s\S]*overscroll-behavior-y:\s*none;/,
+    'the fixed navigation rail should keep its own scroll boundary contained'
+  );
+});
+
+test('post detail sidebars prioritize the table of contents without a redundant overview switch', () => {
+  const post = readPublic('2026/05/15/manus/index.html');
+  const work = readPublic('work/index.html');
+
+  assert.match(post, /class="sidebar-nav-toc"/, 'post details should retain their table of contents');
+  assert.match(post, /class="sidebar[^\"]*sidebar-with-toc/, 'post details should mark the active table-of-contents rail');
+  assert.match(
+    post,
+    /class="sidebar-nav-overview" hidden aria-hidden="true"/,
+    'post details with a table of contents should hide the Overview switch'
+  );
+  assert.match(
+    post,
+    /class="site-overview-wrap sidebar-panel" hidden aria-hidden="true"/,
+    'post details with a table of contents should hide the second sidebar panel'
+  );
+  assert.match(
+    work,
+    /class="sidebar-nav-overview"/,
+    'Work should keep the site overview panel alongside its project index'
+  );
+  assert.doesNotMatch(
+    work,
+    /class="sidebar-nav-overview" hidden aria-hidden="true"/,
+    'Work should leave the site overview switch available'
+  );
 });
 
 test('index and gallery covers reserve space and prioritize only the first visible image', () => {

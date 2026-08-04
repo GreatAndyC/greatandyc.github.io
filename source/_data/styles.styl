@@ -6,6 +6,14 @@
 html
   scrollbar-gutter: stable
 
+/* Keep the browser's elastic top/bottom bounce from translating the fixed
+   desktop rail outside the viewport. `overscroll-behavior` is intentionally
+   set on both root scrolling elements because browsers differ on which one
+   owns the document scroll position. */
+html,
+body
+  overscroll-behavior-y: none
+
 /* Keyboard users can bypass the persistent rail and reach page content in a
    single action. Keep the link visually quiet until it receives focus. */
 .skip-link
@@ -391,11 +399,20 @@ html
   text-transform: uppercase
   white-space: nowrap
 
-.main .content.feed-page .home-category-nav
+.main .content.feed-page .home-category-nav-shell
+  position: relative
   display: flex
   grid-area: navigation
+  box-sizing: border-box
   width: 100%
   min-width: 0
+
+.main .content.feed-page .home-category-nav
+  display: flex
+  width: 100%
+  min-width: 0
+  box-sizing: border-box
+  flex: 1 1 auto
   flex-wrap: nowrap
   align-items: stretch
   gap: 16px
@@ -404,6 +421,35 @@ html
   scrollbar-width: thin
   overscroll-behavior-x: contain
   border-bottom: 0
+
+.main .content.feed-page .home-category-scroll-hint
+  display: none
+  position: absolute
+  z-index: 1
+  top: 50%
+  right: 0
+  align-items: center
+  justify-content: flex-end
+  gap: 3px
+  box-sizing: border-box
+  min-width: 112px
+  min-height: 28px
+  padding: 4px 0 4px 22px
+  transform: translateY(-50%)
+  background: var(--content-bg-color)
+  color: #555
+  font-size: 0.66rem
+  letter-spacing: 0.02em
+  line-height: 1.2
+  white-space: nowrap
+  pointer-events: none
+  box-shadow: -12px 0 18px var(--content-bg-color)
+
+.main .content.feed-page .home-category-nav-shell.is-overflowing:not(.is-at-end) .home-category-scroll-hint
+  display: inline-flex
+
+.main .content.feed-page .home-category-nav-shell.is-overflowing:not(.is-at-end) .home-category-nav
+  padding-right: 88px
 
 .main .content.feed-page .home-category-panel-tools
   grid-area: tools
@@ -977,6 +1023,12 @@ html
 .main .content.feed-page.feed-view-card .post-meta .post-meta-item-icon
   flex: 0 0 auto
 
+.main .content.feed-page.feed-view-card .post-meta .post-meta-item-text-full
+  display: none
+
+.main .content.feed-page.feed-view-card .post-meta .post-meta-item-text-compact
+  display: inline
+
 .main .content.feed-page.feed-view-card .post-meta time,
 .main .content.feed-page.feed-view-card .post-meta a
   min-width: 0
@@ -1152,13 +1204,14 @@ html
 
 .main .content.feed-page.feed-view-list .post-meta
   flex: 0 0 auto !important
-  display: inline-flex !important
-  flex-direction: row !important
-  flex-wrap: wrap
+  display: grid !important
+  grid-template-columns: minmax(0, max-content)
+  grid-auto-rows: minmax(1.35em, auto)
   align-items: center
   justify-content: flex-end
-  gap: 0
-  min-width: max-content
+  row-gap: 2px
+  min-width: 0
+  max-width: 100%
   margin: 3px 0 0 !important
   padding: 0 !important
   font-size: 0.78rem
@@ -1169,16 +1222,28 @@ html
 .main .content.feed-page.feed-view-list .post-meta .post-meta-item
   display: none
 
-.main .content.feed-page.feed-view-list .post-meta .post-meta-item:first-child
+.main .content.feed-page.feed-view-list .post-meta .post-meta-item-created,
+.main .content.feed-page.feed-view-list .post-meta .post-meta-item-updated
   display: inline-flex
   align-items: center
-  gap: 4px
+  justify-content: flex-end
+  gap: 6px
+  min-width: 0
+  max-width: 100%
+  overflow: hidden
+  white-space: nowrap
+
+.main .content.feed-page.feed-view-list .post-meta .post-meta-item:not(.post-meta-item-created):not(.post-meta-item-updated)
+  display: none !important
 
 .main .content.feed-page.feed-view-list .post-meta .post-meta-item-icon
-  display: none
+  display: none !important
 
 .main .content.feed-page.feed-view-list .post-meta .post-meta-item-text
-  display: none
+  display: inline !important
+  flex: 0 0 auto
+  color: #555
+  white-space: nowrap
 
 .main .content.feed-page.feed-view-list .post-meta .post-meta-item + .post-meta-item::before,
 .main .content.feed-page.feed-view-list .post-meta br
@@ -1191,6 +1256,9 @@ html
   font-variant-numeric: tabular-nums
   letter-spacing: 0.025em
   white-space: nowrap
+
+.main .content.feed-page.feed-view-list .post-meta .post-meta-item-text-compact
+  display: none !important
 
 .main .content.feed-page.feed-view-list .post-body
   display: grid
@@ -1361,6 +1429,9 @@ html
 
   .main .content.feed-page.feed-view-list .post-meta time
     color: rgba(225, 228, 232, 0.72)
+
+  .main .content.feed-page.feed-view-list .post-meta .post-meta-item-text
+    color: rgba(235, 238, 242, 0.86)
 
 @media (prefers-reduced-motion: reduce)
   .main .content.feed-page.feed-view-card .post-block,
@@ -3108,6 +3179,7 @@ html[lang="zh-CN"] .work-project__number
   box-sizing: border-box
   display: inline-flex
   align-items: center
+  flex-direction: column
   justify-content: center
   min-width: 44px
   min-height: 44px
@@ -3115,11 +3187,16 @@ html[lang="zh-CN"] .work-project__number
   background: transparent
   cursor: pointer
 
+.site-nav-toggle .toggle .toggle-line
+  flex: 0 0 2px
+  width: 24px
+
 .site-nav-toggle .toggle:focus-visible
   outline: 2px solid var(--link-hover-color, currentColor)
   outline-offset: 2px
 
 .menu-section-label
+  list-style: none
   margin: 13px 20px 4px
   padding-top: 12px
   border-top: 1px solid rgba(110, 110, 110, 0.16)
@@ -3128,7 +3205,24 @@ html[lang="zh-CN"] .work-project__number
   font-weight: 700
   letter-spacing: 0.13em
   line-height: 1.2
+  text-align: left
   text-transform: uppercase
+
+.mobile-rail-links
+  display: none
+
+.sidebar-with-toc .sidebar-nav,
+.sidebar-with-toc .post-toc-wrap
+  text-align: left
+
+.sidebar-with-toc .post-toc > .nav
+  padding-left: 0
+
+/* The theme's inline-block menu rules come after normalize.css and can
+   otherwise override the browser's default `[hidden]` presentation. */
+.sidebar-nav li[hidden],
+.site-overview-wrap[hidden]
+  display: none !important
 
 @media (max-width: 767px)
   .site-meta .brand
@@ -3368,19 +3462,24 @@ html[lang="zh-CN"] .work-project__number
     right: 0
     left: 0
     box-sizing: border-box
+    height: auto
     max-height: calc(100vh - var(--rail-header-offset, 79px))
-    padding: 12px 0 18px
+    padding: 12px 0 calc(12px + env(safe-area-inset-bottom, 0px))
     overflow-x: hidden
     overflow-y: auto
+    overscroll-behavior: contain
     background: var(--content-bg-color, #fff)
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18)
 
   .mobile-rail-profile
+    box-sizing: border-box
     display: flex
     align-items: center
+    width: 100%
+    max-width: 520px
     gap: 12px
-    margin: 0 20px 10px
-    padding: 0 0 12px
+    margin: 0 auto 8px
+    padding: 0 24px 4px
     border-bottom: 1px solid rgba(110, 110, 110, 0.16)
 
   .mobile-rail-profile-image
@@ -3388,12 +3487,14 @@ html[lang="zh-CN"] .work-project__number
     flex: 0 0 56px
     width: 56px
     height: 56px
+    margin: 0
     border: 2px solid rgba(110, 110, 110, 0.14)
     border-radius: 50%
     object-fit: cover
 
   .mobile-rail-profile-copy
     display: flex
+    flex: 1 1 auto
     min-width: 0
     flex-direction: column
     gap: 3px
@@ -3412,5 +3513,104 @@ html[lang="zh-CN"] .work-project__number
     white-space: nowrap
 
   .site-nav.site-nav-on .main-menu
+    width: 100%
+    max-width: 520px
     margin-top: 0
     margin-bottom: 0
+    margin-left: auto
+    margin-right: auto
+
+  .site-nav.site-nav-on .main-menu > .menu-item
+    margin: 0
+
+  .site-nav.site-nav-on .main-menu > .menu-item > a
+    box-sizing: border-box
+    display: flex
+    align-items: center
+    min-height: 44px
+    padding: 7px 24px
+    font-size: 1rem
+    line-height: 1.35
+
+  .site-nav.site-nav-on .main-menu > .menu-item > a .fa,
+  .site-nav.site-nav-on .main-menu > .menu-item > a .fab,
+  .site-nav.site-nav-on .main-menu > .menu-item > a .far,
+  .site-nav.site-nav-on .main-menu > .menu-item > a .fas
+    flex: 0 0 20px
+    width: 20px
+    margin-right: 12px
+    text-align: center
+
+  .site-nav.site-nav-on .main-menu > .menu-section-label
+    display: block
+    box-sizing: border-box
+    width: auto
+    margin: 16px 24px 6px
+
+  .site-nav.site-nav-on .main-menu > .menu-item-language
+    padding: 0 24px
+
+  .site-nav.site-nav-on .main-menu > .menu-item-language .language-switcher
+    width: 100%
+    height: 52px
+    min-height: 52px
+    margin: 8px 0 0
+    padding: 8px 0 0
+
+  .mobile-rail-links
+    display: block
+    box-sizing: border-box
+    width: 100%
+    max-width: 520px
+    margin: 12px auto 0
+    padding: 12px 24px 0
+    border-top: 1px solid rgba(110, 110, 110, 0.16)
+
+  .mobile-rail-links-heading
+    display: flex
+    align-items: center
+    gap: 8px
+    margin-bottom: 4px
+    color: #666
+    font-size: 0.68rem
+    font-weight: 700
+    letter-spacing: 0.12em
+    line-height: 1.3
+    text-transform: uppercase
+
+  .mobile-rail-links-heading .fa,
+  .mobile-rail-links-heading .fab,
+  .mobile-rail-links-heading .far,
+  .mobile-rail-links-heading .fas
+    width: 16px
+    color: #777
+    text-align: center
+
+  .mobile-rail-links-list
+    display: flex
+    flex-wrap: wrap
+    align-items: center
+    gap: 2px 18px
+
+  .mobile-rail-links-list .mobile-rail-link
+    display: inline-flex
+    align-items: center
+    min-height: 40px
+    gap: 7px
+    color: #555
+    font-size: 0.86rem
+    line-height: 1.3
+    text-decoration: none
+    white-space: nowrap
+
+  .mobile-rail-links-list .mobile-rail-link:hover,
+  .mobile-rail-links-list .mobile-rail-link:focus-visible
+    color: var(--link-hover-color, #c44)
+
+  .mobile-rail-links-list .mobile-rail-link .fa,
+  .mobile-rail-links-list .mobile-rail-link .fab,
+  .mobile-rail-links-list .mobile-rail-link .far,
+  .mobile-rail-links-list .mobile-rail-link .fas
+    flex: 0 0 16px
+    width: 16px
+    text-align: center

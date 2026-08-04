@@ -132,12 +132,35 @@ test('mobile navigation opens and keeps Work available', async ({ page }, testIn
   test.skip(!testInfo.project.name.includes('mobile'), 'mobile-only navigation behavior');
   const problems = await openPage(page, '/en/about/');
 
+  const menuButtonMetrics = await page.locator('.site-nav-toggle .toggle').evaluate(button => {
+    const lines = [...button.querySelectorAll('.toggle-line')];
+    const buttonRect = button.getBoundingClientRect();
+    return {
+      flexDirection: getComputedStyle(button).flexDirection,
+      width: buttonRect.width,
+      height: buttonRect.height,
+      lineWidths: lines.map(line => line.getBoundingClientRect().width)
+    };
+  });
+  expect(menuButtonMetrics.flexDirection).toBe('column');
+  expect(menuButtonMetrics.width).toBeGreaterThanOrEqual(44);
+  expect(menuButtonMetrics.height).toBeGreaterThanOrEqual(44);
+  expect(menuButtonMetrics.lineWidths).toEqual([24, 24, 24]);
+
   await page.locator('.site-nav-toggle .toggle').click();
   await expect(page.locator('.site-nav')).toHaveClass(/site-nav-on/);
   await expect(page.locator('.site-nav-toggle .toggle')).toHaveAttribute('aria-expanded', 'true');
   await expect(page.locator('.site-nav-toggle .toggle')).toHaveAttribute('aria-controls', 'site-navigation');
+  await expect(page.locator('.mobile-rail-profile')).toBeVisible();
   await expect(page.locator('.menu-item-work > a')).toBeVisible();
   await expect(page.locator('.menu-item-work > a')).toHaveAttribute('href', '/en/work/');
+  await expect(page.locator('.menu-item-language')).toBeVisible();
+  const mobileRailLinks = page.locator('.mobile-rail-links .mobile-rail-link');
+  await expect(mobileRailLinks).toHaveCount(3);
+  await expect(mobileRailLinks.nth(0)).toContainText('GitHub');
+  await expect(mobileRailLinks.nth(1)).toContainText('RSS');
+  await expect(mobileRailLinks.nth(2)).toContainText('Explore the World');
+  await expect(mobileRailLinks.nth(2)).toBeVisible();
 
   await page.keyboard.press('Escape');
   await expect(page.locator('.site-nav')).not.toHaveClass(/site-nav-on/);
@@ -156,6 +179,29 @@ test('Work sidebar exposes both the project TOC and author overview', async ({ p
   await page.locator('.sidebar-nav-overview').click();
   await expect(page.locator('.site-overview-wrap')).toHaveClass(/sidebar-panel-active/);
   await expect(page.locator('.site-author-image')).toBeVisible();
+  await expectNoRuntimeProblems(problems);
+});
+
+test('post detail sidebar keeps only the contextual TOC and restores overview after navigation', async ({ page }) => {
+  test.skip(page.viewportSize().width < 992, 'Gemini hides the desktop sidebar below 992px');
+  const problems = await openPage(page, '/2026/05/15/manus/');
+
+  await expect(page.locator('.post-toc')).toBeVisible();
+  await expect(page.locator('.sidebar-nav-overview')).toBeHidden();
+  await expect(page.locator('.site-overview-wrap')).toBeHidden();
+
+  await page.locator('.menu-item-work > a').click();
+  await expect(page).toHaveURL(/\/work\/$/);
+  // Pjax updates the page configuration and sidebar state in separate steps;
+  // wait until both have settled before exercising the restored overview tab.
+  await page.waitForFunction(() => (
+    window.CONFIG?.page?.isPost === false
+    && document.querySelector('.site-overview-wrap')?.getAttribute('aria-hidden') === 'false'
+  ));
+  await expect(page.locator('.site-overview-wrap')).not.toHaveAttribute('hidden', '');
+  await expect(page.locator('.sidebar-nav-overview')).not.toBeHidden();
+  await page.locator('.sidebar-nav-overview').click();
+  await expect(page.locator('.site-overview-wrap')).toHaveClass(/sidebar-panel-active/);
   await expectNoRuntimeProblems(problems);
 });
 

@@ -30,5 +30,6 @@
     </li>
 
   </ul>
+  {{ partial('_partials/header/mobile-rail-links.swig', {}, {cache: theme.cache.enable}) }}
 {%- endif %}
 </nav>

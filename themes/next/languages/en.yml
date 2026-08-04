@@ -67,6 +67,7 @@ counter:
 home:
   all: All
   more_categories: All categories
+  swipe_categories: Swipe for more
   sort_label: Sort
   sort_hot: Popularity
   sort_updated: Last updated
@@ -117,7 +118,9 @@ accessibility:
 
 symbols_count_time:
   count: Symbols count in article
+  feed_count: Words
   count_total: Symbols count total
   time: Reading time
+  feed_time: Read
   time_total: Reading time total
   time_minutes: mins.
