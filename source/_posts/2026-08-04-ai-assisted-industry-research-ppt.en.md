@@ -1,6 +1,6 @@
 ---
 title: How I completed an industry research project and an English PPT in three hours with AI
-date: 2026-08-04 20:00:00
+date: "2026-08-05 04:00:00"
 lang: en
 slug: ai-assisted-industry-research-ppt
 permalink: en/2026/08/04/ai-assisted-industry-research-ppt/
@@ -17,6 +17,7 @@ tags:
 categories:
   - AI
 toc: true
+updated: "2026-08-04 20:56:16"
 ---
 
 **A three-hour case study of using AI tools for industry research and presentation production.**

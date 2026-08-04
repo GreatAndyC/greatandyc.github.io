@@ -1,6 +1,6 @@
 ---
-title: 我如何用 AI 在三小时内完成一次行业调研与全英 PPT
-date: 2026-08-04 20:00:00
+title: 如何用 AI 在三小时内完成一次行业调研与全英 PPT
+date: "2026-08-05 04:00:00"
 lang: zh-CN
 slug: ai-assisted-industry-research-ppt
 permalink: 2026/08/04/ai-assisted-industry-research-ppt/
@@ -15,8 +15,9 @@ tags:
   - NotebookLM
   - Codex
 categories:
-  - AI应用
+  - AI
 toc: true
+updated: "2026-08-04 20:56:16"
 ---
 
 **记录一次三小时完成行业调研与全英 PPT 的 AI 工作流。**
