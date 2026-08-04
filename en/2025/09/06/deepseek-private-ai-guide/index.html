@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<meta name="generator" content="Hexo 7.3.0">
+
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=b568ace7db92">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="/images/brand/favicon.svg?v=b568ace7db92">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/brand/apple-touch-icon.png?v=b568ace7db92">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png?v=b568ace7db92">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png?v=b568ace7db92">
+  <link rel="mask-icon" href="/images/brand/ac-mark-dark.svg?v=b568ace7db92" color="#111111">
+  <link rel="manifest" href="/images/brand/site.webmanifest?v=b568ace7db92">
+
+<link rel="stylesheet" href="/css/main.css?v=b568ace7db92">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"caoyueyang.org","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  
+<meta name="description" content="A practical guide to using DeepSeek privately, covering shared APIs, cloud deployment, local deployment, and a simple Chatbox setup.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AndyCao&#39;s Blog">
+<meta property="og:url" content="https://caoyueyang.org/en/2025/09/06/deepseek-private-ai-guide/index.html">
+<meta property="og:site_name" content="AndyCao&#39;s Blog">
+<meta property="og:description" content="A practical guide to using DeepSeek privately, covering shared APIs, cloud deployment, local deployment, and a simple Chatbox setup.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://caoyueyang.org/images/posts/feishu-migration/deepseek-private-ai-guide/ai_era_wave_dalle.png">
+<meta property="article:published_time" content="2025-09-06T03:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-04T13:32:06.953Z">
+<meta property="article:author" content="AndyCao">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="DeepSeek">
+<meta property="article:tag" content="API">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://caoyueyang.org/images/posts/feishu-migration/deepseek-private-ai-guide/ai_era_wave_dalle.png">
+
+<link rel="canonical" href="https://caoyueyang.org/en/2025/09/06/deepseek-private-ai-guide/">
+
+
+  <link rel="alternate" hreflang="en" href="https://caoyueyang.org/en/2025/09/06/deepseek-private-ai-guide/">
+    <link rel="alternate" hreflang="x-default" href="https://caoyueyang.org/en/2025/09/06/deepseek-private-ai-guide/">
+  <link rel="alternate" hreflang="zh-CN" href="https://caoyueyang.org/2025/09/06/deepseek-private-ai-guide/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+<style>
+  @font-face {
+    font-family: "Font Awesome 5 Brands";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-brands-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-regular-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-solid-900.woff2") format("woff2");
+  }
+</style>
+
+  <title>Escaping “Server Busy”: A Practical Guide to Building a Private DeepSeek AI Setup | AndyCao's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="曹越洋的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <div class="container">
+    <div class="headband"></div>
+
+    <div class="site-rail">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <button
+      class="toggle"
+      type="button"
+      aria-label="Toggle navigation bar"
+      aria-expanded="false"
+      aria-controls="site-navigation"
+    >
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </button>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <img
+        class="site-brand-mark"
+        src="/images/brand/ac-mark-light.svg"
+        alt=""
+        aria-hidden="true"
+        width="30"
+        height="30"
+        decoding="async"
+      >
+      <h1 class="site-title">AndyCao's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav id="site-navigation" class="site-nav" aria-label="Primary navigation">
+  <div class="mobile-rail-profile" aria-label="AndyCao">
+    <img
+      class="mobile-rail-profile-image"
+      src="/images/avatar.jpg"
+      alt="AndyCao"
+      width="56"
+      height="56"
+      decoding="async"
+    >
+  <span class="mobile-rail-profile-copy">
+    <strong class="mobile-rail-profile-name">AndyCao</strong>
+    <span class="mobile-rail-profile-description">AI products, software systems, and applied research</span>
+  </span>
+</div>
+
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/en/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-work">
+
+    <a href="/en/work/" rel="section"><i class="fa fa-briefcase fa-fw"></i>Work</a>
+
+  </li>
+        <li class="menu-item menu-item-gallery">
+
+    <a href="/en/gallery/" rel="section"><i class="fa fa-camera-retro fa-fw"></i>Gallery</a>
+
+  </li>
+        <li class="menu-section-label" aria-hidden="true">Explore</li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/en/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/en/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/en/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+    <li class="menu-item menu-item-language">
+      
+  <div class="languages language-switcher">
+    <span class="language-switcher-label" aria-hidden="true">LANGUAGE</span>
+    <span class="language-switcher-options" role="group" aria-label="Switch language">
+      
+        
+        
+          
+        
+        
+          <span class="language-switcher-option is-current" data-language="en" data-href="/en/2025/09/06/deepseek-private-ai-guide/" aria-current="page">EN</span>
+        
+        
+          <span class="language-switcher-divider" aria-hidden="true">/</span>
+        
+      
+        
+        
+          
+        
+        
+          <a class="language-switcher-option" href="/2025/09/06/deepseek-private-ai-guide/" data-language="zh-CN" data-href="/2025/09/06/deepseek-private-ai-guide/" hreflang="zh-CN" lang="zh-CN">中</a>
+        
+        
+      
+    </span>
+  </div>
+
+    </li>
+
+  </ul>
+  
+  <div class="mobile-rail-links" aria-label="External links">
+    <div class="mobile-rail-links-heading"><i class="fa fa-link fa-fw" aria-hidden="true"></i>
+      <span>Links</span>
+    </div>
+    <div class="mobile-rail-links-list">
+          <a href="https://github.com/GreatAndyC" class="mobile-rail-link" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw" aria-hidden="true"></i><span>GitHub</span></a>
+          <a href="/atom.xml" class="mobile-rail-link" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw" aria-hidden="true"></i><span>RSS</span></a>
+          <a href="http://www.google.com/" class="mobile-rail-link" title="Explore the World → http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank"><i class="fa fa-link fa-fw" aria-hidden="true"></i><span>Explore the World</span></a>
+    </div>
+  </div>
+
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+      </header>
+        <div class="site-rail-sidebar">
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar sidebar-with-toc">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview" hidden aria-hidden="true">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Background"><span class="nav-number">1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-AI-LLMs-DeepSeek-R1-and-Open-Source"><span class="nav-number">2.</span> <span class="nav-text">What: AI, LLMs, DeepSeek-R1, and Open Source</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AI-Artificial-intelligence"><span class="nav-number">2.1.</span> <span class="nav-text">AI (Artificial intelligence)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Large-language-model"><span class="nav-number">2.2.</span> <span class="nav-text">Large language model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DeepSeek-R1"><span class="nav-number">2.3.</span> <span class="nav-text">DeepSeek-R1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Open-source"><span class="nav-number">2.4.</span> <span class="nav-text">Open source</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-did-DeepSeek-open-source"><span class="nav-number">3.</span> <span class="nav-text">Why did DeepSeek open source?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-was-the-impact-of-open-sourcing"><span class="nav-number">4.</span> <span class="nav-text">What was the impact of open sourcing?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-server-pressure-and-API-access"><span class="nav-number">5.</span> <span class="nav-text">Why: server pressure and API access</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Why-are-servers-busy"><span class="nav-number">5.1.</span> <span class="nav-text">Why are servers busy?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Why-use-API-calls"><span class="nav-number">5.2.</span> <span class="nav-text">Why use API calls?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API-calls"><span class="nav-number">5.3.</span> <span class="nav-text">API calls</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cloud-deployment"><span class="nav-number">5.4.</span> <span class="nav-text">Cloud deployment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Local-deployment"><span class="nav-number">5.5.</span> <span class="nav-text">Local deployment</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-private-deployment-costs-money"><span class="nav-number">6.</span> <span class="nav-text">Why private deployment costs money</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#A-side-note-on-ads-and-privacy"><span class="nav-number">7.</span> <span class="nav-text">A side note on ads and privacy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-A-private-setup-with-Chatbox"><span class="nav-number">8.</span> <span class="nav-text">How: A private setup with Chatbox</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-1-Download-the-app"><span class="nav-number">8.1.</span> <span class="nav-text">Step 1: Download the app</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-2-Check-pricing"><span class="nav-number">8.2.</span> <span class="nav-text">Step 2: Check pricing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-3-Pick-a-plan-and-pay"><span class="nav-number">8.3.</span> <span class="nav-text">Step 3: Pick a plan and pay</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-4-View-the-API-key"><span class="nav-number">8.4.</span> <span class="nav-text">Step 4: View the API key</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-5-Paste-the-key-into-Chatbox"><span class="nav-number">8.5.</span> <span class="nav-text">Step 5: Paste the key into Chatbox</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-6-Start-using-it"><span class="nav-number">8.6.</span> <span class="nav-text">Step 6: Start using it</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">9.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel" hidden aria-hidden="true">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="AndyCao"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">AndyCao</p>
+  <div class="site-description" itemprop="description">AI products, software systems, and applied research</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state" aria-label="Site statistics">
+      <div class="site-state-item site-state-posts">
+          <a href="/en/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/en/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/en/tags/">
+          
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/GreatAndyC" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.google.com/" title="http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank">Explore the World</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        </div>
+    </div>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <aside aria-label="Follow me on GitHub">
+    <a href="https://github.com/GreatAndyC" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+  </aside>
+
+
+    <main id="main-content" class="main" tabindex="-1">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article
+    itemscope
+    itemtype="http://schema.org/Article"
+    class="post-block"
+    lang="en"
+  >
+    <link itemprop="mainEntityOfPage" href="https://caoyueyang.org/en/2025/09/06/deepseek-private-ai-guide/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="AndyCao">
+      <meta itemprop="description" content="AI products, software systems, and applied research">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="AndyCao's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Escaping “Server Busy”: A Practical Guide to Building a Private DeepSeek AI Setup
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item post-meta-item-created">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-09-06 11:00:00" itemprop="dateCreated datePublished" datetime="2025-09-06T11:00:00+08:00">2025-09-06</time>
+            </span>
+              <span class="post-meta-item post-meta-item-updated">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-08-04 21:32:06" itemprop="dateModified" datetime="2026-08-04T21:32:06+08:00">2026-08-04</time>
+              </span>
+            <span class="post-meta-item post-meta-item-category">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Tutorial/" itemprop="url" rel="index"><span itemprop="name">Tutorial</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item post-meta-item-count" title="Symbols count in article" aria-label="Symbols count in article: 11k">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text post-meta-item-text-full">Symbols count in article: </span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">Words: </span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item post-meta-item-reading-time" title="Reading time" aria-label="Reading time: 10 mins.">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text post-meta-item-text-full">Reading time &asymp;</span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">Read&asymp;</span>
+              <span>10 mins.</span>
+            </span>
+            <div class="post-description">A practical guide to using DeepSeek privately, covering shared APIs, cloud deployment, local deployment, and a simple Chatbox setup.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>Translation note: This English version follows the structure, data, figures, and references of the corresponding Chinese post. It was reviewed and synchronized on 2026-08-03.</p>
+</blockquote>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/ai_era_wave_dalle.png" alt="" loading="eager" decoding="async" fetchpriority="high">
+  <figcaption>AI wave illustration generated by DALL-E 3</figcaption>
+</figure>
+
+<p>If you want to jump straight into the hands-on part, you can skip to the “How” section and start setting up a private service.</p>
+<h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>Since ChatGPT took off, AI and large language models have remained a hot topic. DeepSeek-R1, developed by the Hangzhou-based DeepSeek team, became a particularly visible symbol of the current AI wave in China. Around the model were stories about US export controls, official attention, an App Store ranking surge, and the founder returning home under extraordinary security—an unusual mixture of technological confidence, geopolitical competition, and commercial excitement.</p>
+<p>When even people who normally keep away from technology started discussing AI, it became clear that the wave was no longer distant. At the same time, the official DeepSeek service often returned the familiar message: “Deep thinking complete — server busy, please try again later.” For an ordinary user, this was often the most immediate problem.</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/deepseek_server_busy_error.png" alt="" loading="lazy" decoding="async">
+  <figcaption>DeepSeek server busy prompt</figcaption>
+</figure>
+
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/deepseek_on_thinking_busy.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Waiting state while thinking</figcaption>
+</figure>
+
+<p>This article uses public information to explain what AI is, why private deployment matters, and how to deploy a personal AI service with the least friction. It is an introductory reference rather than a deep technical tutorial.</p>
+<h2 id="What-AI-LLMs-DeepSeek-R1-and-Open-Source"><a href="#What-AI-LLMs-DeepSeek-R1-and-Open-Source" class="headerlink" title="What: AI, LLMs, DeepSeek-R1, and Open Source"></a>What: AI, LLMs, DeepSeek-R1, and Open Source</h2><h3 id="AI-Artificial-intelligence"><a href="#AI-Artificial-intelligence" class="headerlink" title="AI (Artificial intelligence)"></a>AI (Artificial intelligence)</h3><p>Artificial intelligence is the field of building computers and machines that can reason, learn, and act—activities that normally require human intelligence or involve data volumes beyond human analysis. It is a broad field covering computer science, data analysis and statistics, hardware and software engineering, linguistics, neuroscience, philosophy, and psychology.</p>
+<p>At the level of business operations, AI is a collection of machine-learning and deep-learning techniques used for data analysis, prediction, object classification, natural-language processing, recommendation, and intelligent information retrieval.</p>
+<p>Reference: <a target="_blank" rel="noopener" href="https://cloud.google.com/learn/what-is-artificial-intelligence?hl=zh-CN">Google Cloud — What is artificial intelligence?</a></p>
+<h3 id="Large-language-model"><a href="#Large-language-model" class="headerlink" title="Large language model"></a>Large language model</h3><p>A large language model is a class of language models built from artificial neural networks with a very large number of parameters—usually billions of weights or more—and trained on massive amounts of unlabelled text through self-supervised or semi-supervised learning.</p>
+<p>Reference: <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Large_language_model">Wikipedia — Large language model</a></p>
+<h3 id="DeepSeek-R1"><a href="#DeepSeek-R1" class="headerlink" title="DeepSeek-R1"></a>DeepSeek-R1</h3><p>DeepSeek-R1 is short for “Reasoning 1,” the name of DeepSeek’s first-generation reasoning model. After its open release on January 20, 2025, it attracted global attention because its low price was paired with performance close to leading closed models.</p>
+<p>In simple terms, DeepSeek-R1 is a reasoning-capable large model and one of the most widely used AI models. Compared with Kimi, Doubao, and ChatGPT, its combination of cost and Chinese-language reasoning was particularly competitive at the time of writing.</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/deepseek_r1_concept_logic.png" alt="" loading="lazy" decoding="async">
+  <figcaption>DeepSeek-R1 concept diagram</figcaption>
+</figure>
+
+<h3 id="Open-source"><a href="#Open-source" class="headerlink" title="Open source"></a>Open source</h3><p>Open source is a decentralized production model in which the design is publicly accessible and can be modified and shared. In software, the goal is to expose foundational resources so that more people can learn from and build on them.</p>
+<p>References: <a target="_blank" rel="noopener" href="https://aws.amazon.com/what-is/open-source/">AWS — What is open source?</a></p>
+<h2 id="Why-did-DeepSeek-open-source"><a href="#Why-did-DeepSeek-open-source" class="headerlink" title="Why did DeepSeek open source?"></a>Why did DeepSeek open source?</h2><p>My view is that it was both a commercial move and a contribution to the public ecosystem. The surrounding discussion includes <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/11072234148">this Zhihu question</a> and <a target="_blank" rel="noopener" href="https://finance.sina.com.cn/money/fund/fundzmt/2025-02-04/doc-ineiirxc2794659.shtml">a contemporary market report</a>.</p>
+<h2 id="What-was-the-impact-of-open-sourcing"><a href="#What-was-the-impact-of-open-sourcing" class="headerlink" title="What was the impact of open sourcing?"></a>What was the impact of open sourcing?</h2><p>The release attracted attention across the US technology sector, reached the top of the App Store download ranking in 157 countries, and made talent recruitment and investment capital highly sought after.</p>
+<p>Open source was clearly a successful strategy. The simplest analogy is to think of DeepSeek-R1 as an inexpensive “book of answers”: anyone can download and run it. But, just as a free game still needs a capable device, a model also needs suitable infrastructure and expensive GPUs.</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/answer_book_comparison_dalle.png" alt="" loading="lazy" decoding="async">
+  <figcaption>“Book of answers” analogy generated by DALL-E 3</figcaption>
+</figure>
+
+<h2 id="Why-server-pressure-and-API-access"><a href="#Why-server-pressure-and-API-access" class="headerlink" title="Why: server pressure and API access"></a>Why: server pressure and API access</h2><h3 id="Why-are-servers-busy"><a href="#Why-are-servers-busy" class="headerlink" title="Why are servers busy?"></a>Why are servers busy?</h3><p>The likely reasons are straightforward:</p>
+<ol>
+<li><strong>Heavy domestic traffic:</strong> DeepSeek became mainstream, and many graduate students and other high-intensity users generated large amounts of traffic before the operations team could scale up.</li>
+<li><strong>Overseas traffic and attacks:</strong> The global download surge created additional pressure, while frequent attacks led to restrictions on overseas IP registration.</li>
+<li><strong>Competitive pressure:</strong> The “business war” has a visible side—rapid model releases—and a less visible side—attempts to attack competitors’ services.</li>
+</ol>
+<p>It is therefore not necessarily because a user asked a strange question and was personally targeted. If an account really is blocked, it is worth reflecting on what it was used to ask for, though.</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/donnie_yen_puzzled_meme.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Donnie Yen meme</figcaption>
+</figure>
+
+<h3 id="Why-use-API-calls"><a href="#Why-use-API-calls" class="headerlink" title="Why use API calls?"></a>Why use API calls?</h3><p>Besides using DeepSeek through the official website or app, users can access DeepSeek-R1 through shared APIs, cloud deployment, or local deployment. Privacy generally increases along that path, while convenience decreases.</p>
+<h3 id="API-calls"><a href="#API-calls" class="headerlink" title="API calls"></a>API calls</h3><p>An API is an interface that defines how software components communicate. It lets developers use another system’s capabilities without knowing its implementation details, enabling modularity, reuse, interoperability, and faster development.</p>
+<p>If an answer from DeepSeek-R1 is like receiving a meal, an API call is ordering delivery from a large restaurant; cloud deployment is renting a professional kitchen; local deployment is installing a professional kitchen in your own house.</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/api_request_response_flowchart.png" alt="" loading="lazy" decoding="async">
+  <figcaption>API request and response flow</figcaption>
+</figure>
+
+<p>The flow is:</p>
+<ol>
+<li>A user sends a request—text, an image, or another input—from a device through the network to an API endpoint.</li>
+<li>The API forwards the request to the DeepSeek-R1 model.</li>
+<li>The model processes the request and returns the result to the API.</li>
+<li>The API sends the result back through the network to the user’s device.</li>
+</ol>
+<p>In short: <strong>user request → API → DeepSeek-R1 model (supported by cloud servers) → API → user response</strong>.</p>
+<h3 id="Cloud-deployment"><a href="#Cloud-deployment" class="headerlink" title="Cloud deployment"></a>Cloud deployment</h3><p>Cloud deployment differs from a shared API in the same way that a private car differs from a public bus: the resources are dedicated to you. It can be understood as an exclusive API arrangement.</p>
+<h3 id="Local-deployment"><a href="#Local-deployment" class="headerlink" title="Local deployment"></a>Local deployment</h3><p>Is an inexpensive local deployment of a large model impossible? Not necessarily. Quantization and distillation can lower the required hardware, although the result may be less accurate or slower.</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/deepseek_local_deploy_hardware_spec.png" alt="" loading="lazy" decoding="async">
+  <figcaption><a href="https://fisherdaddy.com/posts/deepseek-r1-local-deployment-hardware-guide/" target="_blank" rel="noopener">Hardware reference for local deployment</a></figcaption>
+</figure>
+
+<p>For example, in <code>DeepSeek-R1-Distill-Qwen-1.5B</code>, “Distill” means knowledge distillation, “Qwen” refers to Alibaba’s Qwen model family, and <code>1.5B</code> means approximately 1.5 billion parameters. The larger the parameter count, the more capable the model tends to be.</p>
+<p>The full model and the smallest distilled model are separated by a large capability gap:</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/distill_vs_full_model_patric_meme.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Full model versus distilled model</figcaption>
+</figure>
+
+<p>Local deployment offers low ongoing cost, full offline operation, and the strongest privacy protection. It may also allow users to explore capabilities that hosted services restrict. The legal and safety implications of those techniques are outside the scope of this guide.</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/dragon_raja_finger_eva_cyber.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Reference to Finger and Eva from *Dragon Raja*</figcaption>
+</figure>
+
+<h2 id="Why-private-deployment-costs-money"><a href="#Why-private-deployment-costs-money" class="headerlink" title="Why private deployment costs money"></a>Why private deployment costs money</h2><p>At this point some readers may ask: “Doubao and DeepSeek are free on the web. Why should private deployment or API access cost money? I only want to use it for free.”</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/free_rider_logic_meme.png" alt="" loading="lazy" decoding="async">
+  <figcaption>The logic of free versus paid access</figcaption>
+</figure>
+
+<p>The free version of an official website is a public-benefit service with limited shared resources. Private deployment needs more stable and dedicated resources, so it costs more. The current AI market is still competing for users, which is why many official services are subsidized rather than fully priced.</p>
+<p>The deployment and API methods described here still incur venue, electricity, network, and maintenance costs. They cannot be free forever, although a small fee can be worthwhile when it creates meaningful value and efficiency.</p>
+<h2 id="A-side-note-on-ads-and-privacy"><a href="#A-side-note-on-ads-and-privacy" class="headerlink" title="A side note on ads and privacy"></a>A side note on ads and privacy</h2><p>The image above shows an advertisement that appeared in my social feed after I searched for an e-book reader on an e-commerce platform. Advertising can strongly influence behavior, and AI will make this more consequential.</p>
+<p>Imagine revealing your school, address, financial situation, and relationships across many AI conversations. The system could infer a vulnerable profile and show a high-paying recruitment advertisement precisely when you are emotionally distressed. In the information age, total privacy is almost impossible, so the practical response is to expose less information, avoid unknown AI software and APIs, and be careful about what is included in prompts.</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/personalized_ads_privacy_leak.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Personalized ads and privacy</figcaption>
+</figure>
+
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/no_more_bets_scam_movie_still.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Still from the film *No More Bets*</figcaption>
+</figure>
+
+<h2 id="How-A-private-setup-with-Chatbox"><a href="#How-A-private-setup-with-Chatbox" class="headerlink" title="How: A private setup with Chatbox"></a>How: A private setup with Chatbox</h2><p>If you want a simple GUI instead of a complicated API-only setup, Chatbox is a practical choice. It is open source, cross-platform, and supports API connections.</p>
+<p>Official website: <a target="_blank" rel="noopener" href="https://chatboxai.app/zh">https://chatboxai.app/zh</a></p>
+<p>I tested it because I wanted to see whether a low-friction setup could still work. According to the product’s About page, its developer Benn originally built it for his own convenience. I did not receive payment for mentioning the product; I spent RMB 28.96 on the experiment.</p>
+<p>By the time of the original article, the project had accumulated around 30,000 GitHub stars. Chatbox supports three platforms, and after purchasing API access or tokens it can be used with a short configuration process. A token can be thought of as a balance: both generating and understanding text consumes tokens. In one small test, three questions and their reasoning consumed approximately 4,514 tokens across about 3,600 Chinese characters.</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_github_star_ranking.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox GitHub star count</figcaption>
+</figure>
+
+<h3 id="Step-1-Download-the-app"><a href="#Step-1-Download-the-app" class="headerlink" title="Step 1: Download the app"></a>Step 1: Download the app</h3><figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_official_download_page.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox download page</figcaption>
+</figure>
+
+<h3 id="Step-2-Check-pricing"><a href="#Step-2-Check-pricing" class="headerlink" title="Step 2: Check pricing"></a>Step 2: Check pricing</h3><figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_pricing_plans_step2.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox pricing page</figcaption>
+</figure>
+
+<h3 id="Step-3-Pick-a-plan-and-pay"><a href="#Step-3-Pick-a-plan-and-pay" class="headerlink" title="Step 3: Pick a plan and pay"></a>Step 3: Pick a plan and pay</h3><p>I chose the plan that matched my usage needs.</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_sub_plan_detail_part1.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Subscription plan 1</figcaption>
+</figure>
+
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_sub_plan_detail_part2.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Subscription plan 2</figcaption>
+</figure>
+
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_payment_method_selection.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox payment method</figcaption>
+</figure>
+
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_order_confirmation_page.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox order confirmation</figcaption>
+</figure>
+
+<p>Use the correct email address here: it is the only credential for recovering the API key.</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_email_verification_input.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Email verification input</figcaption>
+</figure>
+
+<p>I recommend avoiding a long subscription because the AI market changes quickly. A cheaper or better service may appear before the long plan ends.</p>
+<h3 id="Step-4-View-the-API-key"><a href="#Step-4-View-the-API-key" class="headerlink" title="Step 4: View the API key"></a>Step 4: View the API key</h3><figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_api_key_web_view.png" alt="" loading="lazy" decoding="async">
+  <figcaption>API key page</figcaption>
+</figure>
+
+<h3 id="Step-5-Paste-the-key-into-Chatbox"><a href="#Step-5-Paste-the-key-into-Chatbox" class="headerlink" title="Step 5: Paste the key into Chatbox"></a>Step 5: Paste the key into Chatbox</h3><figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_app_settings_entry.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox settings entry</figcaption>
+</figure>
+
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_api_key_config_input.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox API key input</figcaption>
+</figure>
+
+<h3 id="Step-6-Start-using-it"><a href="#Step-6-Start-using-it" class="headerlink" title="Step 6: Start using it"></a>Step 6: Start using it</h3><p>If you do not want to use Chatbox’s API, other API vendors are available. Because DeepSeek released its models, companies with the ability to deploy a full model have begun offering their own APIs, often with introductory free quotas. Examples include Alibaba Cloud, Tencent Cloud, Volcano Engine, SiliconFlow, and SenseTime.</p>
+<ul>
+<li>Volcano Engine: a promotional free quota may be available at <a target="_blank" rel="noopener" href="https://www.volcengine.com/">the official site</a>.</li>
+<li>SiliconFlow: invitation credits may be available at <a target="_blank" rel="noopener" href="https://siliconflow.cn/zh-cn/">the official site</a>.</li>
+<li>SenseCore: promotional quotas may be available at <a target="_blank" rel="noopener" href="https://www.sensecore.cn/?lang=zh-CN">the official site</a>.</li>
+</ul>
+<p>For smaller or unofficial vendors, be especially cautious about privacy leakage. Search official documentation and reputable tutorials rather than copying unknown API configuration snippets.</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/eight_immortals_search_tutorial.png" alt="" loading="lazy" decoding="async">
+  <figcaption>“Different people find their own way”</figcaption>
+</figure>
+
+<p>If someone wants the newest technology at zero cost, refuses to read documentation, and expects every tutorial to be delivered directly into their mouth, they have run into an impossible triangle:</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/impossible_triangle_ai_tech.png" alt="" loading="lazy" decoding="async">
+  <figcaption>The impossible triangle of AI technology</figcaption>
+</figure>
+
+<p>As one Chinese teacher joked: go home, kid—you may be better suited to doing nothing. The joke is deliberately exaggerated; the practical point is that free, effortless, and cutting-edge rarely arrive together.</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>As robots and AI develop, many routine jobs will be replaced. What, then, is the value of a human being? DeepSeek gave me an answer worth keeping:</p>
+<blockquote>
+<p>Humanity’s real crisis is not replacement, but measuring new possibilities with an old value system. When machines take over deterministic work, we gain the freedom to explore uncertainty—the most valuable force in civilizational progress. Your value is not in competing with AI on efficiency, but in opening territories that algorithms have not yet defined.</p>
+</blockquote>
+<p>The practical lesson is to keep learning, accumulate small improvements, and ride the AI wave rather than being left behind by it.</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/unplugging_ai_server_humor.png" alt="" loading="lazy" decoding="async">
+  <figcaption>A humorous illustration of unplugging an AI server</figcaption>
+</figure>
+
+<p>Please keep exercising. If the situation becomes uncontrollable, perhaps the most useful emergency role will be joining the team that unplugs the AI server—at least it should still be possible to earn a living among the humans who remain.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AI/" rel="tag"># AI</a>
+              <a href="/tags/DeepSeek/" rel="tag"># DeepSeek</a>
+              <a href="/tags/API/" rel="tag"># API</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/en/2025/09/01/Full-Review-of-Building-a-Blog-with-GitHub-and-Hexo/" rel="prev" title="A Full Review of Building a Personal Blog with GitHub and Hexo">
+      <i class="fa fa-chevron-left"></i> A Full Review of Building a Personal Blog with GitHub and Hexo
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/en/2025/09/25/swimming/" rel="next" title="Swimming">
+      Swimming <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          <div class="sidebar-layout-spacer" aria-hidden="true"></div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2025 – 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">AndyCao</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">226k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">3:25</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/home-category-filter.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

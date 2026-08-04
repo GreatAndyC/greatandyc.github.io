@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<meta name="generator" content="Hexo 7.3.0">
+
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=b568ace7db92">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="/images/brand/favicon.svg?v=b568ace7db92">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/brand/apple-touch-icon.png?v=b568ace7db92">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png?v=b568ace7db92">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png?v=b568ace7db92">
+  <link rel="mask-icon" href="/images/brand/ac-mark-dark.svg?v=b568ace7db92" color="#111111">
+  <link rel="manifest" href="/images/brand/site.webmanifest?v=b568ace7db92">
+
+<link rel="stylesheet" href="/css/main.css?v=b568ace7db92">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"caoyueyang.org","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  
+<meta name="description" content="从独立开发者视角讨论软件产品、产品经理角色以及为什么 iOS 是更适合作为起点的平台。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="曹越洋的博客">
+<meta property="og:url" content="https://caoyueyang.org/2026/03/23/ios-app-from-zero-vol1/index.html">
+<meta property="og:site_name" content="曹越洋的博客">
+<meta property="og:description" content="从独立开发者视角讨论软件产品、产品经理角色以及为什么 iOS 是更适合作为起点的平台。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://caoyueyang.org/images/posts/feishu-migration/ios-app-from-zero-vol1/ios_series_vol1_cover.png">
+<meta property="article:published_time" content="2026-03-23T10:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-04T13:32:06.954Z">
+<meta property="article:author" content="曹越洋">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="独立开发">
+<meta property="article:tag" content="产品">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://caoyueyang.org/images/posts/feishu-migration/ios-app-from-zero-vol1/ios_series_vol1_cover.png">
+
+<link rel="canonical" href="https://caoyueyang.org/2026/03/23/ios-app-from-zero-vol1/">
+
+
+  <link rel="alternate" hreflang="en" href="https://caoyueyang.org/en/2026/03/23/ios-app-from-zero-vol1/">
+    <link rel="alternate" hreflang="x-default" href="https://caoyueyang.org/en/2026/03/23/ios-app-from-zero-vol1/">
+  <link rel="alternate" hreflang="zh-CN" href="https://caoyueyang.org/2026/03/23/ios-app-from-zero-vol1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+<style>
+  @font-face {
+    font-family: "Font Awesome 5 Brands";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-brands-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-regular-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-solid-900.woff2") format("woff2");
+  }
+</style>
+
+  <title>从 0 到 1 上架一款 iOS 应用（一）：软件开发生态，为什么是 iOS？ | 曹越洋的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="曹越洋的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="container">
+    <div class="headband"></div>
+
+    <div class="site-rail">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <button
+      class="toggle"
+      type="button"
+      aria-label="切换导航栏"
+      aria-expanded="false"
+      aria-controls="site-navigation"
+    >
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </button>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/zh-CN/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <img
+        class="site-brand-mark"
+        src="/images/brand/ac-mark-light.svg"
+        alt=""
+        aria-hidden="true"
+        width="30"
+        height="30"
+        decoding="async"
+      >
+      <h1 class="site-title">曹越洋的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav id="site-navigation" class="site-nav" aria-label="主导航">
+  <div class="mobile-rail-profile" aria-label="曹越洋">
+    <img
+      class="mobile-rail-profile-image"
+      src="/images/avatar.jpg"
+      alt="曹越洋"
+      width="56"
+      height="56"
+      decoding="async"
+    >
+  <span class="mobile-rail-profile-copy">
+    <strong class="mobile-rail-profile-name">曹越洋</strong>
+    <span class="mobile-rail-profile-description">AI 产品、软件系统与应用研究</span>
+  </span>
+</div>
+
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/zh-CN/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-work">
+
+    <a href="/work/" rel="section"><i class="fa fa-briefcase fa-fw"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-gallery">
+
+    <a href="/gallery/" rel="section"><i class="fa fa-camera-retro fa-fw"></i>画廊</a>
+
+  </li>
+        <li class="menu-section-label" aria-hidden="true">浏览</li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/zh-CN/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/zh-CN/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/zh-CN/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+    <li class="menu-item menu-item-language">
+      
+  <div class="languages language-switcher">
+    <span class="language-switcher-label" aria-hidden="true">语言</span>
+    <span class="language-switcher-options" role="group" aria-label="切换语言">
+      
+        
+        
+          
+        
+        
+          <a class="language-switcher-option" href="/en/2026/03/23/ios-app-from-zero-vol1/" data-language="en" data-href="/en/2026/03/23/ios-app-from-zero-vol1/" hreflang="en" lang="en">EN</a>
+        
+        
+          <span class="language-switcher-divider" aria-hidden="true">/</span>
+        
+      
+        
+        
+          
+        
+        
+          <span class="language-switcher-option is-current" data-language="zh-CN" data-href="/2026/03/23/ios-app-from-zero-vol1/" aria-current="page">中</span>
+        
+        
+      
+    </span>
+  </div>
+
+    </li>
+
+  </ul>
+  
+  <div class="mobile-rail-links" aria-label="外部链接">
+    <div class="mobile-rail-links-heading"><i class="fa fa-link fa-fw" aria-hidden="true"></i>
+      <span>友情链接</span>
+    </div>
+    <div class="mobile-rail-links-list">
+          <a href="https://github.com/GreatAndyC" class="mobile-rail-link" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw" aria-hidden="true"></i><span>GitHub</span></a>
+          <a href="/atom.xml" class="mobile-rail-link" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw" aria-hidden="true"></i><span>RSS</span></a>
+          <a href="http://www.google.com/" class="mobile-rail-link" title="走向世界 → http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank"><i class="fa fa-link fa-fw" aria-hidden="true"></i><span>走向世界</span></a>
+    </div>
+  </div>
+
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+      </header>
+        <div class="site-rail-sidebar">
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar sidebar-with-toc">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview" hidden aria-hidden="true">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E4%BA%A7%E5%93%81%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">什么是产品？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%96%E7%A7%91%E6%89%8B%E6%9C%AF%E5%BC%8F%E5%9B%A2%E9%98%9F%E8%A7%92%E8%89%B2%E6%98%A0%E5%B0%84%E8%A1%A8"><span class="nav-number">2.1.</span> <span class="nav-text">外科手术式团队角色映射表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF-iOS%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">为什么是 iOS？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%8A%95%E5%85%A5%E5%9B%9E%E6%8A%A5%E6%AF%94"><span class="nav-number">3.1.</span> <span class="nav-text">1. 投入回报比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B8%8A%E6%9E%B6%E9%9A%BE%E5%BA%A6"><span class="nav-number">3.2.</span> <span class="nav-text">2. 上架难度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%88%86%E5%8F%91%E6%B8%A0%E9%81%93"><span class="nav-number">3.3.</span> <span class="nav-text">3. 分发渠道</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%90%E6%9C%AC%E5%92%8C%E6%94%B6%E7%9B%8A%E7%9A%84%E5%8D%9A%E5%BC%88"><span class="nav-number">4.</span> <span class="nav-text">成本和收益的博弈</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel" hidden aria-hidden="true">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="曹越洋"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">曹越洋</p>
+  <div class="site-description" itemprop="description">AI 产品、软件系统与应用研究</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state" aria-label="站点统计">
+      <div class="site-state-item site-state-posts">
+          <a href="/zh-CN/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/zh-CN/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/zh-CN/tags/">
+          
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/GreatAndyC" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.google.com/" title="http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank">走向世界</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        </div>
+    </div>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <aside aria-label="Follow me on GitHub">
+    <a href="https://github.com/GreatAndyC" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+  </aside>
+
+
+    <main id="main-content" class="main" tabindex="-1">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article
+    itemscope
+    itemtype="http://schema.org/Article"
+    class="post-block"
+    lang="zh-CN"
+  >
+    <link itemprop="mainEntityOfPage" href="https://caoyueyang.org/2026/03/23/ios-app-from-zero-vol1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="曹越洋">
+      <meta itemprop="description" content="AI 产品、软件系统与应用研究">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="曹越洋的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从 0 到 1 上架一款 iOS 应用（一）：软件开发生态，为什么是 iOS？
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item post-meta-item-created">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-03-23 18:00:00" itemprop="dateCreated datePublished" datetime="2026-03-23T18:00:00+08:00">2026-03-23</time>
+            </span>
+              <span class="post-meta-item post-meta-item-updated">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-08-04 21:32:06" itemprop="dateModified" datetime="2026-08-04T21:32:06+08:00">2026-08-04</time>
+              </span>
+            <span class="post-meta-item post-meta-item-category">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/zh-CN/categories/Tutorial/" itemprop="url" rel="index"><span itemprop="name">教程</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item post-meta-item-count" title="本文字数" aria-label="本文字数：3.2k">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text post-meta-item-text-full">本文字数：</span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">字数：</span>
+              <span>3.2k</span>
+            </span>
+            <span class="post-meta-item post-meta-item-reading-time" title="阅读时长" aria-label="阅读时长：3 分钟">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text post-meta-item-text-full">阅读时长 &asymp;</span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">阅读&asymp;</span>
+              <span>3 分钟</span>
+            </span>
+            <div class="post-description">从独立开发者视角讨论软件产品、产品经理角色以及为什么 iOS 是更适合作为起点的平台。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>写于：</strong> 26.3.23 6pm-7:30pm</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/ios-app-from-zero-vol1/ios_series_vol1_cover.png" alt="" loading="eager" decoding="async" fetchpriority="high">
+  <figcaption>封面图由 Nano banana 2 生成</figcaption>
+</figure>
+
+<hr>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>独立开发常被戏称为作为中年失业三件套之一（外卖、滴滴、独立开发）。</p>
+<p>然而在近年 AI Coding 爆火的氛围下，越来越多的互联网从业者&#x2F;各行各业深耕的专家们&#x2F;找不到工作的大学生们都不满足于用别人的产品，都开始跃跃欲试，希望开发属于自己的产品。</p>
+<p>笔者作为一个同样在 AI 时代有巨大热情的开发者，从对 iOS 开发一窍不通，到即将上架自己的第一款 iOS App，在期间踩了不少坑，因此打算写这系列文章，作为自己的反思回顾，同时也帮到其他有同样需求的人。</p>
+<hr>
+<span id="more"></span>
+
+<h2 id="什么是产品？"><a href="#什么是产品？" class="headerlink" title="什么是产品？"></a>什么是产品？</h2><p>在 <strong>Vibe coding</strong> 的时代（OpenAI 创始人之一<a target="_blank" rel="noopener" href="https://karpathy.ai/">Andrej Karpathy</a> 发明的词，译为结对编程或者氛围编程，指和 AI agent 用自然语言沟通需求，让 AI 帮你写代码）代码的生产成本几乎降到了 0，取而代之的稀缺品是创意、执行、落地、工程稳定性和商业化。</p>
+<p>过去，很多人都喜欢说，我有一个可以改变世界的想法&#x2F;创意，现在就差程序员帮我实现了。现在 AI Agent 把 Coding 的学习和执行成本降到了一个非常低层面，现在确实是进入了一个“人人都是产品经理”的时代。</p>
+<p>那么，什么是产品？互联网公司的产品经理的职责又是什么？为什么这个新兴岗位可以拿这么高的薪水呢？</p>
+<blockquote>
+<p>笔者认为产品的概念应该来自于商业，一个高度封装的、用于售卖的商品即可称为产品。</p>
+</blockquote>
+<p>例如云南产的苹果、苹果公司生产的手机都可以称为产品，类似的，还有软件产品，例如黑神话悟空的游戏本体、淘宝软件本体、一款微信小程序的软件本体。</p>
+<p>在互联网领域，今天常说的产品经理，广义上就是对这类软件产品（尤其是 App）从定义、设计到商业化全权负责的人。这个定义更侧重商业变现角度，在产品管理领域还有更广义的解读（如以用户价值为核心的黑盒子模型等）。</p>
+<p>从工程的视角看，开发一个大型硬件或者软件产品（例如大疆的无人机、Adobe 公司的 Photoshop 软件）显然不是一个轻松的事情，那么这就需要分工合作。</p>
+<p>美国工程院院士、软件工程师 Fred Brooks 的著作《人月神话》被称为软件开发领域的 Bible，其中就对软件开发和项目管理进行了详细的阐述，他把软件开发过程需要的团队和人员分工比做“外科手术式团队”，其具体的角色和分工如下表：</p>
+<h3 id="外科手术式团队角色映射表"><a href="#外科手术式团队角色映射表" class="headerlink" title="外科手术式团队角色映射表"></a>外科手术式团队角色映射表</h3><table>
+<thead>
+<tr>
+<th align="left">角色 (Brooks 定义)</th>
+<th align="left">核心职责</th>
+<th align="left">现代中国互联网岗位对应</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>首席程序员 (The Surgeon)</strong></td>
+<td align="left"><strong>核心灵魂。负责定义系统架构、编写最关键的代码、整合所有模块。</strong></td>
+<td align="left"><strong>技术负责人 (TL) &#x2F; 首席架构师</strong></td>
+</tr>
+<tr>
+<td align="left">副手 (The Alter Ego)</td>
+<td align="left">Surgeon 的影子。负责思考技术方案的替代方案，随时准备接替 Surgeon，也是主要的讨论对象。</td>
+<td align="left">资深后端开发 &#x2F; 技术副手</td>
+</tr>
+<tr>
+<td align="left"><strong>架构师 (The Architect)</strong></td>
+<td align="left"><strong>用户接口的守护者。独立于实现过程，专门负责定义产品的功能和规格。</strong></td>
+<td align="left"><strong>产品经理 (PM) &#x2F; 产品架构师</strong></td>
+</tr>
+<tr>
+<td align="left">管理员 (The Administrator)</td>
+<td align="left">后勤保障。处理合同、财务、空间和法律等琐事，让技术人员专心产出。</td>
+<td align="left">项目经理 (PMP) &#x2F; 行政运营</td>
+</tr>
+<tr>
+<td align="left">编辑 (The Editor)</td>
+<td align="left">文档打磨者。负责将 Surgeon 的草稿加工成清晰的外部文档和手册。</td>
+<td align="left">技术文档工程师 (Technical Writer)</td>
+</tr>
+<tr>
+<td align="left">两位秘书 (Secretaries)</td>
+<td align="left">记录者。一个负责行政事务，一个负责管理项目的文件库（代码库）。</td>
+<td align="left">项目助理 (PMO) &#x2F; 早期配置管理员</td>
+</tr>
+<tr>
+<td align="left">程序库管理员 (Program Clerk)</td>
+<td align="left">版本控制。维护团队公用的代码库、测试数据和运行记录。</td>
+<td align="left">运维工程师 (SRE) &#x2F; DevOps</td>
+</tr>
+<tr>
+<td align="left">工具维护者 (Toolsmith)</td>
+<td align="left">磨刀石。编写团队专用的脚本、宏和小型工具，提高开发效率。</td>
+<td align="left">效能工具开发 &#x2F; 基础架构组</td>
+</tr>
+<tr>
+<td align="left">测试员 (The Tester)</td>
+<td align="left">寻找故障。根据规格说明书编写测试用例，扮演 Surgeon 的对手。</td>
+<td align="left">测试工程师 (QA)</td>
+</tr>
+<tr>
+<td align="left">语言专家 (Language Lawyer)</td>
+<td align="left">技术钻研者。精通某种语言或系统的各种“黑魔法”和底层特性。</td>
+<td align="left">技术专家 &#x2F; 首席科学家 (Fellow)</td>
+</tr>
+</tbody></table>
+<p>其中**标红（加粗）**的部分就是产品经理在这个开发模型&#x2F;系统中需要担任的职责，而实际上很多产品经理现在逐渐沦为“画图仔”和“文档仔”，这显然不是一个高效和可靠的方式。</p>
+<p>随着 AI 工具的引进，“一人公司”作为缓解就业压力的遮羞布也被越来越多提起。不过确实，理想中的 Agent 能够代替的角色几乎可以是除了架构师和首席程序员的所有人——但是这也意味着，哪怕技术可以边做边学，如果基本的模式不明白，后面必然会带来巨大的技术债，造成工程上的崩溃。（当然这对于初学者是必不可少的弯路）</p>
+<p>所以 AI 时代的产品经理，应该是一个集首席程序员和架构师于一体的角色，也只有这样懂技术、懂审美、懂调研的个体才能真正做到完美指挥 AI 工作，成为 AI 时代的 <strong>Super Individual</strong>。</p>
+<hr>
+<h2 id="为什么是-iOS？"><a href="#为什么是-iOS？" class="headerlink" title="为什么是 iOS？"></a>为什么是 iOS？</h2><p>曾经有网红把人群粗暴地分为“苹果人”和“安卓人”，由于这种分法过于赤裸不符合普世价值观，因此该网红遭到了封禁处理。</p>
+<p>但是从这个爆火社会现象我们也能看出，使用不同操作系统的人群的消费力是不一样的，开发 iOS 应用作为独立开发者的第一步，比起安卓开发和其他形式的开发的优势，可以总结为以下三点：<strong>投入回报比、上架难度、分发渠道</strong>。</p>
+<h3 id="1-投入回报比"><a href="#1-投入回报比" class="headerlink" title="1. 投入回报比"></a>1. 投入回报比</h3><p>通常来说，使用 iOS 系统（苹果手机）的用户，比安卓系统（国产 Android 手机）的用户更加愿意在软件上付费，同样的，由于安卓系统的开放性，软件在破解的难度上也更低，这让开发者开发 iOS 应用能够得到的潜在收益是高于安卓系统的。</p>
+<h3 id="2-上架难度"><a href="#2-上架难度" class="headerlink" title="2. 上架难度"></a>2. 上架难度</h3><p>对于国内的应用市场，不管是 Oppo&#x2F;Vivo、小米、鸿蒙、荣耀，几乎都需要公司实体资质才能上架自己的 App（笔者没有仔细进行核查）。而 Android 系统的原始大本营，Google Play，也需要有通过封闭测试（新账号需 20 人连续测试 14 天）才能上架的严格规定。而相比之下，App Store 只需要注册成为苹果开发者，通过审核之后就可以上架，这对于个人来说，无疑是极大地降低了上架难度。</p>
+<h3 id="3-分发渠道"><a href="#3-分发渠道" class="headerlink" title="3. 分发渠道"></a>3. 分发渠道</h3><p>上架和合规都是商业化不可缺少的一步，之所以需要关注上架和分发，是因为产品做出来了得有人使用，才能创造收入。</p>
+<p>在 2026 年的今天，几乎没有人会从网站上往自己的移动智能设备上下载安装包，就算下载安装了，也会在系统层面上提示你风险存在，这让非官方渠道下载的 App 的信用成本变得非常高。</p>
+<blockquote>
+<p>就好比，没有人会担心在大型连锁超市里买的可口可乐会喝坏肚子，但是在小巷子里真有可能买到全是科技与狠活的可回可乐。</p>
+</blockquote>
+<p>所以，要想实现正常途径的商业化，就必须上架官方的应用商店。而对于分发，Android 系统存在多个分发渠道（不同手机厂商的应用商店、Google Play 等），这就意味着，如果你想让小米、华为、Oppo、Vivo 的用户都用上你的 App，你得跑到这几个大卖场都提交资质审核申请。</p>
+<p>相比之下，iOS 系统只有一个 App Store，这就意味着，只要你通过了审核（当然，App Store 的审核是所有平台中最严格的，重点审查隐私、设计一致性、功能价值和用户体验，通常 24-72 小时出结果），全世界的苹果用户都能看到你的产品，这对于复制边际成本几乎为 0 的软件产品来说，无疑是最好的卖场。</p>
+<p>而常常被诟病的 30% 内购抽成的“苹果税”，在最近降到了 25%，但是实际上其他应用商店的抽成比这还要高。</p>
+<hr>
+<h2 id="成本和收益的博弈"><a href="#成本和收益的博弈" class="headerlink" title="成本和收益的博弈"></a>成本和收益的博弈</h2><p>如果把一切都量化为收支，综合上述所有的因素来看，毫无疑问，对于一无所有，什么语言都不懂的独立开发者，以 iOS 开发起步，是潜在的投资收益比最高的选择：作为个人，只需要有一台 MacOS 系统的电脑，外加支付每年 <strong>99 美元</strong> 的注册费用，就可以开发上架你的 App，获得开发 App 爆火之后的潜在超额收益。</p>
+<p>明白了这一点，在后续的篇目中，相信读者能够更加信心坚定地开发自己的 App。</p>
+<p><strong>下一篇：撰写中….</strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/zh-CN/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/zh-CN/tags/%E7%8B%AC%E7%AB%8B%E5%BC%80%E5%8F%91/" rel="tag"># 独立开发</a>
+              <a href="/zh-CN/tags/%E4%BA%A7%E5%93%81/" rel="tag"># 产品</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/03/23/gemini-guided-system-reinstall/" rel="prev" title="赛博空间大扫除：我如何用 Gemini 把旧笔记本变成 AI 智能体执行机">
+      <i class="fa fa-chevron-left"></i> 赛博空间大扫除：我如何用 Gemini 把旧笔记本变成 AI 智能体执行机
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/03/30/ios-app-from-zero-vol2/" rel="next" title="从 0 到 1 上架一款 iOS 应用（二）：为什么你不应该只用一个 AI 模型？">
+      从 0 到 1 上架一款 iOS 应用（二）：为什么你不应该只用一个 AI 模型？ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          <div class="sidebar-layout-spacer" aria-hidden="true"></div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2025 – 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">曹越洋</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">226k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:25</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/home-category-filter.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000">
+    <g fill="none" stroke="#FFFFFF" stroke-width="60" stroke-linecap="butt" stroke-linejoin="miter">
+      <path d="M 675 275 A 300 300 0 1 0 675 725"/>
+      <path d="M 325 770 L 635 125"/>
+      <path d="M 430 585 L 520 655 L 625 455 L 770 770"/>
+    </g></svg>

@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<meta name="generator" content="Hexo 7.3.0">
+
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=b568ace7db92">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="/images/brand/favicon.svg?v=b568ace7db92">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/brand/apple-touch-icon.png?v=b568ace7db92">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png?v=b568ace7db92">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png?v=b568ace7db92">
+  <link rel="mask-icon" href="/images/brand/ac-mark-dark.svg?v=b568ace7db92" color="#111111">
+  <link rel="manifest" href="/images/brand/site.webmanifest?v=b568ace7db92">
+
+<link rel="stylesheet" href="/css/main.css?v=b568ace7db92">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"caoyueyang.org","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  
+<meta name="description" content="通过 Xcode 创建并运行第一个 iOS App，掌握开发者账号注册和 AI 辅助开发流程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="曹越洋的博客">
+<meta property="og:url" content="https://caoyueyang.org/2026/04/23/ios-app-from-zero-vol3/index.html">
+<meta property="og:site_name" content="曹越洋的博客">
+<meta property="og:description" content="通过 Xcode 创建并运行第一个 iOS App，掌握开发者账号注册和 AI 辅助开发流程。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://caoyueyang.org/images/posts/2026-04-23-ios-app-from-zero-vol3/0-1-ios-cover.png">
+<meta property="article:published_time" content="2026-04-23T12:39:00.000Z">
+<meta property="article:modified_time" content="2026-08-04T13:32:06.955Z">
+<meta property="article:author" content="曹越洋">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="独立开发">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://caoyueyang.org/images/posts/2026-04-23-ios-app-from-zero-vol3/0-1-ios-cover.png">
+
+<link rel="canonical" href="https://caoyueyang.org/2026/04/23/ios-app-from-zero-vol3/">
+
+
+  <link rel="alternate" hreflang="en" href="https://caoyueyang.org/en/2026/04/23/ios-app-from-zero-vol3/">
+    <link rel="alternate" hreflang="x-default" href="https://caoyueyang.org/en/2026/04/23/ios-app-from-zero-vol3/">
+  <link rel="alternate" hreflang="zh-CN" href="https://caoyueyang.org/2026/04/23/ios-app-from-zero-vol3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+<style>
+  @font-face {
+    font-family: "Font Awesome 5 Brands";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-brands-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-regular-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-solid-900.woff2") format("woff2");
+  }
+</style>
+
+  <title>从 0 到 1 上架一款 iOS 应用（三）：第一个 Hello World iOS APP | 曹越洋的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="曹越洋的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="container">
+    <div class="headband"></div>
+
+    <div class="site-rail">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <button
+      class="toggle"
+      type="button"
+      aria-label="切换导航栏"
+      aria-expanded="false"
+      aria-controls="site-navigation"
+    >
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </button>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/zh-CN/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <img
+        class="site-brand-mark"
+        src="/images/brand/ac-mark-light.svg"
+        alt=""
+        aria-hidden="true"
+        width="30"
+        height="30"
+        decoding="async"
+      >
+      <h1 class="site-title">曹越洋的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav id="site-navigation" class="site-nav" aria-label="主导航">
+  <div class="mobile-rail-profile" aria-label="曹越洋">
+    <img
+      class="mobile-rail-profile-image"
+      src="/images/avatar.jpg"
+      alt="曹越洋"
+      width="56"
+      height="56"
+      decoding="async"
+    >
+  <span class="mobile-rail-profile-copy">
+    <strong class="mobile-rail-profile-name">曹越洋</strong>
+    <span class="mobile-rail-profile-description">AI 产品、软件系统与应用研究</span>
+  </span>
+</div>
+
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/zh-CN/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-work">
+
+    <a href="/work/" rel="section"><i class="fa fa-briefcase fa-fw"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-gallery">
+
+    <a href="/gallery/" rel="section"><i class="fa fa-camera-retro fa-fw"></i>画廊</a>
+
+  </li>
+        <li class="menu-section-label" aria-hidden="true">浏览</li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/zh-CN/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/zh-CN/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/zh-CN/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+    <li class="menu-item menu-item-language">
+      
+  <div class="languages language-switcher">
+    <span class="language-switcher-label" aria-hidden="true">语言</span>
+    <span class="language-switcher-options" role="group" aria-label="切换语言">
+      
+        
+        
+          
+        
+        
+          <a class="language-switcher-option" href="/en/2026/04/23/ios-app-from-zero-vol3/" data-language="en" data-href="/en/2026/04/23/ios-app-from-zero-vol3/" hreflang="en" lang="en">EN</a>
+        
+        
+          <span class="language-switcher-divider" aria-hidden="true">/</span>
+        
+      
+        
+        
+          
+        
+        
+          <span class="language-switcher-option is-current" data-language="zh-CN" data-href="/2026/04/23/ios-app-from-zero-vol3/" aria-current="page">中</span>
+        
+        
+      
+    </span>
+  </div>
+
+    </li>
+
+  </ul>
+  
+  <div class="mobile-rail-links" aria-label="外部链接">
+    <div class="mobile-rail-links-heading"><i class="fa fa-link fa-fw" aria-hidden="true"></i>
+      <span>友情链接</span>
+    </div>
+    <div class="mobile-rail-links-list">
+          <a href="https://github.com/GreatAndyC" class="mobile-rail-link" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw" aria-hidden="true"></i><span>GitHub</span></a>
+          <a href="/atom.xml" class="mobile-rail-link" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw" aria-hidden="true"></i><span>RSS</span></a>
+          <a href="http://www.google.com/" class="mobile-rail-link" title="走向世界 → http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank"><i class="fa fa-link fa-fw" aria-hidden="true"></i><span>走向世界</span></a>
+    </div>
+  </div>
+
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+      </header>
+        <div class="site-rail-sidebar">
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar sidebar-with-toc">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview" hidden aria-hidden="true">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E6%8F%90%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">前提准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%90%E4%B8%BA%E8%8B%B9%E6%9E%9C%E5%BC%80%E5%8F%91%E8%80%85"><span class="nav-number">2.1.</span> <span class="nav-text">成为苹果开发者</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD-Xcode"><span class="nav-number">3.</span> <span class="nav-text">下载 Xcode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3-Xcode"><span class="nav-number">4.</span> <span class="nav-text">了解 Xcode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="nav-number">5.</span> <span class="nav-text">新建项目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E5%88%86%E7%B1%BB"><span class="nav-number">5.1.</span> <span class="nav-text">开发工具分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CLI-%E5%B7%A5%E5%85%B7"><span class="nav-number">5.1.1.</span> <span class="nav-text">CLI 工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VSCode-%E5%86%85%E6%A0%B8%E7%BC%96%E8%BE%91%E5%99%A8%E4%B8%AD%E7%9A%84%E6%8F%92%E4%BB%B6%EF%BC%88Cline%E3%80%81Koli-code%E7%AD%89%EF%BC%89"><span class="nav-number">5.1.2.</span> <span class="nav-text">VSCode 内核编辑器中的插件（Cline、Koli code等）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Agent-%E5%BA%94%E7%94%A8"><span class="nav-number">5.1.3.</span> <span class="nav-text">Agent 应用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Cline-%E8%BF%9B%E8%A1%8C-AI-%E8%BE%85%E5%8A%A9%E5%BC%80%E5%8F%91"><span class="nav-number">6.</span> <span class="nav-text">使用 Cline 进行 AI 辅助开发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%BD%E7%9A%84%E6%8F%90%E9%97%AE%E7%A4%BA%E4%BE%8B"><span class="nav-number">6.1.</span> <span class="nav-text">好的提问示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%AE%E7%9A%84%E6%8F%90%E9%97%AE%E7%A4%BA%E4%BE%8B"><span class="nav-number">6.2.</span> <span class="nav-text">差的提问示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E8%AE%B0"><span class="nav-number">7.</span> <span class="nav-text">后记</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel" hidden aria-hidden="true">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="曹越洋"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">曹越洋</p>
+  <div class="site-description" itemprop="description">AI 产品、软件系统与应用研究</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state" aria-label="站点统计">
+      <div class="site-state-item site-state-posts">
+          <a href="/zh-CN/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/zh-CN/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/zh-CN/tags/">
+          
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/GreatAndyC" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.google.com/" title="http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank">走向世界</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        </div>
+    </div>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <aside aria-label="Follow me on GitHub">
+    <a href="https://github.com/GreatAndyC" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+  </aside>
+
+
+    <main id="main-content" class="main" tabindex="-1">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article
+    itemscope
+    itemtype="http://schema.org/Article"
+    class="post-block"
+    lang="zh-CN"
+  >
+    <link itemprop="mainEntityOfPage" href="https://caoyueyang.org/2026/04/23/ios-app-from-zero-vol3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="曹越洋">
+      <meta itemprop="description" content="AI 产品、软件系统与应用研究">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="曹越洋的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从 0 到 1 上架一款 iOS 应用（三）：第一个 Hello World iOS APP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item post-meta-item-created">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-04-23 20:39:00" itemprop="dateCreated datePublished" datetime="2026-04-23T20:39:00+08:00">2026-04-23</time>
+            </span>
+              <span class="post-meta-item post-meta-item-updated">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-08-04 21:32:06" itemprop="dateModified" datetime="2026-08-04T21:32:06+08:00">2026-08-04</time>
+              </span>
+            <span class="post-meta-item post-meta-item-category">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/zh-CN/categories/Tutorial/" itemprop="url" rel="index"><span itemprop="name">教程</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item post-meta-item-count" title="本文字数" aria-label="本文字数：3.2k">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text post-meta-item-text-full">本文字数：</span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">字数：</span>
+              <span>3.2k</span>
+            </span>
+            <span class="post-meta-item post-meta-item-reading-time" title="阅读时长" aria-label="阅读时长：3 分钟">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text post-meta-item-text-full">阅读时长 &asymp;</span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">阅读&asymp;</span>
+              <span>3 分钟</span>
+            </span>
+            <div class="post-description">通过 Xcode 创建并运行第一个 iOS App，掌握开发者账号注册和 AI 辅助开发流程。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在前两篇，已经介绍了开发 iOS App 的原因和模型准备，本篇将介绍如何在自己的手机上开发出第一个 iOS App。</p>
+<h2 id="前提准备"><a href="#前提准备" class="headerlink" title="前提准备"></a>前提准备</h2><ol>
+<li>Mac 上下载 Xcode 软件</li>
+<li>准备一个苹果开发者账号</li>
+</ol>
+<h3 id="成为苹果开发者"><a href="#成为苹果开发者" class="headerlink" title="成为苹果开发者"></a>成为苹果开发者</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://developer.apple.com/cn/programs/enroll/">https://developer.apple.com/cn/programs/enroll/</a></p>
+</blockquote>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/apple-developer-enrollment-page.png" alt="" loading="eager" decoding="async" fetchpriority="high">
+  <figcaption>苹果开发者注册页面</figcaption>
+</figure>
+
+<p>点击开始注册。</p>
+<p>个人身份注册需要满足条件为：</p>
+<ol>
+<li>开启了 2FA 的 Apple 账户</li>
+<li>达到地区的法定年龄</li>
+<li>电子邮件、电话和地址：不接受邮政信箱</li>
+</ol>
+<p>填写真实有效的个人信息。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/apple-developer-personal-info.png" alt="" loading="lazy" decoding="async">
+  <figcaption>填写个人信息</figcaption>
+</figure>
+
+<p>选择 Entity Type 为 Individual。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/apple-developer-entity-type.png" alt="" loading="lazy" decoding="async">
+  <figcaption>选择账户类型</figcaption>
+</figure>
+
+<p>同意条款。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/apple-developer-terms-agreement.png" alt="" loading="lazy" decoding="async">
+  <figcaption>同意条款</figcaption>
+</figure>
+
+<p>后续就是支付费用等待通过了。</p>
+<p>任何问题都可以在「联系我们」处获取支持。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/apple-developer-contact-support.png" alt="" loading="lazy" decoding="async">
+  <figcaption>联系支持</figcaption>
+</figure>
+
+<blockquote>
+<p>一般是通过邮件的方式和客服联系，如果不懂怎么写，可以自己写一份草稿，然后让 AI 帮你改成合适的书面语再发送。</p>
+</blockquote>
+<h2 id="下载-Xcode"><a href="#下载-Xcode" class="headerlink" title="下载 Xcode"></a>下载 Xcode</h2><p>在 Mac 的 App Store 中搜索 Xcode，点击下载。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/app-store-xcode-download.png" alt="" loading="lazy" decoding="async">
+  <figcaption>App Store 下载 Xcode</figcaption>
+</figure>
+
+<p>等待安装完成。</p>
+<h2 id="了解-Xcode"><a href="#了解-Xcode" class="headerlink" title="了解 Xcode"></a>了解 Xcode</h2><p>Xcode 是苹果官方推出的 IDE（集成开发环境），主要作用是对 iOS App 进行编译、调试、打包、签名发布。</p>
+<blockquote>
+<p>实际上主力用 AI 开发的话，在 Xcode 中进行编辑的时间并不会很多，大部分时间都是和 AI 进行讨论需求和开发细节。</p>
+</blockquote>
+<p>不管是 Xcode 还是 Android Studio 都是类似的，最终都是通过这些 IDE 来编译打包 App，然后进行签名发布。</p>
+<h2 id="新建项目"><a href="#新建项目" class="headerlink" title="新建项目"></a>新建项目</h2><p>打开 Xcode，点击「Create a new Xcode project」。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-create-project.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Xcode 创建项目</figcaption>
+</figure>
+
+<p>选择「App」模板，然后点击「Next」。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-app-template.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Xcode 选择 App 模板</figcaption>
+</figure>
+
+<p>填写项目信息：</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-project-info-config.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Xcode 项目配置</figcaption>
+</figure>
+
+<ul>
+<li>Product Name：HelloIOS（随便填，后面可以改）</li>
+<li>Team：选择你刚刚注册的开发者账号</li>
+<li>Organization Identifier：com.yourname（例如：com.andy）</li>
+<li>Interface：SwiftUI</li>
+<li>Language：Swift</li>
+<li>Testing System：默认即可（Swift Testing with XCTest UI Tests）</li>
+<li>Storage：SwiftData</li>
+<li>Host in CloudKit：❌ 不要勾选，涉及到 iCloud 同步问题</li>
+</ul>
+<p>点击「Next」，选择保存项目的路径，然后点击「Create」，在本地硬盘创建一个文件夹。</p>
+<p>现在就有一个项目文件啦。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-project-structure.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Xcode 项目结构</figcaption>
+</figure>
+
+<p>左边是文件目录，中间是代码编辑区，右边是模拟运行区。</p>
+<p>这里可以点击选择在真机还是模拟器上运行我们的 App，点击右上角的运行按钮（Command+R）即可。我这里直接选择了我的真机进行运行。（初次连接需要插数据线并且开启设备的开发者选项，同时做签名确认，这些比较琐碎的问题都可以截图问 AI，重点是要足够耐心）</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-device-selector.png" alt="" loading="lazy" decoding="async">
+  <figcaption>设备选择器</figcaption>
+</figure>
+
+<p>弹出一个巨大的 Build Failed 以及左边全红的报错（如果是股市就好了呢）。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-build-failed.png" alt="" loading="lazy" decoding="async">
+  <figcaption>构建失败</figcaption>
+</figure>
+
+<p>那么就到 Debug 步骤了（修复程序中的错误）。</p>
+<blockquote>
+<p>这时候就有读者要问了，我完全不懂编程不会写 SwiftUI 咋办啊？</p>
+</blockquote>
+<p>没关系，我也一行 SwiftUI 都不会写，但我依然跑出了第一个 iOS App。</p>
+<blockquote>
+<p>这不是因为我变强了，而是开发方式变了。大部分简单重复的应用层面上的工作，都可以交给 AI 完成，只有一些非常底层和细节或者逻辑性要求很强&#x2F;项目文件过大等特殊情况，才需要我们自己上手「古法编程」。</p>
+</blockquote>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/generation-changed.png" alt="" loading="lazy" decoding="async">
+  <figcaption>时代变了</figcaption>
+</figure>
+
+<p>这时候可以选择：把报错信息全部一起复制给网页端的 AI 工具，例如 Gemini、GPT，帮你一个个 Debug，你要做的，就是充当一个人肉复制机器，事实上笔者在开始探索的时候也是这么做的。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/ai-copy-error-message.png" alt="" loading="lazy" decoding="async">
+  <figcaption>复制错误信息给 AI</figcaption>
+</figure>
+
+<p>这时候你是不是跃跃欲试想要直接开始上手干了？</p>
+<blockquote>
+<p>且慢，随着时间的进行，现在的 AI 工具已经具备了 Agentic 的能力，能自主进行分析和修改代码，所以你可以直接在其他 AI 工具里面打开项目，用 Agent 插件实现自动 Debug，所以这种人肉复制的工作也不需要了。</p>
+</blockquote>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/martial-arts-secret-meme.png" alt="" loading="lazy" decoding="async">
+  <figcaption>葵花宝典第一页：欲练神功，必先自宫。不过下刀之前，多翻两页，说不定是「预练神功，亦可不必自宫」</figcaption>
+</figure>
+
+<p>具体实现工具选择包括：</p>
+<h3 id="开发工具分类"><a href="#开发工具分类" class="headerlink" title="开发工具分类"></a>开发工具分类</h3><h4 id="CLI-工具"><a href="#CLI-工具" class="headerlink" title="CLI 工具"></a>CLI 工具</h4><ul>
+<li>Claude Code</li>
+<li>CodeX</li>
+</ul>
+<h4 id="VSCode-内核编辑器中的插件（Cline、Koli-code等）"><a href="#VSCode-内核编辑器中的插件（Cline、Koli-code等）" class="headerlink" title="VSCode 内核编辑器中的插件（Cline、Koli code等）"></a>VSCode 内核编辑器中的插件（Cline、Koli code等）</h4><ul>
+<li>Cursor</li>
+<li>Antigravity</li>
+<li>VSCode</li>
+</ul>
+<h4 id="Agent-应用"><a href="#Agent-应用" class="headerlink" title="Agent 应用"></a>Agent 应用</h4><ul>
+<li>CodeX APP</li>
+<li>Claude APP</li>
+</ul>
+<p>根据实际情况，任君挑选。</p>
+<h2 id="使用-Cline-进行-AI-辅助开发"><a href="#使用-Cline-进行-AI-辅助开发" class="headerlink" title="使用 Cline 进行 AI 辅助开发"></a>使用 Cline 进行 AI 辅助开发</h2><p>这里以笔者常用的 Antigravity + Cline 为例进行编辑（VSCode 一样）。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/vscode-cline-plugin.png" alt="" loading="lazy" decoding="async">
+  <figcaption>VSCode Cline 插件</figcaption>
+</figure>
+
+<ol>
+<li>先在插件中搜索下载 Cline</li>
+<li>在 Cline 设置页面配置好 API Key</li>
+</ol>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/cline-api-key-config.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Cline API Key 配置</figcaption>
+</figure>
+
+<blockquote>
+<p>笔者选择的是经济实惠的 Minimax Token Plan。</p>
+<p>具体教程可参考 Minimax 官方文档：<a target="_blank" rel="noopener" href="https://platform.minimaxi.com/docs/token-plan/cline#cline">https://platform.minimaxi.com/docs/token-plan/cline#cline</a></p>
+<p>笔者的邀请链接可享 9 折优惠：<a target="_blank" rel="noopener" href="https://platform.minimaxi.com/subscribe/token-plan?code=H5mFhfRxqH&source=link">https://platform.minimaxi.com/subscribe/token-plan?code=H5mFhfRxqH&amp;source=link</a><br>（非广，笔者也在考虑随时跳车，只是作为教程，刚好有 Quota 没用完，所以用来举例子）</p>
+</blockquote>
+<p>配置好后，在编辑器中打开项目文件夹，然后点击 Cline，和 Agent 互动，让 AI 先读一下这个项目。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/cline-open-project.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Cline 打开项目</figcaption>
+</figure>
+
+<p>接着可以继续提出你的需求，让 AI 自动帮你修改代码。不过原则是尽量拆解成细分的小任务，而不是让 AI 一次性帮你完成所有问题的修改。</p>
+<h3 id="好的提问示例"><a href="#好的提问示例" class="headerlink" title="好的提问示例"></a>好的提问示例</h3><ul>
+<li>我现在这个项目运行报错了，你帮我看看问题出在哪「xxxxxxxx」</li>
+<li>如果我要新增一个功能，我怎么选择方法，我需要具体达到的效果是「xxxxx」</li>
+</ul>
+<h3 id="差的提问示例"><a href="#差的提问示例" class="headerlink" title="差的提问示例"></a>差的提问示例</h3><ul>
+<li>帮我把这个项目改成全球可用的支付宝，可以支持全球货币转换和提现秒到账。</li>
+</ul>
+<p>接着就是等待 Agent 自动帮你完成任务了，Cline 的优点和缺点都是会实时显示操作。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/cline-realtime-operations.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Cline 实时操作</figcaption>
+</figure>
+
+<p>等待 Agent 帮你修改完成，输出显示所有的 Bug 都已经完成修复了。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/cline-bugs-fixed.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Bug 修复完成</figcaption>
+</figure>
+
+<p>回到 Xcode，再次运行 Build 命令。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/xcode-build-success.png" alt="" loading="lazy" decoding="async">
+  <figcaption>构建成功</figcaption>
+</figure>
+
+<p>如果一切连接顺利，一个没有图标的 iOS App 就会在你的设备上显示出类似下载的动画，直至完成。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/ios-app-download-complete.jpeg" alt="" loading="lazy" decoding="async">
+  <figcaption>App 下载完成</figcaption>
+</figure>
+
+<p>打开这个 iOS App，运行成功。</p>
+<figure class="post-figure">
+  <img src="/images/posts/2026-04-23-ios-app-from-zero-vol3/ios-app-running-success.jpeg" alt="" loading="lazy" decoding="async">
+  <figcaption>App 运行成功</figcaption>
+</figure>
+
+<p>恭喜你 🎉 完成了你的第一个 iOS App 的开发。</p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>虽然这个程序并没有什么实际用处，但这标志着你已经完成了 iOS App 开发最重要的一步，就是能够把自己开发的程序在设备上运行了。</p>
+<p>经过这一个步骤，你掌握了：</p>
+<ul>
+<li>创建开发者账号的一般方法</li>
+<li>Xcode 的创建项目和工程目录结构</li>
+<li>代码的编译运行和 Debug 流程</li>
+<li>如何调用 AI 工具修改代码</li>
+<li>开发环境的基本使用</li>
+</ul>
+<p>这意味着，你从消费者的角色正式成为了一个创造者。</p>
+<blockquote>
+<p>关于 Hello World，其实是大多数程序员输出的第一行代码。</p>
+<p>笔者在最初学习 Python 的时候，在终端上打印出 Hello World 的时候并没有书上说的那种「Amazing」的感觉，反而是觉得「就这？」</p>
+<p>可能的原因大概是，笔者当时经常使用 PC，对打印出一行字并没有觉得很神奇，但是在自己设备上运行出第一个应用，真的让笔者有了那么一些的「Amazing」的感觉。</p>
+</blockquote>
+<p>这不由得让我想起了道格拉斯·亚当斯科技三定律。</p>
+<p><strong>道格拉斯·亚当斯科技三定律</strong></p>
+<blockquote>
+<p>道格拉斯·亚当斯科技三定律（Douglas Adams’s Three Rules of Technology）</p>
+<ol>
+<li>你出生时已经存在的技术，是世界本来就该有的样子。</li>
+<li>你 15 到 35 岁之间出现的技术，是令人兴奋的革命，可以去投身其中。</li>
+<li>你 35 岁之后才出现的技术，都是违背自然规律的胡来。</li>
+</ol>
+</blockquote>
+<p>可能在未来的人类，会把 GPT 的时刻当作世界本来就有的样子，但是身处时代当中的我们应该意识到，这是一个激动人心的革命，承前启后，推动创新，需要不断学习和保持开放的心态。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/zh-CN/tags/AI/" rel="tag"># AI</a>
+              <a href="/zh-CN/tags/iOS/" rel="tag"># iOS</a>
+              <a href="/zh-CN/tags/%E7%8B%AC%E7%AB%8B%E5%BC%80%E5%8F%91/" rel="tag"># 独立开发</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/03/30/ios-app-from-zero-vol2/" rel="prev" title="从 0 到 1 上架一款 iOS 应用（二）：为什么你不应该只用一个 AI 模型？">
+      <i class="fa fa-chevron-left"></i> 从 0 到 1 上架一款 iOS 应用（二）：为什么你不应该只用一个 AI 模型？
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/04/28/codex-photoshop-poster-guide/" rel="next" title="如何用CodeX+Photoshop制作宣传海报">
+      如何用CodeX+Photoshop制作宣传海报 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          <div class="sidebar-layout-spacer" aria-hidden="true"></div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2025 – 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">曹越洋</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">226k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:25</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/home-category-filter.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
