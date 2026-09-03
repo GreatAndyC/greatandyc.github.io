@@ -75,6 +75,11 @@ jobs:
             --exclude 'https://www\.wsj\.com/.*'
             --exclude 'https://[^/]*\.feishu\.cn/.*'
             --exclude 'https://www\.espressif\.com\.cn/.*'
+            --exclude 'https://www\.esmchina\.com/trends/43605\.html.*'
+            --exclude 'https://dash\.cloudflare\.com/.*'
+            --exclude 'http://localhost:4000/.*'
+            --exclude 'https://z-library\.sk/.*'
+            --exclude 'https://www\.bilibili\.com/video/BV1iM4y1y7oA.*'
             --root-dir public
             'public/**/*.html'
           token: ${{ secrets.GITHUB_TOKEN }}
