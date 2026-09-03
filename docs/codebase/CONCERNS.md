@@ -39,7 +39,7 @@
 | LLM/音乐外部请求无 timeout | A10/可靠性 | `tools/local-cms.js` | HTTP 状态与错误包装 | 请求可能长时间挂起；无 AbortController/retry |
 | 本地审计/调试日志无留存策略 | A09 日志监控 | `tools/local-cms.js`、`.gitignore` | 不提交到 Git | 可能长期保留内容或上游错误详情 |
 
-`npm audit --json` 在 2026-07-30 为 0 个已知漏洞；这不覆盖远程 CDN、主题 vendoring 或业务安全边界。
+`npm audit --omit=dev --audit-level=high` 在 2026-09-04 为 0 个已知生产依赖漏洞；全量审计仍会报告 Lighthouse 工具链中的 `extract-zip` 和 `qs` 等开发依赖问题。这不覆盖远程 CDN、主题 vendoring 或业务安全边界。
 
 ### 4）性能和扩展关注
 

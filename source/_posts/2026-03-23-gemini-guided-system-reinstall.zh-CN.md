@@ -71,7 +71,7 @@ C盘可以重点关注下载、文档等文件夹下的文件，可以在Powersh
 联网获取系统镜像
 在和Gemini讨论我的需求（稳定，清爽系统）后，在Ubuntu 24.04和Windows LTSC 2021之间选择了后者（考虑到软件生态和适配度等）
 
-在https://next.itellyou.cn/的网站上获取Windows 10 Enterprise LTSC 2021 (x64) - DVD (Chinese-Simplified)的BT下载链接，使用MotrixP2P下载（记得下载完毕后继续上传做种，确保分享率达到1，和互联网的匿名帮助者互不相欠）原理
+在 [next.itellyou.cn](https://next.itellyou.cn/) 网站上获取 Windows 10 Enterprise LTSC 2021 (x64) - DVD (Chinese-Simplified) 的 BT 下载链接，使用 Motrix P2P 下载（记得下载完毕后继续上传做种，确保分享率达到 1，和互联网的匿名帮助者互不相欠）原理
 
 将U盘变启动盘
 打开Rufus，在镜像文件中选择刚刚下载的iso文件，点击“选择”按钮左边的✅按钮进行Hash校验，确保没有被篡改或投毒。（我要验牌）

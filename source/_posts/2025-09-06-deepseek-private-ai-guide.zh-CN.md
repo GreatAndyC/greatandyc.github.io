@@ -233,7 +233,7 @@ Token可以简单理解为余额，生成文字和理解文字都会消耗token�
   <figcaption>Chatbox 官方下载页</figcaption>
 </figure>
 
-首先登录网站官网：https://chatboxai.app/zh，按照自己需求下载按照客户端
+首先登录网站官网：[Chatbox AI 官网](https://chatboxai.app/zh)，按照自己需求下载安装客户端。
 
 ### 第二步：进入定价页面
 

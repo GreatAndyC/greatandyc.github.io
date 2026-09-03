@@ -6,7 +6,7 @@
 
 | 层级 | 工具 | 覆盖内容 | 执行时机 |
 | --- | --- | --- | --- |
-| 依赖安全 | `npm audit` | 已知高危依赖漏洞 | PR、部署 |
+| 依赖安全 | `npm audit --omit=dev --audit-level=high` | 生产依赖中的已知高危漏洞 | PR、部署 |
 | 生成结果契约 | Node `node:test` | 双语路由、菜单、图片、Work 页面结构、本地 CMS 边界、生成链接 | 每次 PR、部署 |
 | HTML 结构 | HTML Validate | 重复 ID、非法嵌套、缺失必填属性、错误标题结构 | 每次 PR、部署 |
 | 浏览器验收 | Playwright | 中英文导航、语言切换、Work 菜单、Gallery、搜索、图片加载、横向溢出 | 每次 PR、部署 |

@@ -38,7 +38,7 @@ Google Analytics、评论系统、Algolia、LeanCloud 和 Firestore 的模板仍
 - `.gitignore` 排除 `.env`、日志和旧版 `.local-cms.json`。
 - GitHub Actions 使用自动注入的 `secrets.GITHUB_TOKEN`，发布 job 具有 `contents: write`。
 - Decap/Netlify 凭据不在仓库中。
-- `npm audit --json` 在 2026-07-30 报告 0 个已知漏洞。
+- `npm audit --omit=dev --audit-level=high` 在 2026-09-04 报告 0 个已知生产依赖漏洞；全量审计仍受 Lighthouse 工具链中的 `extract-zip` 和 `qs` 等开发依赖影响。
 - 凭据轮换与本地日志留存周期：`[TODO]`，仓库没有制度定义。
 
 ### 4）可靠性与失败行为

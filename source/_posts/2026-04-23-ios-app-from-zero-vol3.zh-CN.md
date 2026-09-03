@@ -220,7 +220,7 @@ Xcode 是苹果官方推出的 IDE（集成开发环境），主要作用是对 
 
 > 笔者选择的是经济实惠的 Minimax Token Plan。
 >
-> 具体教程可参考 Minimax 官方文档：https://platform.minimaxi.com/docs/token-plan/cline#cline
+> 具体教程可参考 [MiniMax 官方快速接入文档](https://platform.minimaxi.com/docs/token-plan/quickstart)
 >
 > 笔者的邀请链接可享 9 折优惠：https://platform.minimaxi.com/subscribe/token-plan?code=H5mFhfRxqH&source=link
 （非广，笔者也在考虑随时跳车，只是作为教程，刚好有 Quota 没用完，所以用来举例子）

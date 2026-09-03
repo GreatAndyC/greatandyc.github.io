@@ -10,7 +10,7 @@
 - HTML：HTML Validate `10.17.0`。
 - 页面预算：Lighthouse CI `0.15.1`。
 - 外链：Lychee GitHub Action。
-- 依赖安全：`npm audit --audit-level=high`。
+- 依赖安全：`npm audit --omit=dev --audit-level=high`。
 - mock 库：无；测试主要使用构建产物、本地 Hexo server 和受控 DOM。
 
 ```bash
@@ -72,7 +72,7 @@ npm run test:quality
   - HTML Validate 通过。
   - Playwright 快速矩阵发现 54 项：40 通过、14 按项目/视觉配置跳过。
   - 5 个 Lighthouse 页面全部满足预算；本次性能分约为首页 0.72、Work 0.91、About 0.93、Gallery 0.97、Archives 0.99，无障碍与 SEO 均为 1.00。
-- `npm audit --json` 同日为 0 漏洞。
+- 2026-09-04 本地 `npm audit --omit=dev --audit-level=high` 为 0 个已知生产依赖漏洞；全量审计仍会报告 Lighthouse 工具链中的 `extract-zip`（high）和 `qs`（moderate）等开发依赖问题，因此 CI 门禁按生产依赖执行。
 
 主要缺口：
 

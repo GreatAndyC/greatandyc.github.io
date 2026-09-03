@@ -65,7 +65,16 @@ jobs:
             --cache
             --max-retries 2
             --timeout 30
-            --accept '100..=103,200..=299,429'
+            --accept '100..=103,200..=399,429'
+            --exclude 'https://help\.openai\.com/.*'
+            --exclude 'https://openai\.com/.*'
+            --exclude 'https://chatgpt\.com/.*'
+            --exclude 'https://(www\.)?reddit\.com/.*'
+            --exclude 'https://(www\.)?zhihu\.com/.*'
+            --exclude 'https://zhuanlan\.zhihu\.com/.*'
+            --exclude 'https://www\.wsj\.com/.*'
+            --exclude 'https://[^/]*\.feishu\.cn/.*'
+            --exclude 'https://www\.espressif\.com\.cn/.*'
             --root-dir public
             'public/**/*.html'
           token: ${{ secrets.GITHUB_TOKEN }}

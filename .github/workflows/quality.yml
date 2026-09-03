@@ -33,7 +33,7 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Audit dependencies
+      - name: Audit production dependencies
         run: npm run test:security
 
       - name: Build and run generated-site tests

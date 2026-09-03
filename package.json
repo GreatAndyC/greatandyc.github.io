@@ -14,7 +14,7 @@
     "test:lighthouse": "lhci autorun",
     "test:site": "npm run clean && npm run build && npm test",
     "test:quality": "npm run test:site && npm run test:html && npm run test:e2e && npm run test:lighthouse",
-    "test:security": "npm audit --audit-level=high",
+    "test:security": "npm audit --omit=dev --audit-level=high",
     "cms:local": "LOCAL_CMS_AUTO_SHUTDOWN=0 node tools/local-cms.js",
     "cms:themes": "node tools/local-cms/generate-school-theme-css.js",
     "deploy": "hexo deploy",

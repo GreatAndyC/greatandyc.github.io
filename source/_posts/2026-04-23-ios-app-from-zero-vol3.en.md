@@ -224,7 +224,7 @@ I use Antigravity + Cline as an example here (same idea in VSCode).
 
 > I used a Minimax Token Plan for this run.
 >
-> Official guide: https://platform.minimaxi.com/docs/token-plan/cline#cline
+> Official guide: [MiniMax quick-start documentation](https://platform.minimaxi.com/docs/token-plan/quickstart)
 >
 > Invite link (10% off): https://platform.minimaxi.com/subscribe/token-plan?code=H5mFhfRxqH&source=link
 (Not an ad. I may switch providers later. This is only used as a practical example because I still had quota.)
