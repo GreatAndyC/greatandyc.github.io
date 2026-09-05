@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<meta name="generator" content="Hexo 7.3.0">
+
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=362a27fe07cc">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="/images/brand/favicon.svg?v=362a27fe07cc">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/brand/apple-touch-icon.png?v=362a27fe07cc">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png?v=362a27fe07cc">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png?v=362a27fe07cc">
+  <link rel="mask-icon" href="/images/brand/ac-mark-dark.svg?v=362a27fe07cc" color="#111111">
+  <link rel="manifest" href="/images/brand/site.webmanifest?v=362a27fe07cc">
+
+<link rel="stylesheet" href="/css/main.css?v=362a27fe07cc">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"caoyueyang.org","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  
+<meta name="description" content="AI products, software systems, and applied research">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AndyCao&#39;s Blog">
+<meta property="og:url" content="https://caoyueyang.org/en/gallery/index.html">
+<meta property="og:site_name" content="AndyCao&#39;s Blog">
+<meta property="og:description" content="AI products, software systems, and applied research">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://caoyueyang.org/images/brand/social-card-en.jpg">
+<meta property="article:published_time" content="2026-04-19T08:30:00.000Z">
+<meta property="article:modified_time" content="2026-09-05T13:39:16.723Z">
+<meta property="article:author" content="AndyCao">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://caoyueyang.org/images/brand/social-card-en.jpg">
+
+<link rel="canonical" href="https://caoyueyang.org/en/gallery/">
+
+
+  <link rel="alternate" hreflang="en" href="https://caoyueyang.org/en/gallery/">
+    <link rel="alternate" hreflang="x-default" href="https://caoyueyang.org/en/gallery/">
+  <link rel="alternate" hreflang="zh-CN" href="https://caoyueyang.org/gallery/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'en'
+  };
+</script>
+
+<style>
+  @font-face {
+    font-family: "Font Awesome 5 Brands";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-brands-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-regular-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-solid-900.woff2") format("woff2");
+  }
+</style>
+
+  <title>Gallery | AndyCao's Blog
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="曹越洋的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <div class="container">
+    <div class="headband"></div>
+
+    <div class="site-rail">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <button
+      class="toggle"
+      type="button"
+      aria-label="Toggle navigation bar"
+      aria-expanded="false"
+      aria-controls="site-navigation"
+    >
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </button>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <img
+        class="site-brand-mark"
+        src="/images/brand/ac-mark-light.svg"
+        alt=""
+        aria-hidden="true"
+        width="30"
+        height="30"
+        decoding="async"
+      >
+      <h1 class="site-title">AndyCao's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav id="site-navigation" class="site-nav" aria-label="Primary navigation">
+  <div class="mobile-rail-profile" aria-label="AndyCao">
+    <img
+      class="mobile-rail-profile-image"
+      src="/images/avatar.jpg"
+      alt="AndyCao"
+      width="56"
+      height="56"
+      decoding="async"
+    >
+  <span class="mobile-rail-profile-copy">
+    <strong class="mobile-rail-profile-name">AndyCao</strong>
+    <span class="mobile-rail-profile-description">AI products, software systems, and applied research</span>
+  </span>
+</div>
+
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/en/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-work">
+
+    <a href="/en/work/" rel="section"><i class="fa fa-briefcase fa-fw"></i>Work</a>
+
+  </li>
+        <li class="menu-item menu-item-gallery">
+
+    <a href="/en/gallery/" rel="section"><i class="fa fa-camera-retro fa-fw"></i>Gallery</a>
+
+  </li>
+        <li class="menu-section-label" aria-hidden="true">Explore</li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/en/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/en/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/en/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+    <li class="menu-item menu-item-language">
+      
+  <div class="languages language-switcher">
+    <span class="language-switcher-label" aria-hidden="true">LANGUAGE</span>
+    <span class="language-switcher-options" role="group" aria-label="Switch language">
+      
+        
+        
+          
+        
+        
+          <span class="language-switcher-option is-current" data-language="en" data-href="/en/gallery/index.html" aria-current="page">EN</span>
+        
+        
+          <span class="language-switcher-divider" aria-hidden="true">/</span>
+        
+      
+        
+        
+          
+        
+        
+          <a class="language-switcher-option" href="/gallery/index.html" data-language="zh-CN" data-href="/gallery/index.html" hreflang="zh-CN" lang="zh-CN">中</a>
+        
+        
+      
+    </span>
+  </div>
+
+    </li>
+
+  </ul>
+  
+  <div class="mobile-rail-links" aria-label="External links">
+    <div class="mobile-rail-links-heading"><i class="fa fa-link fa-fw" aria-hidden="true"></i>
+      <span>Links</span>
+    </div>
+    <div class="mobile-rail-links-list">
+          <a href="https://github.com/GreatAndyC" class="mobile-rail-link" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw" aria-hidden="true"></i><span>GitHub</span></a>
+          <a href="/atom.xml" class="mobile-rail-link" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw" aria-hidden="true"></i><span>RSS</span></a>
+          <a href="http://www.google.com/" class="mobile-rail-link" title="Explore the World → http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank"><i class="fa fa-link fa-fw" aria-hidden="true"></i><span>Explore the World</span></a>
+    </div>
+  </div>
+
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+      </header>
+        <div class="site-rail-sidebar">
+          
+    
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="AndyCao"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">AndyCao</p>
+  <div class="site-description" itemprop="description">AI products, software systems, and applied research</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state" aria-label="Site statistics">
+      <div class="site-state-item site-state-posts">
+          <a href="/en/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/en/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/en/tags/">
+          
+        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/GreatAndyC" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.google.com/" title="http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank">Explore the World</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        </div>
+    </div>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <aside aria-label="Follow me on GitHub">
+    <a href="https://github.com/GreatAndyC" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+  </aside>
+
+
+    <main id="main-content" class="main" tabindex="-1">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block page-type-gallery" lang="en">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">Gallery
+</h1>
+
+<div class="post-meta">
+  
+  <ul class="breadcrumb">
+          
+            <li><a href="/en/">EN</a></li>
+          <li>GALLERY</li>
+        
+  </ul>
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <div class="gallery-content">
+            <p>This page collects part of my photography work. It is meant to be maintained as a long-term archive rather than a one-off image dump, with projects grouped by theme, time, and context.</p>
+<p>The first version starts with the event photography already available in this repository. More work will be added later, including portraits, street photography, travel, and study projects.</p>
+<p>For project context or collaboration, please use the public links on this site. Original files are not distributed.</p>
+
+            
+    <div class="gallery-page">
+      
+        <div class="gallery-filter-bar" data-gallery-filters>
+          
+            <button
+              class="gallery-filter-chip is-active"
+              type="button"
+              data-gallery-filter=""
+              aria-pressed="true"
+            >
+              <span>All</span>
+              <span class="gallery-filter-chip-count">28</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="portrait"
+              aria-pressed="false"
+            >
+              <span>Portrait</span>
+              <span class="gallery-filter-chip-count">6</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="street"
+              aria-pressed="false"
+            >
+              <span>Street</span>
+              <span class="gallery-filter-chip-count">2</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="architecture"
+              aria-pressed="false"
+            >
+              <span>Architecture</span>
+              <span class="gallery-filter-chip-count">5</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="cityscape"
+              aria-pressed="false"
+            >
+              <span>Cityscape</span>
+              <span class="gallery-filter-chip-count">3</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="landscape"
+              aria-pressed="false"
+            >
+              <span>Landscape</span>
+              <span class="gallery-filter-chip-count">3</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="event"
+              aria-pressed="false"
+            >
+              <span>Event</span>
+              <span class="gallery-filter-chip-count">3</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="documentary"
+              aria-pressed="false"
+            >
+              <span>Documentary</span>
+              <span class="gallery-filter-chip-count">4</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="aigc"
+              aria-pressed="false"
+            >
+              <span>AIGC</span>
+              <span class="gallery-filter-chip-count">1</span>
+            </button>
+          
+        </div>
+      
+      <div class="gallery-card-deck">
+        
+      <article class="gallery-album-card" id="gallery-aigc-university-cn">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="aigc-university-cn"
+          data-gallery-title="Chinese Universities in Snow"
+          data-gallery-period="2026-04-26"
+          data-gallery-location="My Computer"
+          data-gallery-camera=""
+          data-gallery-categories="aigc"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;aigc-university-cn.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/aigc-university-cn/aigc-university-cn-04.png" alt="Chinese Universities in Snow" width="1280" height="720" loading="eager" decoding="async" fetchpriority="high">
+            <span class="gallery-album-count">12 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2026-04-26</span>
+            <span class="gallery-album-card-title">Chinese Universities in Snow</span>
+            <span class="gallery-album-card-description">Scenes of major Chinese universities in snowy landscapes</span>
+            <span class="gallery-album-card-meta">
+              <span>My Computer</span>
+              
+            </span>
+            <span class="gallery-album-card-tags"><span>Snowy Scenery</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-heartbeat-pi-2026">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="heartbeat-pi-2026"
+          data-gallery-title="3.14 Heartbeat Pi Night"
+          data-gallery-period="2026 · Stage and Event Photography"
+          data-gallery-location="Chong Yuet Ming Cultural Centre, HKU"
+          data-gallery-camera="Nikon D5600 · AF-S DX NIKKOR 18-140mm"
+          data-gallery-categories="event"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;heartbeat-pi-2026.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-03-2.jpg" alt="3.14 Heartbeat Pi Night" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">5 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2026 · Stage and Event Photography</span>
+            <span class="gallery-album-card-title">3.14 Heartbeat Pi Night</span>
+            <span class="gallery-album-card-description">Young and beautiful</span>
+            <span class="gallery-album-card-meta">
+              <span>Chong Yuet Ming Cultural Centre, HKU</span>
+              <span>Nikon D5600 · AF-S DX NIKKOR 18-140mm</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Stage</span><span>Performance</span><span>Event Photography</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-hku-main-building">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="hku-main-building"
+          data-gallery-title="HKU Main Building"
+          data-gallery-period="2024-12-03"
+          data-gallery-location="Hong Kong University"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="architecture"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;hku-main-building.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/hku-main-building/hku-main-building-01-2.jpg" alt="HKU Main Building" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">1 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-12-03</span>
+            <span class="gallery-album-card-title">HKU Main Building</span>
+            <span class="gallery-album-card-description">HKU&#39;s iconic main building</span>
+            <span class="gallery-album-card-meta">
+              <span>Hong Kong University</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>architecture</span><span>landscape</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-victoria-harbour-panorama-peak-view">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="victoria-harbour-panorama-peak-view"
+          data-gallery-title="Victoria Harbour Panorama from the Peak"
+          data-gallery-period="2024-05-29"
+          data-gallery-location="Victoria Peak, Hong Kong"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="cityscape"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;victoria-harbour-panorama-peak-view.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Victoria_Harbour_Panorama_Peak_View/victoria-harbour-panorama-peak-view-01-2.jpg" alt="Victoria Harbour Panorama from the Peak" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">1 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-05-29</span>
+            <span class="gallery-album-card-title">Victoria Harbour Panorama from the Peak</span>
+            <span class="gallery-album-card-description">City of Stars, are you shining just for me?</span>
+            <span class="gallery-album-card-meta">
+              <span>Victoria Peak, Hong Kong</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Panorama</span><span>Victoria Harbour</span><span>Night View</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-disneyland-fireworks">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="disneyland-fireworks"
+          data-gallery-title="Disneyland Fireworks"
+          data-gallery-period="2024-05-17"
+          data-gallery-location="Hong Kong Disneyland"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="event"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;disneyland-fireworks.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/DisneyLand_Fireworks/disneyland-fireworks-01-2.jpg" alt="Disneyland Fireworks" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">9 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-05-17</span>
+            <span class="gallery-album-card-title">Disneyland Fireworks</span>
+            <span class="gallery-album-card-description">Bright for a Moment</span>
+            <span class="gallery-album-card-meta">
+              <span>Hong Kong Disneyland</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Fireworks</span><span>Night</span><span>Theme Park</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-monster-building-victoria-peak-in-fog">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="monster-building-victoria-peak-in-fog"
+          data-gallery-title="Monster Building and Victoria Peak in Fog"
+          data-gallery-period="2024-03-31"
+          data-gallery-location="Monster Building and Victoria Peak, Hong Kong"
+          data-gallery-camera="NIKON D5600 &#x2F; X-T30 II"
+          data-gallery-categories="cityscape"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;monster-building-victoria-peak-in-fog.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Monster_Building&Victoria_Peak_in_Fog/monster-building-victoria-peak-in-fog-01-2.jpg" alt="Monster Building and Victoria Peak in Fog" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">4 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-03-31</span>
+            <span class="gallery-album-card-title">Monster Building and Victoria Peak in Fog</span>
+            <span class="gallery-album-card-description">Misty Afternoon, Quiet Night</span>
+            <span class="gallery-album-card-meta">
+              <span>Monster Building and Victoria Peak, Hong Kong</span>
+              <span>NIKON D5600 &#x2F; X-T30 II</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>City</span><span>Fog</span><span>Architecture</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-sun-set-kennedy-town-waterfront">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="sun-set-kennedy-town-waterfront"
+          data-gallery-title="Kennedy Town waterfront sunset"
+          data-gallery-period="2024-03-12"
+          data-gallery-location="Kennedy Town Waterfront"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="landscape"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;sun-set-kennedy-town-waterfront.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/kennedy-town-waterfront-sunset/kennedy-town-waterfront-sunset-01-2.jpg" alt="Kennedy Town waterfront sunset" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">4 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-03-12</span>
+            <span class="gallery-album-card-title">Kennedy Town waterfront sunset</span>
+            <span class="gallery-album-card-description">Kennedy Town Afternoon sunset, cozy and sunny</span>
+            <span class="gallery-album-card-meta">
+              <span>Kennedy Town Waterfront</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Sunset</span><span>Landscape</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-blue-hour-sysu">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="blue-hour-sysu"
+          data-gallery-title="Blue Hour at SYSU"
+          data-gallery-period="2024-02-12"
+          data-gallery-location="SYSU"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="architecture"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;blue-hour-sysu.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Blue_Hour_SYSU/blue-hour-sysu-01-2.jpg" alt="Blue Hour at SYSU" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">8 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-02-12</span>
+            <span class="gallery-album-card-title">Blue Hour at SYSU</span>
+            <span class="gallery-album-card-description">Strangely Familiar Campus</span>
+            <span class="gallery-album-card-meta">
+              <span>SYSU</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Blue Hour</span><span>Campus</span><span>City</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-midnight-hku">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="midnight-hku"
+          data-gallery-title="Mid-Night HKU"
+          data-gallery-period="2024-01-28"
+          data-gallery-location="HKU Red Wall"
+          data-gallery-camera="Nikon D5600 · AF-S DX NIKKOR 18-140mm"
+          data-gallery-categories="architecture"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;midnight-hku.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/midnight-hku/midnight-hku-01-2.jpg" alt="Mid-Night HKU" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">8 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-01-28</span>
+            <span class="gallery-album-card-title">Mid-Night HKU</span>
+            <span class="gallery-album-card-description">Night View of HKU Building</span>
+            <span class="gallery-album-card-meta">
+              <span>HKU Red Wall</span>
+              <span>Nikon D5600 · AF-S DX NIKKOR 18-140mm</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Landscape</span><span>Architecture</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-kennedy-town-night">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="kennedy-town-night"
+          data-gallery-title="Kennedy Town Night"
+          data-gallery-period="2024-01-14"
+          data-gallery-location="Kennedy Town Basketball court"
+          data-gallery-camera="Nikon D5600 · AF-S DX NIKKOR 18-140mm"
+          data-gallery-categories="cityscape"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;kennedy-town-night.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Kennedy_Town_Night/kennedy-town-night-01-2.jpg" alt="Kennedy Town Night" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">3 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-01-14</span>
+            <span class="gallery-album-card-title">Kennedy Town Night</span>
+            <span class="gallery-album-card-description">A classic photo spot in Kennedy Town — the most Hong Kong Island vibe on Hong Kong Island</span>
+            <span class="gallery-album-card-meta">
+              <span>Kennedy Town Basketball court</span>
+              <span>Nikon D5600 · AF-S DX NIKKOR 18-140mm</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Night view</span><span>Photo spot</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-main-campus-photo-walk">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="main-campus-photo-walk"
+          data-gallery-title="Main Campus Photo Walk"
+          data-gallery-period="2023-12-22"
+          data-gallery-location="Main Campus"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="documentary"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;main-campus-photo-walk.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-01-2.jpg" alt="Main Campus Photo Walk" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">9 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2023-12-22</span>
+            <span class="gallery-album-card-title">Main Campus Photo Walk</span>
+            <span class="gallery-album-card-description">Main Hall and Cafeteria at Night</span>
+            <span class="gallery-album-card-meta">
+              <span>Main Campus</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Campus</span><span>Photo Walk</span><span>Architecture</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-sjc-high-table">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="sjc-high-table"
+          data-gallery-title="SJC High Table"
+          data-gallery-period="2023-10-13"
+          data-gallery-location="SJC"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="event"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;sjc-high-table.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/SJC_High_Table/sjc-high-table-01-2.jpg" alt="SJC High Table" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">10 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2023-10-13</span>
+            <span class="gallery-album-card-title">SJC High Table</span>
+            <span class="gallery-album-card-description">A Casual Entry into Luxury</span>
+            <span class="gallery-album-card-meta">
+              <span>SJC</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Dinner</span><span>Indoor</span><span>Event</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-tang-zi-han">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="tang-zi-han"
+          data-gallery-title="Tang Hum Hum"
+          data-gallery-period="2023-09-30"
+          data-gallery-location="The University of Hong Kong, Chong Yuet Ming Building"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="portrait"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;tang-zi-han.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/tang-zi-han/tang-zi-han-01-2.jpg" alt="Tang Hum Hum" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">1 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2023-09-30</span>
+            <span class="gallery-album-card-title">Tang Hum Hum</span>
+            <span class="gallery-album-card-description">Original singer Tang Hum Hum</span>
+            <span class="gallery-album-card-meta">
+              <span>The University of Hong Kong, Chong Yuet Ming Building</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>portrait</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-night-bus-ride-in-hong-kong">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="night-bus-ride-in-hong-kong"
+          data-gallery-title="Night Bus Ride in Hong Kong"
+          data-gallery-period="2023-09-17"
+          data-gallery-location="Hong Kong"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories=""
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;night-bus-ride-in-hong-kong.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Night-Bus-Ride-in-Hong-Kong/night-bus-ride-in-hong-kong-01.jpg" alt="Night Bus Ride in Hong Kong" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">13 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2023-09-17</span>
+            <span class="gallery-album-card-title">Night Bus Ride in Hong Kong</span>
+            <span class="gallery-album-card-description">Bus Ride Activity Hold By HKU PGSA</span>
+            <span class="gallery-album-card-meta">
+              <span>Hong Kong</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Night View</span><span>City Stroll</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-kennedy-town-photo-walk">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="kennedy-town-photo-walk"
+          data-gallery-title="Kennedy Town Photo Walk"
+          data-gallery-period="2023-09-14"
+          data-gallery-location="Kennedy Town, Hong Kong"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="street"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;kennedy-town-photo-walk.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-01-2.jpg" alt="Kennedy Town Photo Walk" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">20 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2023-09-14</span>
+            <span class="gallery-album-card-title">Kennedy Town Photo Walk</span>
+            <span class="gallery-album-card-description">Blurred Feelings at Night</span>
+            <span class="gallery-album-card-meta">
+              <span>Kennedy Town, Hong Kong</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Photo Walk</span><span>Street</span><span>Kennedy Town</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-hku-campus-hangaround">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="hku-campus-hangaround"
+          data-gallery-title="HKU Campus Hangaround"
+          data-gallery-period="2023-08-30"
+          data-gallery-location="The University of Hong Kong"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="documentary"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;hku-campus-hangaround.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-01-2.jpg" alt="HKU Campus Hangaround" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">10 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2023-08-30</span>
+            <span class="gallery-album-card-title">HKU Campus Hangaround</span>
+            <span class="gallery-album-card-description">Campus Before Classes</span>
+            <span class="gallery-album-card-meta">
+              <span>The University of Hong Kong</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Campus</span><span>Everyday</span><span>HKU</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-sysu-long-exposure-study">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="sysu-long-exposure-study"
+          data-gallery-title="Sysu Long Exposure Study"
+          data-gallery-period="2017-12-09"
+          data-gallery-location="SYSU South Campus"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="documentary"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;sysu-long-exposure-study.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/sysu-long-exposure-study/sysu-long-exposure-study-01-2.jpg" alt="Sysu Long Exposure Study" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">4 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2017-12-09</span>
+            <span class="gallery-album-card-title">Sysu Long Exposure Study</span>
+            <span class="gallery-album-card-description">For Hope Studio&#39;s assessment task, I chose long exposure photography as my focus.</span>
+            <span class="gallery-album-card-meta">
+              <span>SYSU South Campus</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Long Exposure</span><span>Night View</span><span>Practice</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-canton-tower">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="canton-tower"
+          data-gallery-title="Canton Tower"
+          data-gallery-period=""
+          data-gallery-location="Sun Yat-sen University South Campus"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="architecture"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;canton-tower.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/canton-tower/canton-tower-01-2.jpg" alt="Canton Tower" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">4 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">Canton Tower</span>
+            <span class="gallery-album-card-description">Photograph of Canton Tower</span>
+            <span class="gallery-album-card-meta">
+              <span>Sun Yat-sen University South Campus</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Architecture</span><span>Landscape</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-cat">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="cat"
+          data-gallery-title="Cat"
+          data-gallery-period=""
+          data-gallery-location="Sun Yat-sen University, etc."
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="street"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;cat.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/cat/cat-01-2.jpg" alt="Cat" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">20 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">Cat</span>
+            <span class="gallery-album-card-description">Cute yet fierce predator</span>
+            <span class="gallery-album-card-meta">
+              <span>Sun Yat-sen University, etc.</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Cat</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-clara-zhang">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="clara-zhang"
+          data-gallery-title="Clara-Zhang"
+          data-gallery-period=""
+          data-gallery-location="The University of Hong Kong, Ocean Park"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="portrait"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;clara-zhang.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/clara-zhang/clara-zhang-01-2.jpg" alt="Clara-Zhang" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">9 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">Clara-Zhang</span>
+            <span class="gallery-album-card-description">Host&#x2F;Reporter&#x2F;Dancer&#x2F;Young Entrepreneur Clara</span>
+            <span class="gallery-album-card-meta">
+              <span>The University of Hong Kong, Ocean Park</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>portrait</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-draxler">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="draxler"
+          data-gallery-title="Draxler"
+          data-gallery-period=""
+          data-gallery-location="The University of Hong Kong, Disney, Victoria Peak, etc."
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="portrait"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;draxler.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Draxler/draxler-01.jpg" alt="Draxler" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">6 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">Draxler</span>
+            <span class="gallery-album-card-description">handsome young man</span>
+            <span class="gallery-album-card-meta">
+              <span>The University of Hong Kong, Disney, Victoria Peak, etc.</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>portrait</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-jarvis">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="jarvis"
+          data-gallery-title="Jarvis"
+          data-gallery-period=""
+          data-gallery-location="The University of Hong Kong, Hok Tsui, etc."
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="portrait"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;jarvis.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Jarvis/jarvis-01.jpg" alt="Jarvis" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">7 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">Jarvis</span>
+            <span class="gallery-album-card-description">Educator, Magician Jarvis</span>
+            <span class="gallery-album-card-meta">
+              <span>The University of Hong Kong, Hok Tsui, etc.</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>portrait</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-mouse">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="mouse"
+          data-gallery-title="The Mouse from the Next Dorm"
+          data-gallery-period=""
+          data-gallery-location="Sun Yat-sen University, South Campus"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="documentary"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;mouse.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/mouse/mouse-01-2.jpg" alt="The Mouse from the Next Dorm" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">3 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">The Mouse from the Next Dorm</span>
+            <span class="gallery-album-card-description">The mouse raised in the next dorm escaped one day.</span>
+            <span class="gallery-album-card-meta">
+              <span>Sun Yat-sen University, South Campus</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>mouse</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-selfie">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="selfie"
+          data-gallery-title="Self-Portrait"
+          data-gallery-period=""
+          data-gallery-location="Sun Yat-sen University, The University of Hong Kong, etc."
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="portrait"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;selfie.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/selfie/selfie-01-2.jpg" alt="Self-Portrait" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">7 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">Self-Portrait</span>
+            <span class="gallery-album-card-description">Some self-portraits</span>
+            <span class="gallery-album-card-meta">
+              <span>Sun Yat-sen University, The University of Hong Kong, etc.</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Portrait</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-sun-rise">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="sun-rise"
+          data-gallery-title="Sunrise at Sun Yat-sen University"
+          data-gallery-period=""
+          data-gallery-location="South Campus of Sun Yat-sen University"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="landscape"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;sun-rise.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/sunrise-sysu/sunrise-sysu-01-2.jpg" alt="Sunrise at Sun Yat-sen University" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">2 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">Sunrise at Sun Yat-sen University</span>
+            <span class="gallery-album-card-description">Some sunrise moments at Sun Yat-sen University, was it an all-nighter or early morning? Forgot.</span>
+            <span class="gallery-album-card-meta">
+              <span>South Campus of Sun Yat-sen University</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>sunrise</span><span>landscape</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-sunset-sysu">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="sunset-sysu"
+          data-gallery-title="Sunset at Sun Yat-sen University"
+          data-gallery-period=""
+          data-gallery-location="Sun Yat-sen University South Campus"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="landscape"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;sunset-sysu.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/sunset-sysu/sunset-sysu-01-2.jpg" alt="Sunset at Sun Yat-sen University" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">2 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">Sunset at Sun Yat-sen University</span>
+            <span class="gallery-album-card-description">Some sunset moments at Sun Yat-sen University</span>
+            <span class="gallery-album-card-meta">
+              <span>Sun Yat-sen University South Campus</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>landscape</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-sysu-campus">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="sysu-campus"
+          data-gallery-title="Sun Yat-sen University South Campus"
+          data-gallery-period=""
+          data-gallery-location="Sun Yat-sen University"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="architecture"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;sysu-campus.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/sysu-south-campus/sysu-south-campus-01-2.jpg" alt="Sun Yat-sen University South Campus" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">24 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">Sun Yat-sen University South Campus</span>
+            <span class="gallery-album-card-description">Some buildings at Sun Yat-sen University South Campus</span>
+            <span class="gallery-album-card-meta">
+              <span>Sun Yat-sen University</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>Architecture</span><span>Landscape</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-yu-hao-xuan">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="yu-hao-xuan"
+          data-gallery-title="Xuan"
+          data-gallery-period=""
+          data-gallery-location="Sun Yat-sen University South Campus"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="portrait"
+          data-gallery-url="&#x2F;gallery-data&#x2F;en&#x2F;yu-hao-xuan.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/yu-hao-xuan/yu-hao-xuan-01-2.jpg" alt="Xuan" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">7 photos</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">Xuan</span>
+            <span class="gallery-album-card-description">Senior schoolmate Xuan</span>
+            <span class="gallery-album-card-meta">
+              <span>Sun Yat-sen University South Campus</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>portrait</span></span>
+            <span class="gallery-album-card-action">Open album</span>
+          </span>
+        </button>
+      </article>
+      </div>
+      <div
+        class="gallery-pagination"
+        data-gallery-pagination
+        data-prev-text="Previous"
+        data-next-text="Next"
+        
+      >
+        <button class="gallery-page-button" type="button" data-gallery-page="0" disabled>Previous</button>
+        <button class="gallery-page-button is-active" type="button" data-gallery-page="1" aria-current="page">1</button>
+        <button class="gallery-page-button" type="button" data-gallery-page="2" aria-current="false">2</button><button class="gallery-page-button" type="button" data-gallery-page="3" aria-current="false">3</button>
+        <button class="gallery-page-button" type="button" data-gallery-page="2">Next</button>
+      </div>
+      <div class="gallery-filter-empty" data-gallery-filter-empty-state hidden>No albums in this category yet.</div>
+    </div>
+    <div class="gallery-viewer" data-gallery-viewer hidden aria-hidden="true">
+      <div class="gallery-viewer-backdrop" data-gallery-close></div>
+      <section class="gallery-viewer-panel" role="dialog" aria-modal="true" aria-label="Gallery viewer">
+        <header class="gallery-viewer-header">
+          <div>
+            <p class="gallery-viewer-kicker" data-gallery-viewer-period></p>
+            <h2 class="gallery-viewer-title" data-gallery-viewer-title></h2>
+            <p class="gallery-viewer-meta" data-gallery-viewer-meta></p>
+          </div>
+          <button class="gallery-viewer-close" type="button" data-gallery-close aria-label="Close">Close</button>
+        </header>
+        <div class="gallery-viewer-stage">
+          <button class="gallery-viewer-nav gallery-viewer-prev" type="button" data-gallery-prev aria-label="Previous">‹</button>
+          <figure class="gallery-viewer-figure">
+            <a class="gallery-viewer-image-link" data-gallery-viewer-image-link href="#">
+              <img
+                data-gallery-viewer-image
+                src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+                alt=""
+              >
+            </a>
+            <figcaption class="gallery-viewer-caption">
+              <span class="gallery-viewer-photo-title" data-gallery-viewer-photo-title></span>
+              <span class="gallery-viewer-photo-caption" data-gallery-viewer-photo-caption></span>
+              <span class="gallery-viewer-photo-meta" data-gallery-viewer-photo-meta></span>
+            </figcaption>
+          </figure>
+          <button class="gallery-viewer-nav gallery-viewer-next" type="button" data-gallery-next aria-label="Next">›</button>
+        </div>
+        <div class="gallery-viewer-footer">
+          <div class="gallery-viewer-status" data-gallery-viewer-status data-loading-text="Loading album..." data-error-text="Could not load this album. Please try again later."></div>
+          <div class="gallery-viewer-thumbs" data-gallery-viewer-thumbs></div>
+        </div>
+      </section>
+    </div>
+    <script src="/js/gallery-loader.js" defer></script>
+          </div>
+        
+      </div>
+      
+      
+      
+    </div>
+    
+  <ul class="breadcrumb">
+          
+            <li><a href="/en/">EN</a></li>
+          <li>GALLERY</li>
+        
+  </ul>
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          <div class="sidebar-layout-spacer" aria-hidden="true"></div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2025 – 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">AndyCao</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">234k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">3:33</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/home-category-filter.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

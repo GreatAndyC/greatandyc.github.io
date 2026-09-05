@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<meta name="generator" content="Hexo 7.3.0">
+
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=362a27fe07cc">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="/images/brand/favicon.svg?v=362a27fe07cc">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/brand/apple-touch-icon.png?v=362a27fe07cc">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png?v=362a27fe07cc">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png?v=362a27fe07cc">
+  <link rel="mask-icon" href="/images/brand/ac-mark-dark.svg?v=362a27fe07cc" color="#111111">
+  <link rel="manifest" href="/images/brand/site.webmanifest?v=362a27fe07cc">
+
+<link rel="stylesheet" href="/css/main.css?v=362a27fe07cc">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"caoyueyang.org","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  
+<meta name="description" content="AI 产品、软件系统与应用研究">
+<meta property="og:type" content="website">
+<meta property="og:title" content="曹越洋的博客">
+<meta property="og:url" content="https://caoyueyang.org/gallery/index.html">
+<meta property="og:site_name" content="曹越洋的博客">
+<meta property="og:description" content="AI 产品、软件系统与应用研究">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://caoyueyang.org/images/brand/social-card-zh.jpg">
+<meta property="article:published_time" content="2026-04-19T08:30:00.000Z">
+<meta property="article:modified_time" content="2026-09-05T13:39:16.723Z">
+<meta property="article:author" content="曹越洋">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://caoyueyang.org/images/brand/social-card-zh.jpg">
+
+<link rel="canonical" href="https://caoyueyang.org/gallery/">
+
+
+  <link rel="alternate" hreflang="en" href="https://caoyueyang.org/en/gallery/">
+    <link rel="alternate" hreflang="x-default" href="https://caoyueyang.org/en/gallery/">
+  <link rel="alternate" hreflang="zh-CN" href="https://caoyueyang.org/gallery/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+<style>
+  @font-face {
+    font-family: "Font Awesome 5 Brands";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-brands-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-regular-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-solid-900.woff2") format("woff2");
+  }
+</style>
+
+  <title>画廊 | 曹越洋的博客
+</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="曹越洋的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="container">
+    <div class="headband"></div>
+
+    <div class="site-rail">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <button
+      class="toggle"
+      type="button"
+      aria-label="切换导航栏"
+      aria-expanded="false"
+      aria-controls="site-navigation"
+    >
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </button>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/zh-CN/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <img
+        class="site-brand-mark"
+        src="/images/brand/ac-mark-light.svg"
+        alt=""
+        aria-hidden="true"
+        width="30"
+        height="30"
+        decoding="async"
+      >
+      <h1 class="site-title">曹越洋的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav id="site-navigation" class="site-nav" aria-label="主导航">
+  <div class="mobile-rail-profile" aria-label="曹越洋">
+    <img
+      class="mobile-rail-profile-image"
+      src="/images/avatar.jpg"
+      alt="曹越洋"
+      width="56"
+      height="56"
+      decoding="async"
+    >
+  <span class="mobile-rail-profile-copy">
+    <strong class="mobile-rail-profile-name">曹越洋</strong>
+    <span class="mobile-rail-profile-description">AI 产品、软件系统与应用研究</span>
+  </span>
+</div>
+
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/zh-CN/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-work">
+
+    <a href="/work/" rel="section"><i class="fa fa-briefcase fa-fw"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-gallery">
+
+    <a href="/gallery/" rel="section"><i class="fa fa-camera-retro fa-fw"></i>画廊</a>
+
+  </li>
+        <li class="menu-section-label" aria-hidden="true">浏览</li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/zh-CN/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/zh-CN/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/zh-CN/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+    <li class="menu-item menu-item-language">
+      
+  <div class="languages language-switcher">
+    <span class="language-switcher-label" aria-hidden="true">语言</span>
+    <span class="language-switcher-options" role="group" aria-label="切换语言">
+      
+        
+        
+          
+        
+        
+          <a class="language-switcher-option" href="/en/gallery/index.html" data-language="en" data-href="/en/gallery/index.html" hreflang="en" lang="en">EN</a>
+        
+        
+          <span class="language-switcher-divider" aria-hidden="true">/</span>
+        
+      
+        
+        
+          
+        
+        
+          <span class="language-switcher-option is-current" data-language="zh-CN" data-href="/gallery/index.html" aria-current="page">中</span>
+        
+        
+      
+    </span>
+  </div>
+
+    </li>
+
+  </ul>
+  
+  <div class="mobile-rail-links" aria-label="外部链接">
+    <div class="mobile-rail-links-heading"><i class="fa fa-link fa-fw" aria-hidden="true"></i>
+      <span>友情链接</span>
+    </div>
+    <div class="mobile-rail-links-list">
+          <a href="https://github.com/GreatAndyC" class="mobile-rail-link" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw" aria-hidden="true"></i><span>GitHub</span></a>
+          <a href="/atom.xml" class="mobile-rail-link" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw" aria-hidden="true"></i><span>RSS</span></a>
+          <a href="http://www.google.com/" class="mobile-rail-link" title="走向世界 → http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank"><i class="fa fa-link fa-fw" aria-hidden="true"></i><span>走向世界</span></a>
+    </div>
+  </div>
+
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+      </header>
+        <div class="site-rail-sidebar">
+          
+    
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="曹越洋"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">曹越洋</p>
+  <div class="site-description" itemprop="description">AI 产品、软件系统与应用研究</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state" aria-label="站点统计">
+      <div class="site-state-item site-state-posts">
+          <a href="/zh-CN/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/zh-CN/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/zh-CN/tags/">
+          
+        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/GreatAndyC" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.google.com/" title="http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank">走向世界</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        </div>
+    </div>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <aside aria-label="Follow me on GitHub">
+    <a href="https://github.com/GreatAndyC" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+  </aside>
+
+
+    <main id="main-content" class="main" tabindex="-1">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+  
+  
+
+          <div class="content page posts-expand">
+            
+
+    
+    
+    
+    <div class="post-block page-type-gallery" lang="zh-CN">
+      <header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">画廊
+</h1>
+
+<div class="post-meta">
+  
+
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          <div class="gallery-content">
+            <p>这里收录我过去拍过的一部分照片。这个页面会长期维护，不只是简单堆图，而是逐步整理成按主题、项目和时间分组的摄影档案。</p>
+<p>第一版先从现有仓库里的活动摄影作品开始，后续会继续补充更多题材，例如人像、街头、旅行和练习作品。</p>
+<p>如需了解作品背景或项目详情，请通过 GitHub 或公开入口联系；原始素材不公开提供。</p>
+
+            
+    <div class="gallery-page">
+      
+        <div class="gallery-filter-bar" data-gallery-filters>
+          
+            <button
+              class="gallery-filter-chip is-active"
+              type="button"
+              data-gallery-filter=""
+              aria-pressed="true"
+            >
+              <span>全部</span>
+              <span class="gallery-filter-chip-count">28</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="portrait"
+              aria-pressed="false"
+            >
+              <span>人像</span>
+              <span class="gallery-filter-chip-count">6</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="street"
+              aria-pressed="false"
+            >
+              <span>街头</span>
+              <span class="gallery-filter-chip-count">2</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="architecture"
+              aria-pressed="false"
+            >
+              <span>建筑</span>
+              <span class="gallery-filter-chip-count">5</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="cityscape"
+              aria-pressed="false"
+            >
+              <span>城市风光</span>
+              <span class="gallery-filter-chip-count">3</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="landscape"
+              aria-pressed="false"
+            >
+              <span>自然风光</span>
+              <span class="gallery-filter-chip-count">3</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="event"
+              aria-pressed="false"
+            >
+              <span>活动摄影</span>
+              <span class="gallery-filter-chip-count">3</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="documentary"
+              aria-pressed="false"
+            >
+              <span>纪实</span>
+              <span class="gallery-filter-chip-count">4</span>
+            </button>
+          
+            <button
+              class="gallery-filter-chip"
+              type="button"
+              data-gallery-filter="aigc"
+              aria-pressed="false"
+            >
+              <span>AI绘图</span>
+              <span class="gallery-filter-chip-count">1</span>
+            </button>
+          
+        </div>
+      
+      <div class="gallery-card-deck">
+        
+      <article class="gallery-album-card" id="gallery-aigc-university-cn">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="aigc-university-cn"
+          data-gallery-title="雪中中国高校"
+          data-gallery-period="2026-04-26"
+          data-gallery-location="我的电脑"
+          data-gallery-camera=""
+          data-gallery-categories="aigc"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;aigc-university-cn.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/aigc-university-cn/aigc-university-cn-04.png" alt="雪中中国高校" width="1280" height="720" loading="eager" decoding="async" fetchpriority="high">
+            <span class="gallery-album-count">12 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2026-04-26</span>
+            <span class="gallery-album-card-title">雪中中国高校</span>
+            <span class="gallery-album-card-description">雪景里的各大高校场景</span>
+            <span class="gallery-album-card-meta">
+              <span>我的电脑</span>
+              
+            </span>
+            <span class="gallery-album-card-tags"><span>雪景</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-heartbeat-pi-2026">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="heartbeat-pi-2026"
+          data-gallery-title="3.14 心跳Π对"
+          data-gallery-period="2026 · 舞台与活动摄影"
+          data-gallery-location="香港大学庄月明文化中心"
+          data-gallery-camera="Nikon D5600 · AF-S DX NIKKOR 18-140mm"
+          data-gallery-categories="event"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;heartbeat-pi-2026.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/heartbeat-pi-2026/heartbeat-pi-2026-03-2.jpg" alt="3.14 心跳Π对" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">5 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2026 · 舞台与活动摄影</span>
+            <span class="gallery-album-card-title">3.14 心跳Π对</span>
+            <span class="gallery-album-card-description">青春与活力</span>
+            <span class="gallery-album-card-meta">
+              <span>香港大学庄月明文化中心</span>
+              <span>Nikon D5600 · AF-S DX NIKKOR 18-140mm</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>舞台</span><span>演出</span><span>活动摄影</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-hku-main-building">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="hku-main-building"
+          data-gallery-title="港大主楼"
+          data-gallery-period="2024-12-03"
+          data-gallery-location="香港大学"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="architecture"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;hku-main-building.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/hku-main-building/hku-main-building-01-2.jpg" alt="港大主楼" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">1 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-12-03</span>
+            <span class="gallery-album-card-title">港大主楼</span>
+            <span class="gallery-album-card-description">港大标志性建筑之主楼</span>
+            <span class="gallery-album-card-meta">
+              <span>香港大学</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>建筑</span><span>风光</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-victoria-harbour-panorama-peak-view">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="victoria-harbour-panorama-peak-view"
+          data-gallery-title="太平山顶俯瞰维港全景"
+          data-gallery-period="2024-05-29"
+          data-gallery-location="太平山顶"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="cityscape"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;victoria-harbour-panorama-peak-view.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Victoria_Harbour_Panorama_Peak_View/victoria-harbour-panorama-peak-view-01-2.jpg" alt="太平山顶俯瞰维港全景" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">1 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-05-29</span>
+            <span class="gallery-album-card-title">太平山顶俯瞰维港全景</span>
+            <span class="gallery-album-card-description">繁华又梦幻</span>
+            <span class="gallery-album-card-meta">
+              <span>太平山顶</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>全景</span><span>维港</span><span>夜景</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-disneyland-fireworks">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="disneyland-fireworks"
+          data-gallery-title="迪士尼烟花"
+          data-gallery-period="2024-05-17"
+          data-gallery-location="香港迪士尼乐园"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="event"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;disneyland-fireworks.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/DisneyLand_Fireworks/disneyland-fireworks-01-2.jpg" alt="迪士尼烟花" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">9 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-05-17</span>
+            <span class="gallery-album-card-title">迪士尼烟花</span>
+            <span class="gallery-album-card-description">迪士尼烟花表演，绚烂又短暂</span>
+            <span class="gallery-album-card-meta">
+              <span>香港迪士尼乐园</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>烟花</span><span>夜景</span><span>乐园</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-monster-building-victoria-peak-in-fog">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="monster-building-victoria-peak-in-fog"
+          data-gallery-title="怪兽大厦与雾中的太平山"
+          data-gallery-period="2024-03-31"
+          data-gallery-location="怪兽大厦、太平山"
+          data-gallery-camera="NIKON D5600 &#x2F; X-T30 II"
+          data-gallery-categories="cityscape"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;monster-building-victoria-peak-in-fog.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Monster_Building&Victoria_Peak_in_Fog/monster-building-victoria-peak-in-fog-01-2.jpg" alt="怪兽大厦与雾中的太平山" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">4 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-03-31</span>
+            <span class="gallery-album-card-title">怪兽大厦与雾中的太平山</span>
+            <span class="gallery-album-card-description">云雾缭绕的下午和晚上</span>
+            <span class="gallery-album-card-meta">
+              <span>怪兽大厦、太平山</span>
+              <span>NIKON D5600 &#x2F; X-T30 II</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>城市</span><span>雾</span><span>建筑</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-sun-set-kennedy-town-waterfront">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="sun-set-kennedy-town-waterfront"
+          data-gallery-title="坚尼地城海滨日落"
+          data-gallery-period="2024-03-12"
+          data-gallery-location="坚尼地城海滨"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="landscape"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;sun-set-kennedy-town-waterfront.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/kennedy-town-waterfront-sunset/kennedy-town-waterfront-sunset-01-2.jpg" alt="坚尼地城海滨日落" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">4 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-03-12</span>
+            <span class="gallery-album-card-title">坚尼地城海滨日落</span>
+            <span class="gallery-album-card-description">下午的坚尼地城海滨日落，舒缓又阳光</span>
+            <span class="gallery-album-card-meta">
+              <span>坚尼地城海滨</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>日落</span><span>自然风光</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-blue-hour-sysu">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="blue-hour-sysu"
+          data-gallery-title="SYSU 蓝调时刻"
+          data-gallery-period="2024-02-12"
+          data-gallery-location="SYSU"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="architecture"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;blue-hour-sysu.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Blue_Hour_SYSU/blue-hour-sysu-01-2.jpg" alt="SYSU 蓝调时刻" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">8 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-02-12</span>
+            <span class="gallery-album-card-title">SYSU 蓝调时刻</span>
+            <span class="gallery-album-card-description">无数次漫步在校园里，既熟悉又陌生</span>
+            <span class="gallery-album-card-meta">
+              <span>SYSU</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>蓝调时刻</span><span>校园</span><span>城市</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-midnight-hku">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="midnight-hku"
+          data-gallery-title="夜半HKU"
+          data-gallery-period="2024-01-28"
+          data-gallery-location="HKU红墙"
+          data-gallery-camera="Nikon D5600 · AF-S DX NIKKOR 18-140mm"
+          data-gallery-categories="architecture"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;midnight-hku.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/midnight-hku/midnight-hku-01-2.jpg" alt="夜半HKU" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">8 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-01-28</span>
+            <span class="gallery-album-card-title">夜半HKU</span>
+            <span class="gallery-album-card-description">半夜独自在学校游荡</span>
+            <span class="gallery-album-card-meta">
+              <span>HKU红墙</span>
+              <span>Nikon D5600 · AF-S DX NIKKOR 18-140mm</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>风光</span><span>建筑</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-kennedy-town-night">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="kennedy-town-night"
+          data-gallery-title="夜色坚尼地城"
+          data-gallery-period="2024-01-14"
+          data-gallery-location="坚尼地城篮球场"
+          data-gallery-camera="Nikon D5600 · AF-S DX NIKKOR 18-140mm"
+          data-gallery-categories="cityscape"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;kennedy-town-night.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Kennedy_Town_Night/kennedy-town-night-01-2.jpg" alt="夜色坚尼地城" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">3 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2024-01-14</span>
+            <span class="gallery-album-card-title">夜色坚尼地城</span>
+            <span class="gallery-album-card-description">坚尼地城经典的打卡照，港岛最“港岛”的地方</span>
+            <span class="gallery-album-card-meta">
+              <span>坚尼地城篮球场</span>
+              <span>Nikon D5600 · AF-S DX NIKKOR 18-140mm</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>夜景，打卡</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-main-campus-photo-walk">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="main-campus-photo-walk"
+          data-gallery-title="主校区扫街"
+          data-gallery-period="2023-12-22"
+          data-gallery-location="主校区"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="documentary"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;main-campus-photo-walk.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Main_Campus_Photo_Walk/main-campus-photo-walk-01-2.jpg" alt="主校区扫街" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">9 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2023-12-22</span>
+            <span class="gallery-album-card-title">主校区扫街</span>
+            <span class="gallery-album-card-description">夜晚的主图和饭堂</span>
+            <span class="gallery-album-card-meta">
+              <span>主校区</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>校园</span><span>扫街</span><span>建筑</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-sjc-high-table">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="sjc-high-table"
+          data-gallery-title="SJC High Table"
+          data-gallery-period="2023-10-13"
+          data-gallery-location="SJC"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="event"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;sjc-high-table.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/SJC_High_Table/sjc-high-table-01-2.jpg" alt="SJC High Table" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">10 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2023-10-13</span>
+            <span class="gallery-album-card-title">SJC High Table</span>
+            <span class="gallery-album-card-description">误入高端场所</span>
+            <span class="gallery-album-card-meta">
+              <span>SJC</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>晚宴</span><span>室内</span><span>活动</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-tang-zi-han">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="tang-zi-han"
+          data-gallery-title="Tang Hum Hum"
+          data-gallery-period="2023-09-30"
+          data-gallery-location="香港大学庄月明楼"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="portrait"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;tang-zi-han.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/tang-zi-han/tang-zi-han-01-2.jpg" alt="Tang Hum Hum" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">1 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2023-09-30</span>
+            <span class="gallery-album-card-title">Tang Hum Hum</span>
+            <span class="gallery-album-card-description">原创歌手Tang Hum Hum</span>
+            <span class="gallery-album-card-meta">
+              <span>香港大学庄月明楼</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>人像</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-night-bus-ride-in-hong-kong">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="night-bus-ride-in-hong-kong"
+          data-gallery-title="巴士夜游"
+          data-gallery-period="2023-09-17"
+          data-gallery-location="香港"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories=""
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;night-bus-ride-in-hong-kong.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Night-Bus-Ride-in-Hong-Kong/night-bus-ride-in-hong-kong-01.jpg" alt="巴士夜游" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">13 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2023-09-17</span>
+            <span class="gallery-album-card-title">巴士夜游</span>
+            <span class="gallery-album-card-description">PGSA的巴士夜游活动</span>
+            <span class="gallery-album-card-meta">
+              <span>香港</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>夜景</span><span>城游</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-kennedy-town-photo-walk">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="kennedy-town-photo-walk"
+          data-gallery-title="坚尼地城扫街"
+          data-gallery-period="2023-09-14"
+          data-gallery-location="坚尼地城"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="street"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;kennedy-town-photo-walk.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Kennedy_Town_Photo_Walk/kennedy-town-photo-walk-01-2.jpg" alt="坚尼地城扫街" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">20 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2023-09-14</span>
+            <span class="gallery-album-card-title">坚尼地城扫街</span>
+            <span class="gallery-album-card-description">夜晚、居民、朦胧的感情</span>
+            <span class="gallery-album-card-meta">
+              <span>坚尼地城</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>扫街</span><span>街头</span><span>坚尼地城</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-hku-campus-hangaround">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="hku-campus-hangaround"
+          data-gallery-title="港大校园闲逛"
+          data-gallery-period="2023-08-30"
+          data-gallery-location="香港大学"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="documentary"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;hku-campus-hangaround.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/HKU_Campus_Hangaround/hku-campus-hangaround-01-2.jpg" alt="港大校园闲逛" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">10 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2023-08-30</span>
+            <span class="gallery-album-card-title">港大校园闲逛</span>
+            <span class="gallery-album-card-description">正式开学前的乱逛，放松又期待</span>
+            <span class="gallery-album-card-meta">
+              <span>香港大学</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>校园</span><span>日常</span><span>港大</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-sysu-long-exposure-study">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="sysu-long-exposure-study"
+          data-gallery-title="长曝光练习"
+          data-gallery-period="2017-12-09"
+          data-gallery-location="中山大学南校园"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="documentary"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;sysu-long-exposure-study.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/sysu-long-exposure-study/sysu-long-exposure-study-01-2.jpg" alt="长曝光练习" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">4 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker">2017-12-09</span>
+            <span class="gallery-album-card-title">长曝光练习</span>
+            <span class="gallery-album-card-description">Hope Studio的考核任务，选择长曝光作为任务的目标</span>
+            <span class="gallery-album-card-meta">
+              <span>中山大学南校园</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>长曝光</span><span>夜景</span><span>练习</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-canton-tower">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="canton-tower"
+          data-gallery-title="广州塔"
+          data-gallery-period=""
+          data-gallery-location="中山大学南校园"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="architecture"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;canton-tower.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/canton-tower/canton-tower-01-2.jpg" alt="广州塔" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">4 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">广州塔</span>
+            <span class="gallery-album-card-description">我拍摄的广州塔</span>
+            <span class="gallery-album-card-meta">
+              <span>中山大学南校园</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>建筑</span><span>风光</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-cat">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="cat"
+          data-gallery-title="猫"
+          data-gallery-period=""
+          data-gallery-location="中山大学等"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="street"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;cat.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/cat/cat-01-2.jpg" alt="猫" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">20 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">猫</span>
+            <span class="gallery-album-card-description">可爱又凶猛的掠食动物</span>
+            <span class="gallery-album-card-meta">
+              <span>中山大学等</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>猫</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-clara-zhang">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="clara-zhang"
+          data-gallery-title="Clara-Zhang"
+          data-gallery-period=""
+          data-gallery-location="香港大学, 海洋公园"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="portrait"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;clara-zhang.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/clara-zhang/clara-zhang-01-2.jpg" alt="Clara-Zhang" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">9 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">Clara-Zhang</span>
+            <span class="gallery-album-card-description">主持人&#x2F;记者&#x2F;舞蹈家&#x2F;青年企业家Clara</span>
+            <span class="gallery-album-card-meta">
+              <span>香港大学, 海洋公园</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>人像</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-draxler">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="draxler"
+          data-gallery-title="Draxler"
+          data-gallery-period=""
+          data-gallery-location="香港大学, 迪士尼, 太平山等"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="portrait"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;draxler.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Draxler/draxler-01.jpg" alt="Draxler" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">6 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">Draxler</span>
+            <span class="gallery-album-card-description">帅小伙</span>
+            <span class="gallery-album-card-meta">
+              <span>香港大学, 迪士尼, 太平山等</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>人像</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-jarvis">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="jarvis"
+          data-gallery-title="Jarvis"
+          data-gallery-period=""
+          data-gallery-location="香港大学,鹤咀等"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="portrait"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;jarvis.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/Jarvis/jarvis-01.jpg" alt="Jarvis" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">7 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">Jarvis</span>
+            <span class="gallery-album-card-description">教育家, 魔术师 Jarvis</span>
+            <span class="gallery-album-card-meta">
+              <span>香港大学,鹤咀等</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>人像</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-mouse">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="mouse"
+          data-gallery-title="隔壁宿舍的鼠鼠"
+          data-gallery-period=""
+          data-gallery-location="中山大学南校园"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="documentary"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;mouse.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/mouse/mouse-01-2.jpg" alt="隔壁宿舍的鼠鼠" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">3 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">隔壁宿舍的鼠鼠</span>
+            <span class="gallery-album-card-description">隔壁宿舍养的鼠鼠，某一天越狱成功</span>
+            <span class="gallery-album-card-meta">
+              <span>中山大学南校园</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>鼠</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-selfie">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="selfie"
+          data-gallery-title="自拍"
+          data-gallery-period=""
+          data-gallery-location="中山大学, 香港大学等"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="portrait"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;selfie.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/selfie/selfie-01-2.jpg" alt="自拍" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">7 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">自拍</span>
+            <span class="gallery-album-card-description">一些自拍照</span>
+            <span class="gallery-album-card-meta">
+              <span>中山大学, 香港大学等</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>人像</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-sun-rise">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="sun-rise"
+          data-gallery-title="中山大学日出"
+          data-gallery-period=""
+          data-gallery-location="中山大学南校园"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="landscape"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;sun-rise.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/sunrise-sysu/sunrise-sysu-01-2.jpg" alt="中山大学日出" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">2 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">中山大学日出</span>
+            <span class="gallery-album-card-description">一些中山大学的日出时刻，是通宵还是早期？忘了</span>
+            <span class="gallery-album-card-meta">
+              <span>中山大学南校园</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>日出</span><span>风光</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-sunset-sysu">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="sunset-sysu"
+          data-gallery-title="中大日落"
+          data-gallery-period=""
+          data-gallery-location="中山大学南校园"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="landscape"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;sunset-sysu.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/sunset-sysu/sunset-sysu-01-2.jpg" alt="中大日落" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">2 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">中大日落</span>
+            <span class="gallery-album-card-description">一些中山大学的日落时刻</span>
+            <span class="gallery-album-card-meta">
+              <span>中山大学南校园</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>风光</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-sysu-campus">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="sysu-campus"
+          data-gallery-title="中山大学南校园"
+          data-gallery-period=""
+          data-gallery-location="中山大学"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="architecture"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;sysu-campus.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/sysu-south-campus/sysu-south-campus-01-2.jpg" alt="中山大学南校园" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">24 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">中山大学南校园</span>
+            <span class="gallery-album-card-description">中山大学南校园的一些建筑</span>
+            <span class="gallery-album-card-meta">
+              <span>中山大学</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>建筑</span><span>风光</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      <article class="gallery-album-card" id="gallery-yu-hao-xuan">
+        <button
+          class="gallery-album-trigger"
+          type="button"
+          data-gallery-open
+          data-gallery-album="yu-hao-xuan"
+          data-gallery-title="Xuan"
+          data-gallery-period=""
+          data-gallery-location="中山大学南校园"
+          data-gallery-camera="NIKON D5600"
+          data-gallery-categories="portrait"
+          data-gallery-url="&#x2F;gallery-data&#x2F;zh-CN&#x2F;yu-hao-xuan.json"
+        >
+          <span class="gallery-album-cover">
+            <img src="/images/gallery/yu-hao-xuan/yu-hao-xuan-01-2.jpg" alt="Xuan" width="1280" height="720" loading="lazy" decoding="async">
+            <span class="gallery-album-count">7 张照片</span>
+          </span>
+          <span class="gallery-album-card-copy">
+            <span class="gallery-album-card-kicker"></span>
+            <span class="gallery-album-card-title">Xuan</span>
+            <span class="gallery-album-card-description">同门学姐 Xuan</span>
+            <span class="gallery-album-card-meta">
+              <span>中山大学南校园</span>
+              <span>NIKON D5600</span>
+            </span>
+            <span class="gallery-album-card-tags"><span>人像</span></span>
+            <span class="gallery-album-card-action">打开相册</span>
+          </span>
+        </button>
+      </article>
+      </div>
+      <div
+        class="gallery-pagination"
+        data-gallery-pagination
+        data-prev-text="上一页"
+        data-next-text="下一页"
+        
+      >
+        <button class="gallery-page-button" type="button" data-gallery-page="0" disabled>上一页</button>
+        <button class="gallery-page-button is-active" type="button" data-gallery-page="1" aria-current="page">1</button>
+        <button class="gallery-page-button" type="button" data-gallery-page="2" aria-current="false">2</button><button class="gallery-page-button" type="button" data-gallery-page="3" aria-current="false">3</button>
+        <button class="gallery-page-button" type="button" data-gallery-page="2">下一页</button>
+      </div>
+      <div class="gallery-filter-empty" data-gallery-filter-empty-state hidden>当前分类下还没有相册。</div>
+    </div>
+    <div class="gallery-viewer" data-gallery-viewer hidden aria-hidden="true">
+      <div class="gallery-viewer-backdrop" data-gallery-close></div>
+      <section class="gallery-viewer-panel" role="dialog" aria-modal="true" aria-label="Gallery viewer">
+        <header class="gallery-viewer-header">
+          <div>
+            <p class="gallery-viewer-kicker" data-gallery-viewer-period></p>
+            <h2 class="gallery-viewer-title" data-gallery-viewer-title></h2>
+            <p class="gallery-viewer-meta" data-gallery-viewer-meta></p>
+          </div>
+          <button class="gallery-viewer-close" type="button" data-gallery-close aria-label="关闭">关闭</button>
+        </header>
+        <div class="gallery-viewer-stage">
+          <button class="gallery-viewer-nav gallery-viewer-prev" type="button" data-gallery-prev aria-label="上一张">‹</button>
+          <figure class="gallery-viewer-figure">
+            <a class="gallery-viewer-image-link" data-gallery-viewer-image-link href="#">
+              <img
+                data-gallery-viewer-image
+                src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+                alt=""
+              >
+            </a>
+            <figcaption class="gallery-viewer-caption">
+              <span class="gallery-viewer-photo-title" data-gallery-viewer-photo-title></span>
+              <span class="gallery-viewer-photo-caption" data-gallery-viewer-photo-caption></span>
+              <span class="gallery-viewer-photo-meta" data-gallery-viewer-photo-meta></span>
+            </figcaption>
+          </figure>
+          <button class="gallery-viewer-nav gallery-viewer-next" type="button" data-gallery-next aria-label="下一张">›</button>
+        </div>
+        <div class="gallery-viewer-footer">
+          <div class="gallery-viewer-status" data-gallery-viewer-status data-loading-text="正在加载相册..." data-error-text="相册加载失败，请稍后重试。"></div>
+          <div class="gallery-viewer-thumbs" data-gallery-viewer-thumbs></div>
+        </div>
+      </section>
+    </div>
+    <script src="/js/gallery-loader.js" defer></script>
+          </div>
+        
+      </div>
+      
+      
+      
+    </div>
+    
+
+    
+    
+    
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          <div class="sidebar-layout-spacer" aria-hidden="true"></div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2025 – 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">曹越洋</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">234k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:33</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/home-category-filter.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

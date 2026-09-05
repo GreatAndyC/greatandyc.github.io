@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<meta name="generator" content="Hexo 7.3.0">
+
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=362a27fe07cc">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="/images/brand/favicon.svg?v=362a27fe07cc">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/brand/apple-touch-icon.png?v=362a27fe07cc">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png?v=362a27fe07cc">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png?v=362a27fe07cc">
+  <link rel="mask-icon" href="/images/brand/ac-mark-dark.svg?v=362a27fe07cc" color="#111111">
+  <link rel="manifest" href="/images/brand/site.webmanifest?v=362a27fe07cc">
+
+<link rel="stylesheet" href="/css/main.css?v=362a27fe07cc">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"caoyueyang.org","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  
+<meta name="description" content="记录一次三小时完成行业调研与全英 PPT 的 AI 工作流。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="曹越洋的博客">
+<meta property="og:url" content="https://caoyueyang.org/2026/08/04/ai-assisted-industry-research-ppt/index.html">
+<meta property="og:site_name" content="曹越洋的博客">
+<meta property="og:description" content="记录一次三小时完成行业调研与全英 PPT 的 AI 工作流。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://caoyueyang.org/images/posts/ai-native-software-engineering/slide-01.png">
+<meta property="article:published_time" content="2026-08-04T20:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-04T12:56:16.000Z">
+<meta property="article:author" content="曹越洋">
+<meta property="article:tag" content="NotebookLM">
+<meta property="article:tag" content="AI工作流">
+<meta property="article:tag" content="AI工具">
+<meta property="article:tag" content="行业调研">
+<meta property="article:tag" content="PPT">
+<meta property="article:tag" content="Codex">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://caoyueyang.org/images/posts/ai-native-software-engineering/slide-01.png">
+
+<link rel="canonical" href="https://caoyueyang.org/2026/08/04/ai-assisted-industry-research-ppt/">
+
+
+  <link rel="alternate" hreflang="en" href="https://caoyueyang.org/en/2026/08/04/ai-assisted-industry-research-ppt/">
+    <link rel="alternate" hreflang="x-default" href="https://caoyueyang.org/en/2026/08/04/ai-assisted-industry-research-ppt/">
+  <link rel="alternate" hreflang="zh-CN" href="https://caoyueyang.org/2026/08/04/ai-assisted-industry-research-ppt/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+<style>
+  @font-face {
+    font-family: "Font Awesome 5 Brands";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-brands-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-regular-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-solid-900.woff2") format("woff2");
+  }
+</style>
+
+  <title>如何用 AI 在三小时内完成一次行业调研与全英 PPT | 曹越洋的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="曹越洋的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="container">
+    <div class="headband"></div>
+
+    <div class="site-rail">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <button
+      class="toggle"
+      type="button"
+      aria-label="切换导航栏"
+      aria-expanded="false"
+      aria-controls="site-navigation"
+    >
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </button>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/zh-CN/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <img
+        class="site-brand-mark"
+        src="/images/brand/ac-mark-light.svg"
+        alt=""
+        aria-hidden="true"
+        width="30"
+        height="30"
+        decoding="async"
+      >
+      <h1 class="site-title">曹越洋的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav id="site-navigation" class="site-nav" aria-label="主导航">
+  <div class="mobile-rail-profile" aria-label="曹越洋">
+    <img
+      class="mobile-rail-profile-image"
+      src="/images/avatar.jpg"
+      alt="曹越洋"
+      width="56"
+      height="56"
+      decoding="async"
+    >
+  <span class="mobile-rail-profile-copy">
+    <strong class="mobile-rail-profile-name">曹越洋</strong>
+    <span class="mobile-rail-profile-description">AI 产品、软件系统与应用研究</span>
+  </span>
+</div>
+
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/zh-CN/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-work">
+
+    <a href="/work/" rel="section"><i class="fa fa-briefcase fa-fw"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-gallery">
+
+    <a href="/gallery/" rel="section"><i class="fa fa-camera-retro fa-fw"></i>画廊</a>
+
+  </li>
+        <li class="menu-section-label" aria-hidden="true">浏览</li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/zh-CN/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/zh-CN/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/zh-CN/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+    <li class="menu-item menu-item-language">
+      
+  <div class="languages language-switcher">
+    <span class="language-switcher-label" aria-hidden="true">语言</span>
+    <span class="language-switcher-options" role="group" aria-label="切换语言">
+      
+        
+        
+          
+        
+        
+          <a class="language-switcher-option" href="/en/2026/08/04/ai-assisted-industry-research-ppt/" data-language="en" data-href="/en/2026/08/04/ai-assisted-industry-research-ppt/" hreflang="en" lang="en">EN</a>
+        
+        
+          <span class="language-switcher-divider" aria-hidden="true">/</span>
+        
+      
+        
+        
+          
+        
+        
+          <span class="language-switcher-option is-current" data-language="zh-CN" data-href="/2026/08/04/ai-assisted-industry-research-ppt/" aria-current="page">中</span>
+        
+        
+      
+    </span>
+  </div>
+
+    </li>
+
+  </ul>
+  
+  <div class="mobile-rail-links" aria-label="外部链接">
+    <div class="mobile-rail-links-heading"><i class="fa fa-link fa-fw" aria-hidden="true"></i>
+      <span>友情链接</span>
+    </div>
+    <div class="mobile-rail-links-list">
+          <a href="https://github.com/GreatAndyC" class="mobile-rail-link" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw" aria-hidden="true"></i><span>GitHub</span></a>
+          <a href="/atom.xml" class="mobile-rail-link" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw" aria-hidden="true"></i><span>RSS</span></a>
+          <a href="http://www.google.com/" class="mobile-rail-link" title="走向世界 → http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank"><i class="fa fa-link fa-fw" aria-hidden="true"></i><span>走向世界</span></a>
+    </div>
+  </div>
+
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+      </header>
+        <div class="site-rail-sidebar">
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar sidebar-with-toc">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview" hidden aria-hidden="true">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E6%AC%A1%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%8C%E5%8F%98%E6%88%90%E4%B8%80%E6%AC%A1-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%AE%9E%E9%AA%8C"><span class="nav-number">1.</span> <span class="nav-text">一次面试题，变成一次 AI 工作流实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E8%A1%8C%E4%B8%9A"><span class="nav-number">2.</span> <span class="nav-text">为什么选择软件开发行业</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E5%A7%8B%E7%89%88%E6%9C%AC%E4%BD%BF%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="nav-number">3.</span> <span class="nav-text">原始版本使用的工具链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gemini-Pro%EF%BC%9A%E6%89%A9%E5%A4%A7%E7%A0%94%E7%A9%B6%E8%8C%83%E5%9B%B4%EF%BC%8C%E5%86%8D%E6%94%B6%E6%9D%9F%E6%88%90%E5%8F%AF%E8%AE%B2%E8%BF%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">Gemini Pro：扩大研究范围，再收束成可讲述的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NotebookLM%EF%BC%9A%E4%BB%8E%E7%A0%94%E7%A9%B6%E6%9D%90%E6%96%99%E5%88%B0%E6%BC%94%E7%A4%BA%E6%96%87%E7%A8%BF%E5%88%9D%E7%A8%BF"><span class="nav-number">5.</span> <span class="nav-text">NotebookLM：从研究材料到演示文稿初稿</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WPS%EF%BC%9A%E6%8A%8A%E7%94%9F%E6%88%90%E7%BB%93%E6%9E%9C%E8%B0%83%E6%95%B4%E6%88%90%E5%8F%AF%E4%BA%A4%E4%BB%98%E7%9A%84%E9%9D%A2%E8%AF%95-PPT"><span class="nav-number">6.</span> <span class="nav-text">WPS：把生成结果调整成可交付的面试 PPT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E4%B8%80%E4%B8%AA%E9%A1%B9%E7%9B%AE%EF%BC%8C%E4%BB%8A%E5%A4%A9%E5%86%8D%E7%82%B9%E5%87%BB%E4%B8%80%E6%AC%A1-Slide-Deck"><span class="nav-number">7.</span> <span class="nav-text">同一个项目，今天再点击一次 Slide Deck</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%99%E5%A5%97%E6%B5%81%E7%A8%8B%E4%BB%8A%E5%A4%A9%E5%A6%82%E4%BD%95%E8%BF%81%E7%A7%BB%E5%88%B0-Codex"><span class="nav-number">8.</span> <span class="nav-text">这套流程今天如何迁移到 Codex</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E6%9D%A5%EF%BC%8C%E6%88%91%E7%94%A8-Codex-%E9%87%8D%E6%96%B0%E5%88%B6%E4%BD%9C%E4%BA%86%E8%BF%99%E5%A5%97-PPT"><span class="nav-number">9.</span> <span class="nav-text">后来，我用 Codex 重新制作了这套 PPT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PPT-%E5%85%A8%E6%96%87%E5%86%85%E5%AE%B9"><span class="nav-number">10.</span> <span class="nav-text">PPT 全文内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD-PDF"><span class="nav-number">11.</span> <span class="nav-text">下载 PDF</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E4%BB%8E%E8%BF%99%E6%AC%A1%E5%AE%9E%E8%B7%B5%E4%B8%AD%E5%BE%97%E5%88%B0%E7%9A%84%E5%87%A0%E4%B8%AA%E7%BB%93%E8%AE%BA"><span class="nav-number">12.</span> <span class="nav-text">我从这次实践中得到的几个结论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-AI-%E5%8F%AF%E4%BB%A5%E5%8E%8B%E7%BC%A9%E7%A0%94%E7%A9%B6%E5%92%8C%E5%88%B6%E4%BD%9C%E6%97%B6%E9%97%B4%EF%BC%8C%E4%BD%86%E4%B8%8D%E8%83%BD%E6%9B%BF%E4%BD%A0%E5%AE%8C%E6%88%90%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89"><span class="nav-number">12.1.</span> <span class="nav-text">1. AI 可以压缩研究和制作时间，但不能替你完成问题定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B8%80%E4%BB%BD%E7%9C%8B%E8%B5%B7%E6%9D%A5%E5%AE%8C%E6%95%B4%E7%9A%84%E7%A0%94%E7%A9%B6%EF%BC%8C%E4%B8%8D%E4%B8%80%E5%AE%9A%E6%98%AF%E4%B8%80%E4%BB%BD%E8%AF%81%E6%8D%AE%E5%AE%8C%E6%95%B4%E7%9A%84%E7%A0%94%E7%A9%B6"><span class="nav-number">12.2.</span> <span class="nav-text">2. 一份看起来完整的研究，不一定是一份证据完整的研究</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-AI-native-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%9A%84%E9%87%8D%E7%82%B9%E4%B8%8D%E6%98%AF%E5%B7%A5%E5%85%B7%E6%95%B0%E9%87%8F%EF%BC%8C%E8%80%8C%E6%98%AF%E8%81%8C%E8%B4%A3%E5%88%86%E5%B7%A5"><span class="nav-number">12.3.</span> <span class="nav-text">3. AI-native 工作流的重点不是工具数量，而是职责分工</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AC%E5%BC%80%E8%BE%B9%E7%95%8C%E4%B8%8E%E5%85%8D%E8%B4%A3%E5%A3%B0%E6%98%8E"><span class="nav-number">13.</span> <span class="nav-text">公开边界与免责声明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">14.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel" hidden aria-hidden="true">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="曹越洋"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">曹越洋</p>
+  <div class="site-description" itemprop="description">AI 产品、软件系统与应用研究</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state" aria-label="站点统计">
+      <div class="site-state-item site-state-posts">
+          <a href="/zh-CN/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/zh-CN/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/zh-CN/tags/">
+          
+        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/GreatAndyC" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.google.com/" title="http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank">走向世界</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        </div>
+    </div>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <aside aria-label="Follow me on GitHub">
+    <a href="https://github.com/GreatAndyC" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+  </aside>
+
+
+    <main id="main-content" class="main" tabindex="-1">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article
+    itemscope
+    itemtype="http://schema.org/Article"
+    class="post-block"
+    lang="zh-CN"
+  >
+    <link itemprop="mainEntityOfPage" href="https://caoyueyang.org/2026/08/04/ai-assisted-industry-research-ppt/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="曹越洋">
+      <meta itemprop="description" content="AI 产品、软件系统与应用研究">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="曹越洋的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          如何用 AI 在三小时内完成一次行业调研与全英 PPT
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item post-meta-item-created">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-08-05 04:00:00" itemprop="dateCreated datePublished" datetime="2026-08-05T04:00:00+08:00">2026-08-05</time>
+            </span>
+              <span class="post-meta-item post-meta-item-updated">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-08-04 20:56:16" itemprop="dateModified" datetime="2026-08-04T20:56:16+08:00">2026-08-04</time>
+              </span>
+            <span class="post-meta-item post-meta-item-category">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/zh-CN/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item post-meta-item-count" title="本文字数" aria-label="本文字数：4.5k">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text post-meta-item-text-full">本文字数：</span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">字数：</span>
+              <span>4.5k</span>
+            </span>
+            <span class="post-meta-item post-meta-item-reading-time" title="阅读时长" aria-label="阅读时长：4 分钟">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text post-meta-item-text-full">阅读时长 &asymp;</span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">阅读&asymp;</span>
+              <span>4 分钟</span>
+            </span>
+            <div class="post-description">记录一次三小时完成行业调研与全英 PPT 的 AI 工作流。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>记录一次三小时完成行业调研与全英 PPT 的 AI 工作流。</strong></p>
+<span id="more"></span>
+
+<h2 id="一次面试题，变成一次-AI-工作流实验"><a href="#一次面试题，变成一次-AI-工作流实验" class="headerlink" title="一次面试题，变成一次 AI 工作流实验"></a>一次面试题，变成一次 AI 工作流实验</h2><p>本文记录的是一次几个月前参加咨询公司面试时的案例准备过程：如何在有限时间内完成一个行业调研，并把研究结果整理成一份可以进行全英 Pre 的 PowerPoint。</p>
+<p>第一轮是线下面试。后来面试官告诉我，我是当时小组里第一个进入第二轮的人。第二轮的任务是选择一个自己熟悉的主题，完成一份行业研究，并在面试中用英文进行完整展示。</p>
+<p>我当时并没有把它当成一份传统的“查资料、做页面”的作业，而是把它当成了一次小型的 AI 辅助交付实验：如果 AI 已经可以参与大量工作流，那么它能不能同时参与行业研究、观点组织和演示文稿制作？</p>
+<p>从开始调研到完成 PPT，我大约用了三个小时。这个时间并不足以完成一份完整的行业研究，但足够把一个模糊的题目转化成一套可以讲清楚的观点、图表和演讲结构。</p>
+<h2 id="为什么选择软件开发行业"><a href="#为什么选择软件开发行业" class="headerlink" title="为什么选择软件开发行业"></a>为什么选择软件开发行业</h2><p>当时我一直在开发自己的 AI 原生饮食管理产品<a target="_blank" rel="noopener" href="https://www.shiguangjiapp.com/">食光机</a>，因此对 AI 如何改变软件开发流程已经有了一些实际感受。</p>
+<p>我的基本判断是：AI 不只会影响代码生成，还会进入需求分析、架构设计、测试、文档、部署和运维等环节。于是，我把主题定为高新科技领域中的软件开发，并进一步收敛成一个问题：</p>
+<blockquote>
+<p>当 AI 可以越来越快地生成代码之后，软件工程真正的瓶颈会转移到哪里？</p>
+</blockquote>
+<p>这个问题后来成为整份 PPT 的主线。我的结论并不是“AI 会替代软件工程师”，而是：AI 可能会压缩实现阶段的时间，同时把更多压力转移到需求定义、代码审查、系统集成、安全治理和结果验证上。</p>
+<h2 id="原始版本使用的工具链"><a href="#原始版本使用的工具链" class="headerlink" title="原始版本使用的工具链"></a>原始版本使用的工具链</h2><p>当时我正好订阅了 Google Gemini Pro，实际使用的工具主要是 Gemini Pro 的 Deep Research、NotebookLM 和 WPS。</p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>在这次案例中的作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gemini Pro &#x2F; Deep Research</td>
+<td>检索论文、公司材料和行业报告，收束研究问题，并生成带有来源线索的研究草稿</td>
+</tr>
+<tr>
+<td>NotebookLM</td>
+<td>汇总研究材料，通过 Slide Deck 功能快速生成演示文稿初稿</td>
+</tr>
+<tr>
+<td>WPS Office</td>
+<td>对 NotebookLM 生成的 PPT 进行页面布局、文字和视觉细节调整</td>
+</tr>
+<tr>
+<td>人工判断</td>
+<td>选择主题、筛选观点、决定叙事顺序，并准备最终的英文讲解</td>
+</tr>
+</tbody></table>
+<p>这里的关键并不是“哪个工具最强”，而是把不同工具放在了不同的位置：一个工具负责扩展研究，一个工具负责综合材料，另一个工具负责快速组装页面，而最后的取舍和表达仍然由我自己完成。</p>
+<h2 id="Gemini-Pro：扩大研究范围，再收束成可讲述的问题"><a href="#Gemini-Pro：扩大研究范围，再收束成可讲述的问题" class="headerlink" title="Gemini Pro：扩大研究范围，再收束成可讲述的问题"></a>Gemini Pro：扩大研究范围，再收束成可讲述的问题</h2><p>我首先使用 Gemini Pro 的 Deep Research 功能围绕 AI 重塑软件工程进行资料检索。它可以访问和整理与主题相关的论文数据库、公司网站和行业研究报告，例如 arXiv 上的论文、公开技术报告以及软件开发领域的行业研究。</p>
+<p>它给出的并不是一页简单的搜索结果，而是一份带有引用线索的研究草稿。接下来我通过多轮对话不断收束上下文，把宽泛的“AI 会如何改变软件工程”逐渐压缩成几个更适合演示的问题：</p>
+<ul>
+<li>AI 生成代码的速度是否会超过人工审查和集成能力？</li>
+<li>AI 生成的代码应该如何进行语义、安全和业务验证？</li>
+<li>软件工程师的角色是否会从实现者转向定义者、编排者和评估者？</li>
+<li>企业知识、设计系统和工具权限如何成为 AI 的工作上下文？</li>
+</ul>
+<p>最后，我让 Gemini 帮助整理 PPT 的内容结构和文案提示词，再把这些材料交给 NotebookLM 进行下一步处理。</p>
+<h2 id="NotebookLM：从研究材料到演示文稿初稿"><a href="#NotebookLM：从研究材料到演示文稿初稿" class="headerlink" title="NotebookLM：从研究材料到演示文稿初稿"></a>NotebookLM：从研究材料到演示文稿初稿</h2><p>我把从 Gemini 获得的研究材料导入 NotebookLM，然后使用其中的 Slide Deck 功能快速生成 PPT 初稿。</p>
+<figure class="post-figure post-figure--portrait">
+  <img src="/images/posts/ai-native-software-engineering/notebooklm-slide-deck-ui.png" alt="" width="956" height="1316" loading="lazy" decoding="async" fetchpriority="high">
+  <figcaption>NotebookLM 中的 Slide Deck 功能入口。</figcaption>
+</figure>
+
+<p>NotebookLM 的价值不只是把文字放进幻灯片，而是把研究材料先转换成一个可浏览的叙事结构。对于需要在很短时间内完成英文演示的人来说，这一步明显降低了从“研究资料”到“可以讲述的页面”的距离。</p>
+<h2 id="WPS：把生成结果调整成可交付的面试-PPT"><a href="#WPS：把生成结果调整成可交付的面试-PPT" class="headerlink" title="WPS：把生成结果调整成可交付的面试 PPT"></a>WPS：把生成结果调整成可交付的面试 PPT</h2><p>NotebookLM 生成的页面还不能直接作为最终交付物。它更像是一份内容和版式草稿，仍然需要人工调整标题层级、文字密度、图表比例和页面节奏。</p>
+<p>当时我使用 WPS 继续处理这些细节，并根据面试场景对视觉风格做了调整，包括页面布局、色彩、标题和面试公司的品牌视觉对齐。</p>
+<p>下面是当时 NotebookLM 生成和调整过程中的几个页面示例。它们整体偏向简洁、专业、研究报告式的视觉语言，具体风格可以通过提示词和后续排版控制。</p>
+<div class="post-deck-gallery" aria-label="NotebookLM 生成的演示文稿示例">
+  <div class="post-deck-gallery__toolbar">
+    <strong>NotebookLM Slide Deck 示例</strong>
+    <span class="post-deck-gallery__hint">左右滑动或拖动查看</span>
+  </div>
+
+  <div class="post-deck-gallery__track" tabindex="0" aria-label="NotebookLM 生成的演示文稿示例，可左右滑动">
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/notebooklm-example-01.png" alt="" width="774" height="414" loading="lazy" decoding="async">
+      <figcaption><strong>01</strong>早期 NotebookLM 生成的 V-Bounce Model 封面示例。</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/notebooklm-example-02.png" alt="" width="794" height="422" loading="lazy" decoding="async">
+      <figcaption><strong>02</strong>早期版本中的效率悖论与软件工程稳定性页面。</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/notebooklm-regenerated-example-01.png" alt="" width="1050" height="588" loading="lazy" decoding="async">
+      <figcaption><strong>03</strong>2026 年重新生成的效率悖论页面，视觉风格已经发生变化。</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/notebooklm-regenerated-example-02.png" alt="" width="1042" height="580" loading="lazy" decoding="async">
+      <figcaption><strong>04</strong>重新生成版本中的 Stanford 数据和早期职业岗位变化页面。</figcaption>
+    </figure>
+  </div>
+</div>
+
+<h2 id="同一个项目，今天再点击一次-Slide-Deck"><a href="#同一个项目，今天再点击一次-Slide-Deck" class="headerlink" title="同一个项目，今天再点击一次 Slide Deck"></a>同一个项目，今天再点击一次 Slide Deck</h2><p>2026 年 8 月 4 日，我又打开了当时的 NotebookLM 项目，在没有修改原始材料的情况下重新点击了一次 Slide Deck。</p>
+<p>重新生成的页面和几个月前的版本已经有了明显区别，尤其是字体、图表布局、信息层级和插图风格。这种变化可能来自模型、提示词解释方式和产品本身的更新，也说明 AI 演示文稿工具的输出并不是固定的模板结果。</p>
+<p>因此，如果要把 AI 工具写进一套稳定的工作流，不能只记录“点击了哪个按钮”，还需要保留研究材料、提示词、人工修改和最终验收过程。</p>
+<h2 id="这套流程今天如何迁移到-Codex"><a href="#这套流程今天如何迁移到-Codex" class="headerlink" title="这套流程今天如何迁移到 Codex"></a>这套流程今天如何迁移到 Codex</h2><p>工具本身会变化，但工作流可以保留下来。今天，这套流程的主要环节已经可以迁移到网页端的 ChatGPT &#x2F; Deep Research 和本地 Codex 中：</p>
+<ol>
+<li>使用网页端的 Deep Research 功能获取公开研究内容，并保存来源和引用线索。</li>
+<li>在 Codex 或 GPT Work 中整理研究内容，形成文章、讲稿和演示文稿结构。</li>
+<li>在本地 Codex 中建立一个隔离的项目目录，把需要处理的原始文件和公开素材放在里面，明确告诉 Codex 需要读取和生成哪些文件。</li>
+<li>让 Codex 生成可编辑的 PPTX 或 PDF，再逐页检查版式、来源、数字定义和版权边界。</li>
+</ol>
+<p>本地 Codex 中可用的具体模型名称、套餐档位和权限选项会随着客户端更新变化，因此我不建议把某一个时期的型号名称写成固定结论。更稳定的写法是：选择当前环境中能力足够的 GPT-5 系列模型，并根据项目内容决定是否开启更高权限。</p>
+<p>如果使用完全访问权限，最好只让它处理一个明确、隔离的项目目录，而不是让它无边界地读取整个个人文件系统。这样既方便生成 PPT，也能降低原始文件和私人资料被误读、误改或误提交的风险。</p>
+<h2 id="后来，我用-Codex-重新制作了这套-PPT"><a href="#后来，我用-Codex-重新制作了这套-PPT" class="headerlink" title="后来，我用 Codex 重新制作了这套 PPT"></a>后来，我用 Codex 重新制作了这套 PPT</h2><p>原始面试 PPT 适合用于当时的现场讲解，但不适合直接作为博客附件公开。因此，我后来又把它整理成了一个独立重构版本：</p>
+<ul>
+<li>删除原始企业 Logo、口号和品牌锁定版式；</li>
+<li>不直接复用原始企业插画、火箭、机器人和盾牌素材；</li>
+<li>重新绘制封面、流程图、连接器、页脚和图表；</li>
+<li>将内容中的数字分为 Fact、Illustrative Model、Proposed Target 和 To Verify；</li>
+<li>将 V-Bounce 重新表达为 Definition → Agentic Implementation → Verification；</li>
+<li>用 <code>Human accountability</code> 贯穿 AI 生成、评估和上线决策；</li>
+<li>生成一套 6 页、16:9、PowerPoint 对象可编辑的独立重构版。</li>
+</ul>
+<p>这份版本不代表任何公司、客户或面试方，也不是原始企业材料的官方版本。它是我对那次准备过程的重新整理，以及对 AI-native 软件工程的一次个人模型化表达。</p>
+<h2 id="PPT-全文内容"><a href="#PPT-全文内容" class="headerlink" title="PPT 全文内容"></a>PPT 全文内容</h2><p>下面是最终独立重构版的全部 6 页。为了避免在文章中连续堆叠 6 张大图，这里使用了一个可以在桌面端横向拖动、在手机端左右滑动的 HTML 浏览器。</p>
+<div class="post-deck-gallery" aria-label="AI-Native Software Engineering 独立重构版演示文稿">
+  <div class="post-deck-gallery__toolbar">
+    <strong>AI-Native Software Engineering · 6 slides</strong>
+    <span class="post-deck-gallery__hint">左右滑动或拖动查看全部页面</span>
+  </div>
+
+  <div class="post-deck-gallery__track" tabindex="0" aria-label="AI-Native Software Engineering 全部演示文稿页面，可左右滑动">
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/slide-01.png" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+      <figcaption><strong>01</strong>独立重构版封面：Context → Agents → Evaluation。</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/slide-02.png" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+      <figcaption><strong>02</strong>AI 将瓶颈从编码阶段转移到交付系统。</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/slide-03.png" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+      <figcaption><strong>03</strong>证据页：把外部研究、示意模型和待核验内容分开。</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/slide-04.png" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+      <figcaption><strong>04</strong>V-Bounce 操作模型：Definition → Implementation → Verification。</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/slide-05.png" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+      <figcaption><strong>05</strong>上下文与角色设计：Context Layer 与 Human Control Layer。</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/slide-06.png" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+      <figcaption><strong>06</strong>12 个月试点路线：Foundation → Pilot → Scale → Maturity。</figcaption>
+    </figure>
+  </div>
+</div>
+
+<h2 id="下载-PDF"><a href="#下载-PDF" class="headerlink" title="下载 PDF"></a>下载 PDF</h2><p>如果你希望把整套内容保存下来，可以下载独立重构版 PDF：</p>
+<div class="post-artifact-card">
+  <p class="post-artifact-card__copy">
+    <strong>AI-Native Software Engineering · Protected PDF</strong>
+    <span class="post-artifact-card__meta">无需密码阅读；编辑和权限变更受到所有者密码保护。</span>
+  </p>
+  <a class="post-artifact-card__link" href="/downloads/ai-native-software-engineering-protected.pdf" download>下载 PDF</a>
+</div>
+
+<p>这里的保护属于 PDF 权限控制，而不是访问控制：拿到链接的读者可以直接阅读，但正规 PDF 阅读器会要求所有者密码才能修改或改变权限。这个密码不会写在博客、文件名或 Git 仓库里。</p>
+<h2 id="我从这次实践中得到的几个结论"><a href="#我从这次实践中得到的几个结论" class="headerlink" title="我从这次实践中得到的几个结论"></a>我从这次实践中得到的几个结论</h2><h3 id="1-AI-可以压缩研究和制作时间，但不能替你完成问题定义"><a href="#1-AI-可以压缩研究和制作时间，但不能替你完成问题定义" class="headerlink" title="1. AI 可以压缩研究和制作时间，但不能替你完成问题定义"></a>1. AI 可以压缩研究和制作时间，但不能替你完成问题定义</h3><p>Gemini 帮我扩大了搜索范围，NotebookLM 帮我把研究材料转换成演示文稿结构，WPS 帮我完成了快速排版。但最终要研究什么、哪些观点值得进入主线、哪些数字可以被公开使用，仍然需要人工判断。</p>
+<h3 id="2-一份看起来完整的研究，不一定是一份证据完整的研究"><a href="#2-一份看起来完整的研究，不一定是一份证据完整的研究" class="headerlink" title="2. 一份看起来完整的研究，不一定是一份证据完整的研究"></a>2. 一份看起来完整的研究，不一定是一份证据完整的研究</h3><p>AI 很擅长把多个来源组织成一个顺畅的叙述，但顺畅不代表严谨。公开发布前，我需要重新检查每一个数字的来源、样本、时间窗口和统计定义，并把内容区分为：</p>
+<ul>
+<li><code>Fact</code>：可以追溯到明确来源的事实；</li>
+<li><code>Illustrative Model</code>：为了帮助读者理解而建立的示意模型；</li>
+<li><code>Proposed Target</code>：未来试点中可以验证的目标；</li>
+<li><code>To Verify</code>：目前仍然需要进一步核验的内容。</li>
+</ul>
+<h3 id="3-AI-native-工作流的重点不是工具数量，而是职责分工"><a href="#3-AI-native-工作流的重点不是工具数量，而是职责分工" class="headerlink" title="3. AI-native 工作流的重点不是工具数量，而是职责分工"></a>3. AI-native 工作流的重点不是工具数量，而是职责分工</h3><p>这次经历让我更愿意把 AI 工具看成一组可替换的工作节点：搜索工具负责扩展信息范围，知识工具负责整理上下文，演示文稿工具负责快速表达，而人负责定义问题、设定边界、检查证据和承担最终责任。</p>
+<p>如果只是把 AI 加到原来的流程里，团队可能只会更快地产生更多需要审查的内容。真正的变化，是重新设计定义、实现、验证和责任之间的关系。</p>
+<h2 id="公开边界与免责声明"><a href="#公开边界与免责声明" class="headerlink" title="公开边界与免责声明"></a>公开边界与免责声明</h2><p>本文是我对一次咨询公司面试案例准备过程的个人复盘。文章中的研究观点、图表和操作模型分别按公开来源、个人综合、示意模型或待核验内容处理。最终 PPT 是不代表任何公司、客户或面试方的独立重构版本。</p>
+<p>原始面试 PPT、原始模板、企业品牌资产和未核验的中间素材没有作为博客附件公开。博客中展示的图片和 PDF 只用于说明这次方法和最终重构结果。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://cloud.google.com/blog/products/ai-machine-learning/announcing-the-2025-dora-report">Google Cloud — 2025 DORA Report</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.anthropic.com/research/impact-software-development">Anthropic — Impact of AI on software development</a></li>
+<li><a target="_blank" rel="noopener" href="https://digitaleconomy.stanford.edu/publication/canaries-in-the-coal-mine-six-facts-about-the-recent-employment-effects-of-artificial-intelligence/">Stanford Digital Economy Lab — Canaries in the Coal Mine</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.figma.com/blog/introducing-figma-mcp-server/">Figma — Introducing the Figma MCP server</a></li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.03416">Cory Hymel — V-Bounce Engineering Paradigm</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/zh-CN/tags/NotebookLM/" rel="tag"># NotebookLM</a>
+              <a href="/zh-CN/tags/AI%E5%B7%A5%E4%BD%9C%E6%B5%81/" rel="tag"># AI工作流</a>
+              <a href="/zh-CN/tags/AI%E5%B7%A5%E5%85%B7/" rel="tag"># AI工具</a>
+              <a href="/zh-CN/tags/%E8%A1%8C%E4%B8%9A%E8%B0%83%E7%A0%94/" rel="tag"># 行业调研</a>
+              <a href="/zh-CN/tags/PPT/" rel="tag"># PPT</a>
+              <a href="/zh-CN/tags/Codex/" rel="tag"># Codex</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/05/15/manus/" rel="prev" title="试用 Manus：本地下载 Stanford CS146s">
+      <i class="fa fa-chevron-left"></i> 试用 Manus：本地下载 Stanford CS146s
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/09/04/android-gpt-subscription/" rel="next" title="如何用 Android 手机获取 GPT 官方订阅">
+      如何用 Android 手机获取 GPT 官方订阅 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          <div class="sidebar-layout-spacer" aria-hidden="true"></div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2025 – 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">曹越洋</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">234k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:33</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/home-category-filter.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

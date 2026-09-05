@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<meta name="generator" content="Hexo 7.3.0">
+
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=362a27fe07cc">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="/images/brand/favicon.svg?v=362a27fe07cc">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/brand/apple-touch-icon.png?v=362a27fe07cc">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png?v=362a27fe07cc">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png?v=362a27fe07cc">
+  <link rel="mask-icon" href="/images/brand/ac-mark-dark.svg?v=362a27fe07cc" color="#111111">
+  <link rel="manifest" href="/images/brand/site.webmanifest?v=362a27fe07cc">
+
+<link rel="stylesheet" href="/css/main.css?v=362a27fe07cc">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"caoyueyang.org","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  
+<meta name="description" content="A three-hour case study of using AI tools for industry research and presentation production.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AndyCao&#39;s Blog">
+<meta property="og:url" content="https://caoyueyang.org/en/2026/08/04/ai-assisted-industry-research-ppt/index.html">
+<meta property="og:site_name" content="AndyCao&#39;s Blog">
+<meta property="og:description" content="A three-hour case study of using AI tools for industry research and presentation production.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://caoyueyang.org/images/posts/ai-native-software-engineering/slide-01.png">
+<meta property="article:published_time" content="2026-08-04T20:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-04T12:56:16.000Z">
+<meta property="article:author" content="AndyCao">
+<meta property="article:tag" content="NotebookLM">
+<meta property="article:tag" content="AI Workflow">
+<meta property="article:tag" content="PPT">
+<meta property="article:tag" content="Codex">
+<meta property="article:tag" content="AI Tools">
+<meta property="article:tag" content="Industry Research">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://caoyueyang.org/images/posts/ai-native-software-engineering/slide-01.png">
+
+<link rel="canonical" href="https://caoyueyang.org/en/2026/08/04/ai-assisted-industry-research-ppt/">
+
+
+  <link rel="alternate" hreflang="en" href="https://caoyueyang.org/en/2026/08/04/ai-assisted-industry-research-ppt/">
+    <link rel="alternate" hreflang="x-default" href="https://caoyueyang.org/en/2026/08/04/ai-assisted-industry-research-ppt/">
+  <link rel="alternate" hreflang="zh-CN" href="https://caoyueyang.org/2026/08/04/ai-assisted-industry-research-ppt/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+<style>
+  @font-face {
+    font-family: "Font Awesome 5 Brands";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-brands-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-regular-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-solid-900.woff2") format("woff2");
+  }
+</style>
+
+  <title>How I completed an industry research project and an English PPT in three hours with AI | AndyCao's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="曹越洋的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <div class="container">
+    <div class="headband"></div>
+
+    <div class="site-rail">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <button
+      class="toggle"
+      type="button"
+      aria-label="Toggle navigation bar"
+      aria-expanded="false"
+      aria-controls="site-navigation"
+    >
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </button>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <img
+        class="site-brand-mark"
+        src="/images/brand/ac-mark-light.svg"
+        alt=""
+        aria-hidden="true"
+        width="30"
+        height="30"
+        decoding="async"
+      >
+      <h1 class="site-title">AndyCao's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav id="site-navigation" class="site-nav" aria-label="Primary navigation">
+  <div class="mobile-rail-profile" aria-label="AndyCao">
+    <img
+      class="mobile-rail-profile-image"
+      src="/images/avatar.jpg"
+      alt="AndyCao"
+      width="56"
+      height="56"
+      decoding="async"
+    >
+  <span class="mobile-rail-profile-copy">
+    <strong class="mobile-rail-profile-name">AndyCao</strong>
+    <span class="mobile-rail-profile-description">AI products, software systems, and applied research</span>
+  </span>
+</div>
+
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/en/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-work">
+
+    <a href="/en/work/" rel="section"><i class="fa fa-briefcase fa-fw"></i>Work</a>
+
+  </li>
+        <li class="menu-item menu-item-gallery">
+
+    <a href="/en/gallery/" rel="section"><i class="fa fa-camera-retro fa-fw"></i>Gallery</a>
+
+  </li>
+        <li class="menu-section-label" aria-hidden="true">Explore</li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/en/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/en/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/en/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+    <li class="menu-item menu-item-language">
+      
+  <div class="languages language-switcher">
+    <span class="language-switcher-label" aria-hidden="true">LANGUAGE</span>
+    <span class="language-switcher-options" role="group" aria-label="Switch language">
+      
+        
+        
+          
+        
+        
+          <span class="language-switcher-option is-current" data-language="en" data-href="/en/2026/08/04/ai-assisted-industry-research-ppt/" aria-current="page">EN</span>
+        
+        
+          <span class="language-switcher-divider" aria-hidden="true">/</span>
+        
+      
+        
+        
+          
+        
+        
+          <a class="language-switcher-option" href="/2026/08/04/ai-assisted-industry-research-ppt/" data-language="zh-CN" data-href="/2026/08/04/ai-assisted-industry-research-ppt/" hreflang="zh-CN" lang="zh-CN">中</a>
+        
+        
+      
+    </span>
+  </div>
+
+    </li>
+
+  </ul>
+  
+  <div class="mobile-rail-links" aria-label="External links">
+    <div class="mobile-rail-links-heading"><i class="fa fa-link fa-fw" aria-hidden="true"></i>
+      <span>Links</span>
+    </div>
+    <div class="mobile-rail-links-list">
+          <a href="https://github.com/GreatAndyC" class="mobile-rail-link" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw" aria-hidden="true"></i><span>GitHub</span></a>
+          <a href="/atom.xml" class="mobile-rail-link" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw" aria-hidden="true"></i><span>RSS</span></a>
+          <a href="http://www.google.com/" class="mobile-rail-link" title="Explore the World → http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank"><i class="fa fa-link fa-fw" aria-hidden="true"></i><span>Explore the World</span></a>
+    </div>
+  </div>
+
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+      </header>
+        <div class="site-rail-sidebar">
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar sidebar-with-toc">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview" hidden aria-hidden="true">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#One-interview-assignment-became-an-AI-workflow-experiment"><span class="nav-number">1.</span> <span class="nav-text">One interview assignment became an AI workflow experiment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-I-chose-software-development"><span class="nav-number">2.</span> <span class="nav-text">Why I chose software development</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-original-toolchain"><span class="nav-number">3.</span> <span class="nav-text">The original toolchain</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gemini-Pro-expanding-the-research-surface-and-narrowing-it-into-a-story"><span class="nav-number">4.</span> <span class="nav-text">Gemini Pro: expanding the research surface and narrowing it into a story</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NotebookLM-from-research-material-to-a-first-presentation"><span class="nav-number">5.</span> <span class="nav-text">NotebookLM: from research material to a first presentation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WPS-turning-generated-pages-into-a-deliverable-interview-deck"><span class="nav-number">6.</span> <span class="nav-text">WPS: turning generated pages into a deliverable interview deck</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Clicking-Slide-Deck-again-on-the-same-project"><span class="nav-number">7.</span> <span class="nav-text">Clicking Slide Deck again on the same project</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-this-workflow-can-move-to-Codex-today"><span class="nav-number">8.</span> <span class="nav-text">How this workflow can move to Codex today</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rebuilding-the-deck-with-Codex"><span class="nav-number">9.</span> <span class="nav-text">Rebuilding the deck with Codex</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Full-PPT-preview"><span class="nav-number">10.</span> <span class="nav-text">Full PPT preview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Download-the-PDF"><span class="nav-number">11.</span> <span class="nav-text">Download the PDF</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-I-learned-from-the-experiment"><span class="nav-number">12.</span> <span class="nav-text">What I learned from the experiment</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-AI-can-compress-research-and-production-time-but-not-problem-definition"><span class="nav-number">12.1.</span> <span class="nav-text">1. AI can compress research and production time, but not problem definition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-A-complete-looking-study-is-not-necessarily-an-evidence-complete-study"><span class="nav-number">12.2.</span> <span class="nav-text">2. A complete-looking study is not necessarily an evidence-complete study</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-The-point-of-an-AI-native-workflow-is-not-the-number-of-tools"><span class="nav-number">12.3.</span> <span class="nav-text">3. The point of an AI-native workflow is not the number of tools</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Publication-boundary-and-disclaimer"><span class="nav-number">13.</span> <span class="nav-text">Publication boundary and disclaimer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">14.</span> <span class="nav-text">References</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel" hidden aria-hidden="true">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="AndyCao"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">AndyCao</p>
+  <div class="site-description" itemprop="description">AI products, software systems, and applied research</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state" aria-label="Site statistics">
+      <div class="site-state-item site-state-posts">
+          <a href="/en/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/en/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/en/tags/">
+          
+        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/GreatAndyC" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.google.com/" title="http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank">Explore the World</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        </div>
+    </div>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <aside aria-label="Follow me on GitHub">
+    <a href="https://github.com/GreatAndyC" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+  </aside>
+
+
+    <main id="main-content" class="main" tabindex="-1">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article
+    itemscope
+    itemtype="http://schema.org/Article"
+    class="post-block"
+    lang="en"
+  >
+    <link itemprop="mainEntityOfPage" href="https://caoyueyang.org/en/2026/08/04/ai-assisted-industry-research-ppt/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="AndyCao">
+      <meta itemprop="description" content="AI products, software systems, and applied research">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="AndyCao's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          How I completed an industry research project and an English PPT in three hours with AI
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item post-meta-item-created">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2026-08-05 04:00:00" itemprop="dateCreated datePublished" datetime="2026-08-05T04:00:00+08:00">2026-08-05</time>
+            </span>
+              <span class="post-meta-item post-meta-item-updated">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-08-04 20:56:16" itemprop="dateModified" datetime="2026-08-04T20:56:16+08:00">2026-08-04</time>
+              </span>
+            <span class="post-meta-item post-meta-item-category">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item post-meta-item-count" title="Symbols count in article" aria-label="Symbols count in article: 11k">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text post-meta-item-text-full">Symbols count in article: </span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">Words: </span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item post-meta-item-reading-time" title="Reading time" aria-label="Reading time: 10 mins.">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text post-meta-item-text-full">Reading time &asymp;</span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">Read&asymp;</span>
+              <span>10 mins.</span>
+            </span>
+            <div class="post-description">A three-hour case study of using AI tools for industry research and presentation production.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>A three-hour case study of using AI tools for industry research and presentation production.</strong></p>
+<span id="more"></span>
+
+<blockquote>
+<p>Translation note: This English version was translated by Codex (GPT-5) on 2026-08-04. The source text is the corresponding Chinese post in this repository.</p>
+</blockquote>
+<h2 id="One-interview-assignment-became-an-AI-workflow-experiment"><a href="#One-interview-assignment-became-an-AI-workflow-experiment" class="headerlink" title="One interview assignment became an AI workflow experiment"></a>One interview assignment became an AI workflow experiment</h2><p>This article records a case-preparation process from a consulting-company interview a few months ago: how I researched an industry under a tight deadline and turned the result into an English PowerPoint presentation.</p>
+<p>The first round was an in-person interview. The interviewer later told me that I was the first person in my group to reach the second round. The second-round assignment was to choose a topic or industry I knew well, conduct research, and deliver a full presentation in English.</p>
+<p>I did not treat it as a traditional “search for information and make some slides” assignment. Instead, I treated it as a small AI-assisted delivery experiment: if AI can participate in so many workflows, can it also participate in industry research, argument development, and presentation production at the same time?</p>
+<p>I spent roughly three hours from the beginning of the research to the finished PPT. That is not enough time to complete a comprehensive industry study, but it is enough to turn an ambiguous prompt into a set of claims, charts, and presentation structure that can be explained clearly.</p>
+<h2 id="Why-I-chose-software-development"><a href="#Why-I-chose-software-development" class="headerlink" title="Why I chose software development"></a>Why I chose software development</h2><p>At the time, I was working on my own AI-native food-management product, <a target="_blank" rel="noopener" href="https://www.shiguangjiapp.com/">Shiguangji</a>, so I already had some practical intuition about how AI could change software development.</p>
+<p>My basic view was that AI would not affect only code generation. It would also enter requirements analysis, architecture, testing, documentation, deployment, and operations. I therefore chose software development in the high-tech sector and narrowed the topic to one question:</p>
+<blockquote>
+<p>When AI can generate code faster and faster, where does the real bottleneck in software engineering move?</p>
+</blockquote>
+<p>That question became the main thread of the deck. My conclusion was not that “AI will replace software engineers.” It was that AI may compress the implementation stage while moving more pressure into requirements definition, code review, system integration, security governance, and outcome verification.</p>
+<h2 id="The-original-toolchain"><a href="#The-original-toolchain" class="headerlink" title="The original toolchain"></a>The original toolchain</h2><p>At the time, I had a Google Gemini Pro subscription. The main tools I used were Gemini Pro’s Deep Research, NotebookLM, and WPS Office.</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Role in the case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gemini Pro &#x2F; Deep Research</td>
+<td>Search papers, company materials, and industry reports; narrow the research question; and produce a research draft with source leads</td>
+</tr>
+<tr>
+<td>NotebookLM</td>
+<td>Consolidate the research material and quickly generate a first presentation through Slide Deck</td>
+</tr>
+<tr>
+<td>WPS Office</td>
+<td>Adjust the NotebookLM output, including page layout, text, and visual details</td>
+</tr>
+<tr>
+<td>Human judgment</td>
+<td>Choose the topic, select the arguments, decide the narrative order, and prepare the final English delivery</td>
+</tr>
+</tbody></table>
+<p>The important point was not which tool was “the best.” It was how the tools were assigned different responsibilities: one expanded the research surface, one consolidated the material, and one assembled pages quickly. The final selection and expression still came from me.</p>
+<h2 id="Gemini-Pro-expanding-the-research-surface-and-narrowing-it-into-a-story"><a href="#Gemini-Pro-expanding-the-research-surface-and-narrowing-it-into-a-story" class="headerlink" title="Gemini Pro: expanding the research surface and narrowing it into a story"></a>Gemini Pro: expanding the research surface and narrowing it into a story</h2><p>I first used Gemini Pro’s Deep Research feature to investigate how AI could reshape software engineering. It could access and organize material from relevant paper databases, company websites, and industry reports, including papers on arXiv, public technical reports, and software-development research.</p>
+<p>The result was not just a list of search results. It was a research draft with citation leads. Through several rounds of conversation, I narrowed the broad question of “how will AI change software engineering?” into questions that could work in a presentation:</p>
+<ul>
+<li>Can AI-generated code outpace human review and integration capacity?</li>
+<li>How should AI-generated code be checked for semantics, security, and business correctness?</li>
+<li>Will software engineers move from implementation toward definition, orchestration, and evaluation?</li>
+<li>How do enterprise knowledge, design systems, and tool permissions become working context for AI?</li>
+</ul>
+<p>I then asked Gemini to help organize the presentation structure and draft the prompt for the slide content before passing the material to NotebookLM.</p>
+<h2 id="NotebookLM-from-research-material-to-a-first-presentation"><a href="#NotebookLM-from-research-material-to-a-first-presentation" class="headerlink" title="NotebookLM: from research material to a first presentation"></a>NotebookLM: from research material to a first presentation</h2><p>I imported the research material from Gemini into NotebookLM and used its Slide Deck feature to generate a first PPT.</p>
+<figure class="post-figure post-figure--portrait">
+  <img src="/images/posts/ai-native-software-engineering/notebooklm-slide-deck-ui.png" alt="" width="956" height="1316" loading="lazy" decoding="async" fetchpriority="high">
+  <figcaption>The Slide Deck entry point in NotebookLM.</figcaption>
+</figure>
+
+<p>NotebookLM was useful not simply because it placed text on slides, but because it converted the research material into a browsable narrative structure. For someone who needed to prepare an English presentation in a short amount of time, it reduced the distance between “research material” and “a story that can be presented.”</p>
+<h2 id="WPS-turning-generated-pages-into-a-deliverable-interview-deck"><a href="#WPS-turning-generated-pages-into-a-deliverable-interview-deck" class="headerlink" title="WPS: turning generated pages into a deliverable interview deck"></a>WPS: turning generated pages into a deliverable interview deck</h2><p>The pages generated by NotebookLM were not yet a final deliverable. They were closer to a content and layout draft. The title hierarchy, text density, chart proportions, and page rhythm still needed human adjustment.</p>
+<p>I used WPS to refine those details and align the visual language with the interview context, including page layout, colors, titles, and the interview company’s visual identity.</p>
+<p>The following examples show several pages from the generation and adjustment process. They lean toward a clean, professional, research-report style; the exact visual direction can be influenced by prompts and later layout work.</p>
+<div class="post-deck-gallery" aria-label="NotebookLM presentation examples">
+  <div class="post-deck-gallery__toolbar">
+    <strong>NotebookLM Slide Deck examples</strong>
+    <span class="post-deck-gallery__hint">Swipe or drag horizontally</span>
+  </div>
+
+  <div class="post-deck-gallery__track" tabindex="0" aria-label="NotebookLM presentation examples, horizontally scrollable">
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/notebooklm-example-01.png" alt="" width="774" height="414" loading="lazy" decoding="async">
+      <figcaption><strong>01</strong>An early NotebookLM-generated V-Bounce Model cover.</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/notebooklm-example-02.png" alt="" width="794" height="422" loading="lazy" decoding="async">
+      <figcaption><strong>02</strong>An early page about the efficiency paradox and software stability.</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/notebooklm-regenerated-example-01.png" alt="" width="1050" height="588" loading="lazy" decoding="async">
+      <figcaption><strong>03</strong>A regenerated efficiency-paradox page from 2026, with a noticeably different visual direction.</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/notebooklm-regenerated-example-02.png" alt="" width="1042" height="580" loading="lazy" decoding="async">
+      <figcaption><strong>04</strong>A regenerated page combining Stanford data with early-career role changes.</figcaption>
+    </figure>
+  </div>
+</div>
+
+<h2 id="Clicking-Slide-Deck-again-on-the-same-project"><a href="#Clicking-Slide-Deck-again-on-the-same-project" class="headerlink" title="Clicking Slide Deck again on the same project"></a>Clicking Slide Deck again on the same project</h2><p>On August 4, 2026, I opened the original NotebookLM project again and clicked Slide Deck without changing the source material.</p>
+<p>The regenerated pages were visibly different from the version created a few months earlier, especially in typography, chart layout, information hierarchy, and illustration style. The change may reflect updates to the model, prompt interpretation, and the product itself. It also shows that the output of an AI presentation tool is not a fixed template result.</p>
+<p>If AI tools are going to be part of a stable workflow, it is therefore not enough to record which button was clicked. The research material, prompts, human edits, and final acceptance checks also need to be preserved.</p>
+<h2 id="How-this-workflow-can-move-to-Codex-today"><a href="#How-this-workflow-can-move-to-Codex-today" class="headerlink" title="How this workflow can move to Codex today"></a>How this workflow can move to Codex today</h2><p>Tools change, but the workflow can remain. Today, the same sequence can be moved to web-based ChatGPT &#x2F; Deep Research and local Codex:</p>
+<ol>
+<li>Use a web-based Deep Research feature to gather public research and preserve source and citation leads.</li>
+<li>Use Codex or GPT Work to organize the research into an article, talk track, and presentation structure.</li>
+<li>In local Codex, create an isolated project directory, place the required source files and public assets inside it, and explicitly identify which files should be read and generated.</li>
+<li>Ask Codex to generate an editable PPTX or PDF, then check layout, sources, metric definitions, and rights boundaries page by page.</li>
+</ol>
+<p>The exact model names, subscription tiers, and permission options available in local Codex will change as the client evolves, so I would not treat a model label from one point in time as a permanent recommendation. A more durable description is to choose a capable GPT-5-series model in the current environment and enable higher permissions only when the project requires them.</p>
+<p>When full access is enabled, it is better to keep the work inside a clearly isolated project directory instead of allowing unbounded access to the personal file system. That makes file-based generation convenient while reducing the risk of unrelated personal files being misread, modified, or committed.</p>
+<h2 id="Rebuilding-the-deck-with-Codex"><a href="#Rebuilding-the-deck-with-Codex" class="headerlink" title="Rebuilding the deck with Codex"></a>Rebuilding the deck with Codex</h2><p>The original interview deck worked for the live presentation, but it was not suitable as a blog attachment in its original form. I therefore turned it into an independent reconstruction:</p>
+<ul>
+<li>Removed the original corporate logo, slogans, and locked brand layout;</li>
+<li>Did not directly reuse the original corporate illustrations, rocket, robot, or shield assets;</li>
+<li>Redrew the cover, process diagrams, connectors, footer, and charts;</li>
+<li>Classified numbers as Fact, Illustrative Model, Proposed Target, or To Verify;</li>
+<li>Reframed V-Bounce as Definition → Agentic Implementation → Verification;</li>
+<li>Added a <code>Human accountability</code> guardrail across AI generation, evaluation, and release decisions;</li>
+<li>Generated a six-slide, 16:9 PowerPoint whose objects remain editable.</li>
+</ul>
+<p>This version does not represent any company, client, or interviewer, and it is not an official version of the original corporate material. It is my retrospective reconstruction of the preparation process and a personal model of AI-native software engineering.</p>
+<h2 id="Full-PPT-preview"><a href="#Full-PPT-preview" class="headerlink" title="Full PPT preview"></a>Full PPT preview</h2><p>The complete six-slide independent reconstruction is below. Instead of stacking six large screenshots in the article, this section uses a horizontally scrollable HTML viewer that can be dragged on desktop and swiped on mobile.</p>
+<div class="post-deck-gallery" aria-label="AI-Native Software Engineering independent reconstruction">
+  <div class="post-deck-gallery__toolbar">
+    <strong>AI-Native Software Engineering · 6 slides</strong>
+    <span class="post-deck-gallery__hint">Swipe or drag to browse all slides</span>
+  </div>
+
+  <div class="post-deck-gallery__track" tabindex="0" aria-label="All AI-Native Software Engineering slides, horizontally scrollable">
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/slide-01.png" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+      <figcaption><strong>01</strong>Independent reconstruction cover: Context → Agents → Evaluation.</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/slide-02.png" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+      <figcaption><strong>02</strong>AI shifts the bottleneck from coding to the delivery system.</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/slide-03.png" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+      <figcaption><strong>03</strong>Evidence with the boundary between research, models, and verification visible.</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/slide-04.png" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+      <figcaption><strong>04</strong>The V-Bounce operating model: Definition → Implementation → Verification.</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/slide-05.png" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+      <figcaption><strong>05</strong>Context and role design: the Context Layer and Human Control Layer.</figcaption>
+    </figure>
+    <figure class="post-deck-gallery__slide">
+      <img src="/images/posts/ai-native-software-engineering/slide-06.png" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+      <figcaption><strong>06</strong>A 12-month pilot path: Foundation → Pilot → Scale → Maturity.</figcaption>
+    </figure>
+  </div>
+</div>
+
+<h2 id="Download-the-PDF"><a href="#Download-the-PDF" class="headerlink" title="Download the PDF"></a>Download the PDF</h2><p>The independent reconstruction is also available as a downloadable PDF:</p>
+<div class="post-artifact-card">
+  <p class="post-artifact-card__copy">
+    <strong>AI-Native Software Engineering · Protected PDF</strong>
+    <span class="post-artifact-card__meta">Readable without a password; editing and permission changes require the owner password.</span>
+  </p>
+  <a class="post-artifact-card__link" href="/downloads/ai-native-software-engineering-protected.pdf" download>Download PDF</a>
+</div>
+
+<p>This is PDF permission protection rather than access control: anyone with the link can read the file, while compliant PDF readers require the owner password to edit the document or change its permissions. The password is not included in the article, file name, or Git repository.</p>
+<h2 id="What-I-learned-from-the-experiment"><a href="#What-I-learned-from-the-experiment" class="headerlink" title="What I learned from the experiment"></a>What I learned from the experiment</h2><h3 id="1-AI-can-compress-research-and-production-time-but-not-problem-definition"><a href="#1-AI-can-compress-research-and-production-time-but-not-problem-definition" class="headerlink" title="1. AI can compress research and production time, but not problem definition"></a>1. AI can compress research and production time, but not problem definition</h3><p>Gemini expanded the search surface, NotebookLM converted research material into a presentation structure, and WPS helped with rapid layout work. But deciding what to research, which claims belonged in the main line, and which numbers could be published still required human judgment.</p>
+<h3 id="2-A-complete-looking-study-is-not-necessarily-an-evidence-complete-study"><a href="#2-A-complete-looking-study-is-not-necessarily-an-evidence-complete-study" class="headerlink" title="2. A complete-looking study is not necessarily an evidence-complete study"></a>2. A complete-looking study is not necessarily an evidence-complete study</h3><p>AI is very good at turning multiple sources into a smooth narrative. Smoothness is not the same as rigor. Before publishing, I had to recheck the source, sample, time window, and statistical definition of each number, and classify the content as:</p>
+<ul>
+<li><code>Fact</code>: a claim traceable to a clear source;</li>
+<li><code>Illustrative Model</code>: a model created to make a relationship understandable;</li>
+<li><code>Proposed Target</code>: a target that could be tested in a future pilot;</li>
+<li><code>To Verify</code>: content that still requires further checking.</li>
+</ul>
+<h3 id="3-The-point-of-an-AI-native-workflow-is-not-the-number-of-tools"><a href="#3-The-point-of-an-AI-native-workflow-is-not-the-number-of-tools" class="headerlink" title="3. The point of an AI-native workflow is not the number of tools"></a>3. The point of an AI-native workflow is not the number of tools</h3><p>This experience made me think of AI tools as replaceable nodes in a workflow: search tools expand the information surface, knowledge tools organize context, presentation tools accelerate expression, and the human defines the problem, sets boundaries, checks evidence, and owns the result.</p>
+<p>If AI is merely added to the old process, the team may only produce more material that needs review, faster. The deeper change is to redesign the relationship between definition, implementation, verification, and accountability.</p>
+<h2 id="Publication-boundary-and-disclaimer"><a href="#Publication-boundary-and-disclaimer" class="headerlink" title="Publication boundary and disclaimer"></a>Publication boundary and disclaimer</h2><p>This article is a personal retrospective of preparing for a consulting-company interview case. Research claims, charts, and operating-model ideas are separated into public-source evidence, personal synthesis, illustrative models, or content that still needs verification. The final PPT is an independent reconstruction and does not represent any company, client, or interviewer.</p>
+<p>The original interview PPT, original template, corporate brand assets, and unverified intermediate materials are not published as blog attachments. The images and PDF shown here are intended to explain the method and the final reconstruction.</p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://cloud.google.com/blog/products/ai-machine-learning/announcing-the-2025-dora-report">Google Cloud — 2025 DORA Report</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.anthropic.com/research/impact-software-development">Anthropic — Impact of AI on software development</a></li>
+<li><a target="_blank" rel="noopener" href="https://digitaleconomy.stanford.edu/publication/canaries-in-the-coal-mine-six-facts-about-the-recent-employment-effects-of-artificial-intelligence/">Stanford Digital Economy Lab — Canaries in the Coal Mine</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.figma.com/blog/introducing-figma-mcp-server/">Figma — Introducing the Figma MCP server</a></li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.03416">Cory Hymel — V-Bounce Engineering Paradigm</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NotebookLM/" rel="tag"># NotebookLM</a>
+              <a href="/tags/AI-Workflow/" rel="tag"># AI Workflow</a>
+              <a href="/tags/PPT/" rel="tag"># PPT</a>
+              <a href="/tags/Codex/" rel="tag"># Codex</a>
+              <a href="/tags/AI-Tools/" rel="tag"># AI Tools</a>
+              <a href="/tags/Industry-Research/" rel="tag"># Industry Research</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/en/2026/05/15/manus/" rel="prev" title="Trying out Manus to download Stanford CS146s locally">
+      <i class="fa fa-chevron-left"></i> Trying out Manus to download Stanford CS146s locally
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/en/2026/09/04/android-gpt-subscription/" rel="next" title="How to Get an Official GPT Subscription Using an Android Phone">
+      How to Get an Official GPT Subscription Using an Android Phone <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          <div class="sidebar-layout-spacer" aria-hidden="true"></div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2025 – 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">AndyCao</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">234k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">3:33</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/home-category-filter.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

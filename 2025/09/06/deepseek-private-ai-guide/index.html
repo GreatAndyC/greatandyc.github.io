@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<meta name="generator" content="Hexo 7.3.0">
+
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=362a27fe07cc">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="/images/brand/favicon.svg?v=362a27fe07cc">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/brand/apple-touch-icon.png?v=362a27fe07cc">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png?v=362a27fe07cc">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png?v=362a27fe07cc">
+  <link rel="mask-icon" href="/images/brand/ac-mark-dark.svg?v=362a27fe07cc" color="#111111">
+  <link rel="manifest" href="/images/brand/site.webmanifest?v=362a27fe07cc">
+
+<link rel="stylesheet" href="/css/main.css?v=362a27fe07cc">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"caoyueyang.org","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  
+<meta name="description" content="从官方服务繁忙的背景切入，梳理共享 API、云端部署和本地部署的差异，并记录一条更适合普通用户的私有化使用路径。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="曹越洋的博客">
+<meta property="og:url" content="https://caoyueyang.org/2025/09/06/deepseek-private-ai-guide/index.html">
+<meta property="og:site_name" content="曹越洋的博客">
+<meta property="og:description" content="从官方服务繁忙的背景切入，梳理共享 API、云端部署和本地部署的差异，并记录一条更适合普通用户的私有化使用路径。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://caoyueyang.org/images/posts/feishu-migration/deepseek-private-ai-guide/ai_era_wave_dalle.png">
+<meta property="article:published_time" content="2025-09-06T03:00:00.000Z">
+<meta property="article:modified_time" content="2026-09-05T13:39:16.718Z">
+<meta property="article:author" content="曹越洋">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="DeepSeek">
+<meta property="article:tag" content="API">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://caoyueyang.org/images/posts/feishu-migration/deepseek-private-ai-guide/ai_era_wave_dalle.png">
+
+<link rel="canonical" href="https://caoyueyang.org/2025/09/06/deepseek-private-ai-guide/">
+
+
+  <link rel="alternate" hreflang="en" href="https://caoyueyang.org/en/2025/09/06/deepseek-private-ai-guide/">
+    <link rel="alternate" hreflang="x-default" href="https://caoyueyang.org/en/2025/09/06/deepseek-private-ai-guide/">
+  <link rel="alternate" hreflang="zh-CN" href="https://caoyueyang.org/2025/09/06/deepseek-private-ai-guide/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+<style>
+  @font-face {
+    font-family: "Font Awesome 5 Brands";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-brands-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-regular-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-solid-900.woff2") format("woff2");
+  }
+</style>
+
+  <title>告别服务器繁忙：搭建 DeepSeek 私人 AI 的实践记录 | 曹越洋的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="曹越洋的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="container">
+    <div class="headband"></div>
+
+    <div class="site-rail">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <button
+      class="toggle"
+      type="button"
+      aria-label="切换导航栏"
+      aria-expanded="false"
+      aria-controls="site-navigation"
+    >
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </button>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/zh-CN/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <img
+        class="site-brand-mark"
+        src="/images/brand/ac-mark-light.svg"
+        alt=""
+        aria-hidden="true"
+        width="30"
+        height="30"
+        decoding="async"
+      >
+      <h1 class="site-title">曹越洋的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav id="site-navigation" class="site-nav" aria-label="主导航">
+  <div class="mobile-rail-profile" aria-label="曹越洋">
+    <img
+      class="mobile-rail-profile-image"
+      src="/images/avatar.jpg"
+      alt="曹越洋"
+      width="56"
+      height="56"
+      decoding="async"
+    >
+  <span class="mobile-rail-profile-copy">
+    <strong class="mobile-rail-profile-name">曹越洋</strong>
+    <span class="mobile-rail-profile-description">AI 产品、软件系统与应用研究</span>
+  </span>
+</div>
+
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/zh-CN/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-work">
+
+    <a href="/work/" rel="section"><i class="fa fa-briefcase fa-fw"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-gallery">
+
+    <a href="/gallery/" rel="section"><i class="fa fa-camera-retro fa-fw"></i>画廊</a>
+
+  </li>
+        <li class="menu-section-label" aria-hidden="true">浏览</li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/zh-CN/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/zh-CN/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/zh-CN/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+    <li class="menu-item menu-item-language">
+      
+  <div class="languages language-switcher">
+    <span class="language-switcher-label" aria-hidden="true">语言</span>
+    <span class="language-switcher-options" role="group" aria-label="切换语言">
+      
+        
+        
+          
+        
+        
+          <a class="language-switcher-option" href="/en/2025/09/06/deepseek-private-ai-guide/" data-language="en" data-href="/en/2025/09/06/deepseek-private-ai-guide/" hreflang="en" lang="en">EN</a>
+        
+        
+          <span class="language-switcher-divider" aria-hidden="true">/</span>
+        
+      
+        
+        
+          
+        
+        
+          <span class="language-switcher-option is-current" data-language="zh-CN" data-href="/2025/09/06/deepseek-private-ai-guide/" aria-current="page">中</span>
+        
+        
+      
+    </span>
+  </div>
+
+    </li>
+
+  </ul>
+  
+  <div class="mobile-rail-links" aria-label="外部链接">
+    <div class="mobile-rail-links-heading"><i class="fa fa-link fa-fw" aria-hidden="true"></i>
+      <span>友情链接</span>
+    </div>
+    <div class="mobile-rail-links-list">
+          <a href="https://github.com/GreatAndyC" class="mobile-rail-link" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw" aria-hidden="true"></i><span>GitHub</span></a>
+          <a href="/atom.xml" class="mobile-rail-link" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw" aria-hidden="true"></i><span>RSS</span></a>
+          <a href="http://www.google.com/" class="mobile-rail-link" title="走向世界 → http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank"><i class="fa fa-link fa-fw" aria-hidden="true"></i><span>走向世界</span></a>
+    </div>
+  </div>
+
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+      </header>
+        <div class="site-rail-sidebar">
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar sidebar-with-toc">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview" hidden aria-hidden="true">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-%E4%BB%80%E4%B9%88%E6%98%AF-AI%E3%80%81%E5%A4%A7%E6%A8%A1%E5%9E%8B%E3%80%81DeepSeek-R1-%E5%92%8C%E5%BC%80%E6%BA%90%E2%80%A6%E2%80%A6"><span class="nav-number">2.</span> <span class="nav-text">What: 什么是 AI、大模型、DeepSeek-R1 和开源……</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AI-Artificial-intelligence"><span class="nav-number">2.1.</span> <span class="nav-text">AI (Artificial intelligence)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B-Large-Language-Model"><span class="nav-number">2.2.</span> <span class="nav-text">大模型 (Large Language Model)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DeepSeek-R1"><span class="nav-number">2.3.</span> <span class="nav-text">DeepSeek-R1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E6%BA%90"><span class="nav-number">2.4.</span> <span class="nav-text">开源</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88Deepseek%E8%A6%81%E5%BC%80%E6%BA%90%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">为什么Deepseek要开源？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E6%BA%90%E7%9A%84%E5%BD%B1%E5%93%8D%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">4.</span> <span class="nav-text">开源的影响是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B9%81%E5%BF%99%E3%80%81API-%E8%B0%83%E7%94%A8"><span class="nav-number">5.</span> <span class="nav-text">Why: 为什么服务器繁忙、API 调用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B9%81%E5%BF%99%EF%BC%9F"><span class="nav-number">5.1.</span> <span class="nav-text">为什么服务器繁忙？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81-API-%E8%B0%83%E7%94%A8"><span class="nav-number">5.2.</span> <span class="nav-text">为什么要 API 调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API-%E8%B0%83%E7%94%A8"><span class="nav-number">5.3.</span> <span class="nav-text">API 调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%91%E7%AB%AF%E9%83%A8%E7%BD%B2"><span class="nav-number">5.4.</span> <span class="nav-text">云端部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2"><span class="nav-number">5.5.</span> <span class="nav-text">本地部署</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%A7%81%E6%9C%89%E5%8C%96%E9%83%A8%E7%BD%B2%E8%A6%81%E6%94%B6%E8%B4%B9%EF%BC%9F%E8%80%8C%E5%AE%98%E7%BD%91%E5%85%8D%E8%B4%B9%EF%BC%9F"><span class="nav-number">6.</span> <span class="nav-text">为什么私有化部署要收费？而官网免费？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E5%A4%96%E8%AF%9D%EF%BC%9A%E5%85%B3%E4%BA%8E-AI-%E6%97%B6%E4%BB%A3%E5%B9%BF%E5%91%8A%E5%92%8C%E9%9A%90%E7%A7%81%E7%9A%84%E4%B8%80%E4%BA%9B%E6%83%B3%E6%B3%95"><span class="nav-number">7.</span> <span class="nav-text">题外话：关于 AI 时代广告和隐私的一些想法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-%E6%80%8E%E4%B9%88%E7%A7%81%E6%9C%89%E5%8C%96%E9%83%A8%E7%BD%B2%E2%80%94%E2%80%94%E4%BB%A5-Chatbox-%E4%B8%BA%E4%BE%8B"><span class="nav-number">8.</span> <span class="nav-text">How: 怎么私有化部署——以 Chatbox 为例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E5%AE%98%E7%BD%91%E4%B8%8B%E8%BD%BD%E8%BD%AF%E4%BB%B6"><span class="nav-number">8.1.</span> <span class="nav-text">第一步：官网下载软件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E8%BF%9B%E5%85%A5%E5%AE%9A%E4%BB%B7%E9%A1%B5%E9%9D%A2"><span class="nav-number">8.2.</span> <span class="nav-text">第二步：进入定价页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E6%A0%B9%E6%8D%AE%E8%87%AA%E5%B7%B1%E7%9A%84%E9%9C%80%E6%B1%82%E9%80%89%E6%8B%A9%E8%AE%A2%E9%98%85%E8%AE%A1%E5%88%92%E5%B9%B6%E6%89%93%E9%92%B1"><span class="nav-number">8.3.</span> <span class="nav-text">第三步：根据自己的需求选择订阅计划并打钱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E6%9F%A5%E7%9C%8B%E8%87%AA%E5%B7%B1%E7%9A%84-API-key"><span class="nav-number">8.4.</span> <span class="nav-text">第四步：查看自己的 API key</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5%EF%BC%9A%E6%89%93%E5%BC%80-Chatbox-%E5%BA%94%E7%94%A8%EF%BC%8C%E5%A4%8D%E5%88%B6%E7%B2%98%E8%B4%B4%E8%87%AA%E5%B7%B1%E7%9A%84-Api-Key-%E5%88%B0-App-%E9%87%8C"><span class="nav-number">8.5.</span> <span class="nav-text">第五步：打开 Chatbox 应用，复制粘贴自己的 Api Key 到 App 里</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%85%AD%E6%AD%A5%EF%BC%8C%E5%BC%80%E5%A7%8B%E4%BD%BF%E7%94%A8%E5%90%A7%EF%BC%81"><span class="nav-number">8.6.</span> <span class="nav-text">第六步，开始使用吧！</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">9.</span> <span class="nav-text">结语</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel" hidden aria-hidden="true">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="曹越洋"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">曹越洋</p>
+  <div class="site-description" itemprop="description">AI 产品、软件系统与应用研究</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state" aria-label="站点统计">
+      <div class="site-state-item site-state-posts">
+          <a href="/zh-CN/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/zh-CN/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/zh-CN/tags/">
+          
+        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/GreatAndyC" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.google.com/" title="http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank">走向世界</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        </div>
+    </div>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <aside aria-label="Follow me on GitHub">
+    <a href="https://github.com/GreatAndyC" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+  </aside>
+
+
+    <main id="main-content" class="main" tabindex="-1">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article
+    itemscope
+    itemtype="http://schema.org/Article"
+    class="post-block"
+    lang="zh-CN"
+  >
+    <link itemprop="mainEntityOfPage" href="https://caoyueyang.org/2025/09/06/deepseek-private-ai-guide/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="曹越洋">
+      <meta itemprop="description" content="AI 产品、软件系统与应用研究">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="曹越洋的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          告别服务器繁忙：搭建 DeepSeek 私人 AI 的实践记录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item post-meta-item-created">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-09-06 11:00:00" itemprop="dateCreated datePublished" datetime="2025-09-06T11:00:00+08:00">2025-09-06</time>
+            </span>
+              <span class="post-meta-item post-meta-item-updated">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-09-05 21:39:16" itemprop="dateModified" datetime="2026-09-05T21:39:16+08:00">2026-09-05</time>
+              </span>
+            <span class="post-meta-item post-meta-item-category">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/zh-CN/categories/Tutorial/" itemprop="url" rel="index"><span itemprop="name">教程</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item post-meta-item-count" title="本文字数" aria-label="本文字数：5.9k">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text post-meta-item-text-full">本文字数：</span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">字数：</span>
+              <span>5.9k</span>
+            </span>
+            <span class="post-meta-item post-meta-item-reading-time" title="阅读时长" aria-label="阅读时长：5 分钟">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text post-meta-item-text-full">阅读时长 &asymp;</span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">阅读&asymp;</span>
+              <span>5 分钟</span>
+            </span>
+            <div class="post-description">从官方服务繁忙的背景切入，梳理共享 API、云端部署和本地部署的差异，并记录一条更适合普通用户的私有化使用路径。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/ai_era_wave_dalle.png" alt="" loading="eager" decoding="async" fetchpriority="high">
+  <figcaption>DALL-E-3 生成的 AI 浪潮示意图</figcaption>
+</figure>
+
+<p>想直接实践的朋友可以跳到 How 部分直接开始动手搭建。</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>随着ChatGPT的横空出世，关于AI和大模型LLM的讨论一直保持着极高的热度。开发出人气推理模型Deepseek-R1的当红炸子鸡杭州深度求索公司传闻不断——“美国封锁”、“总理接见”、“AppStore全球榜首”、“创始人在武警保护下回家过年”……融合了科技自信、中美争霸、商业前沿等事件于一身的Deepseek在今天已然成为了“AI”在中国的代名词。</p>
+<p>当你发现楼下剪头发的大叔大妈、常年闲云野鹤的爷爷奶奶也开始神秘兮兮地和你讨论起了AI，你就应该意识到，AI时代的巨浪已经到来，我们都无法置身事外。</p>
+<p>然而作为一个普通用户，相信大家目前遇到的最大的问题是：使用Deepseek官方的时候，小鲸鱼下面的动画转动半天，结果却回复你“已深度思考——服务器繁忙，请稍后再试。”</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/deepseek_server_busy_error.png" alt="" loading="lazy" decoding="async">
+  <figcaption>DeepSeek 服务器繁忙提示</figcaption>
+</figure>
+
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/deepseek_on_thinking_busy.png" alt="" loading="lazy" decoding="async">
+  <figcaption>深度思考等待状态</figcaption>
+</figure>
+
+<p>因此本文试图通过来自网络的公开信息，简单解释什么是AI、为什么要私有化部署AI、以及怎么最快捷部署自己的AI服务。</p>
+<p>注：本文是科普向的参考文章，至于为什么是科普向，因为太难的我也不懂。</p>
+<h2 id="What-什么是-AI、大模型、DeepSeek-R1-和开源……"><a href="#What-什么是-AI、大模型、DeepSeek-R1-和开源……" class="headerlink" title="What: 什么是 AI、大模型、DeepSeek-R1 和开源……"></a>What: 什么是 AI、大模型、DeepSeek-R1 和开源……</h2><h3 id="AI-Artificial-intelligence"><a href="#AI-Artificial-intelligence" class="headerlink" title="AI (Artificial intelligence)"></a>AI (Artificial intelligence)</h3><p><strong>定义</strong>：人工智能是一个构建能够推理、学习和行动的计算机和机器的科学领域，这种推理、学习和行动通常需要人类智力，或者涉及超出人类分析能力的数据规模。AI 是一个广博的领域，涵盖许多不同的学科，包括计算机科学、数据分析和统计、硬件和软件工程、语言学、神经学，甚至哲学和心理学。</p>
+<p>在业务使用的操作层面上，AI 是一组主要基于机器学习和深度学习的技术，用于数据分析、预测、对象分类、自然语言处理、推荐、智能数据检索等等。<br><a target="_blank" rel="noopener" href="https://cloud.google.com/learn/what-is-artificial-intelligence?hl=zh-CN">https://cloud.google.com/learn/what-is-artificial-intelligence?hl=zh-CN</a></p>
+<h3 id="大模型-Large-Language-Model"><a href="#大模型-Large-Language-Model" class="headerlink" title="大模型 (Large Language Model)"></a>大模型 (Large Language Model)</h3><p><strong>定义</strong>：大语言模型，是由具有大量参数（通常数十亿个权重或更多）的人工神经网络组成的一类语言模型，使用自监督学习或半监督学习对大量未标记文本进行训练。<br><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B">https://zh.wikipedia.org/wiki/%E5%A4%A7%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B</a></p>
+<h3 id="DeepSeek-R1"><a href="#DeepSeek-R1" class="headerlink" title="DeepSeek-R1"></a>DeepSeek-R1</h3><p><strong>定义</strong>：R1是Reasoning 1的缩写，指Deepseek公司开发的第一代推理模型的名字。在2025年1月20日开源以来，以其价格低廉但性能却能媲美顶尖闭源产品的特点，迅速引发全球关注。</p>
+<p>用一个示意图来说明就是，DeepseekR1是一个有推理能力的大模型、是目前被广泛应用的AI模型之一</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/deepseek_r1_concept_logic.png" alt="" loading="lazy" decoding="async">
+  <figcaption>DeepSeek-R1 概念示意</figcaption>
+</figure>
+
+<p>Deepseek-R1和Kimi、豆包、ChatGPT等模型有什么区别：目前综合成本和中文推理能力来说，Deepseek-R1的能力最强</p>
+<h3 id="开源"><a href="#开源" class="headerlink" title="开源"></a>开源</h3><p><strong>定义</strong>：开源是一种分散的生产模式，允许任何人修改和共享技术，因为其设计可公开访问。该术语起源于软件开发环境，表示软件符合某些自由发布标准。<a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/what-is/open-source/">https://aws.amazon.com/cn/what-is/open-source/</a><br>目的是通过公开基础资源，让更多人参与到学习和建设中来</p>
+<h2 id="为什么Deepseek要开源？"><a href="#为什么Deepseek要开源？" class="headerlink" title="为什么Deepseek要开源？"></a>为什么Deepseek要开源？</h2><p>笔者认为既有商业上的考量，也有公益的贡献。<br>相关讨论可见：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/11072234148">https://www.zhihu.com/question/11072234148</a><br><a target="_blank" rel="noopener" href="https://finance.sina.com.cn/money/fund/fundzmt/2025-02-04/doc-ineiirxc2794659.shtml">https://finance.sina.com.cn/money/fund/fundzmt/2025-02-04/doc-ineiirxc2794659.shtml</a></p>
+<h2 id="开源的影响是什么？"><a href="#开源的影响是什么？" class="headerlink" title="开源的影响是什么？"></a>开源的影响是什么？</h2><p>引发美国科技界震动&#x2F;关注、登上苹果App Store全球 157 个国家下载榜榜首、人才招聘&#x2F;资金投资供不应求。</p>
+<p>显然开源是一个成功的战略</p>
+<p>最简单理解，Deepseek-R1可以看作一本当前物美价廉的“答案之书”，任何人都可以下载搬运给自己使用，你给他任何问题，它就会给你一个八九不离十的答案。只是你要让这个“答案之书”运行起来，需要强劲配备配套的基础设施和昂贵的显卡——就好比原神你可以免费玩，但是你用老人机肯定是运行不了的。</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/answer_book_comparison_dalle.png" alt="" loading="lazy" decoding="async">
+  <figcaption>DALL-E-3 生成的答案之书示意图</figcaption>
+</figure>
+
+<h2 id="Why-为什么服务器繁忙、API-调用"><a href="#Why-为什么服务器繁忙、API-调用" class="headerlink" title="Why: 为什么服务器繁忙、API 调用"></a>Why: 为什么服务器繁忙、API 调用</h2><h3 id="为什么服务器繁忙？"><a href="#为什么服务器繁忙？" class="headerlink" title="为什么服务器繁忙？"></a>为什么服务器繁忙？</h3><p>1.大量的本土访问：连老大爷都开始用了，再加上数量巨大的有需要高强度使用的苦逼硕博，国内访问量可想而知，在运维团队没能跟上的情况下，只能出台限制措施。</p>
+<p>2.国外访问：如前文所言Deepseek App登顶全球下载榜首，带来了更大的服务器压力，由于频繁遭受攻击，现在已关闭国外IP的注册</p>
+<p>3.竞争对手的网络攻击<br>虚假的商战：不断更新版本抢占市场<br>真实的商战：派黑客攻击对方服务器</p>
+<p>所以并不是因为你问了它奇怪的问题导致被“盯上”或“封号”，当然如果真的被封号了，我觉得你得反思一下你平时都在问啥问题。</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/donnie_yen_puzzled_meme.png" alt="" loading="lazy" decoding="async">
+  <figcaption>图源：甄子丹</figcaption>
+</figure>
+
+<h3 id="为什么要-API-调用"><a href="#为什么要-API-调用" class="headerlink" title="为什么要 API 调用"></a>为什么要 API 调用</h3><p>除了官网网页和APP使用Deepseek-R1以外，还可以通过共享API调用、云端部署和本地部署来使用Deepseek-R1，隐私程度递增。</p>
+<h3 id="API-调用"><a href="#API-调用" class="headerlink" title="API 调用"></a>API 调用</h3><p><strong>API定义</strong>：是一种接口，它定义了软件组件或系统之间如何进行通信和交互的规则和规范。 它允许开发者在不了解底层实现细节的情况下，使用其他软件的功能，从而实现软件的模块化、重用性、互操作性和高效开发。</p>
+<p>如果把获取Deepseek-R1的回复比喻成吃到一个美味佳肴。</p>
+<p>API调用是从大饭馆（各大互联网公司）叫外卖、云端部署是租个专业厨房（服务器）做菜（你可以做给自己吃，甚至可以发展自己的外卖业务）、本地部署是在自己家的豪宅里装专业厨房做菜</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/api_request_response_flowchart.png" alt="" loading="lazy" decoding="async">
+  <figcaption>API 请求与响应流程图</figcaption>
+</figure>
+
+<p>图中1-4显示了获取Deepseek回复的过程：</p>
+<ol>
+<li>用户发起请求： 用户 (用户1, 用户2, 用户3…) 通过手机等设备，经由网络 (无线信号图标所示)，向 API接口发送服务请求 (例如，输入文字、图片等)。</li>
+<li>API 转发请求至模型：API接口接收到用户请求后，将请求转发给 Deepseek-R1模型 进行处理。<br>3-4. API 返回模型结果：Deepseek-R1模型处理完用户请求后，将结果返回给API接口，API接口再通过网络将结果返回给用户。用户最终在设备上接收到 Deepseek-R1 模型的回复。</li>
+</ol>
+<p>简而言之，流程就是：用户请求 -&gt; API -&gt; Deepseek-R1模型 (云服务器支撑) -&gt; API -&gt; 用户回复</p>
+<h3 id="云端部署"><a href="#云端部署" class="headerlink" title="云端部署"></a>云端部署</h3><p>和共享API调用的区别在于，这是你独享的，类似于公交车和私家车的区别，也可以理解为独占的API调用</p>
+<h3 id="本地部署"><a href="#本地部署" class="headerlink" title="本地部署"></a>本地部署</h3><p>那么本地部署廉价部署大模型就不可能了吗？显然还是有解决方案的</p>
+<p>通过量化和蒸馏等技术，让模型的运行需求降低，不过同样的也会带来一些诸如回答问题不够准确，回答速度慢等问题，以下是一些参考配置，相关教程可自行搜索。</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/deepseek_local_deploy_hardware_spec.png" loading="lazy" decoding="async">
+  <figcaption>
+    <a href="https://fisherdaddy.com/posts/deepseek-r1-local-deployment-hardware-guide/" target="_blank" rel="noopener">
+      本地部署硬件参考
+    </a>
+  </figcaption>
+</figure>
+
+<p>注：以”DeepSeek-R1-Distill-Qwen-1.5B”为例，Distill指“知识蒸馏”技术，Qwen为阿里云训练的的通义千问大模型，1.5B指参数量为15亿 (1.5 Billion)，这个数字越大就越“聪明“。</p>
+<p>因此”DeepSeek-R1-Distill-Qwen-1.5B”指DeepSeek 团队开发的、R1版本的模型。它是一个经过知识蒸馏技术训练得到的模型，基于或衍生自阿里云的通义千问 (Qwen) 模型架构，并且模型的大小约为 15亿参数。以此类推，其他模型命名方式也类似</p>
+<p>满血版和参数量最小蒸馏版的区别大概就是如图下派大星的区别</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/distill_vs_full_model_patric_meme.png" alt="" loading="lazy" decoding="async">
+  <figcaption>满血版与蒸馏版对比示意</figcaption>
+</figure>
+
+<p>本地部署的大模型的优点在于，只有硬件成本费用、完全离线，隐私保护到最高，而且你还可以通过一些“越狱”方法，解开大模型的能力限制，限于篇幅和可能的法律风险，此处就不多介绍。</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/dragon_raja_finger_eva_cyber.png" alt="" loading="lazy" decoding="async">
+  <figcaption>参考《龙族》芬格尔与 Eva</figcaption>
+</figure>
+ 
+<h2 id="为什么私有化部署要收费？而官网免费？"><a href="#为什么私有化部署要收费？而官网免费？" class="headerlink" title="为什么私有化部署要收费？而官网免费？"></a>为什么私有化部署要收费？而官网免费？</h2><p>这时候可能有人问了，“我用网页版豆包、Deepseek都是免费，怎么你说的这些都要收钱，要我付钱，想都别想，我只想白嫖。”</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/free_rider_logic_meme.png" alt="" loading="lazy" decoding="async">
+  <figcaption>免费与付费的逻辑对比</figcaption>
+</figure>
+
+<p>这里就不得不提一些商业上的逻辑。</p>
+<p>官网免费版是普惠服务，资源有限，而私有化部署需要提供更稳定、更专属的资源，成本更高。<br>现在AI大模型的商业战争还是群雄逐鹿，或许三分天下的时候，因此现在还是烧钱抢占用户的时候，自然不会收钱，等谁能统一天下的时候广告就会随之而来。</p>
+<p>而本文讲的部署、调用API，服务器运行着就有场地费、电费、网络费等开支，不可能免费提供的，不过你要相信，只需要一点点的费用，它创造的价值、提升的效率肯定是物有所值的。</p>
+<h2 id="题外话：关于-AI-时代广告和隐私的一些想法"><a href="#题外话：关于-AI-时代广告和隐私的一些想法" class="headerlink" title="题外话：关于 AI 时代广告和隐私的一些想法"></a>题外话：关于 AI 时代广告和隐私的一些想法</h2><figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/personalized_ads_privacy_leak.png" alt="" loading="lazy" decoding="async">
+  <figcaption>个性化广告与隐私</figcaption>
+</figure>
+
+<p>上图是笔者在近期在某电商平台搜索了电子书阅读器后，出现在朋友圈的广告，虽然笔者做决策的时候会考虑很多因素，但是对于大部分人来说，广告会在很大程度上影响、诱导用户的行为，这在AI时代会是一个更大的问题。</p>
+<p>举个例子，你在和AI的多次对话中暴露了自己的学校、住址、经济情况等信息，AI识别出你的画像是：学历知识水平较低、家庭经济困难、和家人朋友疏远、性格孤僻喜欢冒险、负债30万。假如某一天晚上在你伤心欲绝希望得到AI的安慰的时候角落里面弹出一个高薪招聘广告，你真的能保证自己不会受到影响吗？</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/no_more_bets_scam_movie_still.png" alt="" loading="lazy" decoding="async">
+  <figcaption>图源：金晨《孤注一掷》</figcaption>
+</figure>
+
+<p>在信息化的当代，信息完全不泄露几乎不可能，我们能做的就是尽可能少地暴露自己的隐私，例如不使用来路不明的AI软件和接口，尽量少暴露自己的个人信息，实在不行，在开头加上“我有一个朋友”。</p>
+<h2 id="How-怎么私有化部署——以-Chatbox-为例"><a href="#How-怎么私有化部署——以-Chatbox-为例" class="headerlink" title="How: 怎么私有化部署——以 Chatbox 为例"></a>How: 怎么私有化部署——以 Chatbox 为例</h2><p>如果你说，上面叽里咕噜讲一大堆，我文科生看不懂啊，写的什么玩意，什么API调用云服务器的<br>我一看到数学、代码就头晕眼花紧张焦虑干呕盗汗，有没有简单像官网那样下载安装一键可用的啊（“我外卖都不会叫，有没有直接喂到我嘴里的”）</p>
+<p>有的 兄弟 有的 </p>
+<p>虽然不是官网那样即开即用，但是只要注册账号，配置好应用之后就可以用了</p>
+<p>就是这款开源软件Chatbox</p>
+<p>官网：<a target="_blank" rel="noopener" href="https://chatboxai.app/zh">https://chatboxai.app/zh</a><br>根据软件的关于页面，开发者是在腾讯做软件工程师的Benn，开发这个工具软件的初衷为了方便自己，后面做大了便成为了方便大家</p>
+<p>声明：笔者没有收钱（甚至为了试验这个API能不能用花了28.96RMB），如果因为本文Chatbox的开发者收入大增，看到了可以给我结一下广告费。</p>
+<p>目前这个项目在代码托管网站Github上面已经收获了30K（非常高）的Star(可以理解为点赞)</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_github_star_ranking.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox GitHub Star 情况</figcaption>
+</figure>
+
+<p>三端适配，购买了API和token之后经过简单配置就可以使用了</p>
+<p>Token可以简单理解为余额，生成文字和理解文字都会消耗token产生费用。</p>
+<p>笔者使用Chatbox的API，问了3个问题，包含思考在内一共大约3600个中文字符，消耗了4514个token，供参考计算价格。</p>
+<p>以下是Step By Step的教程：</p>
+<h3 id="第一步：官网下载软件"><a href="#第一步：官网下载软件" class="headerlink" title="第一步：官网下载软件"></a>第一步：官网下载软件</h3><figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_official_download_page.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox 官方下载页</figcaption>
+</figure>
+
+<p>首先登录网站官网：<a target="_blank" rel="noopener" href="https://chatboxai.app/zh">Chatbox AI 官网</a>，按照自己需求下载安装客户端。</p>
+<h3 id="第二步：进入定价页面"><a href="#第二步：进入定价页面" class="headerlink" title="第二步：进入定价页面"></a>第二步：进入定价页面</h3><figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_pricing_plans_step2.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox 定价页面</figcaption>
+</figure>
+
+<h3 id="第三步：根据自己的需求选择订阅计划并打钱"><a href="#第三步：根据自己的需求选择订阅计划并打钱" class="headerlink" title="第三步：根据自己的需求选择订阅计划并打钱"></a>第三步：根据自己的需求选择订阅计划并打钱</h3><figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_sub_plan_detail_part1.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox 订阅方案 1</figcaption>
+</figure>
+
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_sub_plan_detail_part2.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox 订阅方案 2</figcaption>
+</figure>
+
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_payment_method_selection.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox 支付方式</figcaption>
+</figure>
+
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_order_confirmation_page.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox 订单确认页</figcaption>
+</figure>
+
+<p>请务必在此处填写正确的邮箱，这是找回API Key的唯一凭证</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_email_verification_input.png" alt="" loading="lazy" decoding="async">
+  <figcaption>邮箱验证输入页</figcaption>
+</figure>
+
+<p>笔者建议：不要买太久的，因为AI发展速度太快，说不定未来没多久就有某公司帮家人们把价格打下来了。</p>
+<h3 id="第四步：查看自己的-API-key"><a href="#第四步：查看自己的-API-key" class="headerlink" title="第四步：查看自己的 API key"></a>第四步：查看自己的 API key</h3><p>支付成功后在跳转的网页可以查看Key，也会在邮箱受到Key和使用指南</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_api_key_web_view.png" alt="" loading="lazy" decoding="async">
+  <figcaption>API Key 网页视图</figcaption>
+</figure>
+
+<h3 id="第五步：打开-Chatbox-应用，复制粘贴自己的-Api-Key-到-App-里"><a href="#第五步：打开-Chatbox-应用，复制粘贴自己的-Api-Key-到-App-里" class="headerlink" title="第五步：打开 Chatbox 应用，复制粘贴自己的 Api Key 到 App 里"></a>第五步：打开 Chatbox 应用，复制粘贴自己的 Api Key 到 App 里</h3><figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_app_settings_entry.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox 应用设置入口</figcaption>
+</figure>
+
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/chatbox_api_key_config_input.png" alt="" loading="lazy" decoding="async">
+  <figcaption>Chatbox API Key 配置输入</figcaption>
+</figure>
+
+<h3 id="第六步，开始使用吧！"><a href="#第六步，开始使用吧！" class="headerlink" title="第六步，开始使用吧！"></a>第六步，开始使用吧！</h3><p>如果你不想用Chatbox的API，你还可以使用其他API供应商的服务，因为Deepseek开源了他们的大模型，因此有能力部署满血版的公司都开始搭建运行在自己服务器的大模型，并且提供API，而且现在为了吸引客户，都有不少的免费额度，但是相对来说会稍微复杂一些。</p>
+<p>API供应商：阿里云、腾讯云、火山引擎、硅基流动、商汤科技等</p>
+<p>火山引擎（字节跳动）：免费50w Token<br>官方网站：<a target="_blank" rel="noopener" href="https://www.volcengine.com/">https://www.volcengine.com/</a></p>
+<p>硅基流动：邀请送14元优惠券<br>官方网站<a target="_blank" rel="noopener" href="https://siliconflow.cn/zh-cn/">https://siliconflow.cn/zh-cn/</a></p>
+<p>商汤大装置云：限时2000w Token<br>官方网站<a target="_blank" rel="noopener" href="https://www.sensecore.cn/?lang=zh-CN">https://www.sensecore.cn/?lang=zh-CN</a></p>
+<p>以及淘宝上各种的杂七杂八API供应商<br>*对于非大型公司的API请警惕隐私泄露问题</p>
+<p>关于如何获得这些平台的API使用指南：在谷歌&#x2F;必应&#x2F;小红书&#x2F;知乎&#x2F;抖音&#x2F;快手&#x2F;Bilibili等社交媒体、搜索引擎上搜索相关关键词，然后一个个去找详细的教程，相信聪明好学的你肯定可以找到答案</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/eight_immortals_search_tutorial.png" alt="" loading="lazy" decoding="async">
+  <figcaption>八仙过海各显神通</figcaption>
+</figure>
+
+<p>不过如果你一毛钱都不想花、又不愿意稍微动点脑筋读一下文档自己研究、教学都塞到你嘴边了你也不看，然后你还想白嫖使用最新的科技产品</p>
+<p>那你应该得知道这个不可能三角</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/impossible_triangle_ai_tech.png" alt="" loading="lazy" decoding="async">
+  <figcaption>AI 不可能三角</figcaption>
+</figure>
+
+<p>对此，考研英语教师刘晓燕的评价是：</p>
+<blockquote>
+<p>回家吧，孩子，回家吧。你比较适合做一摊狗屎。</p>
+</blockquote>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>可以预见的未来，随着机器人和人工智能的发展，很多基础的岗位都将被替代，那么我们作为人本身的价值是什么呢？</p>
+<p>Deepseek给我的回复是：<br>“人类真正的危机不在于被替代，而在于用旧时代的价值框架衡量新时代的可能性。当机器接管确定性领域时，我们反而获得了探索不确定性的自由——这正是文明演进最珍贵的动力。你的价值不在于和AI竞争效率，而在于开拓那些尚未被算法定义的疆域。“</p>
+<p>笔者曰：正如《天才基本法》里说的那样——“一以贯之的努力，不得懈怠的人生。每天的微小积累会决定最终结果，这就是答案。”与其过分担忧未来，不如着眼眼下，在AI时代的浪潮中，做一个英勇向前的浪花。</p>
+<figure class="post-figure">
+  <img src="/images/posts/feishu-migration/deepseek-private-ai-guide/unplugging_ai_server_humor.png" alt="" loading="lazy" decoding="async">
+  <figcaption>拔 AI 服务器电源的幽默示意</figcaption>
+</figure>
+
+<p>*大家还是要多加锻炼，如果实在到了不可控的地步，还可以做拔AI服务器电源运动的先锋攻坚队，在活着的人里混口饭吃应该还是不难的。</p>
+<p>版权所有<br>转载请联系后台<br>关键词：#AI #人工智能 #Deepsekk </p>
+<p>赞赏：如果觉得这篇文章写的不错可以给我打钱，填补我花钱买Chatbox订阅花掉的28.96元人民币的开支</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/zh-CN/tags/AI/" rel="tag"># AI</a>
+              <a href="/zh-CN/tags/DeepSeek/" rel="tag"># DeepSeek</a>
+              <a href="/zh-CN/tags/API/" rel="tag"># API</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/09/01/Full-Review-of-Building-a-Blog-with-GitHub-and-Hexo/" rel="prev" title="基于github和hexo的博客搭建全流程回顾">
+      <i class="fa fa-chevron-left"></i> 基于github和hexo的博客搭建全流程回顾
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/09/25/swimming/" rel="next" title="游泳">
+      游泳 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          <div class="sidebar-layout-spacer" aria-hidden="true"></div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2025 – 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">曹越洋</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">234k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:33</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/home-category-filter.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

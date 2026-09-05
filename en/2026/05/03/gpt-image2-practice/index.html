@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<meta name="generator" content="Hexo 7.3.0">
+
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=362a27fe07cc">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="/images/brand/favicon.svg?v=362a27fe07cc">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/brand/apple-touch-icon.png?v=362a27fe07cc">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png?v=362a27fe07cc">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png?v=362a27fe07cc">
+  <link rel="mask-icon" href="/images/brand/ac-mark-dark.svg?v=362a27fe07cc" color="#111111">
+  <link rel="manifest" href="/images/brand/site.webmanifest?v=362a27fe07cc">
+
+<link rel="stylesheet" href="/css/main.css?v=362a27fe07cc">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"caoyueyang.org","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  
+<meta name="description" content="A creative practice with the GPT Image 2 model for text-to-image and image-to-image generation, demonstrating photorealistic results and a practical workflow.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AndyCao&#39;s Blog">
+<meta property="og:url" content="https://caoyueyang.org/en/2026/05/03/gpt-image2-practice/index.html">
+<meta property="og:site_name" content="AndyCao&#39;s Blog">
+<meta property="og:description" content="A creative practice with the GPT Image 2 model for text-to-image and image-to-image generation, demonstrating photorealistic results and a practical workflow.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://caoyueyang.org/images/posts/post/gpt-image-2/gpt-image2-practice-15.png">
+<meta property="article:published_time" content="2026-05-03T13:17:48.000Z">
+<meta property="article:modified_time" content="2026-05-15T12:37:23.000Z">
+<meta property="article:author" content="AndyCao">
+<meta property="article:tag" content="AIGC">
+<meta property="article:tag" content="universities">
+<meta property="article:tag" content="text-to-image">
+<meta property="article:tag" content="image-to-image">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://caoyueyang.org/images/posts/post/gpt-image-2/gpt-image2-practice-15.png">
+
+<link rel="canonical" href="https://caoyueyang.org/en/2026/05/03/gpt-image2-practice/">
+
+
+  <link rel="alternate" hreflang="en" href="https://caoyueyang.org/en/2026/05/03/gpt-image2-practice/">
+    <link rel="alternate" hreflang="x-default" href="https://caoyueyang.org/en/2026/05/03/gpt-image2-practice/">
+  <link rel="alternate" hreflang="zh-CN" href="https://caoyueyang.org/2026/05/03/gpt-image2-practice/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+<style>
+  @font-face {
+    font-family: "Font Awesome 5 Brands";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-brands-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-regular-400.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url("/lib/font-awesome/webfonts/fa-solid-900.woff2") format("woff2");
+  }
+</style>
+
+  <title>GPT-image-2 text-to-image and image-to-image practice: Stockholm medal, snow scenes of Chinese universities, and final exam at Zhihua Library | AndyCao's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="曹越洋的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <div class="container">
+    <div class="headband"></div>
+
+    <div class="site-rail">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <button
+      class="toggle"
+      type="button"
+      aria-label="Toggle navigation bar"
+      aria-expanded="false"
+      aria-controls="site-navigation"
+    >
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </button>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <img
+        class="site-brand-mark"
+        src="/images/brand/ac-mark-light.svg"
+        alt=""
+        aria-hidden="true"
+        width="30"
+        height="30"
+        decoding="async"
+      >
+      <h1 class="site-title">AndyCao's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav id="site-navigation" class="site-nav" aria-label="Primary navigation">
+  <div class="mobile-rail-profile" aria-label="AndyCao">
+    <img
+      class="mobile-rail-profile-image"
+      src="/images/avatar.jpg"
+      alt="AndyCao"
+      width="56"
+      height="56"
+      decoding="async"
+    >
+  <span class="mobile-rail-profile-copy">
+    <strong class="mobile-rail-profile-name">AndyCao</strong>
+    <span class="mobile-rail-profile-description">AI products, software systems, and applied research</span>
+  </span>
+</div>
+
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/en/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-work">
+
+    <a href="/en/work/" rel="section"><i class="fa fa-briefcase fa-fw"></i>Work</a>
+
+  </li>
+        <li class="menu-item menu-item-gallery">
+
+    <a href="/en/gallery/" rel="section"><i class="fa fa-camera-retro fa-fw"></i>Gallery</a>
+
+  </li>
+        <li class="menu-section-label" aria-hidden="true">Explore</li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/en/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/en/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/en/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+    <li class="menu-item menu-item-language">
+      
+  <div class="languages language-switcher">
+    <span class="language-switcher-label" aria-hidden="true">LANGUAGE</span>
+    <span class="language-switcher-options" role="group" aria-label="Switch language">
+      
+        
+        
+          
+        
+        
+          <span class="language-switcher-option is-current" data-language="en" data-href="/en/2026/05/03/gpt-image2-practice/" aria-current="page">EN</span>
+        
+        
+          <span class="language-switcher-divider" aria-hidden="true">/</span>
+        
+      
+        
+        
+          
+        
+        
+          <a class="language-switcher-option" href="/2026/05/03/gpt-image2-practice/" data-language="zh-CN" data-href="/2026/05/03/gpt-image2-practice/" hreflang="zh-CN" lang="zh-CN">中</a>
+        
+        
+      
+    </span>
+  </div>
+
+    </li>
+
+  </ul>
+  
+  <div class="mobile-rail-links" aria-label="External links">
+    <div class="mobile-rail-links-heading"><i class="fa fa-link fa-fw" aria-hidden="true"></i>
+      <span>Links</span>
+    </div>
+    <div class="mobile-rail-links-list">
+          <a href="https://github.com/GreatAndyC" class="mobile-rail-link" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw" aria-hidden="true"></i><span>GitHub</span></a>
+          <a href="/atom.xml" class="mobile-rail-link" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw" aria-hidden="true"></i><span>RSS</span></a>
+          <a href="http://www.google.com/" class="mobile-rail-link" title="Explore the World → http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank"><i class="fa fa-link fa-fw" aria-hidden="true"></i><span>Explore the World</span></a>
+    </div>
+  </div>
+
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+      </header>
+        <div class="site-rail-sidebar">
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar sidebar-with-toc">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview" hidden aria-hidden="true">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Image-to-image-practice"><span class="nav-number">1.</span> <span class="nav-text">Image-to-image practice</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Text-to-image-practice"><span class="nav-number">2.</span> <span class="nav-text">Text-to-image practice</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Image-to-image-practice-2-Final-exam-at-Zhihua-Library"><span class="nav-number">3.</span> <span class="nav-text">Image-to-image practice 2: Final exam at Zhihua Library</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary-a-simple-image-generation-workflow"><span class="nav-number">4.</span> <span class="nav-text">Summary: a simple image-generation workflow</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel" hidden aria-hidden="true">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="AndyCao"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">AndyCao</p>
+  <div class="site-description" itemprop="description">AI products, software systems, and applied research</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state" aria-label="Site statistics">
+      <div class="site-state-item site-state-posts">
+          <a href="/en/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/en/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/en/tags/">
+          
+        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/GreatAndyC" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;GreatAndyC" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.google.com/" title="http:&#x2F;&#x2F;www.google.com" rel="noopener" target="_blank">Explore the World</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        </div>
+    </div>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <aside aria-label="Follow me on GitHub">
+    <a href="https://github.com/GreatAndyC" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+  </aside>
+
+
+    <main id="main-content" class="main" tabindex="-1">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article
+    itemscope
+    itemtype="http://schema.org/Article"
+    class="post-block"
+    lang="en"
+  >
+    <link itemprop="mainEntityOfPage" href="https://caoyueyang.org/en/2026/05/03/gpt-image2-practice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="AndyCao">
+      <meta itemprop="description" content="AI products, software systems, and applied research">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="AndyCao's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GPT-image-2 text-to-image and image-to-image practice: Stockholm medal, snow scenes of Chinese universities, and final exam at Zhihua Library
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item post-meta-item-created">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2026-05-03 21:17:48" itemprop="dateCreated datePublished" datetime="2026-05-03T21:17:48+08:00">2026-05-03</time>
+            </span>
+              <span class="post-meta-item post-meta-item-updated">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-05-15 20:37:23" itemprop="dateModified" datetime="2026-05-15T20:37:23+08:00">2026-05-15</time>
+              </span>
+            <span class="post-meta-item post-meta-item-category">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Tutorial/" itemprop="url" rel="index"><span itemprop="name">Tutorial</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item post-meta-item-count" title="Symbols count in article" aria-label="Symbols count in article: 3.9k">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text post-meta-item-text-full">Symbols count in article: </span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">Words: </span>
+              <span>3.9k</span>
+            </span>
+            <span class="post-meta-item post-meta-item-reading-time" title="Reading time" aria-label="Reading time: 4 mins.">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text post-meta-item-text-full">Reading time &asymp;</span>
+                <span class="post-meta-item-text post-meta-item-text-compact" aria-hidden="true">Read&asymp;</span>
+              <span>4 mins.</span>
+            </span>
+            <div class="post-description">A creative practice with the GPT Image 2 model for text-to-image and image-to-image generation, demonstrating photorealistic results and a practical workflow.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <span id="more"></span>
+
+<blockquote>
+<p>Translation note: This English version follows the structure, prompts, figures, and references of the corresponding Chinese post. It was reviewed and synchronized on 2026-08-03.</p>
+</blockquote>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-15.png" loading="eager" decoding="async" fetchpriority="high"></p>
+<p>On April 21, 2026, ChatGPT released a new image generation model: ChatGPT Image 2.0.</p>
+<p>It quickly went viral across social media — with simple instructions, you can now produce highly detailed, photorealistic images that previously required complex workflows. This marks OpenAI’s return to dominance in AI image generation.</p>
+<p>Below is the official introduction from the ChatGPT website:<br><a target="_blank" rel="noopener" href="https://openai.com/zh-Hans-CN/index/introducing-chatgpt-images-2-0/#textmode">https://openai.com/zh-Hans-CN/index/introducing-chatgpt-images-2-0/#textmode</a></p>
+<blockquote>
+<p>Images are not just decoration — they are a language. A great image, like a well-crafted sentence, selects its material, structures its composition, and reveals the essence. It can explain a mechanism, evoke a mood, test an idea, or articulate an argument.</p>
+<p>Higher precision and control: small text, icon systems, UI elements, dense compositions, and subtle style constraints, with resolution up to 2K in the API.</p>
+<p>Stronger multilingual capability: new support for Chinese, Japanese, Korean, Hindi, and Bengali with excellent performance.</p>
+<p>Also improved in style representation and realism.</p>
+</blockquote>
+<p>In one word: <strong>unstoppable</strong>.</p>
+<h2 id="Image-to-image-practice"><a href="#Image-to-image-practice" class="headerlink" title="Image-to-image practice"></a>Image-to-image practice</h2><p>The author has long enjoyed creating fantasy-themed images.</p>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-25.jpg" loading="lazy" decoding="async"><br><em>Made on January 13, 2018 for a birthday post — the pig brother is now a postdoc in Singapore.</em></p>
+<p>With Image 2, it was the perfect match. The author upgraded this image with modern flair: enabled GPT’s Think mode and fed it the following prompt:</p>
+<blockquote>
+<p>Using this face, generate an image of him receiving the Nobel Prize in Stockholm. He must be in a suit, photorealistic, with a clear frontal view. The award is the Nobel Prize in Chemistry. All details must conform to the real-world Nobel ceremony. 16:9, a masterwork.</p>
+</blockquote>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-27.png" loading="lazy" decoding="async"></p>
+<p>Then the post-ceremony handshake with the King of Sweden:</p>
+<blockquote>
+<p>Same setting, one more hyperrealistic photo — this time a handshake with the King of Sweden. Keep the same outfit, focal length around 20mm, realistic perspective and lighting.</p>
+</blockquote>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-24.png" loading="lazy" decoding="async"></p>
+<p>Apart from barely perceptible details in lighting or perspective, a simple structured prompt already achieves near-photorealistic results.</p>
+<iframe title="NetEase Cloud Music player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=5254815&auto=0&height=66"></iframe>
+
+<h2 id="Text-to-image-practice"><a href="#Text-to-image-practice" class="headerlink" title="Text-to-image practice"></a>Text-to-image practice</h2><p>Having grown up in southern China, the author has always had a soft spot for snow — but has seen real snowfall only a handful of times. So I used AI to generate beautiful snowy scenes.</p>
+<p>Combining this with the theme of major Chinese universities, I tested pure text-to-image generation. The specific images and prompts are shown below (the order of universities reflects personal preference).</p>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-01.jpg" loading="lazy" decoding="async"></p>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-07.jpg" loading="lazy" decoding="async"></p>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-08.jpg" loading="lazy" decoding="async"></p>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-03.jpg" loading="lazy" decoding="async"></p>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-05.jpg" loading="lazy" decoding="async"></p>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-02.jpg" loading="lazy" decoding="async"></p>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-06.jpg" loading="lazy" decoding="async"></p>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-04.jpg" loading="lazy" decoding="async"></p>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-10.jpg" loading="lazy" decoding="async"></p>
+<p><em>Since the author is not very familiar with Nanjing University, there is no specific scene. My sincerest apologies to Nanjing University, which strives to offer the best undergraduate education in China.</em></p>
+<h2 id="Image-to-image-practice-2-Final-exam-at-Zhihua-Library"><a href="#Image-to-image-practice-2-Final-exam-at-Zhihua-Library" class="headerlink" title="Image-to-image practice 2: Final exam at Zhihua Library"></a>Image-to-image practice 2: Final exam at Zhihua Library</h2><p>The author also tried direct text-to-image to recall memories of studying at the Zhihua Library at the University of Hong Kong. The prompt was:</p>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-26.png" loading="lazy" decoding="async"></p>
+<p>But the generated image was clearly not the real interior.</p>
+<p>My speculation on how the Think-mode text-to-image model works:</p>
+<p>Identify prompt intent → search online for target image → use model resources to generate → return result.</p>
+<p>Step 2 failed to correctly identify “Zhihua Library” interior. Since the pipeline is a black box, I manually fixed it by uploading a real photo of Zhihua Library and asking GPT to remember it in the conversation.</p>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-09.jpg" loading="lazy" decoding="async"><br><em>The author pulling an all-nighter at Zhihua Library</em></p>
+<p>Then I fed the same prompt back to GPT:</p>
+<blockquote>
+<p>Generate a realistic photo of Hong Kong University in the snow, scene is Zhihua Library in the early morning. It’s packed with people sitting and standing. At least three tables: one with messy McDonald’s leftovers, one with an aunt cooking rice with an electric cooker, one with a couple kissing intertwined, and one with a red-eyed man in slippers rushing his thesis.</p>
+</blockquote>
+<p>Result: an impressively good image.</p>
+<p><img src="/images/posts/post/gpt-image-2/gpt-image2-practice-19.png" loading="lazy" decoding="async"><br><em>This image received over 10,000 views on social media (applause 👏)</em></p>
+<h2 id="Summary-a-simple-image-generation-workflow"><a href="#Summary-a-simple-image-generation-workflow" class="headerlink" title="Summary: a simple image-generation workflow"></a>Summary: a simple image-generation workflow</h2><p>Provide a prompt with positive cues, negative cues (optional), and reference image (optional). Enable GPT’s Think mode to generate the target image. Then you can fine-tune details through iterative conversation and editing.</p>
+<p>Of course, please do not use this tech in illegal situation. GPT has built-in sensitive content review and watermarking. Technically one could bypass them, but the cost of getting caught is usually greater than the benefit. Think carefully before you act.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AIGC/" rel="tag"># AIGC</a>
+              <a href="/tags/universities/" rel="tag"># universities</a>
+              <a href="/tags/text-to-image/" rel="tag"># text-to-image</a>
+              <a href="/tags/image-to-image/" rel="tag"># image-to-image</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/en/2026/04/28/codex-photoshop-poster-guide/" rel="prev" title="How to make a promotional poster with CodeX and Photoshop">
+      <i class="fa fa-chevron-left"></i> How to make a promotional poster with CodeX and Photoshop
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/en/2026/05/03/msc-thesis-fatigue-recognition/" rel="next" title="Master's Research: Fatigue Recognition in Robot-Assisted Squat Training">
+      Master's Research: Fatigue Recognition in Robot-Assisted Squat Training <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          <div class="sidebar-layout-spacer" aria-hidden="true"></div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2025 – 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">AndyCao</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">234k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">3:33</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/home-category-filter.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
