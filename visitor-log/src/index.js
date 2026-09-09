@@ -204,21 +204,31 @@ async function sendReport(end, env) {
   `).bind(start.toISOString(), end.toISOString(), REPORT_MAX_ROWS).all();
   const rows = result.results || [];
   const dayKey = end.toISOString().slice(0, 10);
+  const emailPayload = {
+    from: sender,
+    to: [recipient],
+    subject: `博客访问日报 ${dayKey}（${rows.length} 条）`,
+    text: reportText(rows, start, end),
+    html: reportHtml(rows, start, end)
+  };
+  const emailBody = JSON.stringify(emailPayload);
+  const digest = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(emailBody)
+  );
+  const digestKey = Array.from(new Uint8Array(digest))
+    .slice(0, 16)
+    .map(byte => byte.toString(16).padStart(2, '0'))
+    .join('');
 
   const emailResponse = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
-      'Idempotency-Key': `caoyueyang-visitor-log-${dayKey}`
+      'Idempotency-Key': `caoyueyang-visitor-log-${digestKey}`
     },
-    body: JSON.stringify({
-      from: sender,
-      to: [recipient],
-      subject: `博客访问日报 ${dayKey}（${rows.length} 条）`,
-      text: reportText(rows, start, end),
-      html: reportHtml(rows, start, end)
-    })
+    body: emailBody
   });
 
   if (!emailResponse.ok) {
