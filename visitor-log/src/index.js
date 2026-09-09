@@ -38,6 +38,16 @@ function response(body, status, origin) {
   });
 }
 
+function jsonResponse(body, status) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      'Cache-Control': 'no-store',
+      'Content-Type': 'application/json; charset=UTF-8'
+    }
+  });
+}
+
 function textField(value, maxLength) {
   return typeof value === 'string' ? value.trim().slice(0, maxLength) : '';
 }
@@ -175,16 +185,15 @@ function reportHtml(rows, start, end) {
 </html>`;
 }
 
-async function sendDailyReport(controller, env) {
+async function sendReport(end, env) {
   const apiKey = String(env.RESEND_API_KEY || '').trim();
   const recipient = String(env.REPORT_TO_EMAIL || '').trim();
   const sender = String(env.REPORT_FROM_EMAIL || '').trim();
 
   if (!apiKey || !recipient || !sender) {
-    return;
+    throw new Error('Daily report email is not configured');
   }
 
-  const end = new Date(controller.scheduledTime || Date.now());
   const start = new Date(end.getTime() - DAY_MS);
   const result = await env.DB.prepare(`
     SELECT visited_at, ip, path, referrer, title, country
@@ -216,6 +225,32 @@ async function sendDailyReport(controller, env) {
     const detail = (await emailResponse.text()).slice(0, 200);
     throw new Error(`Daily report email failed (${emailResponse.status}): ${detail}`);
   }
+
+  return {
+    dayKey,
+    count: rows.length
+  };
+}
+
+async function sendDailyReport(controller, env) {
+  await sendReport(new Date(controller.scheduledTime || Date.now()), env);
+}
+
+async function sendManualReport(request, env) {
+  if (!authorized(request, env)) {
+    return new Response('Unauthorized', {
+      status: 401,
+      headers: { 'Cache-Control': 'no-store' }
+    });
+  }
+
+  try {
+    const result = await sendReport(new Date(), env);
+    return jsonResponse({ ok: true, ...result }, 200);
+  } catch (error) {
+    console.error('Manual daily report failed', error);
+    return jsonResponse({ ok: false, error: '日报发送失败，请查看 Worker 日志' }, 500);
+  }
 }
 
 async function cleanupLogs(env) {
@@ -235,6 +270,10 @@ export default {
 
     if (request.method === 'POST' && url.pathname === '/visit') {
       return recordVisit(request, env);
+    }
+
+    if (request.method === 'POST' && url.pathname === '/admin/report') {
+      return sendManualReport(request, env);
     }
 
     if (request.method === 'GET' && url.pathname === '/logs') {

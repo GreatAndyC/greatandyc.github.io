@@ -76,6 +76,18 @@ curl \
 
 日志字段包括访问时间、完整 IP、路径、来源页、页面标题、语言、国家和 User-Agent。Worker 每天自动删除 30 天以前的记录。
 
+## 手动发送日报
+
+如果不想等每天香港时间 11:00 的自动任务，可以在自己的电脑终端手动发送最近 24 小时的日报：
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
+  "https://caoyueyang-visitor-log.andy-caoyueyang.workers.dev/admin/report"
+```
+
+这个接口只接受 `POST` 请求，并要求 `VISITOR_LOG_ADMIN_TOKEN`。发送成功后会返回日报日期和记录数量；Token 不要写进仓库或发给别人。
+
 ## 费用与边界
 
 小型个人博客通常可使用 Cloudflare Workers Free 和 D1 Free 额度。免费额度耗尽后，D1 写入会失败直到额度重置；不会因为这份配置自动升级到付费计划。Worker 只记录页面上报事件，不等同于完整的服务器访问日志；禁用 JavaScript 的浏览器、爬虫或被拦截的上报可能不会出现在这里。
