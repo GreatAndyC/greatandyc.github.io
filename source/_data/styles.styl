@@ -3829,3 +3829,63 @@ html[lang="zh-CN"] .work-project__number
     flex: 0 0 16px
     width: 16px
     text-align: center
+
+/* Waline comments: align the third-party component with the existing NexT
+   content column while keeping all theme files untouched. */
+.waline-comments
+  --waline-theme-color: var(--link-color, #555)
+  --waline-active-color: var(--link-hover-color, #c44)
+  --waline-color: var(--text-color, #555)
+  --waline-bgcolor: var(--content-bg-color, #fff)
+  --waline-bgcolor-light: rgba(120, 120, 120, 0.06)
+  --waline-border-color: rgba(120, 120, 120, 0.16)
+  --waline-disable-color: #999
+  box-sizing: border-box
+  width: 100%
+  margin-top: 32px
+  padding: 24px
+  border: 1px solid rgba(120, 120, 120, 0.14)
+  border-radius: 14px
+  background: var(--content-bg-color, #fff)
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06)
+
+.waline-comments .wl-panel,
+.waline-comments .wl-card
+  border-color: var(--waline-border-color)
+  border-radius: 10px
+  background: var(--waline-bgcolor)
+
+.waline-comments .wl-input,
+.waline-comments .wl-textarea,
+.waline-comments textarea,
+.waline-comments input
+  border-color: var(--waline-border-color)
+  border-radius: 8px
+  background: var(--waline-bgcolor)
+  color: var(--waline-color)
+
+.waline-comments .wl-input:focus,
+.waline-comments .wl-textarea:focus,
+.waline-comments textarea:focus,
+.waline-comments input:focus
+  border-color: var(--waline-theme-color)
+  box-shadow: 0 0 0 3px rgba(100, 100, 100, 0.08)
+  outline: none
+
+.waline-comments button,
+.waline-comments .wl-btn
+  border-radius: 8px
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .2s ease
+
+.waline-comments button:hover,
+.waline-comments .wl-btn:hover
+  transform: translateY(-1px)
+
+.waline-comments .wl-comment
+  border-color: rgba(120, 120, 120, 0.12)
+
+@media (max-width: 767px)
+  .waline-comments
+    margin-top: 24px
+    padding: 16px
+    border-radius: 10px

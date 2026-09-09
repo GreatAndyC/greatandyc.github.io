@@ -157,3 +157,11 @@ theme_config:
   custom_file_path:
     head: source/_data/head.swig
     style: source/_data/styles.styl
+
+# Waline comments
+# The Turnstile site key is public and will be filled after the widget is ready.
+# The secret key and SMTP credentials stay in Vercel environment variables.
+waline:
+  enable: true
+  server_url: https://comments.caoyueyang.org
+  turnstile_key: 0x4AAAAAAEtd9av7uMqRLUqC
