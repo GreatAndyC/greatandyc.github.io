@@ -2232,7 +2232,8 @@ body
   flex-direction: column
   align-items: center
   justify-content: center
-  margin: 8px 0 26px
+  width: 100%
+  margin: 8px auto 40px
 
 .profile-avatar-frame
   width: 186px
@@ -2262,15 +2263,28 @@ body
   max-width: none
 
 .profile-avatar-contact
-  margin-top: 12px
-  text-align: center
-  font-size: 0.86rem
-  line-height: 1.4
+  width: 100%
+  margin-top: 28px
+  text-align: left
+
+.profile-avatar-contact__title
+  margin: 0 0 14px
+  padding-top: 0
+  text-align: left
+  font-size: 24px
+  line-height: 1.5
+  font-weight: 700
 
 .profile-avatar-contact a
+  display: inline-block
+  max-width: 100%
+  overflow-wrap: anywhere
   color: inherit
   border-bottom: 1px solid currentColor
   text-decoration: none
+  font-size: 1.05rem
+  font-weight: 650
+  line-height: 1.5
 
 .profile-avatar-contact a:hover
   opacity: 0.68
@@ -2295,9 +2309,16 @@ body
   color: #fff
 
 @media (max-width: 767px)
+  .profile-hero
+    margin-bottom: 34px
+
   .profile-avatar-frame
     width: 180px
     height: 180px
+
+  .profile-avatar-contact
+    margin-top: 24px
+    text-align: left
 
   .profile-actions
     display: grid

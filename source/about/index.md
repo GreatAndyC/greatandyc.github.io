@@ -12,6 +12,7 @@ toc: false
     <img class="profile-avatar" src="/images/CaoYueyang.png" alt="曹越洋个人肖像">
   </div>
   <div class="profile-avatar-contact">
+    <h2 class="profile-avatar-contact__title">联系邮箱</h2>
     <a href="mailto:andy@andycaostudio.com">andy@andycaostudio.com</a>
   </div>
 </div>
