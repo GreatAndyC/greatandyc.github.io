@@ -156,11 +156,13 @@ test('mobile navigation opens and keeps Work available', async ({ page }, testIn
   await expect(page.locator('.menu-item-work > a')).toHaveAttribute('href', '/en/work/');
   await expect(page.locator('.menu-item-language')).toBeVisible();
   const mobileRailLinks = page.locator('.mobile-rail-links .mobile-rail-link');
-  await expect(mobileRailLinks).toHaveCount(3);
+  await expect(mobileRailLinks).toHaveCount(4);
   await expect(mobileRailLinks.nth(0)).toContainText('GitHub');
   await expect(mobileRailLinks.nth(1)).toContainText('RSS');
-  await expect(mobileRailLinks.nth(2)).toContainText('Explore the World');
-  await expect(mobileRailLinks.nth(2)).toBeVisible();
+  await expect(mobileRailLinks.nth(2)).toContainText('Email');
+  await expect(mobileRailLinks.nth(2)).toHaveAttribute('href', 'mailto:andy@andycaostudio.com');
+  await expect(mobileRailLinks.nth(3)).toContainText('Explore the World');
+  await expect(mobileRailLinks.nth(3)).toBeVisible();
 
   await page.keyboard.press('Escape');
   await expect(page.locator('.site-nav')).not.toHaveClass(/site-nav-on/);

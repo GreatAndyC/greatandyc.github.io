@@ -219,6 +219,17 @@ test('home feed opens as an editorial index and keeps the visual grid alternativ
     /class="home-view-button is-active"[^>]*data-view-mode="list"/,
     'the localized homepage should make the readable index the no-script default'
   );
+  assert.match(
+    html,
+    /class="content index posts-expand feed-page feed-view-list"/,
+    'the localized homepage should render its default feed layout before JavaScript runs'
+  );
+  const preferenceBootstrap = html.indexOf("localStorage.getItem('home-feed-view-mode')");
+  const postsContainer = html.indexOf('class="feed-posts-container"');
+  assert.ok(
+    preferenceBootstrap !== -1 && preferenceBootstrap < postsContainer,
+    'the saved feed view should be applied before the post images are parsed'
+  );
   assert.ok(
     css.includes('.main .content.feed-page.feed-view-card .feed-posts-container')
       && css.includes('grid-template-columns: repeat(3, minmax(0, 1fr));')
@@ -299,6 +310,8 @@ test('core pages expose semantic mobile navigation, skip links, and localized me
     assert.match(html, /class="menu-section-label"/);
     assert.match(html, /class="mobile-rail-links"/);
     assert.match(html, /class="mobile-rail-link"[^>]*>[\s\S]*<span>GitHub<\/span>/);
+    assert.match(html, /class="mobile-rail-link"[^>]*>[\s\S]*<span>Email<\/span>/);
+    assert.match(html, /href="mailto:andy@andycaostudio.com"/);
     assert.match(
       html,
       index === 0
@@ -552,6 +565,15 @@ test('bilingual About pages share the updated positioning, background, and conci
     expectation.removedCopy.forEach(copy => {
       assert.ok(!html.includes(copy), `${expectation.file} still contains removed copy: ${copy}`);
     });
+    assert.ok(
+      html.includes('href="mailto:andy@andycaostudio.com"'),
+      `${expectation.file} is missing the public email contact`
+    );
+    assert.match(
+      html,
+      /class="profile-avatar-contact"[\s\S]*href="mailto:andy@andycaostudio.com"/,
+      `${expectation.file} should place the public email below the avatar`
+    );
     assert.ok(!html.includes('andy.caoyueyang@gmail.com'), `${expectation.file} must not expose the personal email`);
 
     assert.ok(

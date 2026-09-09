@@ -11,6 +11,9 @@ toc: false
   <div class="profile-avatar-frame">
     <img class="profile-avatar" src="/images/CaoYueyang.png" alt="Portrait of Andy Cao">
   </div>
+  <div class="profile-avatar-contact">
+    <a href="mailto:andy@andycaostudio.com">andy@andycaostudio.com</a>
+  </div>
 </div>
 
 # Andy Cao · AI Product Engineer & Systems Builder

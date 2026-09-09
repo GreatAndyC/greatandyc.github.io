@@ -186,6 +186,7 @@ site_state: true
 social:
   GitHub: https://github.com/GreatAndyC || fab fa-github
   RSS: /atom.xml || fa fa-rss
+  Email: mailto:andy@andycaostudio.com || fa fa-envelope
   #Weibo: https://weibo.com/yourname || fab fa-weibo
   #Google: https://plus.google.com/yourname || fab fa-google
   #Twitter: https://twitter.com/yourname || fab fa-twitter

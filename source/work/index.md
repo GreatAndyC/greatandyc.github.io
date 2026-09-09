@@ -505,6 +505,7 @@ fancybox: false
     <p class="work-contact__title" role="heading" aria-level="2">想聊产品、AI 或软件系统？</p>
     <div class="work-links">
       <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">通过 GitHub 联系 ↗</a>
+      <a href="mailto:andy@andycaostudio.com">通过 Email 联系 ↗</a>
     </div>
   </footer>
 </div>

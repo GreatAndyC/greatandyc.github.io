@@ -505,6 +505,7 @@ fancybox: false
     <p class="work-contact__title" role="heading" aria-level="2">Want to talk about products, AI, or software systems?</p>
     <div class="work-links">
       <a href="https://github.com/GreatAndyC" target="_blank" rel="noopener noreferrer">Reach out via GitHub ↗</a>
+      <a href="mailto:andy@andycaostudio.com">Reach out via email ↗</a>
     </div>
   </footer>
 </div>

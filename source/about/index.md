@@ -11,6 +11,9 @@ toc: false
   <div class="profile-avatar-frame">
     <img class="profile-avatar" src="/images/CaoYueyang.png" alt="曹越洋个人肖像">
   </div>
+  <div class="profile-avatar-contact">
+    <a href="mailto:andy@andycaostudio.com">andy@andycaostudio.com</a>
+  </div>
 </div>
 
 # 曹越洋 · AI 产品工程师 / 系统构建者
