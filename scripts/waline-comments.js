@@ -62,8 +62,15 @@ hexo.extend.filter.register('theme_inject', injects => {
 
       const applyCommentAvatar = () => {
         const defaultAvatar = '/images/avatar-penguin.png';
+        const avatarSelector = [
+          '.wl-cards .wl-user-avatar',
+          '.wl-cards .wl-avatar',
+          '.wl-cards .wl-user > img'
+        ].join(', ');
 
-        walineElement.querySelectorAll('.wl-cards .wl-user-avatar').forEach(image => {
+        walineElement.querySelectorAll(avatarSelector).forEach(image => {
+          image.removeAttribute('srcset');
+
           if (image.getAttribute('src') !== defaultAvatar) {
             image.setAttribute('src', defaultAvatar);
           }
@@ -95,7 +102,12 @@ hexo.extend.filter.register('theme_inject', injects => {
       // The current site uses anonymous comments, so the supplied penguin is
       // the shared fallback avatar for comment cards only.
       const commentAvatarObserver = new MutationObserver(applyCommentAvatar);
-      commentAvatarObserver.observe(walineElement, {childList: true, subtree: true});
+      commentAvatarObserver.observe(walineElement, {
+        attributes: true,
+        attributeFilter: ['class', 'src', 'srcset'],
+        childList: true,
+        subtree: true
+      });
       applyCommentAvatar();
     }
   }

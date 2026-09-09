@@ -243,8 +243,9 @@ test('home feed opens as a visual card grid and keeps the editorial list alterna
   );
 });
 
-test('Waline comments require a display name and email while disabling image uploads', () => {
+test('Waline comments expose the required fields and the customized anti-abuse UI', () => {
   const html = readPublic('2026/09/07/agent-control-android-phone/index.html');
+  const css = readPublic('css/main.css');
 
   assert.match(html, /id="waline"/, 'article pages should expose the Waline mount point');
   assert.match(
@@ -258,6 +259,30 @@ test('Waline comments require a display name and email while disabling image upl
     'Waline should require the display name and email fields'
   );
   assert.match(html, /imageUploader: false/, 'Waline should not offer image uploads');
+  assert.match(
+    html,
+    /attributes: true,[\s\S]*attributeFilter: \['class', 'src', 'srcset'\]/,
+    'Waline should keep the custom comment avatar after asynchronous updates'
+  );
+  assert.match(
+    css,
+    /mastering-markdown[\s\S]*display:\s*none !important/,
+    'the Markdown help action should be hidden from the comment toolbar'
+  );
+  assert.match(
+    css,
+    /wl-captcha-container[\s\S]*flex:\s*0 0 150px/,
+    'the Turnstile container should keep a stable compact layout'
+  );
+  assert.match(
+    css,
+    /avatar-penguin\.png[\s\S]*object-fit:\s*cover/,
+    'comment avatars should use the supplied penguin image'
+  );
+  assert.ok(
+    fs.existsSync(path.join(publicDir, 'images/avatar-penguin.png')),
+    'the supplied penguin avatar should be copied into the generated site'
+  );
 });
 
 test('core pages expose the AC brand mark and complete favicon metadata', () => {
