@@ -223,7 +223,9 @@ async function sendReport(end, env) {
 
   if (!emailResponse.ok) {
     const detail = (await emailResponse.text()).slice(0, 200);
-    throw new Error(`Daily report email failed (${emailResponse.status}): ${detail}`);
+    const error = new Error(`Daily report email failed (${emailResponse.status}): ${detail}`);
+    error.resendStatus = emailResponse.status;
+    throw error;
   }
 
   return {
@@ -249,7 +251,15 @@ async function sendManualReport(request, env) {
     return jsonResponse({ ok: true, ...result }, 200);
   } catch (error) {
     console.error('Manual daily report failed', error);
-    return jsonResponse({ ok: false, error: '日报发送失败，请查看 Worker 日志' }, 500);
+    const resendStatus = Number(error?.resendStatus);
+    const code = Number.isInteger(resendStatus)
+      ? `resend_http_${resendStatus}`
+      : 'worker_or_network_error';
+    return jsonResponse({
+      ok: false,
+      error: '日报发送失败',
+      code
+    }, 500);
   }
 }
 
