@@ -63,3 +63,11 @@
 {%- endif %}
 
 {{ next_config() }}
+
+{%- if config.visitor_log and config.visitor_log.enable and config.visitor_log.endpoint %}
+<script
+  defer
+  src="{{ url_for('/js/visitor-log.js') }}"
+  data-visitor-log-endpoint="{{ config.visitor_log.endpoint }}"
+></script>
+{%- endif %}
