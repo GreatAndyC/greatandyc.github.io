@@ -12,7 +12,7 @@ toc: false
     <img class="profile-avatar" src="/images/CaoYueyang.png" alt="Portrait of Andy Cao">
   </div>
   <div class="profile-avatar-contact">
-    <h2 class="profile-avatar-contact__title">Contact email</h2>
+    <div class="profile-avatar-contact__title" role="heading" aria-level="2">Contact email</div>
     <a href="mailto:andy@andycaostudio.com">andy@andycaostudio.com</a>
   </div>
 </div>
