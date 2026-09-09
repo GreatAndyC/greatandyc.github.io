@@ -14,35 +14,41 @@ hexo.extend.filter.register('theme_inject', injects => {
 
   injects.comment.raw(
     'waline',
-    '<div class="comments waline-comments" id="waline"></div>',
+    '{%- if page.comments and is_post() %}<div class="comments waline-comments" id="waline"></div>{%- endif %}',
     {},
     {cache: true}
   );
 
   injects.head.raw(
     'waline-style',
-    `{%- if page.comments %}
+    `{%- if page.comments and is_post() %}
 <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
-    {%- endif %}`,
+{%- endif %}`,
     {}
   );
 
   injects.bodyEnd.raw(
     'waline',
-    `{%- if page.comments %}
+    `{%- if page.comments and is_post() %}
 <script type="module">
-  import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+  const walineElement = document.querySelector('#waline');
 
-  init({
-    el: '#waline',
-    serverURL: ${serverURL},
-    lang: document.documentElement.lang === 'en' ? 'en' : 'zh-CN',
-    meta: ['mail'],
-    requiredMeta: ['mail'],
-    login: 'disable',
-    turnstileKey: ${turnstileKey},
-    noRss: true
-  });
+  if (walineElement) {
+    const { init } = await import('https://unpkg.com/@waline/client@v3/dist/waline.js');
+
+    if (walineElement.isConnected) {
+      init({
+        el: walineElement,
+        serverURL: ${serverURL},
+        lang: document.documentElement.lang === 'en' ? 'en' : 'zh-CN',
+        meta: ['mail'],
+        requiredMeta: ['mail'],
+        login: 'disable',
+        turnstileKey: ${turnstileKey},
+        noRss: true
+      });
+    }
+  }
 </script>
     {%- endif %}`,
     {}
