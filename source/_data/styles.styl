@@ -1463,6 +1463,9 @@ body
   height auto
   margin 0 auto
 
+.post-body figure.post-figure .image-caption
+  display none
+
 .post-body figure.post-figure--portrait img
   width 320px
   max-width 100%
@@ -3830,62 +3833,334 @@ html[lang="zh-CN"] .work-project__number
     width: 16px
     text-align: center
 
-/* Waline comments: align the third-party component with the existing NexT
-   content column while keeping all theme files untouched. */
+/* Waline comments: keep the third-party component close to the clean,
+   information-first comment stream used by the reference design. */
 .waline-comments
-  --waline-theme-color: var(--link-color, #555)
-  --waline-active-color: var(--link-hover-color, #c44)
-  --waline-color: var(--text-color, #555)
-  --waline-bgcolor: var(--content-bg-color, #fff)
-  --waline-bgcolor-light: rgba(120, 120, 120, 0.06)
-  --waline-border-color: rgba(120, 120, 120, 0.16)
+  --waline-theme-color: #385fce
+  --waline-active-color: #294cae
+  --waline-color: #4c4c4c
+  --waline-bg-color: #fff
+  --waline-bg-color-light: #f6f7f9
+  --waline-bg-color-hover: #eef1f7
+  --waline-border-color: rgba(80, 80, 80, 0.14)
+  --waline-disable-bg-color: #f3f4f6
   --waline-disable-color: #999
+  --waline-info-bg-color: #f5f6f8
+  --waline-info-color: #999
+  --waline-avatar-size: 72px
+  --waline-avatar-radius: 50%
+  --waline-box-shadow: none
   box-sizing: border-box
   width: 100%
-  margin-top: 32px
-  padding: 24px
-  border: 1px solid rgba(120, 120, 120, 0.14)
+  margin-top: 40px
+  padding: 24px 28px 28px
+  border: 1px solid rgba(80, 80, 80, 0.12)
   border-radius: 14px
   background: var(--content-bg-color, #fff)
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06)
+  box-shadow: 0 8px 22px rgba(38, 52, 78, 0.06)
 
-.waline-comments .wl-panel,
+.waline-comments .wl-panel
+  box-sizing: border-box
+  width: 100%
+  margin: 0 0 22px
+  padding: 0 0 18px
+  border: 0
+  border-bottom: 1px solid var(--waline-border-color)
+  border-radius: 0
+  background: transparent
+  box-shadow: none
+
+.waline-comments .wl-header,
+.waline-comments .wl-header.item3,
+.waline-comments .wl-header-3
+  display: grid
+  grid-template-columns: repeat(3, minmax(0, 1fr))
+  gap: 16px
+  overflow: visible
+  padding: 0
+  border: 0
+  border-radius: 0
+
+.waline-comments .wl-header-item
+  display: flex
+  flex-direction: column
+  align-items: stretch
+  min-width: 0
+  padding: 10px 12px 8px
+  border: 1px solid rgba(68, 82, 112, 0.28)
+  border-radius: 8px
+  background: #f7f9fc
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease
+
+.waline-comments .wl-header-item:hover
+  border-color: rgba(56, 95, 206, 0.56)
+  background: #fff
+
+.waline-comments .wl-header-item:focus-within
+  border-color: var(--waline-theme-color)
+  background: #fff
+  box-shadow: 0 0 0 3px rgba(56, 95, 206, 0.14)
+
+.waline-comments .wl-header label
+  min-width: 0
+  padding: 0
+  color: #4d566a
+  font-size: 0.76rem
+  font-weight: 600
+  line-height: 1.4
+  text-align: start
+  cursor: text
+
+.waline-comments .wl-header label[for="wl-nick"]::after,
+.waline-comments .wl-header label[for="wl-mail"]::after
+  content: ' *'
+  color: #c53d4b
+  font-size: 0.95em
+  font-weight: 700
+
+.waline-comments .wl-input
+  box-sizing: border-box
+  width: 100%
+  min-width: 0
+  margin-top: 3px
+  padding: 3px 0 0
+  border: 0
+  background: transparent
+  color: #303743
+  font-size: 0.95rem
+  line-height: 1.5
+  cursor: text
+
+.waline-comments .wl-input::placeholder
+  color: #9aa2b0
+
+.waline-comments .wl-editor
+  width: 100%
+  min-height: 104px
+  margin: 14px 0 10px
+  padding: 12px 14px
+  border: 1px solid rgba(80, 80, 80, 0.14)
+  border-radius: 8px
+  background: #fafbfc
+  font-size: 0.95rem
+  line-height: 1.7
+
+.waline-comments .wl-footer
+  display: flex
+  min-height: 40px
+  margin: 0
+  gap: 16px
+  align-items: center
+
+.waline-comments .wl-actions
+  display: flex
+  flex: 0 0 auto
+  align-items: center
+  gap: 4px
+
+.waline-comments .wl-info
+  display: flex
+  flex: 1 1 auto
+  min-width: 0
+  align-items: center
+  justify-content: flex-end
+  gap: 12px
+
+.waline-comments .wl-info .wl-btn
+  margin-inline-start: 0
+
+/* Waline keeps this hidden panel in normal flow when GIF search is unused. */
+.waline-comments .wl-gif-popup
+  display: none
+
+.waline-comments .wl-meta-head
+  align-items: center
+  margin-top: 0
+  padding: 0 0 14px
+  border-bottom: 1px solid rgba(80, 80, 80, 0.1)
+
+.waline-comments .wl-count
+  color: #505050
+  font-size: 1.35rem
+  font-weight: 600
+  line-height: 1.2
+
+.waline-comments .wl-sort
+  display: flex
+  align-items: center
+  gap: 18px
+  margin-inline-start: auto
+  padding: 0
+
+.waline-comments .wl-sort li
+  color: #999
+  font-size: 0.88rem
+  transition: color 0.2s ease
+
+.waline-comments .wl-sort li.active,
+.waline-comments .wl-sort li:hover
+  color: #555
+
+.waline-comments .wl-sort li + li
+  margin-inline-start: 0
+
+.waline-comments .wl-cards
+  margin-top: 0
+
+.waline-comments .wl-card-item
+  display: flex
+  gap: 16px
+  padding: 26px 0
+
+.waline-comments .wl-cards .wl-user
+  flex: 0 0 var(--waline-avatar-size)
+  width: var(--waline-avatar-size)
+  margin-inline-end: 0
+
+.waline-comments .wl-cards .wl-user .wl-user-avatar
+  width: var(--waline-avatar-size)
+  height: var(--waline-avatar-size)
+  border: 0
+  background: #edf1fb
+
 .waline-comments .wl-card
-  border-color: var(--waline-border-color)
-  border-radius: 10px
-  background: var(--waline-bgcolor)
+  width: auto
+  min-width: 0
+  padding: 0 0 26px
+  border: 0
+  border-bottom: 1px solid rgba(80, 80, 80, 0.12)
+  border-radius: 0
+  background: transparent
+
+.waline-comments .wl-card:first-child
+  margin-inline-start: 0
+
+.waline-comments .wl-card-item:last-child > .wl-card
+  border-bottom: 0
+
+.waline-comments .wl-card .wl-head
+  min-height: 28px
+  line-height: 1.5
+
+.waline-comments .wl-card .wl-nick
+  margin-inline-end: 8px
+  color: #535353
+  font-size: 1.03rem
+  font-weight: 600
+
+.waline-comments .wl-card .wl-time
+  color: #999
+  font-size: 0.88rem
+
+.waline-comments .wl-card .wl-meta
+  margin-top: 4px
+
+.waline-comments .wl-card .wl-meta > span
+  margin-inline-end: 5px
+  padding: 3px 8px
+  border-radius: 4px
+  background: #f5f6f8
+  color: #999
+  font-size: 0.74rem
+
+.waline-comments .wl-card .wl-content
+  margin: 10px 0 12px
+  padding: 0
+  color: #505050
+  font-size: 1rem
+  line-height: 1.8
+
+.waline-comments .wl-card .wl-comment-actions
+  display: flex
+  float: none
+  justify-content: flex-end
+  gap: 10px
+
+.waline-comments .wl-card .wl-like,
+.waline-comments .wl-card .wl-reply,
+.waline-comments .wl-card .wl-delete,
+.waline-comments .wl-card .wl-edit,
+.waline-comments .wl-card .wl-rss
+  gap: 4px
+  padding: 2px 0
+  color: #666
+  font-size: 0.88rem
+
+.waline-comments .wl-card .wl-quote
+  margin-top: 16px
+  padding-inline-start: 20px
+  border-inline-start: 1px dashed rgba(80, 80, 80, 0.16)
+
+.waline-comments .wl-card .wl-quote .wl-user
+  --avatar-size: 50px
+
+.waline-comments .wl-card .wl-quote .wl-user .wl-user-avatar
+  width: 50px
+  height: 50px
+
+.waline-comments .wl-empty
+  padding: 20px 0 26px
+  color: #999
+  text-align: center
 
 .waline-comments .wl-input,
-.waline-comments .wl-textarea,
 .waline-comments textarea,
 .waline-comments input
-  border-color: var(--waline-border-color)
-  border-radius: 8px
-  background: var(--waline-bgcolor)
   color: var(--waline-color)
 
 .waline-comments .wl-input:focus,
-.waline-comments .wl-textarea:focus,
 .waline-comments textarea:focus,
 .waline-comments input:focus
   border-color: var(--waline-theme-color)
-  box-shadow: 0 0 0 3px rgba(100, 100, 100, 0.08)
+  box-shadow: none
   outline: none
 
 .waline-comments button,
 .waline-comments .wl-btn
-  border-radius: 8px
-  transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .2s ease
+  border-radius: 6px
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease
 
 .waline-comments button:hover,
 .waline-comments .wl-btn:hover
   transform: translateY(-1px)
 
-.waline-comments .wl-comment
-  border-color: rgba(120, 120, 120, 0.12)
-
 @media (max-width: 767px)
   .waline-comments
-    margin-top: 24px
-    padding: 16px
+    margin-top: 28px
+    padding: 16px 14px 20px
     border-radius: 10px
+
+  .waline-comments .wl-header,
+  .waline-comments .wl-header.item3,
+  .waline-comments .wl-header-3
+    display: block
+
+  .waline-comments .wl-header-item:not(:last-child)
+    margin-bottom: 8px
+
+  .waline-comments .wl-header-item
+    padding: 10px 12px 8px
+
+  .waline-comments .wl-meta-head
+    display: block
+
+  .waline-comments .wl-sort
+    margin-top: 12px
+
+  .waline-comments .wl-card-item
+    gap: 12px
+    padding: 20px 0
+
+  .waline-comments .wl-cards .wl-user,
+  .waline-comments .wl-cards .wl-user .wl-user-avatar
+    width: 52px
+    height: 52px
+
+  .waline-comments .wl-card .wl-nick
+    font-size: 0.98rem
+
+  .waline-comments .wl-card .wl-content
+    font-size: 0.95rem
+
+  .waline-comments .wl-card .wl-quote
+    padding-inline-start: 14px

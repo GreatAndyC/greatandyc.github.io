@@ -80,6 +80,7 @@
 {%- if theme.social %}
   <div class="links-of-author motion-element">
     {%- for name, link in theme.social %}
+      {%- if not page.hide_public_email or name != 'Email' %}
       <span class="links-of-author-item">
       {%- set sidebarURL = link.split('||')[0] | trim %}
       {%- if theme.social_icons.enable %}
@@ -94,6 +95,7 @@
       {%- endif %}
         {{ next_url(sidebarURL, sidebarIcon + sidebarText, {title: name + ' → ' + sidebarURL}) }}
       </span>
+      {%- endif %}
     {%- endfor %}
   </div>
 {%- endif %}

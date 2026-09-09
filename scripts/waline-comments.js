@@ -37,6 +37,39 @@ hexo.extend.filter.register('theme_inject', injects => {
     const { init } = await import('https://unpkg.com/@waline/client@v3/dist/waline.js');
 
     if (walineElement.isConnected) {
+      const applyMetaFieldHints = () => {
+        let fieldsFound = 0;
+
+        [
+          ['wl-nick', '请输入昵称'],
+          ['wl-mail', '请输入邮箱'],
+          ['wl-link', 'https://example.com（可选）']
+        ].forEach(([id, placeholder]) => {
+          const field = walineElement.querySelector('#' + id);
+
+          if (!field) return;
+
+          fieldsFound += 1;
+          field.setAttribute('placeholder', placeholder);
+
+          if (id !== 'wl-link') {
+            field.setAttribute('aria-required', 'true');
+          }
+        });
+
+        return fieldsFound === 3;
+      };
+
+      const applyCommentAvatar = () => {
+        const defaultAvatar = '/images/avatar-penguin.png';
+
+        walineElement.querySelectorAll('.wl-cards .wl-user-avatar').forEach(image => {
+          if (image.getAttribute('src') !== defaultAvatar) {
+            image.setAttribute('src', defaultAvatar);
+          }
+        });
+      };
+
       init({
         el: walineElement,
         serverURL: ${serverURL},
@@ -48,6 +81,22 @@ hexo.extend.filter.register('theme_inject', injects => {
         imageUploader: false,
         noRss: true
       });
+
+      // Make the metadata fields self-explanatory without changing Waline's
+      // built-in requiredMeta validation. Waline renders them asynchronously.
+      if (!applyMetaFieldHints()) {
+        const fieldObserver = new MutationObserver(() => {
+          if (applyMetaFieldHints()) fieldObserver.disconnect();
+        });
+
+        fieldObserver.observe(walineElement, {childList: true, subtree: true});
+      }
+
+      // The current site uses anonymous comments, so the supplied penguin is
+      // the shared fallback avatar for comment cards only.
+      const commentAvatarObserver = new MutationObserver(applyCommentAvatar);
+      commentAvatarObserver.observe(walineElement, {childList: true, subtree: true});
+      applyCommentAvatar();
     }
   }
 </script>

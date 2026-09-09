@@ -11,12 +11,14 @@
     <div class="mobile-rail-links-list">
       {%- if theme.social %}
         {%- for name, link in theme.social %}
+          {%- if not page.hide_public_email or name != 'Email' %}
           {%- set mobileURL = link.split('||')[0] | trim %}
           {%- set mobileIcon = '' %}
           {%- if theme.social_icons.enable and link.split('||')[1] %}
             {%- set mobileIcon = '<i class="' + link.split('||')[1] | trim + ' fa-fw" aria-hidden="true"></i>' %}
           {%- endif %}
           {{ next_url(mobileURL, mobileIcon + '<span>' + name + '</span>', {class: 'mobile-rail-link', title: name + ' → ' + mobileURL}) }}
+          {%- endif %}
         {%- endfor %}
       {%- endif %}
       {%- if theme.links %}
