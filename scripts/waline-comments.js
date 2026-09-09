@@ -41,10 +41,11 @@ hexo.extend.filter.register('theme_inject', injects => {
         el: walineElement,
         serverURL: ${serverURL},
         lang: document.documentElement.lang === 'en' ? 'en' : 'zh-CN',
-        meta: ['mail'],
-        requiredMeta: ['mail'],
+        meta: ['nick', 'mail', 'link'],
+        requiredMeta: ['nick', 'mail'],
         login: 'disable',
         turnstileKey: ${turnstileKey},
+        imageUploader: false,
         noRss: true
       });
     }

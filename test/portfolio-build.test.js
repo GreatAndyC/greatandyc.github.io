@@ -243,6 +243,23 @@ test('home feed opens as a visual card grid and keeps the editorial list alterna
   );
 });
 
+test('Waline comments require a display name and email while disabling image uploads', () => {
+  const html = readPublic('2026/09/07/agent-control-android-phone/index.html');
+
+  assert.match(html, /id="waline"/, 'article pages should expose the Waline mount point');
+  assert.match(
+    html,
+    /meta: \['nick', 'mail', 'link'\]/,
+    'Waline should expose display name, email, and website fields'
+  );
+  assert.match(
+    html,
+    /requiredMeta: \['nick', 'mail'\]/,
+    'Waline should require the display name and email fields'
+  );
+  assert.match(html, /imageUploader: false/, 'Waline should not offer image uploads');
+});
+
 test('core pages expose the AC brand mark and complete favicon metadata', () => {
   pageMatrix.forEach(({ file }) => {
     const html = readPublic(file);
