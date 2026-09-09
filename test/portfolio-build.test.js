@@ -209,20 +209,20 @@ test('home feed metadata remains readable in English cards and list dates', () =
   );
 });
 
-test('home feed opens as an editorial index and keeps the visual grid alternative', () => {
+test('home feed opens as a visual card grid and keeps the editorial list alternative', () => {
   const html = readPublic('zh-CN/index.html');
   const css = readPublic('css/main.css');
   const filterScript = readPublic('js/home-category-filter.js');
 
   assert.match(
     html,
-    /class="home-view-button is-active"[^>]*data-view-mode="list"/,
-    'the localized homepage should make the readable index the no-script default'
+    /class="home-view-button is-active"[^>]*data-view-mode="card"/,
+    'the localized homepage should make the visual card grid the no-script default'
   );
   assert.match(
     html,
-    /class="content index posts-expand feed-page feed-view-list"/,
-    'the localized homepage should render its default feed layout before JavaScript runs'
+    /class="content index posts-expand feed-page feed-view-card"/,
+    'the localized homepage should render its default card layout before JavaScript runs'
   );
   const preferenceBootstrap = html.indexOf("localStorage.getItem('home-feed-view-mode')");
   const postsContainer = html.indexOf('class="feed-posts-container"');
@@ -238,8 +238,8 @@ test('home feed opens as an editorial index and keeps the visual grid alternativ
   );
   assert.match(
     filterScript,
-    /let initialMode = 'list';/,
-    'the client-side default should match the no-script index layout'
+    /let initialMode = 'card';/,
+    'the client-side default should match the no-script card layout'
   );
 });
 
