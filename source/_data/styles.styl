@@ -3980,18 +3980,31 @@ html[lang="zh-CN"] .work-project__number
 
 .waline-comments .wl-captcha-container
   display: flex
-  flex: 0 0 150px
+  /* Turnstile's normal widget is 300px wide and 65px high. Keep the
+     footer slot wide enough so the third-party iframe is not squeezed. */
+  flex: 0 0 300px
+  width: 300px
   align-items: center
   justify-content: center
-  min-width: 150px
-  min-height: 0
+  min-width: 300px
+  min-height: 65px
   overflow: visible
 
 .waline-comments .wl-captcha-container iframe
   display: block
   flex: 0 0 auto
-  max-width: 100%
+  width: 300px
+  max-width: none
   border: 0
+
+@media (max-width: 580px)
+  .waline-comments .wl-captcha-container
+    flex-basis: 300px
+    width: 300px
+    min-width: 300px
+
+  .waline-comments .wl-info
+    justify-content: flex-start
 
 .waline-comments .wl-cards .wl-user > img,
 .waline-comments .wl-cards img.wl-user-avatar,

@@ -258,6 +258,16 @@ test('Waline comments expose the required fields and the customized anti-abuse U
     /requiredMeta: \['nick', 'mail'\]/,
     'Waline should require the display name and email fields'
   );
+  assert.match(
+    html,
+    /\['wl-edit', commentPlaceholder\][\s\S]*欢迎评论，支持 Markdown 格式内容输入/,
+    'Waline should explain that Markdown input is supported'
+  );
+  assert.match(
+    html,
+    /commentPlaceholderObserver[\s\S]*observe\(document\.body[\s\S]*attributeFilter: \['placeholder'\]/,
+    'Waline should preserve the custom comment placeholder after rerendering'
+  );
   assert.match(html, /imageUploader: false/, 'Waline should not offer image uploads');
   assert.match(
     html,
@@ -271,8 +281,13 @@ test('Waline comments expose the required fields and the customized anti-abuse U
   );
   assert.match(
     css,
-    /wl-captcha-container[\s\S]*flex:\s*0 0 150px/,
-    'the Turnstile container should keep a stable compact layout'
+    /wl-captcha-container[\s\S]*flex:\s*0 0 300px[\s\S]*width:\s*300px[\s\S]*min-width:\s*300px[\s\S]*min-height:\s*65px/,
+    'the Turnstile container should reserve the normal widget dimensions'
+  );
+  assert.match(
+    css,
+    /wl-captcha-container iframe[\s\S]*width:\s*300px[\s\S]*max-width:\s*none/,
+    'the Turnstile iframe should not be squeezed by the footer layout'
   );
   assert.match(
     css,
