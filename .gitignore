@@ -35,6 +35,8 @@ test-results/
 reports/
 .lighthouseci/
 .lycheecache
+visitor-log/wrangler.toml
+visitor-log/.wrangler/
 
 # backups
 _backup/

@@ -1,0 +1,18 @@
+name = "caoyueyang-visitor-log"
+main = "src/index.js"
+compatibility_date = "2026-09-09"
+
+# Use `wrangler d1 create caoyueyang-visitor-log`, then copy the returned
+# database_id into this file before deploying.
+[[d1_databases]]
+binding = "DB"
+database_name = "caoyueyang-visitor-log"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[triggers]
+crons = ["0 3 * * *"]
+
+[vars]
+ALLOWED_ORIGINS = "https://caoyueyang.org,https://www.caoyueyang.org"
+REPORT_TO_EMAIL = "YOUR_EMAIL@example.com"
+REPORT_FROM_EMAIL = "Visitor Log <analytics@example.com>"

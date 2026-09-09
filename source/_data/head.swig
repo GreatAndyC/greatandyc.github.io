@@ -26,3 +26,11 @@
     src: url("/lib/font-awesome/webfonts/fa-solid-900.woff2") format("woff2");
   }
 </style>
+
+{% if site.visitor_log and site.visitor_log.enable and site.visitor_log.endpoint %}
+<script
+  defer
+  src="{{ url_for('/js/visitor-log.js') }}"
+  data-visitor-log-endpoint="{{ site.visitor_log.endpoint }}"
+></script>
+{% endif %}
