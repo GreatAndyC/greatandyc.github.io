@@ -14,7 +14,7 @@ hexo.extend.filter.register('theme_inject', injects => {
 
   injects.comment.raw(
     'waline',
-    '{%- if page.comments and is_post() %}<div class="comments waline-comments" id="waline"></div>{%- endif %}',
+    '<div class="comments waline-comments" id="waline"></div>',
     {},
     {cache: true}
   );
