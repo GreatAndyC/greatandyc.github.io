@@ -23,9 +23,8 @@ hexo.extend.filter.register('theme_inject', injects => {
     'waline-style',
     `{%- if page.comments %}
 <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
-{%- endif %}`,
-    {},
-    {cache: true}
+    {%- endif %}`,
+    {}
   );
 
   injects.bodyEnd.raw(
@@ -45,8 +44,7 @@ hexo.extend.filter.register('theme_inject', injects => {
     noRss: true
   });
 </script>
-{%- endif %}`,
-    {},
-    {cache: true}
+    {%- endif %}`,
+    {}
   );
 });
