@@ -3728,7 +3728,7 @@ html[lang="zh-CN"] .work-project__number
     padding: 0 24px 4px
     border-bottom: 1px solid rgba(110, 110, 110, 0.16)
 
-  .mobile-rail-profile-image
+  .mobile-rail-profile-image-frame
     box-sizing: border-box
     flex: 0 0 56px
     width: 56px
@@ -3736,6 +3736,15 @@ html[lang="zh-CN"] .work-project__number
     margin: 0
     border: 2px solid rgba(110, 110, 110, 0.14)
     border-radius: 50%
+    overflow: hidden
+
+  .mobile-rail-profile-image
+    display: block
+    width: 100%
+    height: auto
+    margin: 0
+    transform: scale(1.12)
+    transform-origin: center
     object-fit: cover
 
   .mobile-rail-profile-copy

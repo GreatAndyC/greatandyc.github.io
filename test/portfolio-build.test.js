@@ -225,6 +225,27 @@ test('home feed metadata remains readable in English cards and list dates', () =
   );
 });
 
+test('mobile navigation avatar preserves the source ratio inside a circular crop', () => {
+  const html = readPublic('index.html');
+  const css = readPublic('css/main.css');
+
+  assert.match(
+    html,
+    /class="mobile-rail-profile-image-frame"[\s\S]*class="mobile-rail-profile-image"[\s\S]*width="968"[\s\S]*height="868"/,
+    'the mobile avatar should expose its natural dimensions inside the crop frame'
+  );
+  assert.match(
+    css,
+    /\.mobile-rail-profile-image-frame\s*\{[\s\S]*width:\s*56px;[\s\S]*height:\s*56px;[\s\S]*overflow:\s*hidden;/,
+    'the mobile avatar crop should be owned by a fixed circular frame'
+  );
+  assert.match(
+    css,
+    /\.mobile-rail-profile-image\s*\{[\s\S]*width:\s*100%;[\s\S]*height:\s*auto;[\s\S]*transform:\s*scale\(1\.12\);/,
+    'the mobile avatar image should keep its natural ratio before being cropped'
+  );
+});
+
 test('home feed opens as a visual card grid and keeps the editorial list alternative', () => {
   const html = readPublic('zh-CN/index.html');
   const css = readPublic('css/main.css');
