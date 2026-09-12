@@ -91,15 +91,72 @@ function getSortMode(panel) {
   return sortDropdown.dataset.sortMode || 'published';
 }
 
+function canonicalPostPath(value) {
+  let path = String(value || '').trim();
+  if (!path) return '';
+
+  try {
+    path = new URL(path, window.location.origin).pathname;
+  } catch (error) {}
+
+  path = path.replace(/\/index\.html$/, '/');
+  if (path.startsWith('/en/')) {
+    path = path.slice(3);
+  } else if (path.startsWith('/zh-CN/')) {
+    path = path.slice(6);
+  }
+
+  path = path.replace(/\/{2,}/g, '/');
+  if (path === '/') return path;
+
+  return `${path.replace(/\/+$/, '')}/`;
+}
+
+function getPostPath(post) {
+  const link = post.querySelector('[itemprop="mainEntityOfPage"]');
+  return canonicalPostPath(link ? link.getAttribute('href') : '');
+}
+
+async function loadHomeViewCounts(content, panel) {
+  if (panel.dataset.viewCountsLoaded === '1') return true;
+  if (panel.viewCountsPromise) return panel.viewCountsPromise;
+
+  const endpoint = panel.dataset.viewCountsEndpoint;
+  if (!endpoint) return false;
+
+  panel.viewCountsPromise = window.fetch(endpoint, {
+    credentials: 'omit',
+    mode: 'cors'
+  })
+    .then(response => {
+      if (!response.ok) throw new Error(`View counts request failed: ${response.status}`);
+      return response.json();
+    })
+    .then(payload => {
+      const counts = payload && payload.counts && typeof payload.counts === 'object'
+        ? payload.counts
+        : {};
+
+      content.querySelectorAll('.post-block').forEach(post => {
+        const path = getPostPath(post);
+        const count = Number(counts[path] || 0);
+        post.dataset.homeViews = Number.isFinite(count) ? String(count) : '0';
+      });
+      panel.dataset.viewCountsLoaded = '1';
+      return true;
+    })
+    .catch(() => false);
+
+  return panel.viewCountsPromise;
+}
+
 function getPostMetric(post, mode) {
   if (mode === 'updated') {
     return Number(post.dataset.homeUpdated || 0);
   }
   if (mode === 'hot') {
-    const countNode = post.querySelector('.leancloud-visitors-count');
-    const rawValue = countNode ? countNode.textContent : '';
-    const numericValue = Number(String(rawValue || '').replace(/[^\d.-]/g, ''));
-    return Number.isFinite(numericValue) ? numericValue : 0;
+    const count = Number(post.dataset.homeViews || 0);
+    return Number.isFinite(count) ? count : 0;
   }
   return Number(post.dataset.homePublished || 0);
 }
@@ -172,17 +229,12 @@ function initHomeFeedControls() {
       }
     } catch (error) {}
 
-    sortHomePosts(content, panel, initialSortMode);
-
-    const observer = new MutationObserver(() => {
-      if (getSortMode(panel) === 'hot') {
-        sortHomePosts(content, panel, 'hot');
-      }
-    });
-
-    if (postsContainer) {
-      postsContainer.querySelectorAll('.leancloud-visitors-count').forEach(node => {
-        observer.observe(node, { childList: true, characterData: true, subtree: true });
+    sortHomePosts(content, panel, initialSortMode === 'hot' ? 'published' : initialSortMode);
+    if (initialSortMode === 'hot') {
+      loadHomeViewCounts(content, panel).then(() => {
+        if (getSortMode(panel) === 'hot') {
+          sortHomePosts(content, panel, 'hot');
+        }
       });
     }
 
@@ -191,7 +243,14 @@ function initHomeFeedControls() {
       if (!option) return;
 
       const mode = option.dataset.sortMode;
-      sortHomePosts(content, panel, mode);
+      sortHomePosts(content, panel, mode === 'hot' ? 'hot' : mode);
+      if (mode === 'hot') {
+        loadHomeViewCounts(content, panel).then(() => {
+          if (getSortMode(panel) === 'hot') {
+            sortHomePosts(content, panel, 'hot');
+          }
+        });
+      }
 
       try {
         window.localStorage.setItem(HOME_SORT_STORAGE_KEY, mode);

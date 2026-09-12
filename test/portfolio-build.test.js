@@ -140,6 +140,7 @@ test('core pages request the versioned stylesheet to avoid stale deployment CSS'
 
 test('home category controls use the feed-aligned responsive layout', () => {
   const html = readPublic('zh-CN/index.html');
+  const englishHtml = readPublic('en/index.html');
   const css = readPublic('css/main.css');
   const filterScript = readPublic('js/home-category-filter.js');
 
@@ -179,6 +180,21 @@ test('home category controls use the feed-aligned responsive layout', () => {
     css.includes('border-bottom: 2px solid transparent;')
       && css.includes('box-shadow: inset 0 -2px 0 var(--text-color);'),
     'category and sort states must use the editorial underline treatment instead of filled pills'
+  );
+  assert.match(
+    englishHtml,
+    /data-view-counts-endpoint="[^"]+\/counts"/,
+    'the English homepage should expose the aggregate view-count endpoint'
+  );
+  assert.match(
+    filterScript,
+    /function canonicalPostPath\(value\)/,
+    'home sorting should normalize localized article paths before looking up counts'
+  );
+  assert.match(
+    filterScript,
+    /post\.dataset\.homeViews = /,
+    'home sorting should attach fetched aggregate view counts to posts'
   );
 });
 

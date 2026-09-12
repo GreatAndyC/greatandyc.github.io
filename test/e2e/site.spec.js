@@ -93,6 +93,28 @@ test('English menu navigation never drops Work or crosses into Chinese', async (
   await expectNoRuntimeProblems(problems);
 });
 
+test('English popularity sorts by aggregate Chinese and English view counts', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium-desktop', 'one browser is enough for sort behavior');
+  await page.route('**://caoyueyang-visitor-log.andy-caoyueyang.workers.dev/counts', route => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({
+      counts: {
+        '/2026/05/15/manus/': 99,
+        '/2026/09/09/waline-comment-system/': 1
+      }
+    })
+  }));
+
+  const problems = await openPage(page, '/en/');
+  await page.locator('[data-sort-mode="hot"]').click();
+
+  await expect(page.locator('.feed-posts-container .post-block').first().locator('.post-title'))
+    .toContainText('Trying out Manus');
+  await expect(page.locator('.home-sort-option[data-sort-mode="hot"]')).toHaveAttribute('aria-pressed', 'true');
+  await expectNoRuntimeProblems(problems);
+});
+
 for (const languageSwitch of [
   { from: '/en/work/', language: 'zh-CN', path: '/work/index.html', documentLanguage: 'zh-CN' },
   { from: '/work/', language: 'en', path: '/en/work/index.html', documentLanguage: 'en' },
@@ -196,7 +218,7 @@ test('Work sidebar exposes both the project TOC and author overview', async ({ p
   const problems = await openPage(page, '/en/work/');
 
   await expect(page.locator('.post-toc')).toBeVisible();
-  await expect(page.locator('.site-author-image')).toHaveAttribute('src', '/images/avatar.jpg');
+  await expect(page.locator('.site-author-image')).toHaveAttribute('src', '/images/CaoYueyang.png');
 
   await page.locator('.sidebar-nav-overview').click();
   await expect(page.locator('.site-overview-wrap')).toHaveClass(/sidebar-panel-active/);

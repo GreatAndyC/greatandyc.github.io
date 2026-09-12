@@ -19,7 +19,7 @@ function originFor(request, env) {
 function corsHeaders(origin) {
   const headers = new Headers({
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Cache-Control': 'no-store',
     'Vary': 'Origin'
   });
@@ -38,13 +38,14 @@ function response(body, status, origin) {
   });
 }
 
-function jsonResponse(body, status) {
+function jsonResponse(body, status, origin = '', cacheControl = 'no-store') {
+  const headers = corsHeaders(origin);
+  headers.set('Cache-Control', cacheControl);
+  headers.set('Content-Type', 'application/json; charset=UTF-8');
+
   return new Response(JSON.stringify(body), {
     status,
-    headers: {
-      'Cache-Control': 'no-store',
-      'Content-Type': 'application/json; charset=UTF-8'
-    }
+    headers
   });
 }
 
@@ -55,6 +56,21 @@ function textField(value, maxLength) {
 function normalizedPath(value) {
   const path = textField(value, 512);
   return path.startsWith('/') && !path.startsWith('//') ? path : '/';
+}
+
+function canonicalPath(value) {
+  let path = normalizedPath(value).replace(/\/index\.html$/, '/');
+
+  if (path.startsWith('/en/')) {
+    path = path.slice(3);
+  } else if (path.startsWith('/zh-CN/')) {
+    path = path.slice(6);
+  }
+
+  path = path.replace(/\/{2,}/g, '/');
+  if (path === '/') return path;
+
+  return `${path.replace(/\/+$/, '')}/`;
 }
 
 async function recordVisit(request, env) {
@@ -126,6 +142,28 @@ async function listLogs(request, env) {
       'Content-Type': 'application/json; charset=UTF-8'
     }
   });
+}
+
+async function listCounts(request, env) {
+  const origin = originFor(request, env);
+  const result = await env.DB.prepare(`
+    SELECT path, COUNT(*) AS views
+    FROM visit_logs
+    GROUP BY path
+  `).all();
+  const counts = {};
+
+  (result.results || []).forEach(row => {
+    const path = canonicalPath(row.path);
+    counts[path] = (counts[path] || 0) + Number(row.views || 0);
+  });
+
+  return jsonResponse(
+    { counts },
+    200,
+    origin,
+    'public, max-age=60, s-maxage=60'
+  );
 }
 
 function escapeHtml(value) {
@@ -283,7 +321,10 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    if (request.method === 'OPTIONS' && url.pathname === '/visit') {
+    if (
+      request.method === 'OPTIONS'
+      && (url.pathname === '/visit' || url.pathname === '/counts')
+    ) {
       const origin = originFor(request, env);
       return origin ? response('', 204, origin) : response('Forbidden', 403, '');
     }
@@ -298,6 +339,10 @@ export default {
 
     if (request.method === 'GET' && url.pathname === '/logs') {
       return listLogs(request, env);
+    }
+
+    if (request.method === 'GET' && url.pathname === '/counts') {
+      return listCounts(request, env);
     }
 
     if (request.method === 'GET' && url.pathname === '/health') {

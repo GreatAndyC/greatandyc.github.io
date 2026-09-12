@@ -224,7 +224,7 @@ categories:
 
 常见用途：
 
-- 头像：`source/images/avatar.jpg`
+- 头像：`source/images/CaoYueyang.png`
 - 文章插图：`source/images/...`
 - 画廊图片：`source/images/recap_314/...`
 - favicon 或其他主题资源引用的图：也在这里
@@ -287,7 +287,7 @@ npm run gallery:add-photo -- --album my-album --src /images/my-album/cover.jpg -
 
 ```yml
 avatar:
-  url: /images/avatar.jpg
+  url: /images/CaoYueyang.png
   rounded: true
   rotated: false
 ```
@@ -298,7 +298,7 @@ avatar:
 
 所以如果你想换头像，只需要：
 
-1. 替换 `source/images/avatar.jpg`
+1. 准备或替换 `source/images/CaoYueyang.png`
 2. 或把 `avatar.url` 改成新的图片路径
 
 ### 4.2 菜单
@@ -580,7 +580,7 @@ links:
 
 ### 场景 1：改头像
 
-1. 替换 `source/images/avatar.jpg`
+1. 准备或替换 `source/images/CaoYueyang.png`
 2. 如果文件名变了，更新 `themes/next/_config.yml` 中的 `avatar.url`
 3. 本地运行 `npm run build`
 

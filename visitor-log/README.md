@@ -1,6 +1,6 @@
 # 访问日志 Worker
 
-这个目录提供一个独立的 Cloudflare Worker + D1 访问日志接口。博客本身继续部署到 GitHub Pages；浏览器只上报一次页面访问，不会把图片、CSS 或 JS 请求全部记下来。
+这个目录提供一个独立的 Cloudflare Worker + D1 访问日志接口。博客本身继续部署到 GitHub Pages；浏览器只上报一次页面访问，不会把图片、CSS 或 JS 请求全部记下来。Worker 还提供只含聚合数量的公开 `/counts` 接口，供首页按真实浏览量排序。
 
 ## 部署
 
@@ -45,6 +45,14 @@ https://caoyueyang-visitor-log.andy-caoyueyang.workers.dev
 curl https://caoyueyang-visitor-log.andy-caoyueyang.workers.dev/health
 ```
 
+首页排序使用的聚合浏览量接口为：
+
+```text
+https://caoyueyang-visitor-log.andy-caoyueyang.workers.dev/counts
+```
+
+该接口只返回按路径聚合后的浏览次数，不返回 IP、来源或 User-Agent；`/en/` 和 `/zh-CN/` 前缀会在聚合时去掉，因此同一篇文章的中英文浏览量会合并。
+
 ## 启用博客上报
 
 确认 `/health` 返回 `ok` 后，把根目录 `_config.yml` 中的：
@@ -60,6 +68,7 @@ visitor_log:
 visitor_log:
   enable: true
   endpoint: https://caoyueyang-visitor-log.andy-caoyueyang.workers.dev/visit
+  counts_endpoint: https://caoyueyang-visitor-log.andy-caoyueyang.workers.dev/counts
 ```
 
 然后重新构建并发布博客。

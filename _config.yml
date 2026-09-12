@@ -166,9 +166,10 @@ waline:
   server_url: https://comments.caoyueyang.org
   turnstile_key: 0x4AAAAAAEtd9av7uMqRLUqC
 
-# Visitor access logging. The Worker endpoint is public for browser-side
-# visit reports; the log query endpoint remains protected by a Cloudflare
-# Secret and is not exposed in this config.
+# Visitor access logging. The Worker endpoints are public for browser-side
+# visit reports and aggregate counts; the raw log query endpoint remains
+# protected by a Cloudflare Secret and is not exposed in this config.
 visitor_log:
   enable: true
   endpoint: https://caoyueyang-visitor-log.andy-caoyueyang.workers.dev/visit
+  counts_endpoint: https://caoyueyang-visitor-log.andy-caoyueyang.workers.dev/counts

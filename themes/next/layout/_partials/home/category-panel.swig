@@ -8,7 +8,7 @@
 {%- endif %}
 {%- set panel_categories_url = localized_path(panel_categories_path) %}
 {%- if localized_categories_total > 0 %}
-  <section class="home-category-panel" aria-label="{{ __('state.categories') }}" data-current-category="{{ panel_current_category }}">
+  <section class="home-category-panel" aria-label="{{ __('state.categories') }}" data-current-category="{{ panel_current_category }}"{%- if config.visitor_log and config.visitor_log.counts_endpoint %} data-view-counts-endpoint="{{ config.visitor_log.counts_endpoint }}"{%- endif %}>
     <div class="home-category-panel-head">
       <span class="home-category-panel-title">{{ __('state.categories') }}</span>
     </div>
