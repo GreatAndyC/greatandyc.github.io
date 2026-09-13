@@ -519,7 +519,7 @@ test('ChatGPT Android report keeps its English translation aligned with the Chin
 test('every bilingual post keeps its figures, tables, and top-level sections aligned', () => {
   const postsDir = path.join(root, 'source', '_posts');
   const imagePaths = content => [...content.matchAll(/(?:!\[[^\]]*\]\(|<img[^>]+src=["'])([^)"']+)/g)]
-    .map(match => match[1].split('?')[0]);
+    .map(match => match[1].split('?')[0].replace(/\.en(?=\.[^.]+$)/, ''));
   const tableRows = content => content.match(/^\|.*\|$/gm) || [];
   const topLevelSections = content => content.match(/^##\s+.+$/gm) || [];
   const chinesePosts = fs.readdirSync(postsDir)

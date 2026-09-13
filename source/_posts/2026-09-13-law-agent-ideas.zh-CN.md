@@ -5,7 +5,7 @@ lang: zh-CN
 slug: law-agent-ideas
 description: 记录 Law Agent 从行业调研到设计与实现的全过程。
 photos:
-  - /images/posts/2026-09-13-law-agent-ideas/law-agent-android-preview.png
+  - /images/posts/2026-09-13-law-agent-ideas/law-agent-waterfall-cover.png
 tags:
   - AI
   - Agent
