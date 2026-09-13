@@ -1483,6 +1483,32 @@ body
   font-style normal
   line-height 1.4
 
+/* Law Agent 文章：图片始终按原始宽高比缩放，不拉伸、不裁剪 */
+.post-body figure.law-agent-figure
+  display block
+  width 100%
+  margin 0 auto 1.2em
+  text-align center
+
+.post-body figure.law-agent-figure img
+  display block
+  width auto !important
+  max-width 100% !important
+  height auto !important
+  object-fit contain !important
+  margin 0 auto
+
+.post-body figure.law-agent-figure .image-caption
+  display none !important
+
+.post-body figure.law-agent-figure figcaption
+  display block
+  margin-top 0.35em
+  color #999
+  font-size 0.85em
+  font-style normal
+  line-height 1.4
+
 @media (max-width: 767px)
   .post-body figure.post-figure img
     width 100%
