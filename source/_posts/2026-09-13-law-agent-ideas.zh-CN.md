@@ -1,5 +1,5 @@
 ---
-title: 26.9.13 设计Law Agent的思路与实现
+title: 设计Law Agent的思路与实现
 date: 2026-09-13 15:26:00
 lang: zh-CN
 slug: law-agent-ideas
