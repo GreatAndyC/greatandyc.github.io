@@ -604,12 +604,12 @@ test('Work pages publish their project-specific localized descriptions', () => {
 
   assert.ok(
     english.includes(
-      '<meta name="description" content="Andy Cao&#39;s independent products, open-source software, and research projects.">'
+      '<meta name="description" content="AndyCao&#39;s independent products, open-source software, and research projects.">'
     )
   );
   assert.ok(
     chinese.includes(
-      '<meta name="description" content="曹越洋的独立产品、开源软件与研究型项目。">'
+      '<meta name="description" content="AndyCao的独立产品、开源软件与研究型项目。">'
     )
   );
 });
@@ -618,25 +618,25 @@ test('bilingual About pages share the updated positioning, background, and conci
   const expectations = [
     {
       file: 'about/index.html',
-      positioning: '曹越洋 · AI 产品工程师 &#x2F; 系统构建者',
+      positioning: 'AndyCao · AI 产品工程师 &#x2F; 系统构建者',
       focus: '我关注 Applied AI、AI Software、Research Software 和 AI-native Product Engineering。',
       background: '我的经历横跨产品分析、跨平台应用、数据与 AI 工作流、应用研究和系统实现',
       degree: '硕士：数据与系统工程系',
       undergraduate: '本科：化学系',
       researchRole: '我的研究兴趣包括机器人辅助训练、人机交互和多模态数据分析',
-      portraitAlt: '曹越洋个人肖像',
+      portraitAlt: 'AndyCao 个人肖像',
       workHref: '/work/',
       removedCopy: ['目前我居住在香港', '超过三年的 AI 产品使用、调研与实践积累', '约一年的业界项目和软件交付经历', '工学硕士：工业工程与物流管理', '工学学士：高分子材料与工程', '数据与系统工程系（Department of Data and Systems Engineering）']
     },
     {
       file: 'en/about/index.html',
-      positioning: 'Andy Cao · AI Product Engineer &amp; Systems Builder',
+      positioning: 'AndyCao · AI Product Engineer &amp; Systems Builder',
       focus: 'I focus on Applied AI, AI Software, Research Software, and AI-native Product Engineering.',
       background: 'My work has crossed product analysis, cross-platform applications, data and AI workflows, applied research, and systems implementation',
       degree: 'Master’s: Department of Data and Systems Engineering',
       undergraduate: 'Bachelor’s: Department of Chemistry',
       researchRole: 'My research interests include robotic training, human–robot interaction, and multimodal data analysis',
-      portraitAlt: 'Portrait of Andy Cao',
+      portraitAlt: 'Portrait of AndyCao',
       workHref: '/en/work/',
       removedCopy: ['I am currently based in Hong Kong', 'more than three years of hands-on AI product use', 'approximately one year of industry project and software-delivery experience', 'MSc(Eng) in Industrial Engineering and Logistics Management', 'BEng in Polymer Materials and Engineering']
     }
@@ -671,7 +671,7 @@ test('bilingual About pages share the updated positioning, background, and conci
     assert.ok(!html.includes('andy.caoyueyang@gmail.com'), `${expectation.file} must not expose the personal email`);
 
     assert.ok(
-      html.includes(`src="/images/CaoYueyang.png" alt="${expectation.portraitAlt}"`),
+      html.includes(`src="/images/AndyCao.png" alt="${expectation.portraitAlt}"`),
       `${expectation.file} is missing an accessible portrait`
     );
     assert.ok(
@@ -809,18 +809,18 @@ test('portfolio hero introduces the maker without turning the project index into
   const expectations = [
     {
       file: 'work/index.html',
-      kicker: '曹越洋 / AI 原生产品工程师',
+      kicker: 'AndyCao / AI 原生产品工程师',
       title: '想法变成<br>产品。',
       disciplines: ['产品设计', '软件工程', '应用 AI'],
-      portraitAlt: '曹越洋个人肖像',
+      portraitAlt: 'AndyCao 个人肖像',
       sectionTitle: '作品集'
     },
     {
       file: 'en/work/index.html',
-      kicker: 'ANDY CAO / AI-NATIVE PRODUCT ENGINEER',
+      kicker: 'AndyCao / AI-NATIVE PRODUCT ENGINEER',
       title: '<span>Ideas into</span><span>products.</span>',
       disciplines: ['Product Design', 'Software Engineering', 'Applied AI'],
-      portraitAlt: 'Portrait of Andy Cao',
+      portraitAlt: 'Portrait of AndyCao',
       sectionTitle: 'Selected Work'
     }
   ];
@@ -832,7 +832,7 @@ test('portfolio hero introduces the maker without turning the project index into
     assert.ok(hero.includes(kicker), `${file} is missing the positioning statement`);
     assert.ok(hero.includes(title), `${file} is missing the editorial hero title`);
     assert.ok(
-      hero.includes(`src="/images/CaoYueyang.png" alt="${portraitAlt}"`),
+      hero.includes(`src="/images/AndyCao.png" alt="${portraitAlt}"`),
       `${file} is missing the shared portrait`
     );
     disciplines.forEach(discipline => {
@@ -851,7 +851,7 @@ test('portfolio hero introduces the maker without turning the project index into
   });
 
   assert.ok(
-    fs.existsSync(path.join(publicDir, 'images/CaoYueyang.png')),
+    fs.existsSync(path.join(publicDir, 'images/AndyCao.png')),
     'the portrait must be copied into the generated site'
   );
 });

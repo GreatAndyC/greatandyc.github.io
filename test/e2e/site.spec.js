@@ -218,7 +218,7 @@ test('Work sidebar exposes both the project TOC and author overview', async ({ p
   const problems = await openPage(page, '/en/work/');
 
   await expect(page.locator('.post-toc')).toBeVisible();
-  await expect(page.locator('.site-author-image')).toHaveAttribute('src', '/images/CaoYueyang.png');
+  await expect(page.locator('.site-author-image')).toHaveAttribute('src', '/images/AndyCao.png');
 
   await page.locator('.sidebar-nav-overview').click();
   await expect(page.locator('.site-overview-wrap')).toHaveClass(/sidebar-panel-active/);

@@ -2,14 +2,14 @@
 title: 关于
 date: "2026-07-29 18:00:00"
 lang: zh-CN
-description: 曹越洋的个人简介、研究兴趣与软件项目。
+description: AndyCao的个人简介、研究兴趣与软件项目。
 comments: false
 toc: false
 ---
 
 <div class="profile-hero">
   <div class="profile-avatar-frame">
-    <img class="profile-avatar" src="/images/CaoYueyang.png" alt="曹越洋个人肖像">
+    <img class="profile-avatar" src="/images/AndyCao.png" alt="AndyCao 个人肖像">
   </div>
   <div class="profile-avatar-contact">
     <div class="profile-avatar-contact__title" role="heading" aria-level="2">联系邮箱</div>
@@ -17,7 +17,7 @@ toc: false
   </div>
 </div>
 
-# 曹越洋 · AI 产品工程师 / 系统构建者
+# AndyCao · AI 产品工程师 / 系统构建者
 
 我把模糊、非结构化的问题转化为可运行、可验证、可迭代的 AI 产品与软件系统。
 

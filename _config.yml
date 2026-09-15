@@ -3,19 +3,19 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 曹越洋的博客
+title: AndyCao 的博客
 subtitle: ''
 description: AI 产品、软件系统与应用研究
 description_i18n:
   zh-CN: AI 产品、软件系统与应用研究
   en: AI products, software systems, and applied research
 title_i18n:
-  zh-CN: 曹越洋的博客
+  zh-CN: AndyCao 的博客
   en: AndyCao's Blog
 keywords:
-author: 曹越洋
+author: AndyCao
 author_i18n:
-  zh-CN: 曹越洋
+  zh-CN: AndyCao
   en: AndyCao
 language:
   - en

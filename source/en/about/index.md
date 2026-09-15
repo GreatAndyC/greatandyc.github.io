@@ -2,14 +2,14 @@
 title: About
 date: "2026-07-29 18:00:00"
 lang: en
-description: About Andy Cao, his research interests, and selected software projects.
+description: About AndyCao, research interests, and selected software projects.
 comments: false
 toc: false
 ---
 
 <div class="profile-hero">
   <div class="profile-avatar-frame">
-    <img class="profile-avatar" src="/images/CaoYueyang.png" alt="Portrait of Andy Cao">
+    <img class="profile-avatar" src="/images/AndyCao.png" alt="Portrait of AndyCao">
   </div>
   <div class="profile-avatar-contact">
     <div class="profile-avatar-contact__title" role="heading" aria-level="2">Contact email</div>
@@ -17,7 +17,7 @@ toc: false
   </div>
 </div>
 
-# Andy Cao · AI Product Engineer & Systems Builder
+# AndyCao · AI Product Engineer & Systems Builder
 
 I turn ambiguous, unstructured problems into AI products and software systems that can be run, tested, and improved iteratively.
 

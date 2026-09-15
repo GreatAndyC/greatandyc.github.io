@@ -30,7 +30,7 @@ Summary: This article uses a recent public mutual-aid spreadsheet to structurall
 
 **Summary: A concise profile of victims and regional distribution based on a public mutual-aid archive.**
 
-**Author:** Cao Yueyang  
+**Author:** AndyCao  
 **Affiliation:** Department of Data and Systems Engineering, The University of Hong Kong  
 **Role:** Independent analyst (data collection, labeling, visualization, reporting)  
 **Contact:** Please use the public contact links on this site.

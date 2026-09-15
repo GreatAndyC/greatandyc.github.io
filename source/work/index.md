@@ -4,7 +4,7 @@ date: 2026-07-28 12:00:00
 type: portfolio
 layout: page
 lang: zh-CN
-description: 曹越洋的独立产品、开源软件与研究型项目。
+description: AndyCao的独立产品、开源软件与研究型项目。
 comments: false
 toc:
   enable: true
@@ -18,7 +18,7 @@ fancybox: false
 <div class="work-page">
   <header class="work-intro">
     <div class="work-intro__copy">
-      <p class="work-kicker">曹越洋 / AI 原生产品工程师</p>
+      <p class="work-kicker">AndyCao / AI 原生产品工程师</p>
       <p class="work-intro__title" role="heading" aria-level="1">想法变成<br>产品。</p>
       <p class="work-intro__lead">我把产品想法转化为可以实际使用的 AI 原生产品，覆盖交互设计、工程实现、自动验证与上线后的持续迭代。</p>
       <div class="work-intro__disciplines" aria-label="核心能力">
@@ -32,8 +32,8 @@ fancybox: false
       </div>
     </div>
     <figure class="work-intro__portrait">
-      <img src="/images/CaoYueyang.png" alt="曹越洋个人肖像" width="968" height="868">
-      <figcaption><span>曹越洋</span><span>产品 · 工程 · AI</span></figcaption>
+      <img src="/images/AndyCao.png" alt="AndyCao 个人肖像" width="968" height="868">
+      <figcaption><span>AndyCao</span><span>产品 · 工程 · AI</span></figcaption>
     </figure>
   </header>
 

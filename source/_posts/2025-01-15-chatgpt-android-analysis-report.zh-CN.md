@@ -15,9 +15,9 @@ categories:
   - 数据分析
 toc: true
 ---
-ChatGpt分析报告 -By 曹越洋
+ChatGpt分析报告 -By AndyCao
 
-作者姓名：曹越洋
+作者姓名：AndyCao
 所属院校：香港大学数据与系统工程系
 联系方式：请通过网站公开入口联系
 报告完成日期：2025年1月15日

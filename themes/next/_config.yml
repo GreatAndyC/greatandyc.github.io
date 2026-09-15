@@ -68,7 +68,7 @@ footer:
 
   # If not defined, `author` from Hexo `_config.yml` will be used.
   copyright:
-    zh-CN: 曹越洋
+    zh-CN: AndyCao
     en: AndyCao
 
   # Powered by Hexo & NexT
@@ -170,7 +170,7 @@ sidebar:
 # Sidebar Avatar
 avatar:
   # Replace the default image and set the url here.
-  url: /images/CaoYueyang.png
+  url: /images/AndyCao.png
   # If true, the avatar will be dispalyed in circle.
   rounded: true
   # If true, the avatar will be rotated with the cursor.

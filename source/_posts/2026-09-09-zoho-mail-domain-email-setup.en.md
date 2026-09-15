@@ -165,7 +165,7 @@ Starting with `p=none` lets you monitor authentication results without accidenta
 After domain verification, open Zoho Mail Admin Console → `Users` → `Add User` and create the real main user:
 
 - Mailbox: `owner@example.com`
-- Display name: `Andy Cao`
+- Display name: `AndyCao`
 
 Then add aliases for this user:
 

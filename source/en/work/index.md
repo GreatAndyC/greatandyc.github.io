@@ -4,7 +4,7 @@ date: 2026-07-28 12:00:00
 type: portfolio
 layout: page
 lang: en
-description: Andy Cao's independent products, open-source software, and research projects.
+description: AndyCao's independent products, open-source software, and research projects.
 comments: false
 toc:
   enable: true
@@ -18,7 +18,7 @@ fancybox: false
 <div class="work-page">
   <header class="work-intro">
     <div class="work-intro__copy">
-      <p class="work-kicker">ANDY CAO / AI-NATIVE PRODUCT ENGINEER</p>
+      <p class="work-kicker">AndyCao / AI-NATIVE PRODUCT ENGINEER</p>
       <p class="work-intro__title" role="heading" aria-level="1"><span>Ideas into</span><span>products.</span></p>
       <p class="work-intro__lead">I design, build, and ship AI-native products—from product intent and interaction design to implementation, automated verification, and production learning.</p>
       <div class="work-intro__disciplines" aria-label="Core disciplines">
@@ -32,8 +32,8 @@ fancybox: false
       </div>
     </div>
     <figure class="work-intro__portrait">
-      <img src="/images/CaoYueyang.png" alt="Portrait of Andy Cao" width="968" height="868">
-      <figcaption><span>Andy Cao</span><span>Product · Engineering · AI</span></figcaption>
+      <img src="/images/AndyCao.png" alt="Portrait of AndyCao" width="968" height="868">
+      <figcaption><span>AndyCao</span><span>Product · Engineering · AI</span></figcaption>
     </figure>
   </header>
 

@@ -163,7 +163,7 @@ Cloudflare 中已经有 `_dmarc` TXT 时，不要新增第二条 DMARC。先在 
 域名验证完成后，在 Zoho Mail Admin Console → `Users` → `Add User` 创建真正的主用户：
 
 - 邮箱：`owner@example.com`
-- 显示名：`Andy Cao`
+- 显示名：`AndyCao`
 
 然后给这个用户添加别名：
 

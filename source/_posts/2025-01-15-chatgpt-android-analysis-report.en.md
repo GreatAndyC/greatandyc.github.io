@@ -19,7 +19,7 @@ toc: true
 
 ChatGPT Android Product Analysis Report
 
-Author: Cao Yueyang  
+Author: AndyCao
 Affiliation: Department of Data and Systems Engineering, The University of Hong Kong  
 Contact: Please use the public contact links on this site.
 Report date: January 15, 2025
