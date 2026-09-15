@@ -95,22 +95,41 @@ test('English menu navigation never drops Work or crosses into Chinese', async (
 
 test('English popularity sorts by aggregate Chinese and English view counts', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium-desktop', 'one browser is enough for sort behavior');
+
+  const problems = await openPage(page, '/en/');
+  const postData = await page.locator('.feed-posts-container .post-block').evaluateAll(posts => posts
+    .slice(0, 2)
+    .map(post => {
+      const link = post.querySelector('[itemprop="mainEntityOfPage"]');
+      const title = post.querySelector('.post-title')?.textContent?.trim() || '';
+      let path = link ? new URL(link.getAttribute('href') || '', document.baseURI).pathname : '';
+
+      path = path.replace(/\/index\.html$/, '/');
+      if (path.startsWith('/en/')) path = path.slice(3);
+      if (path.startsWith('/zh-CN/')) path = path.slice(6);
+      path = path.replace(/\/{2,}/g, '/');
+      if (path !== '/') path = `${path.replace(/\/+$/, '')}/`;
+
+      return { path, title };
+    }));
+
+  expect(postData.length).toBe(2);
+
   await page.route('**://caoyueyang-visitor-log.andy-caoyueyang.workers.dev/counts', route => route.fulfill({
     status: 200,
     contentType: 'application/json',
     body: JSON.stringify({
       counts: {
-        '/2026/05/15/manus/': 99,
-        '/2026/09/09/waline-comment-system/': 1
+        [postData[0].path]: 1,
+        [postData[1].path]: 99
       }
     })
   }));
 
-  const problems = await openPage(page, '/en/');
   await page.locator('[data-sort-mode="hot"]').click();
 
   await expect(page.locator('.feed-posts-container .post-block').first().locator('.post-title'))
-    .toContainText('Trying out Manus');
+    .toContainText(postData[1].title);
   await expect(page.locator('.home-sort-option[data-sort-mode="hot"]')).toHaveAttribute('aria-pressed', 'true');
   await expectNoRuntimeProblems(problems);
 });
