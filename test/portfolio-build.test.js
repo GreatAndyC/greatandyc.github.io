@@ -598,6 +598,27 @@ test('localized pages use their matching large social card', () => {
   });
 });
 
+test('post sharing metadata uses the article title and first image', () => {
+  const html = readPublic('2026/09/15/codex-poster-workflow/index.html');
+
+  assert.ok(
+    html.includes('<meta property="og:title" content="如何用CodeX辅助制作海报">'),
+    'the post share card should use the article title'
+  );
+  assert.ok(
+    html.includes('<meta property="og:image" content="https://caoyueyang.org/images/posts/ai-poster-workflow/ai-poster-workflow.png">'),
+    'the post share card should use the first article image'
+  );
+  assert.equal(
+    (html.match(/<meta property="og:image"/g) || []).length,
+    1,
+    'the post share card should expose one deterministic image'
+  );
+  assert.match(html, /data-post-share/, 'the post should expose the share control');
+  assert.match(html, /data-post-share-float/, 'the post should expose the floating share control');
+  assert.match(html, /\/js\/article-share\.js/, 'the post should load the share behavior');
+});
+
 test('Work pages publish their project-specific localized descriptions', () => {
   const english = readPublic('en/work/index.html');
   const chinese = readPublic('work/index.html');

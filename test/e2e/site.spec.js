@@ -134,6 +134,34 @@ test('English popularity sorts by aggregate Chinese and English view counts', as
   await expectNoRuntimeProblems(problems);
 });
 
+test('post sharing exposes the canonical link and copies it', async ({ page }) => {
+  const problems = await openPage(page, '/2026/09/15/codex-poster-workflow/');
+  const shareRoot = page.locator('[data-post-share]');
+
+  await expect(shareRoot).toBeVisible();
+  await expect(shareRoot.locator('[data-share-button]')).toBeVisible();
+  await expect(shareRoot.locator('[data-share-copy]')).toBeVisible();
+  const floatingShare = page.locator('[data-post-share-float]');
+  await expect(floatingShare).not.toHaveClass(/is-visible/);
+
+  await page.evaluate(() => window.scrollTo(0, 500));
+  await expect.poll(async () => floatingShare.evaluate(element => element.classList.contains('is-visible')))
+    .toBe(true);
+
+  const canonicalUrl = await page.locator('link[rel="canonical"]').getAttribute('href');
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: async () => {} }
+    });
+  });
+
+  await shareRoot.locator('[data-share-copy]').click();
+  await expect(shareRoot.locator('[data-share-status]')).toHaveText('链接已复制');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonicalUrl);
+  await expectNoRuntimeProblems(problems);
+});
+
 for (const languageSwitch of [
   { from: '/en/work/', language: 'zh-CN', path: '/work/index.html', documentLanguage: 'zh-CN' },
   { from: '/work/', language: 'en', path: '/en/work/index.html', documentLanguage: 'en' },

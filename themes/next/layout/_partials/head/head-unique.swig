@@ -1,5 +1,9 @@
-{%- set og_image = page.og_image or page.photos %}
-{%- if not og_image or not og_image.length %}
+{%- set og_title = page.title or title %}
+{%- set og_image = page.og_image %}
+{%- if not og_image and page.photos and page.photos.length %}
+  {%- set og_image = page.photos[0] %}
+{%- endif %}
+{%- if not og_image %}
   {%- if page.lang === 'en' %}
     {%- set og_image = '/images/brand/social-card-en.jpg' %}
   {%- else %}
@@ -7,7 +11,7 @@
   {%- endif %}
 {%- endif %}
 {{ open_graph({
-  title: title,
+  title: og_title,
   description: page.description or description,
   image: og_image,
   site_name: title,

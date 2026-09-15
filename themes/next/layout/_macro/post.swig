@@ -268,6 +268,9 @@
 
         {{ partial('_partials/post/post-footer.swig', {}, {cache: theme.cache.enable}) }}
 
+        {{ partial('_partials/post/post-share.swig') }}
+        {{ partial('_partials/post/post-share-float.swig') }}
+
         {{ post_nav(post) }}
       </footer>
     {% else %}

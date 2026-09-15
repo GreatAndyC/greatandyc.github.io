@@ -13,6 +13,7 @@
   {{- next_js('bookmark.js') }}
 {%- endif %}
 {{- next_js('home-category-filter.js') }}
+{{- next_js('article-share.js') }}
 {%- if theme.pjax %}
   {% include 'pjax.swig' %}
 {%- endif %}
