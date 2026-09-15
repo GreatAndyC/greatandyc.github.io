@@ -20,3 +20,7 @@ updated: "2026-04-28 22:15:19"
 本文介绍了使用 CodeX + Photoshop 制作宣传海报的一种可行的方法。
 
 这是一个测试翻译的文档。制作海报还不简单？直接让 CodeX 整个阅读不就行了。搞这么多幺蛾子，这么麻烦干嘛呢？
+
+本文用于测试翻译，内容尚未施工，可以参考另外一篇：
+
+[在AI辅助下用Adobe Illustrator自己设计名片](/2026/09/15/ai-business-card-with-illustrator/)

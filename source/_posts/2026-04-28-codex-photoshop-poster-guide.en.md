@@ -24,3 +24,7 @@ updated: "2026-04-28 22:15:19"
 This article introduces one feasible way to create a promotional poster with CodeX and Photoshop.
 
 This is a test-translation document. Making a poster is not difficult, is it? Just let CodeX read the whole thing and handle it. Why make it so complicated with all these twists and turns? Haha.
+
+This article is for translation testing. The content is still under construction. You can refer to another article:
+
+[Designing My Own Business Card with Adobe Illustrator and AI Assistance](/en/2026/09/15/ai-business-card-with-illustrator/)
