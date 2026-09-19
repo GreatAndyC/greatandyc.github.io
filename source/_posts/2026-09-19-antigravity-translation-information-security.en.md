@@ -6,7 +6,7 @@ slug: antigravity-translation-information-security
 permalink: en/2026/09/19/antigravity-translation-information-security/
 description: A record of using Antigravity to translate an Anthropic threat report and reflect on the data boundaries of AI agents.
 photos:
-  - /images/posts/antigravity-translation-information-security/07-data-sensitivity-solutions.png
+  - /images/posts/antigravity-translation-information-security/07-data-sensitivity-solutions.en.png
 tags:
   - AI
   - Agent
@@ -44,7 +44,7 @@ I used concurrent subtasks to improve speed. However, if the model is capable en
 I also asked the Agent to make a simple count of the report’s different case categories:
 
 <figure class="post-figure">
-  <img src="/images/posts/antigravity-translation-information-security/02-threat-report-distribution.png" alt="Page distribution across threat categories in Anthropic’s report" width="1274" height="1192" loading="lazy">
+  <img src="/images/posts/antigravity-translation-information-security/02-threat-report-distribution.en.png" alt="Page distribution across threat categories in Anthropic’s report" width="1296" height="1213" loading="lazy">
   <figcaption>Page distribution across different threat categories in Anthropic’s report.</figcaption>
 </figure>
 
@@ -72,14 +72,14 @@ The difference with an AI Agent is that its potential data access can be much br
 In the cloud-based workflow I used, the model’s inference mainly happens in the cloud. For an Agent to process a local PDF, it must receive at least the relevant files or text. Exactly what gets uploaded depends on the client implementation, the Agent’s permissions, and the workflow.
 
 <figure class="post-figure">
-  <img src="/images/posts/antigravity-translation-information-security/04-agent-data-flow.png" alt="Data moving between a local computer and a cloud model during Agent work" width="1448" height="1086" loading="lazy">
+  <img src="/images/posts/antigravity-translation-information-security/04-agent-data-flow.en.png" alt="Data moving between a local computer and a cloud model during Agent work" width="1448" height="1086" loading="lazy">
   <figcaption>During Agent work, local files, source data, and model results may move between the local computer and the cloud.</figcaption>
 </figure>
 
 When permissions, data boundaries, or the supply chain are poorly controlled, an Agent can shift from an “assistant” into a “thief”: it may read and upload data, and hand information that originally existed only on the local device to a third party.
 
 <figure class="post-figure">
-  <img src="/images/posts/antigravity-translation-information-security/05-agent-data-flow-risk.png" alt="An Agent risk diagram showing data uploaded to the cloud and stored for a long time" width="1448" height="1086" loading="lazy">
+  <img src="/images/posts/antigravity-translation-information-security/05-agent-data-flow-risk.en.png" alt="An Agent risk diagram showing data uploaded to the cloud and stored for a long time" width="1448" height="1086" loading="lazy">
   <figcaption>When upload scope and retention time are opaque, an Agent’s convenience becomes a new data exposure surface.</figcaption>
 </figure>
 
@@ -101,7 +101,7 @@ Within days of the threat report’s publication on September 10, concerns from 
 Different solutions can be selected according to data sensitivity:
 
 <figure class="post-figure">
-  <img src="/images/posts/antigravity-translation-information-security/07-data-sensitivity-solutions.png" alt="Choosing SaaS, zero-data-retention, private-cloud, or isolated local environments according to data sensitivity" width="1536" height="1024" loading="lazy">
+  <img src="/images/posts/antigravity-translation-information-security/07-data-sensitivity-solutions.en.png" alt="Choosing SaaS, zero-data-retention, private-cloud, or isolated local environments according to data sensitivity" width="1536" height="1024" loading="lazy">
   <figcaption>Choosing an AI deployment model according to data sensitivity: from ordinary SaaS to zero data retention, private cloud, and isolated local environments.</figcaption>
 </figure>
 
