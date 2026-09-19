@@ -6,7 +6,7 @@ slug: antigravity-translation-information-security
 permalink: en/2026/09/19/antigravity-translation-information-security/
 description: A record of using Antigravity to translate an Anthropic threat report and reflect on the data boundaries of AI agents.
 photos:
-  - /images/posts/antigravity-translation-information-security/07-data-sensitivity-solutions.en.png
+  - /images/posts/antigravity-translation-information-security/cover-agent-information-security.png
 tags:
   - AI
   - Agent

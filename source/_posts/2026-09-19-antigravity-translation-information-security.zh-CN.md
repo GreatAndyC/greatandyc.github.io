@@ -6,7 +6,7 @@ slug: antigravity-translation-information-security
 permalink: 2026/09/19/antigravity-translation-information-security/
 description: 记录用 Antigravity 翻译 Anthropic 威胁报告，并从 Agent 数据流出发观察 AI 时代的信息安全边界。
 photos:
-  - /images/posts/antigravity-translation-information-security/07-data-sensitivity-solutions.png
+  - /images/posts/antigravity-translation-information-security/cover-agent-information-security.png
 tags:
   - AI
   - Agent
