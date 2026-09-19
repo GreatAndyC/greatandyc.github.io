@@ -138,6 +138,21 @@ test('core pages request the versioned stylesheet to avoid stale deployment CSS'
   });
 });
 
+test('home read-more links use a consistent external-link icon', () => {
+  const home = readPublic('zh-CN/index.html');
+
+  assert.match(
+    home,
+    /<i class="fa fa-external-link-alt" aria-hidden="true"><\/i>/,
+    'read-more links should use a consistent icon font glyph'
+  );
+  assert.doesNotMatch(
+    readPublic('css/main.css'),
+    /\.main \.content\.feed-page\.feed-view-card \.post-button \.btn::after\s*\{\s*content:/,
+    'read-more links should not render a text arrow glyph'
+  );
+});
+
 test('home category controls use the feed-aligned responsive layout', () => {
   const html = readPublic('zh-CN/index.html');
   const englishHtml = readPublic('en/index.html');

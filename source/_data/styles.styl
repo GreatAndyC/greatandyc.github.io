@@ -1262,8 +1262,7 @@ body
   letter-spacing: 0.025em
   transition: color .2s ease, border-color .2s ease
 
-.main .content.feed-page.feed-view-card .post-button .btn::after
-  content: '↗'
+.main .content.feed-page.feed-view-card .post-button .btn > i
   color: currentColor
   font-size: 0.95rem
   line-height: 1
@@ -1273,7 +1272,7 @@ body
   border-bottom-color: var(--link-hover-color)
   color: var(--link-hover-color)
 
-.main .content.feed-page.feed-view-card .post-button .btn:hover::after
+.main .content.feed-page.feed-view-card .post-button .btn:hover > i
   transform: translate(2px, -2px)
 
 .main .content.feed-page.feed-view-card .post-eof

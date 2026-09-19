@@ -206,6 +206,7 @@
             <div class="post-button">
               <a class="btn" href="{{ url_for(post.path) }}">
                 {{ __('post.read_more') }}
+                <i class="fa fa-external-link-alt" aria-hidden="true"></i>
               </a>
             </div>
           {%- endif %}
@@ -217,6 +218,7 @@
             <div class="post-button">
               <a class="btn" href="{{ url_for(post.path) }}#more" rel="contents">
                 {{ __('post.read_more') }}
+                <i class="fa fa-external-link-alt" aria-hidden="true"></i>
               </a>
             </div>
           {%- endif %}

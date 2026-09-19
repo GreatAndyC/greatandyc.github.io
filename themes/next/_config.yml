@@ -212,7 +212,7 @@ links_settings:
 
 links:
   world:
-    url: http://www.google.com
+    url: https://www.google.com
     title:
       zh-CN: 走向世界
       en: Explore the World
