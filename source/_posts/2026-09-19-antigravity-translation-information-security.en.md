@@ -122,18 +122,13 @@ What I really observed was not that Agents will necessarily “steal” data. It
 
 The more capable an Agent becomes, the more it can read and operate on. Least privilege, data classification, and verifiable supply-chain transparency will therefore become increasingly important.
 
-## References (APA 7th edition)
+## References
 
-This article uses APA 7th edition author–date citations. The suffixes `a` and `b` distinguish multiple works by the same author in the same year.
-
-Anthropic. (2026a, June 9). *Claude Fable 5*. [https://www.anthropic.com/claude/fable](https://www.anthropic.com/claude/fable)
-
-Anthropic. (2026b, September 10). *Detecting and countering misuse of AI: September 2026*. [https://www.anthropic.com/threat-intelligence-report-september-2026](https://www.anthropic.com/threat-intelligence-report-september-2026)
-
-Ferstar. (2026, September 18). *扒一扒 ZCode 静默上传全量 Git 历史的骚操作* [Investigating ZCode’s silent upload of the full Git history]. *Code is cheap, let’s talk*. [https://blog.ferstar.org/posts/zcode-silent-workspace-snapshot-upload/](https://blog.ferstar.org/posts/zcode-silent-workspace-snapshot-upload/)
-
-IT之家. (2026, September 18). *智谱 ZCode 被质疑“偷传代码”：官方回应称问题已修复，将开源代码库、引入第三方审查* [Zhipu ZCode accused of “stealing code”: Official response says the issue has been fixed and the codebase will be open-sourced]. *IT之家*. [https://www.ithome.com/1/004/310.htm](https://www.ithome.com/1/004/310.htm)
-
-PDFMathTranslate. (n.d.). *PDFMathTranslate* [Computer software]. GitHub. [https://github.com/PDFMathTranslate/PDFMathTranslate](https://github.com/PDFMathTranslate/PDFMathTranslate)
-
-Reuters. (2026, September 14). *Palantir, Nvidia curb AI model use over data fears, The Information reports*. *Yahoo Finance*. [https://finance.yahoo.com/technology/ai/articles/palantir-nvidia-curb-ai-model-151108619.html](https://finance.yahoo.com/technology/ai/articles/palantir-nvidia-curb-ai-model-151108619.html)
+<div class="apa-references">
+<p>Anthropic. (2026a, June 9). <em>Claude Fable 5</em>. <a href="https://www.anthropic.com/claude/fable" target="_blank" rel="noopener">https://www.anthropic.com/claude/fable</a></p>
+<p>Anthropic. (2026b, September 10). <em>Detecting and countering misuse of AI: September 2026</em>. <a href="https://www.anthropic.com/threat-intelligence-report-september-2026" target="_blank" rel="noopener">https://www.anthropic.com/threat-intelligence-report-september-2026</a></p>
+<p>Ferstar. (2026, September 18). <em>扒一扒 ZCode 静默上传全量 Git 历史的骚操作</em> [Investigating ZCode’s silent upload of the full Git history]. <em>Code is cheap, let’s talk</em>. <a href="https://blog.ferstar.org/posts/zcode-silent-workspace-snapshot-upload/" target="_blank" rel="noopener">https://blog.ferstar.org/posts/zcode-silent-workspace-snapshot-upload/</a></p>
+<p>IT之家. (2026, September 18). <em>智谱 ZCode 被质疑“偷传代码”：官方回应称问题已修复，将开源代码库、引入第三方审查</em> [Zhipu ZCode accused of “stealing code”: Official response says the issue has been fixed and the codebase will be open-sourced]. <em>IT之家</em>. <a href="https://www.ithome.com/1/004/310.htm" target="_blank" rel="noopener">https://www.ithome.com/1/004/310.htm</a></p>
+<p>PDFMathTranslate. (n.d.). <em>PDFMathTranslate</em> [Computer software]. GitHub. <a href="https://github.com/PDFMathTranslate/PDFMathTranslate" target="_blank" rel="noopener">https://github.com/PDFMathTranslate/PDFMathTranslate</a></p>
+<p>Reuters. (2026, September 14). <em>Palantir, Nvidia curb AI model use over data fears, The Information reports</em>. <em>Yahoo Finance</em>. <a href="https://finance.yahoo.com/technology/ai/articles/palantir-nvidia-curb-ai-model-151108619.html" target="_blank" rel="noopener">https://finance.yahoo.com/technology/ai/articles/palantir-nvidia-curb-ai-model-151108619.html</a></p>
+</div>

@@ -1851,6 +1851,21 @@ body
   word-break: normal
   overflow-wrap: break-word
 
+/* APA references use a hanging indent and must not inherit justified prose. */
+.post-body .apa-references
+  margin: 0 0 1.5em
+  text-align: left
+
+.post-body .apa-references p
+  margin: 0 0 1em
+  padding-left: 2em
+  text-align: left
+  text-indent: -2em
+  word-spacing: normal
+
+.post-body .apa-references a
+  overflow-wrap: anywhere
+
 /* =============================================
    画廊页面样式
    ============================================= */
