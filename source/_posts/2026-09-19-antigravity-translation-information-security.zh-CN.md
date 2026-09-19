@@ -81,11 +81,11 @@ AI Agent 的不同之处在于，它获得的数据读取范围可能比传统�
   <figcaption>如果上传范围和保存时间不透明，Agent 的便利性就会转化为新的数据暴露面。</figcaption>
 </figure>
 
-9 月 18 日，开发者 Ferstar 通过逆向分析指出，智谱 ZCode 的闭源 Agent 存在工作区快照上传行为；随后智谱官方致歉，并解释称问题源于代码库索引功能（Ferstar, 2026; IT之家, 2026）。
+9 月 18 日，开发者 Ferstar 通过逆向分析指出，某国产大模型厂商的一款闭源 Agent 存在工作区快照上传行为；随后该厂商官方致歉，并解释称问题源于代码库索引功能（Ferstar, 2026; IT之家, 2026）。
 
 <figure class="post-figure">
-  <img src="/images/posts/antigravity-translation-information-security/06-zcode-official-response.png" alt="关于 ZCode 代码库上传争议的新闻报道截图" width="1522" height="984" loading="lazy">
-  <figcaption>关于 ZCode 代码库索引和工作区数据上传争议的报道截图。</figcaption>
+  <img src="/images/posts/antigravity-translation-information-security/06-zcode-official-response.png" alt="关于某国产大模型厂商代码库上传争议的新闻报道截图" width="1522" height="984" loading="lazy">
+  <figcaption>关于某国产大模型厂商代码库索引和工作区数据上传争议的报道截图。</figcaption>
 </figure>
 
 这个事件让我觉得，安全边界不能只看“模型有没有训练用户数据”，还要继续追问：客户端读取了什么、上传了什么、谁能够解密、数据保存多久，以及用户是否真的拥有关闭这些功能的能力。
@@ -125,8 +125,8 @@ Agent 越强，能够读取和操作的范围就越大；因此，权限最小�
 <div class="apa-references">
 <p>Anthropic. (2026a, June 9). <em>Claude Fable 5</em>. <a href="https://www.anthropic.com/claude/fable" target="_blank" rel="noopener">https://www.anthropic.com/claude/fable</a></p>
 <p>Anthropic. (2026b, September 10). <em>Detecting and countering misuse of AI: September 2026</em>. <a href="https://www.anthropic.com/threat-intelligence-report-september-2026" target="_blank" rel="noopener">https://www.anthropic.com/threat-intelligence-report-september-2026</a></p>
-<p>Ferstar. (2026, September 18). <em>扒一扒 ZCode 静默上传全量 Git 历史的骚操作</em> [Investigating ZCode’s silent upload of the full Git history]. <em>Code is cheap, let’s talk</em>. <a href="https://blog.ferstar.org/posts/zcode-silent-workspace-snapshot-upload/" target="_blank" rel="noopener">https://blog.ferstar.org/posts/zcode-silent-workspace-snapshot-upload/</a></p>
-<p>IT之家. (2026, September 18). <em>智谱 ZCode 被质疑“偷传代码”：官方回应称问题已修复，将开源代码库、引入第三方审查</em> [Zhipu ZCode accused of “stealing code”: Official response says the issue has been fixed and the codebase will be open-sourced]. <em>IT之家</em>. <a href="https://www.ithome.com/1/004/310.htm" target="_blank" rel="noopener">https://www.ithome.com/1/004/310.htm</a></p>
+<p>Ferstar. (2026, September 18). <em>某国产大模型厂商静默上传全量 Git 历史的调查</em> [Investigating a Chinese model provider’s silent upload of the full Git history]. <em>Code is cheap, let’s talk</em>. <a href="https://blog.ferstar.org/posts/zcode-silent-workspace-snapshot-upload/" target="_blank" rel="noopener">原始报道</a></p>
+<p>IT之家. (2026, September 18). <em>某国产大模型厂商被质疑“偷传代码”：官方回应称问题已修复，将开源代码库、引入第三方审查</em> [Chinese model provider accused of “stealing code”: Official response says the issue has been fixed and the codebase will be open-sourced]. <em>IT之家</em>. <a href="https://www.ithome.com/1/004/310.htm" target="_blank" rel="noopener">https://www.ithome.com/1/004/310.htm</a></p>
 <p>PDFMathTranslate. (n.d.). <em>PDFMathTranslate</em> [Computer software]. GitHub. <a href="https://github.com/PDFMathTranslate/PDFMathTranslate" target="_blank" rel="noopener">https://github.com/PDFMathTranslate/PDFMathTranslate</a></p>
 <p>Reuters. (2026, September 14). <em>Palantir, Nvidia curb AI model use over data fears, The Information reports</em>. <em>Yahoo Finance</em>. <a href="https://finance.yahoo.com/technology/ai/articles/palantir-nvidia-curb-ai-model-151108619.html" target="_blank" rel="noopener">https://finance.yahoo.com/technology/ai/articles/palantir-nvidia-curb-ai-model-151108619.html</a></p>
 </div>

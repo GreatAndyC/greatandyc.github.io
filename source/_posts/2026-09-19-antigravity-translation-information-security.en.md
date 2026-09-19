@@ -83,11 +83,11 @@ When permissions, data boundaries, or the supply chain are poorly controlled, an
   <figcaption>When upload scope and retention time are opaque, an Agent’s convenience becomes a new data exposure surface.</figcaption>
 </figure>
 
-On September 18, developer Ferstar reported through reverse engineering that Zhipu’s closed-source ZCode Agent uploaded workspace snapshots. Zhipu later apologized and explained that the issue came from its repository indexing feature (Ferstar, 2026; IT之家, 2026).
+On September 18, developer Ferstar reported through reverse engineering that a closed-source Agent from a Chinese foundation-model provider uploaded workspace snapshots. The provider later apologized and explained that the issue came from its repository indexing feature (Ferstar, 2026; IT之家, 2026).
 
 <figure class="post-figure">
-  <img src="/images/posts/antigravity-translation-information-security/06-zcode-official-response.png" alt="A news report screenshot about the ZCode repository upload controversy" width="1522" height="984" loading="lazy">
-  <figcaption>A report about ZCode’s repository indexing and workspace data upload controversy.</figcaption>
+  <img src="/images/posts/antigravity-translation-information-security/06-zcode-official-response.png" alt="A news report screenshot about a Chinese model provider's repository upload controversy" width="1522" height="984" loading="lazy">
+  <figcaption>A report about a Chinese model provider's repository indexing and workspace data upload controversy.</figcaption>
 </figure>
 
 The incident made me think that security boundaries cannot be evaluated only by asking whether a model trains on user data. We also need to ask: What did the client read? What did it upload? Who can decrypt it? How long is it stored? Can users actually disable the feature?
@@ -127,8 +127,8 @@ The more capable an Agent becomes, the more it can read and operate on. Least pr
 <div class="apa-references">
 <p>Anthropic. (2026a, June 9). <em>Claude Fable 5</em>. <a href="https://www.anthropic.com/claude/fable" target="_blank" rel="noopener">https://www.anthropic.com/claude/fable</a></p>
 <p>Anthropic. (2026b, September 10). <em>Detecting and countering misuse of AI: September 2026</em>. <a href="https://www.anthropic.com/threat-intelligence-report-september-2026" target="_blank" rel="noopener">https://www.anthropic.com/threat-intelligence-report-september-2026</a></p>
-<p>Ferstar. (2026, September 18). <em>扒一扒 ZCode 静默上传全量 Git 历史的骚操作</em> [Investigating ZCode’s silent upload of the full Git history]. <em>Code is cheap, let’s talk</em>. <a href="https://blog.ferstar.org/posts/zcode-silent-workspace-snapshot-upload/" target="_blank" rel="noopener">https://blog.ferstar.org/posts/zcode-silent-workspace-snapshot-upload/</a></p>
-<p>IT之家. (2026, September 18). <em>智谱 ZCode 被质疑“偷传代码”：官方回应称问题已修复，将开源代码库、引入第三方审查</em> [Zhipu ZCode accused of “stealing code”: Official response says the issue has been fixed and the codebase will be open-sourced]. <em>IT之家</em>. <a href="https://www.ithome.com/1/004/310.htm" target="_blank" rel="noopener">https://www.ithome.com/1/004/310.htm</a></p>
+<p>Ferstar. (2026, September 18). <em>Investigating a Chinese model provider’s silent upload of the full Git history</em>. <em>Code is cheap, let’s talk</em>. <a href="https://blog.ferstar.org/posts/zcode-silent-workspace-snapshot-upload/" target="_blank" rel="noopener">Original report</a></p>
+<p>IT之家. (2026, September 18). <em>Chinese model provider accused of “stealing code”: Official response says the issue has been fixed and the codebase will be open-sourced</em>. <em>IT之家</em>. <a href="https://www.ithome.com/1/004/310.htm" target="_blank" rel="noopener">https://www.ithome.com/1/004/310.htm</a></p>
 <p>PDFMathTranslate. (n.d.). <em>PDFMathTranslate</em> [Computer software]. GitHub. <a href="https://github.com/PDFMathTranslate/PDFMathTranslate" target="_blank" rel="noopener">https://github.com/PDFMathTranslate/PDFMathTranslate</a></p>
 <p>Reuters. (2026, September 14). <em>Palantir, Nvidia curb AI model use over data fears, The Information reports</em>. <em>Yahoo Finance</em>. <a href="https://finance.yahoo.com/technology/ai/articles/palantir-nvidia-curb-ai-model-151108619.html" target="_blank" rel="noopener">https://finance.yahoo.com/technology/ai/articles/palantir-nvidia-curb-ai-model-151108619.html</a></p>
 </div>
