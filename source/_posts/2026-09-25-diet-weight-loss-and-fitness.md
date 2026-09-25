@@ -9,7 +9,7 @@ slug: diet-weight-loss-and-fitness
 permalink: 2026/09/25/diet-weight-loss-and-fitness/
 description: 记录从饮食控制、代谢计算到游泳与健身训练的个人减脂实践。
 photos:
-  - /images/posts/diet-weight-loss-and-fitness/01-library.jpeg
+  - /images/posts/diet-weight-loss-and-fitness/diet-fitness-cover.png
 tags:
   - 健身
   - 减肥
@@ -127,9 +127,9 @@ $$
 **如果需要增重，那么就要确保每日摄入的热量高于TDEE**
 
 能提供热量的营养物质包括：
-- 碳水化合物：\(4\ \mathrm{kcal/g}\)
-- 脂肪：\(9\ \mathrm{kcal/g}\)
-- 蛋白质：\(4\ \mathrm{kcal/g}\)
+- 碳水化合物：$4\ \mathrm{kcal/g}$
+- 脂肪：$9\ \mathrm{kcal/g}$
+- 蛋白质：$4\ \mathrm{kcal/g}$
 
 而对于减脂来说，主要是减去体脂，由于人体脂肪组织不全是纯脂肪，还包含水分、细胞结构等，一般经验认为：
 
@@ -230,7 +230,7 @@ $$
   <div class="work-gallery__toolbar">
     <span>训练与答辩</span>
     <div class="work-gallery__controls">
-      <output aria-live="polite"><b data-gallery-current>01</b> / <span data-gallery-total>05</span></output>
+      <output aria-live="polite"><b data-gallery-current>01</b> / <span data-gallery-total>06</span></output>
       <button type="button" data-gallery-prev aria-label="上一张">←</button>
       <button type="button" data-gallery-next aria-label="下一张">→</button>
     </div>
@@ -255,6 +255,10 @@ $$
     <figure class="work-gallery__slide work-gallery__slide--portrait">
       <img src="/images/posts/diet-weight-loss-and-fitness/15-hiking.jpg" alt="爬山" width="1280" height="1706" loading="lazy">
       <figcaption><span>05</span>爬山</figcaption>
+    </figure>
+    <figure class="work-gallery__slide work-gallery__slide--portrait">
+      <img src="/images/posts/diet-weight-loss-and-fitness/16-street-workout.jpg" alt="街头健身" width="1263" height="1958" loading="lazy">
+      <figcaption><span>06</span>街头健身</figcaption>
     </figure>
   </div>
 </div>

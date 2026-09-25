@@ -7,7 +7,7 @@ slug: codex-as-human-computer-interface
 permalink: 2026/09/25/codex-as-human-computer-interface/
 description: 从直接修改代码、使用 CMS 到让 CodeX 连接 Obsidian 与博客，记录个人内容发布工作流的三次封装。
 photos:
-  - /images/posts/codex-as-human-computer-interface/01-data-flow-code.png
+  - /images/posts/codex-as-human-computer-interface/codex-workflow-cover.png
 tags:
   - AI
   - Agent
