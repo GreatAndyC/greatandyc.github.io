@@ -2,7 +2,6 @@
 title: CodeX作为人机交互的入口
 date: 2026-09-25 12:00:00
 lang: zh-CN
-language_switcher: false
 slug: codex-as-human-computer-interface
 permalink: 2026/09/25/codex-as-human-computer-interface/
 description: 从直接修改代码、使用 CMS 到让 CodeX 连接 Obsidian 与博客，记录个人内容发布工作流的三次封装。

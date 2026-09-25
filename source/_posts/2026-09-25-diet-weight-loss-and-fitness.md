@@ -2,7 +2,6 @@
 title: 饮食减肥与健身
 date: 2026-09-25 12:00:00
 lang: zh-CN
-language_switcher: false
 mathjax: true
 article_gallery: true
 slug: diet-weight-loss-and-fitness

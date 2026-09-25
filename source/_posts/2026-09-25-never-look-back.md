@@ -2,7 +2,6 @@
 title: 绝不回头
 date: 2026-09-25 12:00:00
 lang: zh-CN
-language_switcher: false
 slug: never-look-back
 permalink: 2026/09/25/never-look-back/
 description: 从一张游戏地图写到重复、试错与人生选择的一篇随笔。
