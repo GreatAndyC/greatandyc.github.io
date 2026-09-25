@@ -7,7 +7,7 @@ slug: never-look-back
 permalink: 2026/09/25/never-look-back/
 description: 从一张游戏地图写到重复、试错与人生选择的一篇随笔。
 photos:
-  - /images/posts/never-look-back/never-look-back-cover.png
+  - /images/posts/never-look-back/never-look-back-cover-red-path.png
 categories:
   - 随笔
 ---
