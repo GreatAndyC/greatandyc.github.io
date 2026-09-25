@@ -128,6 +128,20 @@ test('home feeds publish twelve cards per page and keep one shared desktop rail'
   );
 });
 
+test('homepage cards use post descriptions instead of full article bodies', () => {
+  const html = readPublic('zh-CN/index.html');
+  const titleIndex = html.indexOf('>绝不回头</a>');
+  assert.notEqual(titleIndex, -1, 'the new Chinese essay should be present on the homepage');
+
+  const cardStart = html.lastIndexOf('<article', titleIndex);
+  const nextCardStart = html.indexOf('<article', titleIndex + 1);
+  const card = html.slice(cardStart, nextCardStart === -1 ? html.length : nextCardStart);
+
+  assert.match(card, /<p>从一张游戏地图写到重复、试错与人生选择的一篇随笔。<\/p>/);
+  assert.doesNotMatch(card, /金杯（即表示在限定时间内跑完这个地图/);
+  assert.doesNotMatch(card, /never-look-back-gold\.png/);
+});
+
 test('core pages request the versioned stylesheet to avoid stale deployment CSS', () => {
   pageMatrix.forEach(({ file }) => {
     const html = readPublic(file);

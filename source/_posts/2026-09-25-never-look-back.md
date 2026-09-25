@@ -5,9 +5,14 @@ lang: zh-CN
 language_switcher: false
 slug: never-look-back
 permalink: 2026/09/25/never-look-back/
+description: 从一张游戏地图写到重复、试错与人生选择的一篇随笔。
 photos:
   - /images/posts/never-look-back/never-look-back-cover.png
+categories:
+  - 随笔
 ---
+
+<!-- more -->
 
 在若干年前的一段时间，我曾经感觉到我的人生停滞了，日复一日的过一样的日子。
 
