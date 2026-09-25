@@ -3307,6 +3307,42 @@ body
 .work-page .image-caption
   display: none
 
+/* Reuse the accessible horizontal gallery for article photo sequences. */
+.article-gallery
+  --work-paper: #fff
+  --work-ink: #222
+  --work-muted: #666
+  --work-line: #d8d8d8
+  --work-strong-line: #222
+  --work-canvas: #f3f3f3
+
+.article-gallery .work-gallery__slide
+  height: 520px
+
+.article-gallery .work-gallery__slide img
+  object-fit: contain
+
+.article-gallery .work-gallery__slide--portrait img
+  width: auto
+  max-width: min(100%, 360px)
+  margin: 0 auto
+
+.article-gallery a
+  border-bottom: 0
+
+@media (prefers-color-scheme: dark)
+  .article-gallery
+    --work-paper: #1b1b1b
+    --work-ink: #f2f2f2
+    --work-muted: #b8b8b8
+    --work-line: #424242
+    --work-strong-line: #e6e6e6
+    --work-canvas: #262626
+
+@media (max-width: 767px)
+  .article-gallery .work-gallery__slide
+    height: 390px
+
 @media (prefers-color-scheme: dark)
   .work-page
     --work-paper: #1b1b1b

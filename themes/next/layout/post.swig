@@ -9,6 +9,10 @@
 
   {{ partial('_macro/post.swig', {post: page}) }}
 
+  {%- if page.article_gallery %}
+    <script src="{{ url_for('/js/portfolio-gallery.js') }}?v={{ config.asset_version }}" defer></script>
+  {%- endif %}
+
 {% endblock %}
 
 {% block sidebar %}
