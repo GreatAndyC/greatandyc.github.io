@@ -23,14 +23,16 @@
 {{ canonical() }}
 
 {# Tell crawlers which localized page is the equivalent alternate. #}
-{%- for language in languages %}
-  {%- set alternate_url = i18n_path(language) %}
-  {%- set alternate_href = absolute_url(alternate_url) %}
-  <link rel="alternate" hreflang="{{ language }}" href="{{ alternate_href }}">
-  {%- if loop.index === 1 %}
-    <link rel="alternate" hreflang="x-default" href="{{ alternate_href }}">
-  {%- endif %}
-{%- endfor %}
+{%- if page.language_switcher !== false %}
+  {%- for language in languages %}
+    {%- set alternate_url = i18n_path(language) %}
+    {%- set alternate_href = absolute_url(alternate_url) %}
+    <link rel="alternate" hreflang="{{ language }}" href="{{ alternate_href }}">
+    {%- if loop.index === 1 %}
+      <link rel="alternate" hreflang="x-default" href="{{ alternate_href }}">
+    {%- endif %}
+  {%- endfor %}
+{%- endif %}
 
 {# Exports some front-matter variables to Front-End #}
 <script id="page-configurations">

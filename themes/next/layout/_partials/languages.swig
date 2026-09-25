@@ -1,4 +1,4 @@
-{%- if theme.language_switcher and languages.length > 1 %}
+{%- if theme.language_switcher and page.language_switcher !== false and languages.length > 1 %}
   <div class="languages language-switcher">
     <span class="language-switcher-label" aria-hidden="true">{% if page.lang === 'zh-CN' %}语言{% else %}LANGUAGE{% endif %}</span>
     <span class="language-switcher-options" role="group"{% if page.lang === 'zh-CN' %} aria-label="切换语言"{% else %} aria-label="Switch language"{% endif %}>
