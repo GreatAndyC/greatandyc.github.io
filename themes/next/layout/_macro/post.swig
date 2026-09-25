@@ -224,7 +224,15 @@
           {%- endif %}
           <!--/noindex-->
         {% else %}
-          {{ post.content }}
+          {# Fail closed: never expose a full post body on the homepage when no excerpt exists. #}
+          <!--noindex-->
+          <div class="post-button">
+            <a class="btn" href="{{ url_for(post.path) }}">
+              {{ __('post.read_more') }}
+              <i class="fa fa-external-link-alt" aria-hidden="true"></i>
+            </a>
+          </div>
+          <!--/noindex-->
         {%- endif %}
       {% else %}
         {{ post.content }}
