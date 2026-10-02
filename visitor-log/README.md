@@ -1,6 +1,6 @@
 # 访问日志 Worker
 
-这个目录提供一个独立的 Cloudflare Worker + D1 访问日志接口。博客本身继续部署到 GitHub Pages；浏览器只上报一次页面访问，不会把图片、CSS 或 JS 请求全部记下来。Worker 还提供只含聚合数量的公开 `/counts` 接口，供首页按真实浏览量排序。
+这个目录提供一个独立的 Cloudflare Worker + D1 访问日志接口。博客本身继续部署到 GitHub Pages；浏览器只上报一次页面访问，不会把图片、CSS 或 JS 请求全部记下来。Worker 的公开 `/counts` 接口提供文章阅读次数和首页热门排序所需的聚合数量。
 
 ## 部署
 
@@ -20,6 +20,10 @@ npx wrangler secret put RESEND_API_KEY
 npx wrangler secret put VISITOR_LOG_ADMIN_TOKEN
 npx wrangler deploy
 ```
+
+已有数据库升级时，先执行 `npx wrangler d1 execute caoyueyang-visitor-log --remote --file=schema.sql`，再部署 Worker，随后再执行一次相同的建表命令。第二次执行会补入升级期间由旧 Worker 写入的访问记录。`schema.sql` 可重复执行，不会降低已经累计的读数。
+
+`page_view_totals` 长期保存各路径的访问次数；包含 IP 的 `visit_logs` 仍按原计划在 30 天后清理。首次建表只能从尚未清理的日志回填。旧不蒜子的历史数字不在本站数据库中，不能自动恢复，文章页的读数从本站日志启用时起计算。
 
 ## 每日邮件
 
@@ -45,13 +49,13 @@ https://caoyueyang-visitor-log.andy-caoyueyang.workers.dev
 curl https://caoyueyang-visitor-log.andy-caoyueyang.workers.dev/health
 ```
 
-首页排序使用的聚合浏览量接口为：
+文章阅读次数和首页排序使用的聚合浏览量接口为：
 
 ```text
 https://caoyueyang-visitor-log.andy-caoyueyang.workers.dev/counts
 ```
 
-该接口只返回按路径聚合后的浏览次数，不返回 IP、来源或 User-Agent；`/en/` 和 `/zh-CN/` 前缀会在聚合时去掉，因此同一篇文章的中英文浏览量会合并。
+该接口只返回按路径聚合后的累计浏览次数，不返回 IP、来源或 User-Agent；`/en/` 和 `/zh-CN/` 前缀会在聚合时去掉，因此同一篇文章的中英文浏览量会合并。接口故障时文章页保留眼睛图标，并以「—」代替数字。
 
 ## 启用博客上报
 

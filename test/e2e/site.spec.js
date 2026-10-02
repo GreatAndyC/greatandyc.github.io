@@ -134,6 +134,27 @@ test('English popularity sorts by aggregate Chinese and English view counts', as
   await expectNoRuntimeProblems(problems);
 });
 
+test('article views use the site counter and remain visible when it fails', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium-desktop', 'one browser is enough for counter behavior');
+
+  await page.route('**://caoyueyang-visitor-log.andy-caoyueyang.workers.dev/counts', route => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({ counts: { '/2026/09/25/never-look-back/': 42 } })
+  }));
+
+  await openPage(page, '/2026/09/25/never-look-back/');
+  await expect(page.locator('[data-post-view-count]')).toHaveText('42');
+
+  await openPage(page, '/en/2026/09/25/never-look-back/');
+  await expect(page.locator('[data-post-view-count]')).toHaveText('42');
+
+  await page.route('**://caoyueyang-visitor-log.andy-caoyueyang.workers.dev/counts', route => route.fulfill({ status: 503 }));
+  await openPage(page, '/2026/09/25/never-look-back/');
+  await expect(page.locator('[data-post-view-count]')).toBeVisible();
+  await expect(page.locator('[data-post-view-count]')).toHaveText('—');
+});
+
 test('post sharing exposes the canonical link and copies it', async ({ page }) => {
   const problems = await openPage(page, '/2026/09/15/codex-poster-workflow/');
   const shareRoot = page.locator('[data-post-share]');

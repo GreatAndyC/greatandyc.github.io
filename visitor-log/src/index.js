@@ -95,20 +95,28 @@ async function recordVisit(request, env) {
     return response('Missing client IP', 400, origin);
   }
 
-  await env.DB.prepare(`
-    INSERT INTO visit_logs
-      (visited_at, ip, path, referrer, title, language, country, user_agent)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `).bind(
-    new Date().toISOString(),
-    ip,
-    normalizedPath(input.path),
-    textField(input.referrer, 1024),
-    textField(input.title, 200),
-    textField(input.language, 32),
-    textField(request.headers.get('CF-IPCountry'), 8),
-    textField(request.headers.get('User-Agent'), 512)
-  ).run();
+  const path = normalizedPath(input.path);
+  await env.DB.batch([
+    env.DB.prepare(`
+      INSERT INTO visit_logs
+        (visited_at, ip, path, referrer, title, language, country, user_agent)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      new Date().toISOString(),
+      ip,
+      path,
+      textField(input.referrer, 1024),
+      textField(input.title, 200),
+      textField(input.language, 32),
+      textField(request.headers.get('CF-IPCountry'), 8),
+      textField(request.headers.get('User-Agent'), 512)
+    ),
+    env.DB.prepare(`
+      INSERT INTO page_view_totals (path, views)
+      VALUES (?, 1)
+      ON CONFLICT(path) DO UPDATE SET views = views + 1
+    `).bind(path)
+  ]);
 
   return response('', 204, origin);
 }
@@ -147,9 +155,8 @@ async function listLogs(request, env) {
 async function listCounts(request, env) {
   const origin = originFor(request, env);
   const result = await env.DB.prepare(`
-    SELECT path, COUNT(*) AS views
-    FROM visit_logs
-    GROUP BY path
+    SELECT path, views
+    FROM page_view_totals
   `).all();
   const counts = {};
 
