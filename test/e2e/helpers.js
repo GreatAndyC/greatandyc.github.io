@@ -43,11 +43,10 @@ function monitorRuntime(page) {
   return problems;
 }
 
-async function openPage(page, route) {
+async function openPage(page, route, { stubCounts = true } = {}) {
   const problems = monitorRuntime(page);
-  // Visitor analytics is a third-party enhancement. Stub it so acceptance
-  // tests remain deterministic and do not fail on its cookies, rate limits,
-  // or availability.
+  // Keep external counters deterministic and avoid cross-origin requests from
+  // the local test server. Counter-specific tests install their own route.
   await page.route('**://busuanzi.ibruce.info/**', requestRoute =>
     requestRoute.fulfill({
       status: 204,
@@ -55,6 +54,15 @@ async function openPage(page, route) {
       body: ''
     })
   );
+  if (stubCounts) {
+    await page.route('**://caoyueyang-visitor-log.andy-caoyueyang.workers.dev/counts', requestRoute =>
+      requestRoute.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ counts: {} })
+      })
+    );
+  }
   const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
 
   expect(response, `${route} did not return a document response`).not.toBeNull();
