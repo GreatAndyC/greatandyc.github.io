@@ -87,7 +87,7 @@ for (const library of [
     dailyFile: 'hn-daily-2026-10-11-en.pdf'
   }
 ]) {
-  test(`${library.route} downloads each listed document in one click`, async ({ page, request }) => {
+  test(`${library.route} lists every PDF and downloads a file in one click`, async ({ page, request }) => {
     const response = await page.goto(library.route, { waitUntil: 'domcontentloaded', timeout: 30000 });
 
     expect(response).not.toBeNull();
@@ -95,7 +95,13 @@ for (const library of [
 
     await expect(page.locator('html')).toHaveAttribute('lang', library.language);
     await expect(page.locator('.menu-item-resources > a')).toHaveAttribute('href', library.route);
-    await expect(page.locator('.library-download-item')).toHaveCount(2);
+    await expect(page.locator('.library-download-item')).toHaveCount(5);
+    const iconLabels = await page.locator('.library-file-icon').evaluateAll(icons =>
+      icons.map(icon => getComputedStyle(icon, '::after').content));
+    expect(iconLabels).toEqual(Array(5).fill('"PDF"'));
+    const iconColors = await page.locator('.library-file-icon').evaluateAll(icons =>
+      icons.map(icon => getComputedStyle(icon).backgroundColor));
+    expect(iconColors).toEqual(Array(5).fill('rgb(188, 52, 66)'));
     const search = page.locator('[data-library-search]');
     await expect(search).toBeVisible();
     await search.fill(library.descriptionQuery);
@@ -104,7 +110,7 @@ for (const library of [
     await expect(page.locator('.library-download-item:visible')).toHaveCount(0);
     await expect(page.locator('[data-library-empty]')).toBeVisible();
     await search.fill('');
-    await expect(page.locator('.library-download-item:visible')).toHaveCount(2);
+    await expect(page.locator('.library-download-item:visible')).toHaveCount(5);
     await expect(page.locator('[data-library-empty]')).toBeHidden();
     for (const filename of [library.dailyFile, 'ai-native-software-engineering-protected.pdf']) {
       const path = `/downloads/${filename}${filename === library.dailyFile ? '?v=20261012' : ''}`;
@@ -115,9 +121,34 @@ for (const library of [
       expect(download.suggestedFilename()).toBe(filename);
     }
 
+    for (const filename of [
+      'the-infinity-machine-hassabis-zh-xiaomimimo.pdf',
+      'oreka-oreigai-roland-zh-gemini.pdf',
+      'anthropic-detecting-countering-ai-misuse-2026-09-zh.pdf'
+    ]) {
+      expect((await request.head(`/downloads/${filename}?v=20261012`)).status()).toBeLessThan(400);
+    }
+
     await expectNoHorizontalOverflow(page);
   });
 }
+
+test('the three translated PDFs download with their original filenames', async ({ page }) => {
+  test.skip(page.viewportSize().width < 992, 'large downloads are checked once on desktop');
+  await page.goto('/resources/');
+
+  for (const [path, filename] of [
+    ['the-infinity-machine-hassabis-zh-xiaomimimo.pdf', '无限机器_哈萨比斯_XiaoMiMimo翻译版.pdf'],
+    ['oreka-oreigai-roland-zh-gemini.pdf', '俺か、俺以外か。_罗兰的生活方式_Gemini翻译版.pdf'],
+    ['anthropic-detecting-countering-ai-misuse-2026-09-zh.pdf', 'Anthropic-Detecting-and-countering-091026_zh.pdf']
+  ]) {
+    const downloadPromise = page.waitForEvent('download');
+    await page.locator(`.library-download-item[href="/downloads/${path}?v=20261012"]`).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe(filename);
+    expect(await download.path()).toBeTruthy();
+  }
+});
 
 test('English menu navigation never drops Work or crosses into Chinese', async ({ page }) => {
   test.skip(

@@ -15,7 +15,7 @@
 
 公开文件规模增长时，可以保留资料库页面和文件说明在 GitHub，把下载文件放到对象存储，例如 [Cloudflare R2](https://developers.cloudflare.com/r2/buckets/public-buckets/)，并通过自有子域名和缓存提供下载。页面只需改文件链接。[跨域链接的 HTML `download` 属性](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#download)不能保证触发下载；对象响应应提供 `Content-Disposition: attachment`。付费或私密文件不能放在公开的 Pages 或公开存储桶，需要另设用户验证和受控下载入口。
 
-文件图标共用白色文档轮廓，以颜色区分文档、表格、演示、压缩包、图片、音频和视频，并按链接扩展名自动显示格式缩写：PDF、DOC/DOCX、XLS/XLSX、CSV、PPT/PPTX、TXT、MD、ZIP、7Z、JPG/JPEG、PNG、WEBP、SVG、MP3、WAV、M4A、MP4、MOV。未知扩展名显示 `FILE`。链接带查询参数或没有扩展名时，可在下载行的 `<a>` 上设置 `data-file-type="PDF"` 等简短标记；不需要单独上传图标图片。
+文件图标共用白色文档轮廓，以颜色区分文档、表格、演示、压缩包、图片、音频和视频，并按链接扩展名自动显示格式缩写：PDF、DOC/DOCX、XLS/XLSX、CSV、PPT/PPTX、TXT、MD、ZIP、7Z、JPG/JPEG、PNG、WEBP、SVG、MP3、WAV、M4A、MP4、MOV。未知扩展名显示 `FILE`。链接带查询参数或没有扩展名时，可在下载行的 `.library-file-icon` 元素上设置 `data-file-type="PDF"` 等简短标记；不需要单独上传图标图片。
 
 ## 开始一个专栏
 

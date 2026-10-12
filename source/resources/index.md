@@ -17,7 +17,7 @@ toc: false
   </div>
   <div class="library-download-list">
     <a class="library-download-item" href="/downloads/hn-daily-2026-10-11-bilingual.pdf?v=20261012" download aria-label="下载 HN Daily 2026-10-11 中英双语核查预览版，PDF，894 KB">
-      <span class="library-file-icon" aria-hidden="true">
+      <span class="library-file-icon" data-file-type="PDF" aria-hidden="true">
         <svg viewBox="0 0 36 44" width="30" height="36" focusable="false">
           <path d="M2 1h22l10 10v31H2z" fill="white"/>
           <path d="M24 1v10h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
@@ -27,6 +27,60 @@ toc: false
         <strong class="library-download-item__title">HN Daily · 2026-10-11（中英双语）</strong>
         <span class="library-download-item__description">10 月 11 日 Hacker News 热门十篇的双语摘要与来源；核查预览版。</span>
         <span class="library-download-item__meta">PDF · 894 KB</span>
+      </span>
+      <span class="library-download-item__action">下载
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">
+          <path d="M8 2v9m0 0 3-3m-3 3L5 8M3 14h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </a>
+    <a class="library-download-item" href="/downloads/the-infinity-machine-hassabis-zh-xiaomimimo.pdf?v=20261012" download="无限机器_哈萨比斯_XiaoMiMimo翻译版.pdf" aria-label="下载《无限机器》XiaoMiMimo 中文翻译版，PDF，2.4 MB">
+      <span class="library-file-icon" data-file-type="PDF" aria-hidden="true">
+        <svg viewBox="0 0 36 44" width="30" height="36" focusable="false">
+          <path d="M2 1h22l10 10v31H2z" fill="white"/>
+          <path d="M24 1v10h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="library-download-item__content">
+        <strong class="library-download-item__title">《无限机器》· 哈萨比斯</strong>
+        <span class="library-download-item__description">塞巴斯蒂安·马拉比著，XiaoMiMimo 中文翻译版。</span>
+        <span class="library-download-item__meta">PDF · 2.4 MB</span>
+      </span>
+      <span class="library-download-item__action">下载
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">
+          <path d="M8 2v9m0 0 3-3m-3 3L5 8M3 14h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </a>
+    <a class="library-download-item" href="/downloads/oreka-oreigai-roland-zh-gemini.pdf?v=20261012" download="俺か、俺以外か。_罗兰的生活方式_Gemini翻译版.pdf" aria-label="下载《俺か、俺以外か。》Gemini 中文翻译版，PDF，16.3 MB">
+      <span class="library-file-icon" data-file-type="PDF" aria-hidden="true">
+        <svg viewBox="0 0 36 44" width="30" height="36" focusable="false">
+          <path d="M2 1h22l10 10v31H2z" fill="white"/>
+          <path d="M24 1v10h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="library-download-item__content">
+        <strong class="library-download-item__title">《俺か、俺以外か。》· 罗兰的生活方式</strong>
+        <span class="library-download-item__description">罗兰生活方式作品的 Gemini 简体中文翻译版。</span>
+        <span class="library-download-item__meta">PDF · 16.3 MB</span>
+      </span>
+      <span class="library-download-item__action">下载
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">
+          <path d="M8 2v9m0 0 3-3m-3 3L5 8M3 14h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </a>
+    <a class="library-download-item" href="/downloads/anthropic-detecting-countering-ai-misuse-2026-09-zh.pdf?v=20261012" download="Anthropic-Detecting-and-countering-091026_zh.pdf" aria-label="下载 Anthropic 识别与对抗人工智能滥用 2026 年 9 月中文翻译版，PDF，40.2 MB">
+      <span class="library-file-icon" data-file-type="PDF" aria-hidden="true">
+        <svg viewBox="0 0 36 44" width="30" height="36" focusable="false">
+          <path d="M2 1h22l10 10v31H2z" fill="white"/>
+          <path d="M24 1v10h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="library-download-item__content">
+        <strong class="library-download-item__title">Anthropic · 识别与对抗人工智能滥用（2026 年 9 月）</strong>
+        <span class="library-download-item__description">Anthropic 威胁情报报告的中文翻译版，涵盖七类滥用案例。</span>
+        <span class="library-download-item__meta">PDF · 40.2 MB</span>
       </span>
       <span class="library-download-item__action">下载
         <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">

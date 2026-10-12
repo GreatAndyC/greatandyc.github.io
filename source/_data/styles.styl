@@ -2863,47 +2863,58 @@ body
   text-align: center
 
 .library-download-item[href$='.pdf' i] .library-file-icon,
-.library-download-item[data-file-type='PDF'] .library-file-icon
+.library-file-icon[data-file-type='PDF']
   --file-color: #bc3442
 
 .library-download-item[href$='.doc' i] .library-file-icon,
 .library-download-item[href$='.docx' i] .library-file-icon,
-.library-download-item[data-file-type='DOC'] .library-file-icon
+.library-file-icon[data-file-type='DOC']
   --file-color: #2358a6
 
 .library-download-item[href$='.xls' i] .library-file-icon,
 .library-download-item[href$='.xlsx' i] .library-file-icon,
-.library-download-item[data-file-type='XLS'] .library-file-icon
+.library-file-icon[data-file-type='XLS']
   --file-color: #187349
 
 .library-download-item[href$='.csv' i] .library-file-icon,
-.library-download-item[data-file-type='CSV'] .library-file-icon
+.library-file-icon[data-file-type='CSV']
   --file-color: #0e776d
 
 .library-download-item[href$='.ppt' i] .library-file-icon,
 .library-download-item[href$='.pptx' i] .library-file-icon,
-.library-download-item[data-file-type='PPT'] .library-file-icon
+.library-file-icon[data-file-type='PPT']
   --file-color: #b24b19
 
 .library-download-item[href$='.zip' i] .library-file-icon,
 .library-download-item[href$='.7z' i] .library-file-icon,
-.library-download-item[data-file-type='ZIP'] .library-file-icon
+.library-file-icon[data-file-type='ZIP'],
+.library-file-icon[data-file-type='7Z']
   --file-color: #74469a
 
 .library-download-item[href$='.jpg' i] .library-file-icon,
 .library-download-item[href$='.jpeg' i] .library-file-icon,
 .library-download-item[href$='.png' i] .library-file-icon,
 .library-download-item[href$='.webp' i] .library-file-icon,
-.library-download-item[href$='.svg' i] .library-file-icon
+.library-download-item[href$='.svg' i] .library-file-icon,
+.library-file-icon[data-file-type='JPG'],
+.library-file-icon[data-file-type='JPEG'],
+.library-file-icon[data-file-type='PNG'],
+.library-file-icon[data-file-type='WEBP'],
+.library-file-icon[data-file-type='SVG']
   --file-color: #9a3e7e
 
 .library-download-item[href$='.mp3' i] .library-file-icon,
 .library-download-item[href$='.wav' i] .library-file-icon,
-.library-download-item[href$='.m4a' i] .library-file-icon
+.library-download-item[href$='.m4a' i] .library-file-icon,
+.library-file-icon[data-file-type='MP3'],
+.library-file-icon[data-file-type='WAV'],
+.library-file-icon[data-file-type='M4A']
   --file-color: #0c7380
 
 .library-download-item[href$='.mp4' i] .library-file-icon,
-.library-download-item[href$='.mov' i] .library-file-icon
+.library-download-item[href$='.mov' i] .library-file-icon,
+.library-file-icon[data-file-type='MP4'],
+.library-file-icon[data-file-type='MOV']
   --file-color: #4152a0
 
 .library-download-item[href$='.pdf' i] .library-file-icon::after
@@ -2964,7 +2975,7 @@ body
 .library-download-item[href$='.mov' i] .library-file-icon::after
   content: 'MOV'
 
-.library-download-item[data-file-type] .library-file-icon::after
+.library-file-icon[data-file-type]::after
   content: attr(data-file-type)
 
 .library-download-item__content

@@ -25,7 +25,7 @@ timezone: Asia/Hong_Kong
 # Local fallback for development builds. CI overrides this with the current
 # commit SHA so every deployment gets a fresh CSS/JS URL automatically.
 # The query string prevents browsers and Cloudflare from mixing new HTML with cached assets.
-asset_version: "20260731-3"
+asset_version: "20261012-1"
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
