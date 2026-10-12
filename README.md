@@ -33,6 +33,7 @@
 除博客内容外，仓库还包括：
 
 - 作品集与摄影 Gallery；
+- 资料库与公开文档下载；
 - 中文、英文双语路由和 taxonomy 生成；
 - 本地图形化内容维护工具；
 - Decap CMS 配置；
@@ -112,6 +113,10 @@ npm run cms:local
 
 线上 `/admin/` 已配置 Decap CMS 入口，但启用远程登录前仍需完成对应 Identity 与访问控制配置。
 
+## Library
+
+资料库入口为 `/resources/`（中文）和 `/en/resources/`（英文），仅列公开可下载的文件。文件与后续专栏的维护方式见[资料库维护指南](docs/resource-library-guide.md)。全站 RSS 地址为 `/atom.xml`。
+
 ## Architecture
 
 ```mermaid
@@ -145,6 +150,7 @@ npm run test:security
 content/gallery/        Gallery 的可维护源数据
 source/_posts/          中英文文章
 source/images/          站点与文章图片
+source/downloads/       公开下载文件
 source/_data/           生成数据和样式覆盖
 scripts/                多语言与 Gallery 生成逻辑
 tools/local-cms/        本地内容后台

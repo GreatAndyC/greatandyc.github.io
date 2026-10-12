@@ -91,6 +91,8 @@
         {%- endif %}
         {%- if page.type === 'portfolio' %}
           <script src="{{ url_for('/js/portfolio-gallery.js') }}?v={{ config.asset_version }}" defer></script>
+        {%- elif page.type === 'resources' %}
+          <script src="{{ url_for('/js/library-search.js') }}?v={{ config.asset_version }}" defer></script>
         {%- endif %}
       </div>
       {#####################}

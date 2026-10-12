@@ -73,6 +73,52 @@ for (const { route, language, menu } of routeMatrix) {
   });
 }
 
+for (const library of [
+  {
+    route: '/resources/',
+    language: 'zh-CN',
+    descriptionQuery: '演示文稿',
+    dailyFile: 'hn-daily-2026-10-11-bilingual.pdf'
+  },
+  {
+    route: '/en/resources/',
+    language: 'en',
+    descriptionQuery: 'slide deck',
+    dailyFile: 'hn-daily-2026-10-11-en.pdf'
+  }
+]) {
+  test(`${library.route} downloads each listed document in one click`, async ({ page, request }) => {
+    const response = await page.goto(library.route, { waitUntil: 'domcontentloaded', timeout: 30000 });
+
+    expect(response).not.toBeNull();
+    expect(response.status()).toBeLessThan(400);
+
+    await expect(page.locator('html')).toHaveAttribute('lang', library.language);
+    await expect(page.locator('.menu-item-resources > a')).toHaveAttribute('href', library.route);
+    await expect(page.locator('.library-download-item')).toHaveCount(2);
+    const search = page.locator('[data-library-search]');
+    await expect(search).toBeVisible();
+    await search.fill(library.descriptionQuery);
+    await expect(page.locator('.library-download-item:visible')).toHaveCount(1);
+    await search.fill('no-such-file');
+    await expect(page.locator('.library-download-item:visible')).toHaveCount(0);
+    await expect(page.locator('[data-library-empty]')).toBeVisible();
+    await search.fill('');
+    await expect(page.locator('.library-download-item:visible')).toHaveCount(2);
+    await expect(page.locator('[data-library-empty]')).toBeHidden();
+    for (const filename of [library.dailyFile, 'ai-native-software-engineering-protected.pdf']) {
+      const path = `/downloads/${filename}`;
+      expect((await request.get(path)).status()).toBeLessThan(400);
+      const downloadPromise = page.waitForEvent('download');
+      await page.locator(`.library-download-item[href="${path}"]`).click();
+      const download = await downloadPromise;
+      expect(download.suggestedFilename()).toBe(filename);
+    }
+
+    await expectNoHorizontalOverflow(page);
+  });
+}
+
 test('English menu navigation never drops Work or crosses into Chinese', async ({ page }) => {
   test.skip(
     page.viewportSize().width < 992,

@@ -124,6 +124,7 @@ menu:
   home: / || fa fa-home
   about: /about/ || fa fa-user
   work: /work/ || fa fa-briefcase
+  resources: /resources/ || fa fa-folder-open
   gallery: /gallery/ || fa fa-camera-retro
   tags: /tags/ || fa fa-tags
   categories: /categories/ || fa fa-th

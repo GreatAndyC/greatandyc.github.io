@@ -2747,6 +2747,289 @@ body
   .site-nav .menu .menu-item-language .language-switcher-option
     transition: none
 
+/* Public document list */
+.page-type-resources .post-meta
+  margin-bottom: 36px
+
+.page-type-resources .post-body
+  max-width: 760px
+  margin: 0 auto
+  overflow-wrap: anywhere
+  text-align: left
+
+.page-type-resources .post-body *,
+.page-type-resources .post-body *::before,
+.page-type-resources .post-body *::after
+  box-sizing: border-box
+
+.library-toolbar
+  display: flex
+  align-items: center
+  justify-content: space-between
+  gap: 12px
+  padding-bottom: 12px
+  border-bottom: 1px solid rgba(127, 127, 127, .4)
+
+.library-toolbar h2
+  margin: 0
+  font-size: 1.2rem
+  font-weight: 700
+  line-height: 1.4
+  text-align: left
+
+.library-search
+  display: inline-flex
+  align-items: center
+  gap: 8px
+  font-size: .82rem
+  white-space: nowrap
+
+.library-search[hidden]
+  display: none
+
+.page-type-resources .library-search input
+  width: 200px
+  min-height: 36px
+  padding: 7px 9px
+  border: 1px solid rgba(127, 127, 127, .5)
+  border-radius: 3px
+  background: var(--content-bg-color, #fff)
+  color: var(--text-color, #333)
+  font: inherit
+
+.page-type-resources .library-search input:focus-visible
+  outline: 2px solid var(--link-hover-color, #555)
+  outline-offset: 2px
+
+.page-type-resources .library-download-item
+  display: grid
+  grid-template-columns: 48px minmax(0, 1fr) auto
+  align-items: center
+  gap: 18px
+  min-height: 104px
+  padding: 18px 4px
+  border: 0
+  border-bottom: 1px solid rgba(127, 127, 127, .28)
+  color: var(--text-color, #333)
+  text-decoration: none
+
+.page-type-resources .library-download-item[hidden],
+.page-type-resources .library-search-empty[hidden]
+  display: none
+
+.library-search-empty
+  margin: 18px 4px
+  font-size: .9rem
+
+.library-search-status
+  position: absolute
+  width: 1px
+  height: 1px
+  padding: 0
+  margin: -1px
+  overflow: hidden
+  clip: rect(0, 0, 0, 0)
+  white-space: nowrap
+  border: 0
+
+.page-type-resources .library-download-item:hover
+  background: rgba(127, 127, 127, .045)
+
+.page-type-resources .library-download-item:focus-visible
+  outline: 2px solid var(--link-hover-color, #555)
+  outline-offset: 2px
+
+.library-file-icon
+  --file-color: #536171
+  position: relative
+  display: grid
+  place-items: center
+  width: 48px
+  height: 52px
+  border-radius: 9px
+  background: var(--file-color)
+  color: var(--file-color)
+
+.library-file-icon svg
+  display: block
+
+.library-file-icon::after
+  position: absolute
+  top: 30px
+  left: 0
+  width: 48px
+  content: 'FILE'
+  font: 700 8px/1 Arial, sans-serif
+  text-align: center
+
+.library-download-item[href$='.pdf' i] .library-file-icon,
+.library-download-item[data-file-type='PDF'] .library-file-icon
+  --file-color: #bc3442
+
+.library-download-item[href$='.doc' i] .library-file-icon,
+.library-download-item[href$='.docx' i] .library-file-icon,
+.library-download-item[data-file-type='DOC'] .library-file-icon
+  --file-color: #2358a6
+
+.library-download-item[href$='.xls' i] .library-file-icon,
+.library-download-item[href$='.xlsx' i] .library-file-icon,
+.library-download-item[data-file-type='XLS'] .library-file-icon
+  --file-color: #187349
+
+.library-download-item[href$='.csv' i] .library-file-icon,
+.library-download-item[data-file-type='CSV'] .library-file-icon
+  --file-color: #0e776d
+
+.library-download-item[href$='.ppt' i] .library-file-icon,
+.library-download-item[href$='.pptx' i] .library-file-icon,
+.library-download-item[data-file-type='PPT'] .library-file-icon
+  --file-color: #b24b19
+
+.library-download-item[href$='.zip' i] .library-file-icon,
+.library-download-item[href$='.7z' i] .library-file-icon,
+.library-download-item[data-file-type='ZIP'] .library-file-icon
+  --file-color: #74469a
+
+.library-download-item[href$='.jpg' i] .library-file-icon,
+.library-download-item[href$='.jpeg' i] .library-file-icon,
+.library-download-item[href$='.png' i] .library-file-icon,
+.library-download-item[href$='.webp' i] .library-file-icon,
+.library-download-item[href$='.svg' i] .library-file-icon
+  --file-color: #9a3e7e
+
+.library-download-item[href$='.mp3' i] .library-file-icon,
+.library-download-item[href$='.wav' i] .library-file-icon,
+.library-download-item[href$='.m4a' i] .library-file-icon
+  --file-color: #0c7380
+
+.library-download-item[href$='.mp4' i] .library-file-icon,
+.library-download-item[href$='.mov' i] .library-file-icon
+  --file-color: #4152a0
+
+.library-download-item[href$='.pdf' i] .library-file-icon::after
+  content: 'PDF'
+
+.library-download-item[href$='.doc' i] .library-file-icon::after,
+.library-download-item[href$='.docx' i] .library-file-icon::after
+  content: 'DOC'
+
+.library-download-item[href$='.xls' i] .library-file-icon::after,
+.library-download-item[href$='.xlsx' i] .library-file-icon::after
+  content: 'XLS'
+
+.library-download-item[href$='.csv' i] .library-file-icon::after
+  content: 'CSV'
+
+.library-download-item[href$='.ppt' i] .library-file-icon::after,
+.library-download-item[href$='.pptx' i] .library-file-icon::after
+  content: 'PPT'
+
+.library-download-item[href$='.txt' i] .library-file-icon::after
+  content: 'TXT'
+
+.library-download-item[href$='.md' i] .library-file-icon::after
+  content: 'MD'
+
+.library-download-item[href$='.zip' i] .library-file-icon::after
+  content: 'ZIP'
+
+.library-download-item[href$='.7z' i] .library-file-icon::after
+  content: '7Z'
+
+.library-download-item[href$='.jpg' i] .library-file-icon::after,
+.library-download-item[href$='.jpeg' i] .library-file-icon::after
+  content: 'JPG'
+
+.library-download-item[href$='.png' i] .library-file-icon::after
+  content: 'PNG'
+
+.library-download-item[href$='.webp' i] .library-file-icon::after
+  content: 'WEBP'
+
+.library-download-item[href$='.svg' i] .library-file-icon::after
+  content: 'SVG'
+
+.library-download-item[href$='.mp3' i] .library-file-icon::after
+  content: 'MP3'
+
+.library-download-item[href$='.wav' i] .library-file-icon::after
+  content: 'WAV'
+
+.library-download-item[href$='.m4a' i] .library-file-icon::after
+  content: 'M4A'
+
+.library-download-item[href$='.mp4' i] .library-file-icon::after
+  content: 'MP4'
+
+.library-download-item[href$='.mov' i] .library-file-icon::after
+  content: 'MOV'
+
+.library-download-item[data-file-type] .library-file-icon::after
+  content: attr(data-file-type)
+
+.library-download-item__content
+  display: block
+  min-width: 0
+
+.library-download-item__title,
+.library-download-item__description,
+.library-download-item__meta
+  display: block
+
+.library-download-item__title
+  font-size: 1.04rem
+  font-weight: 700
+  line-height: 1.4
+
+.library-download-item__description
+  margin-top: 4px
+  font-size: .88rem
+  line-height: 1.5
+
+.library-download-item__meta
+  margin-top: 5px
+  color: var(--text-color, #666)
+  font-size: .76rem
+  line-height: 1.4
+
+.library-download-item__action
+  display: inline-flex
+  align-items: center
+  gap: 7px
+  color: var(--link-color, #222)
+  font-size: .87rem
+  font-weight: 700
+  white-space: nowrap
+
+.page-type-resources .library-download-item:hover .library-download-item__title,
+.page-type-resources .library-download-item:focus-visible .library-download-item__title
+  text-decoration: underline
+  text-underline-offset: 3px
+
+@media (max-width: 600px)
+  .page-type-resources .post-meta
+    margin-bottom: 26px
+
+  .library-toolbar
+    align-items: stretch
+    flex-direction: column
+
+  .library-search
+    width: 100%
+
+  .page-type-resources .library-search input
+    flex: 1
+    min-width: 0
+
+  .page-type-resources .library-download-item
+    grid-template-columns: 48px minmax(0, 1fr)
+    gap: 0 14px
+    padding: 18px 0
+
+  .library-download-item__action
+    grid-column: 2
+    margin-top: 10px
+
 /* =============================================
    Work page v2 — monochrome editorial portfolio
    ============================================= */
