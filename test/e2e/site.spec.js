@@ -126,7 +126,7 @@ for (const library of [
       'oreka-oreigai-roland-zh-gemini.pdf',
       'anthropic-detecting-countering-ai-misuse-2026-09-zh.pdf'
     ]) {
-      const version = filename === 'the-infinity-machine-hassabis-zh-xiaomimimo.pdf' ? '20261012' : '20261012-2';
+      const version = filename === 'the-infinity-machine-hassabis-zh-xiaomimimo.pdf' ? '20261012' : '20261012-3';
       expect((await request.head(`/downloads/${filename}?v=${version}`)).status()).toBeLessThan(400);
     }
 
@@ -144,7 +144,7 @@ test('the three translated PDFs download with their original filenames', async (
     ['anthropic-detecting-countering-ai-misuse-2026-09-zh.pdf', 'Anthropic-Detecting-and-countering-091026_zh.pdf']
   ]) {
     const downloadPromise = page.waitForEvent('download');
-    const version = path === 'the-infinity-machine-hassabis-zh-xiaomimimo.pdf' ? '20261012' : '20261012-2';
+    const version = path === 'the-infinity-machine-hassabis-zh-xiaomimimo.pdf' ? '20261012' : '20261012-3';
     await page.locator(`.library-download-item[href="/downloads/${path}?v=${version}"]`).click();
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toBe(filename);

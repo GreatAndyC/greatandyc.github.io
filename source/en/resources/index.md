@@ -52,7 +52,7 @@ toc: false
         </svg>
       </span>
     </a>
-    <a class="library-download-item" href="/downloads/oreka-oreigai-roland-zh-gemini.pdf?v=20261012-2" download="俺か、俺以外か。_罗兰的生活方式_Gemini翻译版.pdf" aria-label="Download the Gemini Chinese translation of ROLAND's lifestyle book, PDF, 13.2 MB">
+    <a class="library-download-item" href="/downloads/oreka-oreigai-roland-zh-gemini.pdf?v=20261012-3" download="俺か、俺以外か。_罗兰的生活方式_Gemini翻译版.pdf" aria-label="Download the Gemini Chinese translation of ROLAND's lifestyle book, PDF, 13.2 MB">
       <span class="library-file-icon" data-file-type="PDF" aria-hidden="true">
         <svg viewBox="0 0 36 44" width="30" height="36" focusable="false">
           <path d="M2 1h22l10 10v31H2z" fill="white"/>
@@ -70,7 +70,7 @@ toc: false
         </svg>
       </span>
     </a>
-    <a class="library-download-item" href="/downloads/anthropic-detecting-countering-ai-misuse-2026-09-zh.pdf?v=20261012-2" download="Anthropic-Detecting-and-countering-091026_zh.pdf" aria-label="Download the Chinese translation of Anthropic's September 2026 AI misuse report, PDF, 11.3 MB">
+    <a class="library-download-item" href="/downloads/anthropic-detecting-countering-ai-misuse-2026-09-zh.pdf?v=20261012-3" download="Anthropic-Detecting-and-countering-091026_zh.pdf" aria-label="Download the Chinese translation of Anthropic's September 2026 AI misuse report, PDF, 11.3 MB">
       <span class="library-file-icon" data-file-type="PDF" aria-hidden="true">
         <svg viewBox="0 0 36 44" width="30" height="36" focusable="false">
           <path d="M2 1h22l10 10v31H2z" fill="white"/>
