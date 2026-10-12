@@ -16,7 +16,7 @@ toc: false
     </label>
   </div>
   <div class="library-download-list">
-    <a class="library-download-item" href="/downloads/hn-daily-2026-10-11-en.pdf" download aria-label="Download HN Daily October 11, 2026 editorial preview, PDF, 358 KB">
+    <a class="library-download-item" href="/downloads/hn-daily-2026-10-11-en.pdf?v=20261012" download aria-label="Download HN Daily October 11, 2026 editorial preview, PDF, 358 KB">
       <span class="library-file-icon" aria-hidden="true">
         <svg viewBox="0 0 36 44" width="30" height="36" focusable="false">
           <path d="M2 1h22l10 10v31H2z" fill="white"/>

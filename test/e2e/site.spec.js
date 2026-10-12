@@ -107,7 +107,7 @@ for (const library of [
     await expect(page.locator('.library-download-item:visible')).toHaveCount(2);
     await expect(page.locator('[data-library-empty]')).toBeHidden();
     for (const filename of [library.dailyFile, 'ai-native-software-engineering-protected.pdf']) {
-      const path = `/downloads/${filename}`;
+      const path = `/downloads/${filename}${filename === library.dailyFile ? '?v=20261012' : ''}`;
       expect((await request.get(path)).status()).toBeLessThan(400);
       const downloadPromise = page.waitForEvent('download');
       await page.locator(`.library-download-item[href="${path}"]`).click();
