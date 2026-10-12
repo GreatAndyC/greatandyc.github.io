@@ -22,6 +22,33 @@ test('allows only the unpatched braces advisory and its transitive chain', () =>
   assert.deepEqual(evaluateAudit(report, now), ['braces', 'chokidar', 'hexo']);
 });
 
+test('ignores a moderate advisory in a parent with the excepted high-severity chain', () => {
+  const report = {
+    vulnerabilities: {
+      braces: { severity: 'high', via: [braces] },
+      'sprintf-js': { severity: 'moderate', via: [{
+        name: 'sprintf-js',
+        url: 'https://github.com/advisories/GHSA-hp3w-g68c-fv3c',
+        severity: 'moderate'
+      }] },
+      'hexo-i18n': { severity: 'moderate', via: ['sprintf-js'] },
+      hexo: { severity: 'high', via: ['braces', 'hexo-i18n'] }
+    }
+  };
+
+  assert.deepEqual(evaluateAudit(report, now), ['braces', 'hexo']);
+});
+
+test('rejects a high-severity package without a high-severity advisory chain', () => {
+  const report = {
+    vulnerabilities: {
+      example: { severity: 'high', via: [{ name: 'example', severity: 'moderate' }] }
+    }
+  };
+
+  assert.throws(() => evaluateAudit(report, now), /Unexcepted high-severity/);
+});
+
 test('rejects another high-severity advisory even in the same dependency chain', () => {
   const report = {
     vulnerabilities: {

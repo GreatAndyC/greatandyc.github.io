@@ -32,7 +32,11 @@ function evaluateAudit(report, now = Date.now()) {
 
   for (const [name] of highSeverity) {
     const advisories = directAdvisories(name);
-    if (advisories.length === 0 || advisories.some(advisory =>
+    // A high-severity parent can also include unrelated moderate or low advisories.
+    // Evaluate only the high/critical chain while rejecting missing severity data.
+    const blockingAdvisories = advisories.filter(advisory =>
+      advisory.severity !== 'moderate' && advisory.severity !== 'low');
+    if (blockingAdvisories.length === 0 || blockingAdvisories.some(advisory =>
       advisory.name !== 'braces'
       || advisory.url !== EXCEPTION_URL
       || advisory.range !== '<=3.0.3'
