@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1080" viewBox="0 0 1600 720" role="img" aria-labelledby="title desc">
+  <title id="title">关闭 Waline 公共注册</title>
+  <desc id="desc">注册页面仍可能被访问，但当环境变量 DISABLE_USER_REGISTER 设置为 true 时，后端只拦截 POST /api/user，返回 403；管理员登录和评论接口继续通过。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbfcfe"/>
+      <stop offset="1" stop-color="#eef3fb"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#263b63" flood-opacity=".12"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0 0 12 6 0 12Z" fill="#6b8ac9"/>
+    </marker>
+    <style>
+      .title { font: 700 34px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1f2e49; }
+      .subtitle { font: 400 18px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #66758e; }
+      .label { font: 700 22px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1f2e49; }
+      .small { font: 400 16px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #61718b; }
+      .mono { font: 600 17px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #3f5378; }
+      .red { font: 700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #ad4d4d; }
+      .green { font: 700 18px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #3b815d; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="720" rx="30" fill="url(#bg)"/>
+  <text x="70" y="82" class="title">关闭公共注册：锁住注册接口，不影响评论</text>
+  <text x="70" y="118" class="subtitle">这是后端开关。注册页面可以继续存在，但真正的创建用户请求会在 Waline 中被拒绝。</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="245" width="300" height="200" rx="24" fill="#fff" stroke="#d6dfef" stroke-width="2"/>
+    <text x="105" y="292" class="label">注册页面</text>
+    <text x="105" y="340" class="mono">/ui/register</text>
+    <text x="105" y="385" class="small">页面可能仍可打开</text>
+    <text x="105" y="412" class="small">但不代表注册会成功</text>
+
+    <rect x="520" y="210" width="420" height="270" rx="24" fill="#f4f7ff" stroke="#cddaf4" stroke-width="2"/>
+    <text x="560" y="263" class="label">Waline 中间件</text>
+    <rect x="560" y="292" width="340" height="52" rx="12" fill="#e6edff"/>
+    <text x="585" y="326" class="mono">DISABLE_USER_REGISTER=true</text>
+    <text x="560" y="382" class="small">只匹配：POST /api/user</text>
+    <text x="560" y="414" class="small">命中后返回 403，不写入用户表</text>
+
+    <rect x="1100" y="165" width="380" height="145" rx="24" fill="#fff1f1" stroke="#f0caca" stroke-width="2"/>
+    <text x="1140" y="215" class="red">新用户注册 → 拒绝</text>
+    <text x="1140" y="258" class="mono">403 / 管理员已关闭新用户注册</text>
+
+    <rect x="1100" y="385" width="380" height="145" rx="24" fill="#eff9f2" stroke="#c9e8d3" stroke-width="2"/>
+    <text x="1140" y="435" class="green">其他接口 → 继续通过</text>
+    <text x="1140" y="478" class="small">管理员登录、评论、点赞、读取评论</text>
+  </g>
+
+  <path d="M370 345h140" fill="none" stroke="#6b8ac9" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M940 300h145" fill="none" stroke="#b86b6b" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M940 410h145" fill="none" stroke="#5b9a75" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="70" y="600" width="1410" height="60" rx="18" fill="#edf3ff"/>
+  <text x="105" y="638" class="small">部署顺序：GitHub push → Vercel 重新部署 → Production 环境变量生效 → 用无痕窗口测试注册提交</text>
+</svg>
